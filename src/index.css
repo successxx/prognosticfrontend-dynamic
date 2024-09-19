@@ -1181,6 +1181,10 @@ h1.style1, h2.style1, h3.style1, p.style1 {
 
 :root {
     font-family: 'Montserrat', sans-serif;
+    bs-font-sans-serif: 'Montserrat', sans-serif;
+}
+body, * {
+    font-family: 'Montserrat', sans-serif !important;
 }
 
 .container > .wrapper {
