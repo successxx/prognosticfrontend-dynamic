@@ -1,0 +1,80 @@
+/* LoadingIndicator.module.css */
+
+.prognostic-ai-demo-results-container {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #F0F4F8;
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.prognostic-ai-demo-results-container * {
+    box-sizing: border-box;
+}
+
+.pai-dr-header {
+    background-color: #0142AC;
+    color: white;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
+}
+
+.pai-dr-content {
+    background-color: white;
+    padding: 30px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 15px 15px;
+}
+
+.pai-dr-spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #0142AC;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: pai-dr-spin 1s linear infinite;
+    margin-bottom: 30px;
+}
+
+@keyframes pai-dr-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.pai-dr-message {
+    font-size: 20px;
+    color: #333;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.pai-dr-footer {
+    text-align: right;
+    padding: 10px 20px;
+}
+
+.pai-dr-button {
+    display: inline-block;
+    background-color: #0142AC;
+    color: white;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 400;
+}
