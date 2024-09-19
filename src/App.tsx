@@ -66,11 +66,11 @@ const App: React.FC = () => {
         try {
             const API_BASE =
                 window.location.hostname === 'localhost'
-                    ? 'http://127.0.0.1:5000'
+                    ? 'http://127.0.0.1:5001'
                     : 'https://prognostic-ai-backend-acab284a2f57.herokuapp.com';
 
             const params = new URLSearchParams(window.location.search);
-            const userId = params.get('userID');
+            const userId = params.get('userID') || params.get('userId');
             if (!userId) {
                 // Immediately show error if userId is not present
                 setError("It seems like you're trying to retrieve your previous results. Please restart the process to generate new results. If you need assistance, feel free to contact our support team.");
@@ -125,7 +125,10 @@ const App: React.FC = () => {
                                     <Header/>
                                     <hr id="divider02" className="hr-custom"/>
                                     {loading ? (
+                                        <>
                                         <LoadingCircle/>
+                                        <p id="text07" className="style1">© 2024 PrognosticAI</p>
+                                        </>
                                     ) : (
                                         <>
                                             <h1 id="text02" className="text-center">
@@ -134,7 +137,7 @@ const App: React.FC = () => {
                                                     {' '}
                                                     <strong>For Your Company</strong>
                                                     <br/>
-                                                    <a href="https://prognostic.ai/#demo">
+                                                    <a href="https://prognostic.ai/#demo" target="_blank" rel="noopener noreferrer">
                                                         Book Your Free Demo Today!
                                                     </a>
                                                 </span>
@@ -176,7 +179,7 @@ const App: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        {!loading && <Footer/>}
+                        {!loading && <Footer/> }
                     </div>
                 </div>
             </div>

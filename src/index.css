@@ -504,6 +504,7 @@ h1 span.p, h2 span.p, h3 span.p, p span.p {
 }
 
 #text02 mark {
+    padding: 0px;
     color: #0142AC;
     background-color: transparent;
 }
@@ -1178,6 +1179,10 @@ h1.style1, h2.style1, h3.style1, p.style1 {
     }
 }
 
+:root {
+    font-family: 'Montserrat', sans-serif;
+}
+
 .container > .wrapper {
     display: flex;
     vertical-align: top;
@@ -1200,6 +1205,7 @@ h1.style1, h2.style1, h3.style1, p.style1 {
 }
 
 h1.style2 mark, h2.style2 mark, h3.style2 mark, p.style2 mark {
+    padding: 0px;
     color: #0142AC;
     background-color: transparent;
 }

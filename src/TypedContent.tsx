@@ -17,7 +17,6 @@ const TypedContent: React.FC<TypedContentProps> = ({content}) => {
                 typedInstance.current.destroy();
             }
 
-            // Enhance the content as per your logic
             const enhancedContent = enhanceContent(content);
 
             // Hide the typedRef before typing begins
