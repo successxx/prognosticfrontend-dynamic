@@ -115,6 +115,13 @@ body {
     padding: var(--padding-vertical) var(--padding-horizontal);
 }
 
+/* For smaller screens, adjust the width */
+@media (max-width: 768px) {
+    .inner {
+        --width: 100%;  /* On screens smaller than 768px, make the width 100% */
+    }
+}
+
 .content-box:last-child {
     margin-bottom: 0; /* Remove margin from the last content box */
 }
@@ -156,7 +163,6 @@ body {
 #typed-output em {
     font-style: italic;
 }
-
 
 .content-box p {
     margin-bottom: 1.3em;
@@ -209,6 +215,10 @@ body {
     font-size: 24px;
     color: #0142AC;
     z-index: 1;
+}
+
+.content-box:first-child {
+    border-radius: 0px 0px 10px 10px; /* Different border radius for the first content box */
 }
 
 
@@ -382,7 +392,7 @@ body {
 
     #typed-output {
         font-size: 16px;
-        padding: 10px;
+        padding: 0px;
     }
 
     .new-demo-button {
@@ -907,12 +917,13 @@ strong {
 
     #typed-output {
         font-size: 16px;
-        padding: 10px;
+        padding: 0px;
     }
 
     .new-demo-button {
         font-size: 14px;
-        padding: 10px 20px;
+        padding: 8px 20px;
+
     }
 
     .result-header {
@@ -975,31 +986,6 @@ strong {
     margin-right: 15px;
     font-size: 24px;
     flex-shrink: 0;
-}
-
-
-.new-demo-button {
-    display: inline-block;
-    background-color: #0142AC;
-    color: white;
-    font-size: 18px;
-    padding: 12px 24px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    text-align: center;
-    width: auto;
-    max-width: none;
-    box-sizing: border-box;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: none;
-    white-space: nowrap;
-    align-self: center;
-    position: relative;
-    bottom: auto; /* Remove absolute positioning */
-    margin-top: 20;
 }
 
 
@@ -1317,3 +1303,4 @@ h1, h2, h3, p {
         width: 15rem;
     }
 }
+

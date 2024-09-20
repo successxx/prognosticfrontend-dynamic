@@ -47,11 +47,13 @@ const TypedContent: React.FC<TypedContentProps> = ({content}) => {
 
 
                 onComplete: function () {
-                    document.querySelectorAll('.content-box').forEach(box => {
+                    // Select both .content-box and .first-context-box
+                    document.querySelectorAll('.content-box, .first-context-box').forEach(box => {
                         box.classList.add('generated');
                     });
-                    showButtons();
+                    showButtons(); // Call the function to show buttons after typing is complete
                 },
+
             });
 
             // Show the typedRef after typing begins
@@ -106,7 +108,7 @@ const TypedContent: React.FC<TypedContentProps> = ({content}) => {
             const demoButton = shouldHaveButton ? '<a href="https://prognostic.ai/#demo" class="new-demo-button">Book Your Free Demo Now!</a>' : '';
 
             // Add 'first-context-box' class to the first section
-            const boxClass = index === 0 ? 'first-context-box' : 'content-box';
+            const boxClass = index === 0 ? 'content-box' : 'content-box';
 
             return `<div class="${boxClass}">
             <div class="content-box-inner">
