@@ -28,12 +28,9 @@ const TypedContent: React.FC<TypedContentProps> = ({content}) => {
                 showCursor: false,
                 contentType: 'html',
                 onStringTyped: function (_arrayPos) {
-                    // Assert that typedElement is not null
                     const typedElement = typedRef.current!;
-                    // typedElement.innerHTML is always a string, so .length is valid
                     const progress = typedElement.innerHTML.length / enhancedContent.length;
 
-                    // Rest of your code
                     const contentBoxes = typedElement.querySelectorAll('.content-box');
                     if (contentBoxes) {
                         const currentIndex = Math.floor(progress * contentBoxes.length);
@@ -108,7 +105,10 @@ const TypedContent: React.FC<TypedContentProps> = ({content}) => {
             const shouldHaveButton = index >= sections.length - 3;
             const demoButton = shouldHaveButton ? '<a href="https://prognostic.ai/#demo" class="new-demo-button">Book Your Free Demo Now!</a>' : '';
 
-            return `<div class="content-box">
+            // Add 'first-context-box' class to the first section
+            const boxClass = index === 0 ? 'first-context-box' : 'content-box';
+
+            return `<div class="${boxClass}">
             <div class="content-box-inner">
                 ${processedSection}
             </div>
@@ -119,6 +119,7 @@ const TypedContent: React.FC<TypedContentProps> = ({content}) => {
         // Join all processed sections into a single string
         return processedSections.join('');
     };
+
 
     const showButtons = () => {
         document.querySelectorAll('.new-demo-button').forEach(button => {

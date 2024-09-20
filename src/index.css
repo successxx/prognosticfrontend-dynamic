@@ -49,7 +49,41 @@ body {
     font-weight: 700;
     margin: 0;
 }
+.fade-in {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
 
+.fade-in.visible {
+    opacity: 1;
+}
+
+/* index.css */
+.footer-fade-in {
+    opacity: 0;
+    transition: opacity 1s ease-in-out; /* Smooth fade-in over 1 second */
+}
+
+.footer-fade-in.visible {
+    opacity: 1;
+}
+
+.first-context-box {
+    background-color: white;
+    border-radius: 0px 0px 10px 10px;
+    padding: 20px 65px 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
 
 .content-box {
     background-color: white;
@@ -1183,6 +1217,7 @@ h1.style1, h2.style1, h3.style1, p.style1 {
     font-family: 'Montserrat', sans-serif;
     bs-font-sans-serif: 'Montserrat', sans-serif;
 }
+
 body, * {
     font-family: 'Montserrat', sans-serif !important;
 }
@@ -1200,13 +1235,6 @@ body, * {
     color: black;
 }
 
-
-.container.style3 > .wrapper {
-    display: block;
-    margin: 0 auto 0 auto;
-    width: 27rem;
-    background-color: transparent;
-}
 
 h1.style2 mark, h2.style2 mark, h3.style2 mark, p.style2 mark {
     padding: 0px;
