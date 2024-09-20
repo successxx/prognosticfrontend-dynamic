@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Header from './Header';
 import TypedContent from './TypedContent';
 import StreakCounter from './StreakCounter';
@@ -61,14 +61,26 @@ const App: React.FC = () => {
                     : 'https://prognostic-ai-backend-acab284a2f57.herokuapp.com';
 
             const params = new URLSearchParams(window.location.search);
-            const userId = params.get('userID') || params.get('userId');
-            if (!userId) {
+            const user_email = params.get('user_email')
+            if (!user_email) {
                 setError("It seems like you're trying to retrieve your previous results. Please restart the process to generate new results. If you need assistance, feel free to contact our support team.");
                 setLoading(false);
                 return null;
             }
 
-            const response = await fetch(`${API_BASE}/get_user/${userId}`);
+            const requestBody = {
+                user_email: user_email
+            };
+
+            const response = await fetch(`${API_BASE}/get_user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+
             if (!response.ok) {
                 if (response.status === 403) {
                     console.error("CORS issue detected");
@@ -115,34 +127,39 @@ const App: React.FC = () => {
     };
 
     return (
-        <div id="wrapper" className="container-fluid d-flex flex-column" style={{ minHeight: '100vh' }}>
+        <div id="wrapper" className="container-fluid d-flex flex-column" style={{minHeight: '100vh'}}>
             <div id="main" className="row justify-content-center flex-grow-1">
                 <div className="col-12 col-md-10 col-lg-8">
                     <div className="inner">
                         <div id="container6" className="style1 container default flex-grow-1">
                             <div className="wrapper">
                                 <div className="inner">
-                                    <Header />
-                                    <hr id="divider02" className="hr-custom" />
+                                    <Header/>
+                                    <hr id="divider02" className="hr-custom"/>
                                     {loading ? (
                                         <>
-                                            <LoadingCircle />
+                                            <LoadingCircle/>
                                             <p id="text07" className="style1">© 2024 PrognosticAI</p>
                                         </>
                                     ) : (
                                         <>
-                                            <h1 id="text02" className={`text-center fade-in ${isContentVisible ? 'visible' : ''}`}>
+                                            <h1 id="text02"
+                                                className={`text-center fade-in ${isContentVisible ? 'visible' : ''}`}>
                                                 <span className="p">
-                                                    Try Prognostic<mark>AI</mark>{' '}
+                                                    Try Prognostic<mark>AI</mark>
+                                                    {' '}
                                                     <strong>For Your Company</strong>
-                                                    <br />
-                                                    <a href="https://prognostic.ai/#demo" target="_blank" rel="noopener noreferrer">
+                                                    <br/>
+                                                    <a href="https://prognostic.ai/#demo" target="_blank"
+                                                       rel="noopener noreferrer">
                                                         Book Your Free Demo Today!
                                                     </a>
                                                 </span>
                                             </h1>
-                                            <hr id="divider01" className={`hr-custom fade-in ${isContentVisible ? 'visible' : ''}`} />
-                                            <div id="embed01" className={`fade-in ${isContentVisible ? 'visible' : ''}`}>
+                                            <hr id="divider01"
+                                                className={`hr-custom fade-in ${isContentVisible ? 'visible' : ''}`}/>
+                                            <div id="embed01"
+                                                 className={`fade-in ${isContentVisible ? 'visible' : ''}`}>
                                                 <div className="container">
                                                     <div className="row justify-content-center">
                                                         <div className="col-12">
@@ -156,22 +173,22 @@ const App: React.FC = () => {
                                                             {error ? (
                                                                 <p className="content-box text-center">{error}</p>
                                                             ) : (
-                                                                <TypedContent content={content} />
+                                                                <TypedContent content={content}/>
                                                             )}
                                                         </div>
                                                     </div>
                                                     <div className="row justify-content-center">
                                                         <div className="col-12 col-sm-6 text-center">
-                                                            <StreakCounter streak={streak} />
+                                                            <StreakCounter streak={streak}/>
                                                         </div>
                                                     </div>
                                                     <div className="row justify-content-center">
                                                         <div className="col-12 col-sm-6 text-center">
-                                                            <PrognosticButton />
+                                                            <PrognosticButton/>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <Fireworks />
+                                                <Fireworks/>
                                             </div>
                                         </>
                                     )}
@@ -181,7 +198,7 @@ const App: React.FC = () => {
 
                         {/* Footer appears 5 seconds after the text is completed */}
                         <div className={`footer-fade-in ${isFooterVisible ? 'visible' : ''}`}>
-                            <Footer />
+                            <Footer/>
                         </div>
                     </div>
                 </div>
