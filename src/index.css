@@ -49,6 +49,7 @@ body {
     font-weight: 700;
     margin: 0;
 }
+
 .fade-in {
     opacity: 0;
     transition: opacity 1s ease-in-out;
@@ -118,8 +119,18 @@ body {
 /* For smaller screens, adjust the width */
 @media (max-width: 768px) {
     .inner {
-        --width: 100%;  /* On screens smaller than 768px, make the width 100% */
+        --width: 100%;
+        --padding-vertical: 0rem;
+        --padding-horizontal: 0rem;
     }
+    .container {
+        /*padding: 0 10px;*/
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
 }
 
 .content-box:last-child {
@@ -374,65 +385,79 @@ body {
 /*}*/
 
 
-@media (max-width: 600px) {
-    body {
-        padding: 10px 0;
-        font-size: 16px;
-    }
+/*@media (max-width: 600px) {*/
+/*    .content-box {*/
+/*        padding: 15px 15px 30px; !* Adjusted padding for mobile *!*/
+/*    }*/
 
-    .container {
-        padding: 0 10px;
-        width: 100%;
-        box-sizing: border-box;
-    }
+/*    body {*/
+/*        padding: 10px 0;*/
+/*        font-size: 16px;*/
+/*    }*/
 
-    .content-box {
-        padding: 15px 15px 15px;
-    }
+/*    .container {*/
+/*        !*padding: 0 10px;*!*/
+/*        padding-right: 0rem;*/
+/*        padding-left: 0rem;*/
+/*        width: 100%;*/
+/*        box-sizing: border-box;*/
+/*    }*/
 
-    #typed-output {
-        font-size: 16px;
-        padding: 0px;
-    }
+/*    .content-box {*/
+/*        padding: 15px 15px 15px;*/
+/*    }*/
 
-    .new-demo-button {
-        font-size: 14px;
-        padding: 10px 20px;
-    }
+/*    #typed-output {*/
+/*        font-size: 16px;*/
+/*        padding: 0px;*/
+/*    }*/
 
-    .result-header {
-        padding: 15px 10px;
-    }
+/*    .new-demo-button {*/
+/*        font-size: 14px;*/
+/*        padding: 10px 20px;*/
+/*    }*/
 
-    .result-header h1 {
-        font-size: 1.5rem; /* Smaller font size for mobile */
-    }
+/*    .result-header {*/
+/*        padding: 15px 10px;*/
+/*    }*/
 
-    #typed-output h1 {
-        font-size: 28px;
-    }
+/*    .result-header h1 {*/
+/*        font-size: 1.5rem; !* Smaller font size for mobile *!*/
+/*    }*/
 
-    #typed-output h2 {
-        font-size: 26px;
-    }
+/*    #typed-output h1 {*/
+/*        font-size: 28px;*/
+/*    }*/
 
-    #typed-output h3 {
-        font-size: 24px;
-    }
+/*    #typed-output h2 {*/
+/*        font-size: 26px;*/
+/*    }*/
 
-    .prognostic-button {
-        bottom: -25px;
-        right: 10px;
-        font-size: 10px;
-        padding: 3px 6px;
-    }
+/*    #typed-output h3 {*/
+/*        font-size: 24px;*/
+/*    }*/
 
-    .streak-counter {
-        font-size: 14px;
-        padding: 6px 10px;
-        bottom: -40px;
-    }
-}
+/*    .prognostic-button {*/
+/*        bottom: -25px;*/
+/*        right: 10px;*/
+/*        font-size: 10px;*/
+/*        padding: 3px 6px;*/
+/*    }*/
+
+/*    .streak-counter {*/
+/*        font-size: 14px;*/
+/*        padding: 6px 10px;*/
+/*        bottom: -40px;*/
+/*    }*/
+
+/*    .inner {*/
+/*        --width: 100%;  !* On screens smaller than 768px, make the width 100% *!*/
+/*        !* Turn off padding to make cards more mobile responsive *!*/
+/*        --padding-vertical: 0rem;*/
+/*        --padding-horizontal: 0rem;*/
+/*    }*/
+
+/*}*/
 
 
 .highlight-box {
@@ -502,14 +527,6 @@ body {
 .new-demo-button:hover {
     background-color: #0056d6;
 }
-
-
-@media (max-width: 600px) {
-    .content-box {
-        padding: 15px 15px 30px; /* Adjusted padding for mobile */
-    }
-}
-
 
 @keyframes buttonAppear {
     0% {
@@ -900,20 +917,26 @@ strong {
 
 
 @media (max-width: 600px) {
+    .content-box {
+        padding: 15px 15px 30px; /* Adjusted padding for mobile */
+    }
+
     body {
         padding: 10px 0;
         font-size: 16px;
     }
 
     .container {
-        padding: 0 10px;
+        /*padding: 0 10px;*/
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
         width: 100%;
         box-sizing: border-box;
     }
 
-    .content-box {
-        padding: 15px 15px 15px;
-    }
+    /*.content-box {*/
+    /*    padding: 15px 15px 15px;*/
+    /*}*/
 
     #typed-output {
         font-size: 16px;
@@ -957,6 +980,11 @@ strong {
         font-size: 14px;
         padding: 6px 10px;
         bottom: -40px;
+    }
+
+    .inner{
+        --padding-vertical: 0rem;
+        --padding-horizontal: 0rem;
     }
 }
 
