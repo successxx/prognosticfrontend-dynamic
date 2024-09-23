@@ -858,11 +858,18 @@ strong {
         font-size: 28px;
     }
 
+    /* Add this outside of any media queries */
+#typed-output h2 {
+    font-size: 32px;
+    margin-bottom: 20px; /* Adjust this value if needed */
+}
+
+/* Existing media query for mobile adjustments */
+@media (max-width: 600px) {
     #typed-output h2 {
         font-size: 26px;
+        /* The margin-bottom here is not necessary unless you want different spacing on mobile */
     }
-    #typed-output h2 {
-    margin-bottom: 20px; /* Adjust this value if needed */
 }
 
     #typed-output h3 {
