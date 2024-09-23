@@ -861,6 +861,9 @@ strong {
     #typed-output h2 {
         font-size: 26px;
     }
+    #typed-output h2 {
+    margin-bottom: 20px; /* Adjust this value if needed */
+}
 
     #typed-output h3 {
         font-size: 24px;
