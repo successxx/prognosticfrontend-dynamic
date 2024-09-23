@@ -183,7 +183,7 @@ body {
 #typed-output h1, #typed-output h2, #typed-output h3 {
     font-weight: 700;
     margin-top: 0.2em;
-    margin-bottom: 0.2em;
+    margin-bottom: 0.7em;
     text-align: center;
 }
 
@@ -858,19 +858,9 @@ strong {
         font-size: 28px;
     }
 
-    /* Add this outside of any media queries */
-#typed-output h2 {
-    font-size: 32px;
-    margin-bottom: 20px; /* Adjust this value if needed */
-}
-
-/* Existing media query for mobile adjustments */
-@media (max-width: 600px) {
     #typed-output h2 {
         font-size: 26px;
-        /* The margin-bottom here is not necessary unless you want different spacing on mobile */
     }
-}
 
     #typed-output h3 {
         font-size: 24px;
@@ -1238,4 +1228,3 @@ h1, h2, h3, p {
         width: 15rem;
     }
 }
-
