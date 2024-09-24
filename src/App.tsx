@@ -33,7 +33,7 @@ const App: React.FC = () => {
             stopPolling();
             setError("We couldn't process your request. Please contact us via email if you're interested in our solution.");
             setLoading(false);
-        }, 60000);
+        }, 80000);
 
         pollingIntervalId.current = window.setInterval(() => {
             fetchContent();
