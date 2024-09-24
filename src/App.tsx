@@ -31,7 +31,7 @@ const App: React.FC = () => {
         setLoading(true);
         timeoutId.current = window.setTimeout(() => {
             stopPolling();
-            setError("We couldn't process your request. Please contact us via email if you're interested in our solution.");
+            setError("We couldn't process your request. Please try again, or contact support@prognostic.ai.");
             setLoading(false);
         }, 60000);
 
