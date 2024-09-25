@@ -182,7 +182,7 @@ body {
 #typed-output h1, #typed-output h2, #typed-output h3 {
     font-weight: 700;
     margin-top: 0.2em;
-    margin-bottom: 0.2em;
+    margin-bottom: 0.7em;
     text-align: center;
 }
 
@@ -1253,4 +1253,3 @@ h1, h2, h3, p {
         width: 15rem;
     }
 }
-

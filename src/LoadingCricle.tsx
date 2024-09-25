@@ -4,12 +4,21 @@ import styles from './LoadingCircle.module.css';
 
 const LoadingIndicator: React.FC = () => {
     const loadingMessages = [
-        "Psychoanalyzing your inner workings...",
-        "Uncovering hidden patterns in your responses...",
-        "Identifying archetypal anomalies...",
-        "Delving into the deep dark depths of your hidden psyche...",
-        "Forging a window into your mind and future...",
-        "Mapping your synaptic space... illustrating your mind's landscape..."
+        "Analyzing the essence of your website...",
+        "Finding your digital presence...",
+        "Thinking..."
+        "Identifying your ideal target audience...",
+        "Noting your opportunities and setbacks...",
+        "Running A/B tests to discover your best path...",
+        "Refining results for immediate impact...",
+        "Running new A/B tests based on synthesized results...",
+        "Crafting your blueprint for maximum success...",
+        "Refining...",
+        "Success! Stand by...",
+        "Success! Stand by...",
+        "Success! Stand by...",
+        "Success! Stand by...",
+        "Success! Stand by..."
     ];
 
     const [randomMessage, setRandomMessage] = useState<string>('');
