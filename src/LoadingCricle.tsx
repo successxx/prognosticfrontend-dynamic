@@ -1,18 +1,17 @@
-// LoadingIndicator.tsx
 import React, {useEffect, useState} from 'react';
 import styles from './LoadingCircle.module.css';
 
 const LoadingIndicator: React.FC = () => {
     const loadingMessages = [
-        "Analyzing the essence of your website...",
+        "Analyzing your website...",
         "Finding your digital presence...",
         "Thinking...",
         "Identifying your ideal target audience...",
-        "Noting your opportunities and setbacks...",
-        "Running A/B tests to discover your best path...",
+        "Identifying opportunities...",
+        "Running A/B tests...",
         "Refining results for immediate impact...",
         "Running new A/B tests based on synthesized results...",
-        "Crafting your blueprint for maximum success...",
+        "Crafting your step-by-step blueprint...",
         "Refining...",
         "Success! Stand by...",
         "Success! Stand by...",
@@ -21,16 +20,17 @@ const LoadingIndicator: React.FC = () => {
         "Success! Stand by..."
     ];
 
-    const [randomMessage, setRandomMessage] = useState<string>('');
+    const [currentMessageIndex, setCurrentMessageIndex] = useState<number>(0);
 
     useEffect(() => {
         const updateMessage = () => {
-            const randomIndex = Math.floor(Math.random() * loadingMessages.length);
-            const message = loadingMessages[randomIndex];
-            setRandomMessage(message);
+            setCurrentMessageIndex((prevIndex) => 
+                (prevIndex + 1) % loadingMessages.length
+            );
         };
 
-        updateMessage(); // Set initial message
+        // Set initial message
+        updateMessage();
 
         // Change the message every 5 seconds
         const intervalId = setInterval(updateMessage, 5000);
@@ -47,7 +47,7 @@ const LoadingIndicator: React.FC = () => {
             <div className={styles['pai-dr-content']}>
                 <div className={styles['pai-dr-spinner']}></div>
                 <div className={styles['pai-dr-message']}>
-                    {randomMessage}
+                    {loadingMessages[currentMessageIndex]}
                 </div>
             </div>
         </div>
