@@ -105,7 +105,7 @@ const TypedContent: React.FC<TypedContentProps> = ({content}) => {
 
             // Determine if this section should have a button (only for the last 3 sections)
             const shouldHaveButton = index >= sections.length - 3;
-            const demoButton = shouldHaveButton ? '<a href="https://prognostic.ai/#demo" class="new-demo-button">Book Your Free Demo Now!</a>' : '';
+            const demoButton = shouldHaveButton ? '<a href="https://prognostic.ai/#demo" class="new-demo-button visible">Book Your Free Demo Now!</a>' : '';
 
             // Add 'first-context-box' class to the first section
             const boxClass = index === 0 ? 'content-box' : 'content-box';

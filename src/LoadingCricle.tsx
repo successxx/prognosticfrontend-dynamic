@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './LoadingCircle.module.css';
 
 const LoadingIndicator: React.FC = () => {
@@ -20,29 +20,26 @@ const LoadingIndicator: React.FC = () => {
         "Success! Stand by..."
     ];
 
-    const [currentMessageIndex, setCurrentMessageIndex] = useState<number>(0);
-    const [fadeState, setFadeState] = useState<'in' | 'out'>('in');
+    const [messageIndex, setMessageIndex] = useState<number>(0);
+    const [fade, setFade] = useState<boolean>(true); // True for fade-in, false for fade-out
 
     useEffect(() => {
         const updateMessage = () => {
-            setFadeState('out');
+            setFade(false); // Start fade-out
+
             setTimeout(() => {
-                setCurrentMessageIndex((prevIndex) => 
-                    (prevIndex + 1) % loadingMessages.length
-                );
-                setFadeState('in');
-            }, 500); // Half of the transition time
+                // After fade-out completes, update the message and fade-in
+                setMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
+                setFade(true); // Trigger fade-in
+            }, 500); // Match the duration of the fade-out
         };
 
-        // Set initial message
-        updateMessage();
-
-        // Change the message every 5 seconds
+        // Set an interval to change the message every 5 seconds
         const intervalId = setInterval(updateMessage, 5000);
 
-        // Cleanup on component unmount
+        // Clean up on unmount
         return () => clearInterval(intervalId);
-    }, []);
+    }, [loadingMessages.length]);
 
     return (
         <div className={styles['prognostic-ai-demo-results-container']}>
@@ -51,13 +48,8 @@ const LoadingIndicator: React.FC = () => {
             </div>
             <div className={styles['pai-dr-content']}>
                 <div className={styles['pai-dr-spinner']}></div>
-                <div 
-                    className={`${styles['pai-dr-message']} ${styles[`fade-${fadeState}`]}`}
-                    style={{
-                        transition: 'opacity 1s ease-in-out'
-                    }}
-                >
-                    {loadingMessages[currentMessageIndex]}
+                <div className={`${styles['pai-dr-message']} ${fade ? styles['fade-in'] : styles['fade-out']}`}>
+                    {loadingMessages[messageIndex]}
                 </div>
             </div>
         </div>
