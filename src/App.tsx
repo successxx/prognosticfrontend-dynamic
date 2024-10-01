@@ -11,6 +11,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App: React.FC = () => {
     const [content, setContent] = useState<string>('');
+    const [booking_button_name, setBookingButtonName] = useState<string>('');
+    const [booking_button_redirection, setBookingButtonRedirection] = useState<string>('');
     const [streak, setStreak] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
@@ -96,6 +98,8 @@ const App: React.FC = () => {
 
             if (data?.text) {
                 setContent(data.text);
+                setBookingButtonName(data.booking_button_name)
+                setBookingButtonRedirection(data.booking_button_redirection)
                 setStreak((prevStreak) => prevStreak + 1);
                 stopPolling();
                 setLoading(false);
@@ -173,7 +177,12 @@ const App: React.FC = () => {
                                                             {error ? (
                                                                 <p className="content-box text-center">{error}</p>
                                                             ) : (
-                                                                <TypedContent content={content}/>
+                                                                <TypedContent
+                                                                    content={content}
+                                                                    booking_button_name={booking_button_name || 'Book Your Free Demo Now!'}
+                                                                    booking_button_redirection={booking_button_redirection || 'https://prognostic.ai/#demo'}
+                                                                />
+
                                                             )}
                                                         </div>
                                                     </div>

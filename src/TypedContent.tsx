@@ -5,9 +5,15 @@ import Typed from 'typed.js';
 
 interface TypedContentProps {
     content: string;
+    booking_button_name: string;
+    booking_button_redirection: string;
 }
 
-const TypedContent: React.FC<TypedContentProps> = ({content}) => {
+const TypedContent: React.FC<TypedContentProps> = ({
+                                                       content,
+                                                       booking_button_name,                // Destructure the new prop
+                                                       booking_button_redirection           // Destructure the new prop
+                                                   }) => {
     const typedRef = useRef<HTMLDivElement>(null);
     const typedInstance = useRef<Typed | null>(null);
 
@@ -105,7 +111,8 @@ const TypedContent: React.FC<TypedContentProps> = ({content}) => {
 
             // Determine if this section should have a button (only for the last 3 sections)
             const shouldHaveButton = index >= sections.length - 3;
-            const demoButton = shouldHaveButton ? '<a href="https://prognostic.ai/#demo" class="new-demo-button visible">Book Your Free Demo Now!</a>' : '';
+            const demoButton = shouldHaveButton
+                ? `<a href="${booking_button_redirection}" class="new-demo-button visible">${booking_button_name}</a>` : '';
 
             // Add 'first-context-box' class to the first section
             const boxClass = index === 0 ? 'content-box' : 'content-box';
