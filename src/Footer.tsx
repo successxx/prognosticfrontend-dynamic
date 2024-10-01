@@ -1,8 +1,12 @@
 import React from 'react';
 import './index.css';
 import headerImage from "./assets/header.png"; // Import the CSS file (you can place the CSS styles here)
+// Define the type for the props
+interface FooterProps {
+    isFooterVisible: boolean;
+}
 
-const Footer: React.FC = () => {
+const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
     const handleSmsClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         if (navigator.userAgent.match('like Mac OS X')) {
             e.preventDefault();
@@ -10,12 +14,18 @@ const Footer: React.FC = () => {
         }
     };
 
-
     return (
         <div id="container02" className="style3 container default">
             <div className="wrapper">
                 <div className="inner">
-                    <p id="text01" className="style2"><span className="p">The next time you hear someone talking about AI in marketing, <strong>think of Prognostic<mark>AI</mark>.</strong><br/> <em>Can You Think Of A Friend Who Would Like To Close More Deals?</em><br/> <strong>Spread The Love:</strong></span>
+                    <p id="text01"
+                       className={`style2 ${isFooterVisible ? 'footer-fade-in visible' : 'footer-fade-in'}`}>
+                    <span className="p">
+                        The next time you hear someone talking about AI in marketing,
+                        <strong>think of Prognostic<mark>AI</mark>.</strong><br/>
+                        <em>Can You Think Of A Friend Who Would Like To Close More Deals?</em><br/>
+                        <strong>Spread The Love:</strong>
+                    </span>
                     </p>
                     <div id="embed02" className="embed02">
                         <style></style>

@@ -204,11 +204,7 @@ const App: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Footer appears 5 seconds after the text is completed */}
-                        <div className={`footer-fade-in ${isFooterVisible ? 'visible' : ''}`}>
-                            <Footer/>
-                        </div>
+                        <Footer isFooterVisible={isFooterVisible}/>
                     </div>
                 </div>
             </div>
