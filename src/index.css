@@ -89,7 +89,7 @@ body {
     background-color: white;
     border-radius: 10px;
     padding: 20px 65px 40px;
-    margin-bottom: 40px;
+    /*margin-bottom: 40px;*/
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     position: relative;
     width: 100%;
@@ -578,22 +578,7 @@ body {
 }
 
 
-.content-box {
-    background-color: white;
-    border-radius: 10px;
-    padding: 20px 65px 40px;
-    margin-bottom: 40px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    position: relative;
-    width: 100%;
-    box-sizing: border-box;
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    opacity: 1;
-    transition: opacity 0.3s ease-in-out;
-}
+
 
 
 .content-box:last-child {
@@ -657,13 +642,21 @@ strong {
     width: 2px;
     height: 40px;
     background: linear-gradient(to bottom, #0142AC, transparent);
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.8s ease-in-out; /* Smooth opacity transition */
 }
+
 
 
 .content-box:last-child::after {
     display: none;
 }
-
+.button-container {
+    display: flex;
+    justify-content: center; /* Horizontally center the button */
+    align-items: center; /* Vertically align the button (optional) */
+    margin-top: 20px; /* Add some space above the button if needed */
+}
 
 .content-box::before {
     content: '●';
@@ -674,6 +667,20 @@ strong {
     font-size: 24px;
     color: #0142AC;
     z-index: 1;
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.8s ease-in-out; /* Smooth opacity transition */
+}
+.content-box.typing-complete {
+    margin-bottom: 50px;
+}
+.content-box.typing-complete::before {
+    opacity: 1; /* Visible when typing is complete */
+}
+.content-box.typing-complete:last-child {
+    margin-bottom: 0;
+}
+.content-box.typing-complete::after {
+    opacity: 1; /* Visible when typing is complete */
 }
 
 

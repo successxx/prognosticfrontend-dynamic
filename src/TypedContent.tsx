@@ -1,6 +1,6 @@
 // src/TypedContent.tsx
 
-import React, {useEffect, useRef} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Typed from 'typed.js';
 
 interface TypedContentProps {
@@ -9,136 +9,158 @@ interface TypedContentProps {
     booking_button_redirection: string;
 }
 
+interface Section {
+    content: string;
+    shouldHaveButton: boolean;
+}
+
 const TypedContent: React.FC<TypedContentProps> = ({
                                                        content,
-                                                       booking_button_name,                // Destructure the new prop
-                                                       booking_button_redirection           // Destructure the new prop
+                                                       booking_button_name,
+                                                       booking_button_redirection,
                                                    }) => {
-    const typedRef = useRef<HTMLDivElement>(null);
-    const typedInstance = useRef<Typed | null>(null);
+    const [sections, setSections] = useState<Section[]>([]);
+    const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+    const typedRefs = useRef<Array<HTMLDivElement | null>>([]);
+    const typedInstances = useRef<Array<Typed | null>>([]);
 
     useEffect(() => {
-        if (content && typedRef.current) {
-            if (typedInstance.current) {
-                typedInstance.current.destroy();
-            }
-
-            const enhancedContent = enhanceContent(content);
-
-            // Hide the typedRef before typing begins
-            typedRef.current.style.opacity = '0';
-
-            typedInstance.current = new Typed(typedRef.current, {
-                strings: [enhancedContent],
-                typeSpeed: 1,
-                showCursor: false,
-                contentType: 'html',
-                onStringTyped: function (_arrayPos) {
-                    const typedElement = typedRef.current!;
-                    const progress = typedElement.innerHTML.length / enhancedContent.length;
-
-                    const contentBoxes = typedElement.querySelectorAll('.content-box');
-                    if (contentBoxes) {
-                        const currentIndex = Math.floor(progress * contentBoxes.length);
-                        const currentBox = contentBoxes[currentIndex];
-
-                        if (currentBox) {
-                            const button = currentBox.querySelector('.new-demo-button');
-                            if (button) {
-                                button.classList.add('visible');
-                            }
-                        }
-                    }
-                },
-
-
-                onComplete: function () {
-                    // Select both .content-box and .first-context-box
-                    document.querySelectorAll('.content-box, .first-context-box').forEach(box => {
-                        box.classList.add('generated');
-                    });
-                    showButtons(); // Call the function to show buttons after typing is complete
-                },
-
-            });
-
-            // Show the typedRef after typing begins
-            typedRef.current.style.opacity = '1';
-
-            return () => {
-                typedInstance.current?.destroy();
-            };
+        if (content) {
+            const processedSections = enhanceContent(content);
+            setSections(processedSections);
         }
     }, [content]);
 
-    const enhanceContent = (content: string): string => {
-        // Split content into sections based on h2 headers
-        const sections = content.split(/(?=<h2>)/);
+    useEffect(() => {
+        if (sections.length > 0) {
+            // Start typing the first section
+            startTyping(0);
+        }
 
-        // Process each section
-        const processedSections = sections.map((section, index) => {
-            let processedSection = section;
+        // Cleanup function
+        return () => {
+            typedInstances.current.forEach((instance) => instance && instance.destroy());
+            typedInstances.current = [];
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sections]);
 
-            // Handle bold text
-            processedSection = processedSection.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    const startTyping = (index: number) => {
+        if (index >= sections.length) {
+            return; // All sections have been typed
+        }
 
-            // Handle italic text
-            processedSection = processedSection.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        setCurrentIndex(index); // Update current active index to render the card
 
-            // Replace double line breaks with paragraph tags
-            processedSection = processedSection.replace(/\n\n/g, '</p><p>');
+        const typedRef = typedRefs.current[index];
 
-            // Handle headers (h3 and below, as h2 is already handled)
-            processedSection = processedSection.replace(/(Here's how.*?:)\n/g, '</p><h3>$1</h3><p>');
+        if (typedRef) {
+            typedRef.innerHTML = ''; // Clear previous content if any
 
-            // Handle highlight boxes
-            processedSection = processedSection.replace(/(Imagine for a second.*?)\n/g, '</p><div class="highlight-box"><p>$1</p></div><p>');
+            const typedInstance = new Typed(typedRef, {
+                strings: [sections[index].content],
+                typeSpeed: 1,
+                showCursor: false,
+                contentType: 'html',
+                onComplete: () => {
+                    // After typing is complete for this section, start typing the next one
+                    console.log(typedRef.parentElement)
+                    const demoButton = typedRef.parentElement?.parentElement?.querySelector('a.new-demo-button');
+                    console.log(demoButton)
+                    // Add the 'visible' class to the <a> element
+                    if (demoButton) {
+                        demoButton.classList.add('visible');
+                    }
+                    typedRef.parentElement?.parentElement?.classList.add('typing-complete');
+                    startTyping(index + 1);
+                },
+            });
 
-            // Handle unordered lists
-            processedSection = processedSection.replace(/\n- /g, '</p><ul><li>');
-            processedSection = processedSection.replace(/\n - /g, '</li><li>');
-            processedSection = processedSection.replace(/(<li>.*?)\n/g, '$1</li></ul><p>');
-
-            // Handle ordered lists
-            processedSection = processedSection.replace(/\n\d+\. /g, '</p><ol><li>');
-            processedSection = processedSection.replace(/(<li>.*?)\n/g, '$1</li></ol><p>');
-
-            // Wrap content in paragraphs
-            processedSection = '<p>' + processedSection + '</p>';
-
-            // Remove empty paragraphs
-            processedSection = processedSection.replace(/<p>\s*<\/p>/g, '');
-
-            // Determine if this section should have a button (only for the last 3 sections)
-            const shouldHaveButton = index >= sections.length - 3;
-            const demoButton = shouldHaveButton
-                ? `<a href="${booking_button_redirection}" class="new-demo-button visible">${booking_button_name}</a>` : '';
-
-            // Add 'first-context-box' class to the first section
-            const boxClass = index === 0 ? 'content-box' : 'content-box';
-
-            return `<div class="${boxClass}">
-            <div class="content-box-inner">
-                ${processedSection}
-            </div>
-            ${demoButton}
-        </div>`;
-        });
-
-        // Join all processed sections into a single string
-        return processedSections.join('');
-    };
-
-
-    const showButtons = () => {
-        document.querySelectorAll('.new-demo-button').forEach(button => {
-            button.classList.add('visible');
-        });
+            typedInstances.current[index] = typedInstance;
+        }
     };
 
     return (
-        <div id="typed-output" ref={typedRef}></div>
-    );
+        <div>
+            <div id="typed-output">
+                {sections.map((section, index) => (
+
+                    <div
+                        className={`content-box ${index <= currentIndex ? 'visible' : 'hidden'}`}
+                        key={index}
+                        style={{display: index <= currentIndex ? 'block' : 'none'}}
+                    >
+                        <div className="content-box-inner">
+                            <div ref={(el) => (typedRefs.current[index] = el)}></div>
+                        </div>
+                        {section.shouldHaveButton && (
+                            <div className="button-container">
+                                <a href={booking_button_redirection} className="new-demo-button">
+                                    {booking_button_name}
+                                </a>
+                            </div>
+
+                        )}
+                            </div>
+
+                        ))}
+                    </div>
+                    </div>
+            );
+            };
+
+const enhanceContent = (content: string): Section[] => {
+    // Split content into sections based on h2 headers
+    const sections = content.split(/(?=<h2>)/);
+
+    // Process each section
+    const processedSections = sections.map((section, index) => {
+        let processedSection = section;
+
+        // Handle bold text
+        processedSection = processedSection.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        // Handle italic text
+        processedSection = processedSection.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+        // Replace double line breaks with paragraph tags
+        processedSection = processedSection.replace(/\n\n/g, '</p><p>');
+
+        // Handle headers (h3 and below, as h2 is already handled)
+        processedSection = processedSection.replace(
+            /(Here's how.*?:)\n/g,
+            '</p><h3>$1</h3><p>'
+        );
+
+        // Handle highlight boxes
+        processedSection = processedSection.replace(
+            /(Imagine for a second.*?)\n/g,
+            '</p><div class="highlight-box"><p>$1</p></div><p>'
+        );
+
+        // Handle unordered lists
+        processedSection = processedSection.replace(/\n- /g, '</p><ul><li>');
+        processedSection = processedSection.replace(/\n - /g, '</li><li>');
+        processedSection = processedSection.replace(/(<li>.*?)\n/g, '$1</li></ul><p>');
+
+        // Handle ordered lists
+        processedSection = processedSection.replace(/\n\d+\. /g, '</p><ol><li>');
+        processedSection = processedSection.replace(/(<li>.*?)\n/g, '$1</li></ol><p>');
+
+        // Wrap content in paragraphs
+        processedSection = '<p>' + processedSection + '</p>';
+
+        // Remove empty paragraphs
+        processedSection = processedSection.replace(/<p>\s*<\/p>/g, '');
+
+        // Determine if this section should have a button (only for the last 3 sections)
+        const shouldHaveButton = index >= sections.length - 3;
+
+        return { content: processedSection, shouldHaveButton };
+    });
+
+    return processedSections;
 };
 
 export default TypedContent;
