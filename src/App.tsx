@@ -74,7 +74,7 @@ const App: React.FC = () => {
                 user_email: user_email
             };
 
-            const response = await fetch(`${API_BASE}/get_user`, {
+            const response = await fetch(`${API_BASE}/get_user_psych`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
