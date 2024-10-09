@@ -34,7 +34,7 @@ body {
 
 .result-header {
     width: 100%;
-    background-color: #0142AC;
+    background-color: #2C3E50;
     color: white;
     padding: 20px 15px; /* Adjusted for mobile */
     border-radius: 15px 15px 0 0;
@@ -209,7 +209,7 @@ body {
     transform: translateX(-50%);
     width: 2px;
     height: 40px;
-    background: linear-gradient(to bottom, #0142AC, transparent);
+    background: linear-gradient(to bottom, #2C3E50, transparent);
 }
 
 
