@@ -3,21 +3,20 @@ import styles from './LoadingCircle.module.css';
 
 const LoadingIndicator: React.FC = () => {
     const loadingMessages = [
-        "Analyzing the essence of your website...",
-        "Finding your digital presence...",
-        "Thinking...",
-        "Identifying your ideal target audience...",
-        "Noting your opportunities and setbacks...",
-        "Running A/B tests to discover your best path...",
-        "Refining results for immediate impact...",
-        "Running new A/B tests based on synthesized results...",
-        "Crafting your blueprint for maximum success...",
-        "Refining...",
-        "Success! Stand by...",
-        "Success! Stand by...",
-        "Success! Stand by...",
-        "Success! Stand by...",
-        "Success! Stand by..."
+    "Uncovering hidden aspects of your personality...",
+    "Processing your unique thought patterns...",
+    "Identifying your core motivations...",
+    "Mapping your emotional landscape...",
+    "Exploring your cognitive strengths...",
+    "Decoding your interpersonal dynamics...",
+    "Synthesizing your behavioral tendencies...",
+    "Crafting your personalized psychological profile...",
+    "Refining insights...",
+    "Eureka! Breakthrough achieved...",
+    "Fascinating patterns detected...",
+    "Unique traits identified...",
+    "Personality matrix completed...",
+    "Final analysis in progress..."
     ];
 
     const [messageIndex, setMessageIndex] = useState<number>(0);
@@ -31,7 +30,7 @@ const LoadingIndicator: React.FC = () => {
                 // After fade-out completes, update the message and fade-in
                 setMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
                 setFade(true); // Trigger fade-in
-            }, 500); // Match the duration of the fade-out
+            }, 200); // Match the duration of the fade-out
         };
 
         // Set an interval to change the message every 5 seconds
