@@ -209,7 +209,7 @@ body {
     transform: translateX(-50%);
     width: 2px;
     height: 40px;
-    background: linear-gradient(to bottom, #2C3E50, transparent);
+    background: linear-gradient(to bottom, #F0F4F8, transparent);
 }
 
 
@@ -641,7 +641,7 @@ strong {
     transform: translateX(-50%);
     width: 2px;
     height: 40px;
-    background: linear-gradient(to bottom, #2C3E50, transparent);
+    background: linear-gradient(to bottom, #F0F4F8, transparent);
     opacity: 0; /* Initially hidden */
     transition: opacity 0.8s ease-in-out; /* Smooth opacity transition */
 }
