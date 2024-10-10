@@ -81,7 +81,7 @@ const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
                             <img src={headerImage} alt="Header"/>
                         </span>
                     </div>
-                    <p id="text08" className="disclaimer">
+                    <p id="text08" className="disclaimer" style={{fontSize: '12px', color: '#666', marginTop: '20px'}}>
     <strong>A Non-Profit Organization.</strong><br/>
     <em>Disclaimer:</em> Psych.AI's services, including AI-powered tools and analyses, are for informational purposes only and not a substitute for professional medical advice, diagnosis, or treatment. We are not licensed mental health professionals. Our AI systems have limitations and may not fully account for individual complexities. By using our services, you acknowledge these limitations and agree not to rely solely on this information for mental health decisions. If you're experiencing serious mental health concerns, please seek help from qualified professionals. In emergencies, contact local emergency services or a mental health crisis hotline immediately.
 </p>
