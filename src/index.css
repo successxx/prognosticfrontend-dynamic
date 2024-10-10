@@ -548,7 +548,7 @@ h1 span.p, h2 span.p, h3 span.p, p span.p {
 
 body {
     font-family: 'Montserrat', sans-serif;
-    background-image: linear-gradient(to bottom right, #2C3E50, #E6EBF0);
+    background-image: linear-gradient(to bottom right, #F0F4F8, #E6EBF0);
     margin: 0;
     padding: 40px 0;
     box-sizing: border-box;
