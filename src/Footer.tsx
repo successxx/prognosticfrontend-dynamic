@@ -85,7 +85,7 @@ const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
     <strong>A Non-Profit Organization.</strong><br/>
     <em>Disclaimer:</em> Psych.AI's services, including AI-powered tools and analyses, are for informational purposes only and not a substitute for professional medical advice, diagnosis, or treatment. We are not licensed mental health professionals. Our AI systems have limitations and may not fully account for individual complexities. By using our services, you acknowledge these limitations and agree not to rely solely on this information for mental health decisions. If you're experiencing serious mental health concerns, please seek help from qualified professionals. In emergencies, contact local emergency services or a mental health crisis hotline immediately.
 </p>
-<p id="text07" className="style1">© 2024 Psych.ai</p>
+<p id="text07" className="style1">© 2024 Psych.AI</p>
             </div>
         </div>
     );
