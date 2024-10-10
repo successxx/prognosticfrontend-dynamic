@@ -51,7 +51,7 @@ const LoadingIndicator: React.FC = () => {
     return (
         <div className={styles['prognostic-ai-demo-results-container']}>
             <div className={styles['pai-dr-header']}>
-                Quantum Analysis In Process
+                Psychological Assessment In Process
             </div>
             <div className={styles['pai-dr-content']}>
                 <div className={styles['pai-dr-spinner']}></div>
