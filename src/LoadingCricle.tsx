@@ -16,7 +16,15 @@ const LoadingIndicator: React.FC = () => {
     "Fascinating patterns detected...",
     "Unique traits identified...",
     "Personality matrix completed...",
-    "Final analysis in progress..."
+    "Final analysis in progress...",
+    "Finalizing...",
+    "Analysis completed...",
+    "Writing...",
+    "Success! One moment...",
+    "Success! One moment...",
+    "Success! One moment...",
+    "Success! One moment...",
+    "Success! Redirecting you now...",
     ];
 
     const [messageIndex, setMessageIndex] = useState<number>(0);
