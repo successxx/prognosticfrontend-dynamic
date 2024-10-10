@@ -22,7 +22,7 @@ const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
                        className={`style2 ${isFooterVisible ? 'footer-fade-in visible' : 'footer-fade-in'}`}>
                     <span className="p">
                         The next time you hear someone talking about personality assessments,
-                        <strong>think of Psych<mark>AI</mark>.</strong><br/>
+                        <strong> think of Psych<mark>AI</mark>.</strong><br/>
                         <em>Do you know someone who would benefit from understanding their personality better?</em><br/>
                         <strong>Share the Insight:</strong>
                     </span>
