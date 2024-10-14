@@ -39,7 +39,7 @@ const App: React.FC = () => {
 
         pollingIntervalId.current = window.setInterval(() => {
             fetchContent();
-        }, 3000);
+        }, 5000);
     };
 
     const stopPolling = () => {
