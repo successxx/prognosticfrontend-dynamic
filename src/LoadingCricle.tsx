@@ -4,21 +4,21 @@ import styles from './LoadingCircle.module.css';
 const LoadingIndicator: React.FC = () => {
     const loadingMessages = [
         "Thinking...",
-        "Analyzing the essence of your website...",
-        "Finding your digital presence...",
-        "Thinking...",
-        "Identifying your ideal target audience...",
-        "Noting your opportunities and setbacks...",
-        "Running A/B tests to discover your best path...",
-        "Refining results for immediate impact...",
-        "Running new A/B tests based on synthesized results...",
-        "Crafting your blueprint for maximum success...",
-        "Refining...",
-        "Success! Stand by...",
-        "Success! Stand by...",
-        "Success! Stand by...",
-        "Success! Stand by...",
-        "Success! Stand by..."
+"Analyzing the core elements...",
+"Discovering patterns and connections...",
+"Processing data points...",
+"Identifying key relationships...",
+"Mapping challenges and opportunities...",
+"Testing multiple hypotheses...",
+"Refining initial findings...",
+"Running secondary analysis...",
+"Crafting comprehensive insights...",
+"Synthesizing results...",
+"Success! Processing...",
+"Success! Finalizing...",
+"Success! Integrating...",
+"Success! Validating...",
+"Success! Completing..."
     ];
 
     const [messageIndex, setMessageIndex] = useState<number>(0);
