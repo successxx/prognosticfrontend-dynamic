@@ -8,6 +8,7 @@
  * - Mouse-based "exit intent" overlay with AI-generated message from backend
  *   (shows once if user moves cursor above top 10% of screen).
  */
+
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './WebinarView.module.css';
 
@@ -15,6 +16,9 @@ const WebinarView: React.FC = () => {
   // Refs for <video> and <audio> elements
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  // iPhone message tone
+  const messageToneRef = useRef<HTMLAudioElement>(null);
 
   // Track if user has unmuted
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -26,12 +30,12 @@ const WebinarView: React.FC = () => {
   const [liveMinutes, setLiveMinutes] = useState(0);
   const startTimeRef = useRef<number | null>(null);
 
-  // AI-generated exit message (from your backend / make.com)
+  // AI-generated exit message (from your backend / Make.com)
   const [exitMessage, setExitMessage] = useState('');
   const defaultExitMessage = "Wait! Are you sure you want to leave?";
   // Whether the exit overlay is currently visible
   const [showExitOverlay, setShowExitOverlay] = useState(false);
-  // Whether we have already shown the overlay (so we don't show it again)
+  // Whether we have already shown the overlay once
   const [hasShownOverlay, setHasShownOverlay] = useState(false);
 
   // 1) On mount, fetch user’s data + start 2s timer
@@ -129,9 +133,15 @@ const WebinarView: React.FC = () => {
       // If user's Y coord is above top 10%, show overlay
       const threshold = window.innerHeight * 0.1;
       if (e.clientY < threshold) {
-        // show overlay
         setShowExitOverlay(true);
         setHasShownOverlay(true);
+
+        // Play the iMessage tone (only if user has already interacted with the page for audio)
+        if (messageToneRef.current) {
+          messageToneRef.current.play().catch(err =>
+            console.warn('iMessage tone autoplay blocked:', err)
+          );
+        }
       }
     }
     window.addEventListener('mousemove', handleMouseMove);
@@ -155,21 +165,33 @@ const WebinarView: React.FC = () => {
   // 6) Render the actual webinar
   return (
     <div className={styles.container}>
+      {/* iPhone text message tone (hidden) */}
+      <audio
+        ref={messageToneRef}
+        src="https://cdn.freesound.org/previews/613/613258_5674468-lq.mp3"
+        style={{ display: 'none' }}
+      />
+
       {/* Show the exit overlay if needed */}
       {showExitOverlay && (
         <div className={styles.exitOverlay}>
-          <div className={styles.exitOverlayBox}>
+          {/* iPhone bubble container */}
+          <div className={styles.iphoneMessageBubble}>
+            <div className={styles.iphoneSender}>Selina</div>
+            <div className={styles.iphoneMessageText}>
+              {exitMessage && exitMessage.trim().length > 0
+                ? exitMessage
+                : defaultExitMessage}
+            </div>
+
+            {/* If you still want the "X" close button, uncomment:
             <button
               className={styles.exitCloseBtn}
               onClick={() => setShowExitOverlay(false)}
             >
               ×
             </button>
-            <p>
-              {exitMessage && exitMessage.trim().length > 0
-                ? exitMessage
-                : defaultExitMessage}
-            </p>
+            */}
           </div>
         </div>
       )}
