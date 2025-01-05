@@ -385,14 +385,6 @@ const WaitingRoom: React.FC = () => {
               <p className={styles.loadingText}>
                 We are preparing the webinar... grab a notepad and pen while you wait!
               </p>
-              <a
-                href="https://prognostic.ai"
-                className={styles.loadingLogo}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Powered by PrognosticAI
-              </a>
             </div>
           </div>
 
