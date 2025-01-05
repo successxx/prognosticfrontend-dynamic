@@ -1,0 +1,65 @@
+.prognostic-ai-demo-results-container {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #F0F4F8;
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.pai-dr-header {
+    background-color: #0142AC;
+    color: white;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
+}
+
+.pai-dr-content {
+    background-color: white;
+    padding: 30px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 15px 15px;
+}
+
+.pai-dr-spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #0142AC;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: pai-dr-spin 1s linear infinite;
+    margin-bottom: 30px;
+}
+
+@keyframes pai-dr-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.pai-dr-message {
+    font-size: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.countdown {
+    font-size: 48px;
+    font-weight: 700;
+    color: #0142AC;
+    margin: 20px 0;
+}
+
+.session-time {
+    font-size: 16px;
+    color: #666;
+    margin-top: 10px;
+}
