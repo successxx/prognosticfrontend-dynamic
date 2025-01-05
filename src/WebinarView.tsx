@@ -7,6 +7,8 @@
  * - "Live for X minutes" label top-right
  * - Mouse-based "exit intent" overlay with AI-generated message from backend
  * - Chatbox logic fully integrated (no inline styles; all in .module.css)
+ * - If user tries to refresh, show "webinar is full" warning
+ * - Exit popup can be closed by X or clicking outside bubble
  */
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -38,7 +40,22 @@ const WebinarView: React.FC = () => {
   // Whether we have already shown the overlay once
   const [hasShownOverlay, setHasShownOverlay] = useState(false);
 
-  // 1) On mount, fetch user’s data + start 2s timer
+  // 1) On mount, fetch user’s data + start 2s timer + beforeunload warning
+  useEffect(() => {
+    // If user tries to refresh, show a "webinar is full" style warning
+    function handleBeforeUnload(e: BeforeUnloadEvent) {
+      e.preventDefault();
+      e.returnValue =
+        "The webinar is currently full. If you reload, you might lose your spot. Are you sure you want to refresh?";
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
+  // 2) Another effect to load user data
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get('user_email');
@@ -92,7 +109,7 @@ const WebinarView: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // 2) "Live for X minutes" timer
+  // 3) "Live for X minutes" timer
   useEffect(() => {
     if (!connecting && startTimeRef.current) {
       const intervalId = setInterval(() => {
@@ -103,7 +120,7 @@ const WebinarView: React.FC = () => {
     }
   }, [connecting]);
 
-  // 3) Play personalized audio at 3s
+  // 4) Play personalized audio at 3s
   useEffect(() => {
     const videoEl = videoRef.current;
     const audioEl = audioRef.current;
@@ -122,7 +139,7 @@ const WebinarView: React.FC = () => {
     return () => videoEl.removeEventListener('timeupdate', handleTimeUpdate);
   }, []);
 
-  // 4) Mouse-based "exit intent" overlay (top 10% of screen)
+  // 5) Mouse-based "exit intent" overlay (top 10% of screen)
   useEffect(() => {
     function handleMouseMove(e: MouseEvent) {
       // If we've already shown it once, do nothing
@@ -147,7 +164,7 @@ const WebinarView: React.FC = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [hasShownOverlay]);
 
-  // 5) If connecting, just show "Connecting you now..."
+  // 6) If connecting, just show "Connecting you now..."
   if (connecting) {
     return (
       <div className={styles.connectingOverlay}>
@@ -158,7 +175,14 @@ const WebinarView: React.FC = () => {
     );
   }
 
-  // 6) Render the actual webinar
+  // 7) Handler for closing the exit overlay if they click outside the bubble
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // If user clicked directly on the overlay (not the bubble), close
+    if (e.target === e.currentTarget) {
+      setShowExitOverlay(false);
+    }
+  };
+
   return (
     <div className={styles.container}>
       {/* iPhone text message tone (hidden) */}
@@ -170,8 +194,16 @@ const WebinarView: React.FC = () => {
 
       {/* Show the exit overlay if needed */}
       {showExitOverlay && (
-        <div className={styles.exitOverlay}>
+        <div className={styles.exitOverlay} onClick={handleOverlayClick}>
           <div className={styles.iphoneMessageBubble}>
+            {/* X button to close */}
+            <button
+              className={styles.exitCloseBtn}
+              onClick={() => setShowExitOverlay(false)}
+            >
+              ×
+            </button>
+
             <div className={styles.iphoneSender}>Selina</div>
             <div className={styles.iphoneMessageText}>
               {exitMessage && exitMessage.trim().length > 0
@@ -196,7 +228,7 @@ const WebinarView: React.FC = () => {
         </div>
       </div>
 
-      {/* 70%/30% layout */}
+      {/* 70%/30% layout: video left, chat right */}
       <div className={styles.twoColumnLayout}>
         {/* Video column */}
         <div className={styles.videoColumn}>
@@ -327,7 +359,7 @@ const WebinarChatBox: React.FC = () => {
     const countdownEl = countdownRef.current;
     const investBtn = investButtonRef.current;
 
-    // If we’re missing any crucial element, just bail out
+    // If we’re missing any crucial element, just bail
     if (!chatEl || !inputEl || !typingEl || !toggleEl || !specialOfferEl || !countdownEl || !investBtn) {
       console.error("WebinarChatBox: Missing required refs.");
       return;
@@ -373,7 +405,6 @@ const WebinarChatBox: React.FC = () => {
       if (type === 'user' && userName !== 'You') {
         messageDiv.setAttribute('data-participant', 'true');
         messageDiv.setAttribute('data-auto-generated', 'true');
-        // Use toggleEl!.checked
         if (!toggleEl!.checked) {
           messageDiv.style.display = 'none';
         }
