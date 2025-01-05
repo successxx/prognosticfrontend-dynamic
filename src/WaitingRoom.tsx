@@ -364,11 +364,6 @@ const WaitingRoom: React.FC = () => {
         <span className={styles.awhp2024TimerText}>
           {countdownText}
         </span>
-        {showBadge && (
-          <span className={styles.liveSoonBadge}>
-            LIVE SOON
-          </span>
-        )}
         <div className={styles.motivationalTagline}>
           “Get ready to transform your marketing strategy!”
         </div>
@@ -447,9 +442,14 @@ const WaitingRoom: React.FC = () => {
         </div>
       </div>
 
-      {/* FOOTER BRANDING */}
-      <div className={styles.customFooter}>© 2024 PrognosticAI</div>
-    </div>
+{showBadge && (
+  <span className={styles.liveSoonBadge}>
+    LIVE SOON
+  </span>
+)}
+
+{/* FOOTER BRANDING */}
+<div className={styles.customFooter}>© 2024 PrognosticAI</div>
   );
 };
 
