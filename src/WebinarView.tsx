@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styles from './TypedContent.module.css'; // Reuse existing styles
+import styles from './WebinarView.module.css';
 
 const WebinarView: React.FC = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
