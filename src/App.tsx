@@ -1,8 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Header from './Header';
-import TypedContent from './TypedContent';
+import WebinarView from './WebinarView';
 import StreakCounter from './StreakCounter';
-import PrognosticButton from './PrognosticButton';
 import Fireworks from './Fireworks';
 import './index.css';
 import LoadingCircle from './LoadingCricle.tsx';
@@ -177,10 +176,7 @@ const App: React.FC = () => {
                                                             {error ? (
                                                                 <p className="content-box text-center">{error}</p>
                                                             ) : (
-                                                                <TypedContent
-                                                                    content={content}
-                                                                    booking_button_name={booking_button_name || 'Book Your Free Demo Now!'}
-                                                                    booking_button_redirection={booking_button_redirection || 'https://prognostic.ai/#demo'}
+                                                                <WebinarView
                                                                 />
 
                                                             )}
