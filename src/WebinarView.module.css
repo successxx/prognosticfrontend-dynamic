@@ -9,16 +9,15 @@
   border: 2px solid #dcdcdc;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  padding: 24px; /* bigger padding for Jony Ive minimalism */
-  max-width: 1400px; /* slightly larger max width */
-  margin: 2rem auto; /* more top/bottom whitespace */
+  padding: 24px; 
+  max-width: 1400px; 
+  margin: 2rem auto; 
   display: flex;
   flex-direction: column;
   gap: 16px;
-  font-family: 'Montserrat', sans-serif; /* ensure Montserrat throughout */
+  font-family: 'Montserrat', sans-serif; 
 }
 
-/* Footer text at the bottom of .zoomContainer */
 .zoomFooter {
   text-align: center;
   font-size: 0.75rem;
@@ -27,7 +26,7 @@
   font-family: 'Montserrat', sans-serif;
 }
 
-/* A top bar for the Title + "live for X minutes" */
+/* A top bar for Title + "live for X minutes" */
 .zoomTopBar {
   display: flex;
   justify-content: space-between;
@@ -44,7 +43,7 @@
   gap: 8px;
 }
 
-/* The blinking red dot for "LIVE" */
+/* Blinking red dot for "LIVE" */
 .zoomLiveDot {
   width: 8px;
   height: 8px;
@@ -119,24 +118,21 @@
    =========================== */
 .twoColumnLayout {
   display: flex;
-  flex-wrap: wrap;
-  gap: 24px; /* bigger gap for Jony Ive minimalism */
+  flex-wrap: wrap; 
+  gap: 24px; 
 }
-
-/* We let the video + chat columns adapt. 
-   On large screens: 70%/30%. On smaller, stack. */
 .videoColumn {
-  flex: 1 1 700px; /* at least 700px if possible */
+  flex: 1 1 700px; 
   min-width: 300px;
   display: flex;
   flex-direction: column;
 }
 .chatColumn {
-  flex: 0 0 380px; /* chat tries to be 380px wide */
+  flex: 0 0 380px;
   max-width: 500px;
   display: flex;
   flex-direction: column;
-  margin-right: 16px; /* extra space from the container's right edge */
+  margin-right: 16px; 
 }
 
 /* The video wrapper: fill area, keep background black, bigger like Zoom */
@@ -146,7 +142,7 @@
   border-radius: 6px;
   overflow: hidden;
   flex: 1;
-  min-height: 400px; /* ensure decent height */
+  min-height: 400px; 
 }
 
 /* ===========================
@@ -163,7 +159,7 @@
   color: white;
   cursor: pointer;
   z-index: 4;
-  padding: 0 20px; /* so text doesn't slam edges */
+  padding: 0 20px;
 }
 .soundIcon {
   font-size: 2rem;
@@ -179,7 +175,7 @@
 
 /* ===========================
    5) The "exit intent" overlay
-   iMessage bubble smaller
+   iMessage bubble narrower
    =========================== */
 .exitOverlay {
   position: fixed;
@@ -199,10 +195,9 @@
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
-/* narrower iMessage bubble, like an iPhone's ~ 280px wide */
 .iphoneMessageBubble {
   position: relative;
-  max-width: 280px; /* smaller like iPhone message */
+  max-width: 280px; 
   background: #0a84ff;
   color: #fff;
   border-radius: 18px;
@@ -273,7 +268,7 @@
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   flex: 1;
-  margin-right: 16px; /* extra space from container’s right side */
+  margin-right: 16px; 
 }
 
 .chatHeader {
@@ -441,7 +436,7 @@
   font-size: 0.9rem;
   transition: all 0.3s ease;
   color: #2c3135;
-  box-sizing: border-box; /* ensure it lines up properly */
+  box-sizing: border-box; 
 }
 .chatInput input:focus {
   outline: none;
