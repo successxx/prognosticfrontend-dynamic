@@ -16,21 +16,22 @@ const LoadingIndicator: React.FC = () => {
             return next;
         };
 
-        // Set initial next session time
+        // Set initial time
         setNextSessionTime(calculateNextSession());
 
-        // Update countdown every second
+        // Update countdown
         const timer = setInterval(() => {
             const now = new Date();
             const diff = nextSessionTime.getTime() - now.getTime();
 
             if (diff <= 0) {
-                // Time to redirect to webinar
-                window.location.href = `/webinar.html${window.location.search}`;
+                // Get email from current URL
+                const currentEmail = new URLSearchParams(window.location.search).get('user_email');
+                // Redirect to webinar with email parameter
+                window.location.href = `/webinar.html?user_email=${encodeURIComponent(currentEmail || '')}`;
                 return;
             }
 
-            // Format remaining time
             const minutes = Math.floor(diff / 60000);
             const seconds = Math.floor((diff % 60000) / 1000);
             setTimeLeft(`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`);
@@ -47,11 +48,8 @@ const LoadingIndicator: React.FC = () => {
             <div className={styles['pai-dr-content']}>
                 <div className={styles['pai-dr-spinner']}></div>
                 <div className={styles['pai-dr-message']}>
-                    Next session starts in:
+                    Next session begins in:
                     <div className={styles['countdown']}>{timeLeft}</div>
-                    <div className={styles['session-time']}>
-                        Session starts at {nextSessionTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </div>
                 </div>
             </div>
         </div>
