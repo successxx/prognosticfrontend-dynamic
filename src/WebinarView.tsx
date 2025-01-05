@@ -1,107 +1,174 @@
 /**
  * WebinarView.tsx
- * 
- * This file implements the "fake live" webinar video player with
- * personalized audio injection at a specified timestamp.
+ *
+ * A React component that:
+ *  - Shows "Connecting you now..." overlay for 2 seconds
+ *  - Plays the main webinar video (fake live)
+ *  - Fetches personalized audio from your backend and plays it at 3s
+ *  - Displays "Live for X minutes" top-right
+ *  - Shows a custom exit warning overlay using text from your backend
+ *  - Uses a 70%/30% layout for video vs chat
  */
-
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './WebinarView.module.css';
 
 const WebinarView: React.FC = () => {
-  // References to the <video> and <audio> elements
+  // References to <video> and <audio>
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // State controlling if user has clicked to enable sound
+  // State controlling whether user has clicked to unmute
   const [hasInteracted, setHasInteracted] = useState(false);
 
-  // -- Load Personalized Audio on Mount --
+  // Two-second "connecting" overlay
+  const [connecting, setConnecting] = useState(true);
+
+  // "Live for X minutes"
+  const [liveMinutes, setLiveMinutes] = useState(0);
+  const startTimeRef = useRef<number | null>(null);
+
+  // AI-generated exit message from backend
+  const [exitMessage, setExitMessage] = useState<string>('');
+  // Whether to show custom exit warning overlay
+  const [showExitWarning, setShowExitWarning] = useState(false);
+
+  // 1) On mount, fetch user’s audio + exit message and start "connecting" timer
   useEffect(() => {
-    // 1) Grab user_email from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const userEmail = urlParams.get('user_email');
+    // Grab user_email from ?user_email=
+    const params = new URLSearchParams(window.location.search);
+    const userEmail = params.get('user_email');
 
-    // 2) If user email is missing, do nothing
     if (!userEmail) {
-      console.warn('No user_email parameter found.');
-      return;
+      console.warn('No user_email param found.');
+      // We won't block anything, just no personalized audio or exit message
+    } else {
+      // Fetch audio & exit message from backend
+      const fetchAudioAndExitMsg = async () => {
+        try {
+          const response = await fetch(
+            `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_audio?user_email=${encodeURIComponent(
+              userEmail
+            )}`
+          );
+          if (!response.ok) {
+            console.error('Error retrieving personalized data:', response.statusText);
+            return;
+          }
+          const data = await response.json();
+
+          // Fill the audio <source>
+          if (data.audio_link && audioRef.current) {
+            audioRef.current.src = data.audio_link;
+            console.log('Personalized audio link loaded:', data.audio_link);
+          }
+
+          // Fill the AI-generated exit message if provided
+          if (data.exit_message) {
+            setExitMessage(data.exit_message);
+          }
+        } catch (err) {
+          console.error('Error loading personalized data:', err);
+        }
+      };
+      fetchAudioAndExitMsg();
     }
 
-    // 3) Fetch personalized audio link from your backend
-    //    For example: GET https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_audio?user_email=...
-    const fetchAudioLink = async () => {
-      try {
-        const response = await fetch(
-          `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_audio?user_email=${encodeURIComponent(
-            userEmail
-          )}`
-        );
-        if (!response.ok) {
-          console.error('Failed to retrieve personalized audio:', response.statusText);
-          return;
-        }
-        const data = await response.json();
+    // Start the 2s "Connecting" timer
+    const timer = setTimeout(() => {
+      setConnecting(false);
 
-        // data.audio_link should look like: "https://drive.google.com/uc?export=download&id=FILE_ID"
-        if (data.audio_link && audioRef.current) {
-          audioRef.current.src = data.audio_link;
-          console.log('Personalized audio link loaded:', data.audio_link);
-        } else {
-          console.warn('No audio_link found, or audioRef is null');
-        }
-      } catch (error) {
-        console.error('Error loading personalized audio:', error);
+      // Once "connecting" is done, we begin real "live" time
+      startTimeRef.current = Date.now();
+
+      // Attempt to play the video automatically
+      if (videoRef.current) {
+        videoRef.current.play().catch(err => {
+          console.log('Auto-play prevented; user must interact.', err);
+        });
       }
-    };
+    }, 2000);
 
-    fetchAudioLink();
-
-    // 4) Start playing the video automatically if possible
-    if (videoRef.current) {
-      videoRef.current.play().catch(err => {
-        console.log('Auto-play prevented by browser. User interaction required.', err);
-      });
-    }
+    return () => clearTimeout(timer);
   }, []);
 
-  // -- Synchronize Audio Playback at a certain video time --
+  // 2) Synchronize the "Live for X minutes" label
+  useEffect(() => {
+    // Only start counting once connecting is false and we have a start time
+    if (!connecting && startTimeRef.current) {
+      const interval = setInterval(() => {
+        const diff = Date.now() - startTimeRef.current!;
+        setLiveMinutes(Math.floor(diff / 60000));
+      }, 60000);
+      return () => clearInterval(interval);
+    }
+  }, [connecting]);
+
+  // 3) Play the personalized audio at 3s into the video
   useEffect(() => {
     const videoEl = videoRef.current;
     const audioEl = audioRef.current;
+    if (!videoEl || !audioEl) return;
 
-    // We'll check the video time in an 'timeupdate' event
     const handleTimeUpdate = () => {
-      if (!videoEl || !audioEl) return;
-      // e.g., play audio once video time >= 3 seconds
-      // Adjust to 2055 if you want 34:15, etc.
       if (videoEl.currentTime >= 3) {
-        // Attempt to play only once
-        audioEl.play().catch(err => {
-          console.error('Failed to start personalized audio playback:', err);
-        });
-        // Remove the event listener so we don't replay again and again
+        audioEl.play().catch(err =>
+          console.error('Error starting personalized audio playback:', err)
+        );
         videoEl.removeEventListener('timeupdate', handleTimeUpdate);
       }
     };
 
-    // Add event listener
-    if (videoEl) {
-      videoEl.addEventListener('timeupdate', handleTimeUpdate);
-    }
+    videoEl.addEventListener('timeupdate', handleTimeUpdate);
 
-    // Cleanup
     return () => {
-      if (videoEl) {
-        videoEl.removeEventListener('timeupdate', handleTimeUpdate);
-      }
+      videoEl.removeEventListener('timeupdate', handleTimeUpdate);
     };
   }, []);
 
-  // -- Render the "fake live" webinar page --
+  // 4) Show a custom exit warning overlay if user tries to close tab
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // For the system dialog (un-stylable):
+      if (exitMessage) {
+        e.preventDefault();
+        e.returnValue = exitMessage; // some browsers show a generic text
+      }
+      // Show our custom overlay in the background
+      setShowExitWarning(true);
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [exitMessage]);
+
+  // 5) Render
+  // If still "connecting," show the connecting overlay
+  if (connecting) {
+    return (
+      <div className={styles.connectingOverlay}>
+        <div className={styles.connectingBox}>
+          <p className={styles.connectingText}>Connecting you now...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Otherwise, show the real webinar
   return (
     <div className={styles.container}>
-      <div className={styles.videoSection}>
+      {/* If user tries to leave, we show our custom overlay (non-blocking). */}
+      {showExitWarning && exitMessage && (
+        <div className={styles.exitWarningOverlay}>
+          <div className={styles.exitWarningBox}>
+            <p>{exitMessage}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Banner row with the "LIVE" area (left) and "live for X minutes" (right) */}
+      <div className={styles.bannerRow}>
         <div className={styles.banner}>
           <div className={styles.liveIndicator}>
             <div className={styles.liveDot} />
@@ -109,44 +176,62 @@ const WebinarView: React.FC = () => {
           </div>
           PrognosticAI Advanced Training
         </div>
+        <div className={styles.liveMinutes}>
+          Live for {liveMinutes} minute{liveMinutes !== 1 ? 's' : ''}
+        </div>
+      </div>
 
-        {/* The main video element */}
-        <div className={styles.videoWrapper}>
-          <video
-            ref={videoRef}
-            muted={!hasInteracted}
-            playsInline
-            controls={false} // typically you hide controls for "fake live"
-            style={{ width: '100%', height: 'auto' }}
-          >
-            {/* Webinar video source. Adjust if needed. */}
-            <source
-              src="https://paivid.s3.us-east-2.amazonaws.com/homepage222.mp4"
-              type="video/mp4"
-            />
-            {/* fallback text */}
-            Your browser does not support HTML5 video.
-          </video>
-
-          {/* The hidden audio element for personalized playback */}
-          <audio ref={audioRef} style={{ display: 'none' }} />
-
-          {/* If user has not yet clicked to enable sound, show overlay */}
-          {!hasInteracted && (
-            <div
-              className={styles.soundOverlay}
-              onClick={() => {
-                // user clicks => unmute
-                if (videoRef.current) {
-                  videoRef.current.muted = false;
-                }
-                setHasInteracted(true);
-              }}
+      {/* The main 2-column layout: 70% video, 30% chat (placeholder) */}
+      <div className={styles.twoColumnLayout}>
+        {/* Left side => video */}
+        <div className={styles.videoColumn}>
+          <div className={styles.videoWrapper}>
+            <video
+              ref={videoRef}
+              muted={!hasInteracted}
+              playsInline
+              controls={false}
+              style={{ width: '100%', height: 'auto' }}
             >
-              <div className={styles.soundIcon}>🔊</div>
-              <div className={styles.soundText}>Click to Enable Sound</div>
-            </div>
-          )}
+              <source
+                src="https://paivid.s3.us-east-2.amazonaws.com/homepage222.mp4"
+                type="video/mp4"
+              />
+              Your browser does not support HTML5 video.
+            </video>
+
+            {/* The hidden audio element for personalized playback */}
+            <audio ref={audioRef} style={{ display: 'none' }} />
+
+            {/* If user hasn't interacted yet => sound overlay */}
+            {!hasInteracted && (
+              <div
+                className={styles.soundOverlay}
+                onClick={() => {
+                  if (videoRef.current) {
+                    videoRef.current.muted = false;
+                  }
+                  setHasInteracted(true);
+                }}
+              >
+                <div className={styles.soundIcon}>🔊</div>
+                <div className={styles.soundText}>Click to Enable Sound</div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right side => chat placeholder (30%) */}
+        <div className={styles.chatColumn}>
+          {/* 
+            We'll eventually place your chat here in a separate step.
+            For now, just a placeholder div to hold the space.
+          */}
+          <div className={styles.chatPlaceholder}>
+            <p style={{ textAlign: 'center', color: '#555' }}>
+              [Chat Box Coming Soon!]
+            </p>
+          </div>
         </div>
       </div>
     </div>
