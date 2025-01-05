@@ -72,6 +72,7 @@
   border-radius: 5px;
   text-decoration: none;
 }
+
 .loadingLogo:hover {
   background-color: #022c78;
   transition: background-color 0.3s;
@@ -91,15 +92,20 @@
   font-size: 18px;
   color: #2E2E2E;
   margin-top: 20px;
-  text-align: center;
   font-weight: 500;
+  /* CHANGED from center to left: */
+  text-align: left;
+  margin-left: 20px; /* so it’s clearly left-aligned */
 }
+
 .bulletsList {
   font-family: 'Montserrat', sans-serif;
   list-style-type: disc;
   color: #2E2E2E;
-  padding-left: 1.5rem;
+  padding-left: 2rem; /* for visible left indentation */
   margin-top: 10px;
+  /* ensure left alignment: */
+  text-align: left;
 }
 
 /* ========================= */
@@ -109,11 +115,13 @@
   background: #fff;
   display: flex;
   flex-direction: column;
-  height: 750px;
+  /* CHANGED from 750px to 375px */
+  height: 375px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
+
 .chatHeader {
   padding: 12px 15px;
   background: #0142AC;
@@ -122,16 +130,19 @@
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
 }
+
 .headerTop {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .chatTitle {
   font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: -0.02em;
 }
+
 .toggleContainer {
   display: flex;
   align-items: center;
@@ -140,17 +151,20 @@
   padding-left: 15px;
   padding-right: 15px;
 }
+
 .toggleSwitch {
   position: relative;
   display: inline-block;
   width: 40px;
   height: 20px;
 }
+
 .toggleSwitch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
+
 .toggleSlider {
   position: absolute;
   cursor: pointer;
@@ -159,6 +173,7 @@
   transition: .4s;
   border-radius: 20px;
 }
+
 .toggleSlider:before {
   position: absolute;
   content: "";
@@ -170,16 +185,20 @@
   transition: .4s;
   border-radius: 50%;
 }
+
 .toggleSwitch input:checked + .toggleSlider {
   background-color: #4CAF50;
 }
+
 .toggleSwitch input:checked + .toggleSlider:before {
   transform: translateX(20px);
 }
+
 .toggleLabel {
   color: white;
   font-size: 0.45rem;
 }
+
 .viewerCount {
   font-size: 0.55rem;
   background: rgba(255,255,255,0.1);
@@ -189,6 +208,7 @@
   align-items: center;
   gap: 5px;
 }
+
 .chatMessages {
   flex: 1 1 auto;
   overflow-y: auto;
@@ -196,6 +216,7 @@
   background: #f8f9fa;
   min-height: 0;
 }
+
 .message {
   margin-bottom: 10px;
   line-height: 1.4;
@@ -206,16 +227,19 @@
   max-width: 90%;
   text-align: left;
 }
+
 .message.user {
   background: #f0f2f5;
   margin-left: auto;
   color: #2c3135;
 }
+
 .message.host {
   background: #e7f0ff;
   color: #0142AC;
   font-weight: 500;
 }
+
 .message.system {
   background: #fff3cd;
   color: #856404;
@@ -224,16 +248,19 @@
   margin: 15px 0;
   font-size: 0.85rem;
 }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
 .chatInput {
   padding: 15px;
   background: #fff;
   border-top: 1px solid #eee;
   flex: 0 0 auto;
 }
+
 .chatInput input {
   width: 100%;
   padding: 12px;
@@ -243,11 +270,13 @@
   transition: all 0.3s ease;
   color: #2c3135;
 }
+
 .chatInput input:focus {
   outline: none;
   border-color: #0142AC;
   box-shadow: 0 0 0 2px rgba(1, 66, 172, 0.1);
 }
+
 .typingIndicator {
   color: #6c757d;
   font-size: 0.85rem;
@@ -256,17 +285,21 @@
   height: 20px;
   padding-left: 2px;
 }
+
 .chatMessages::-webkit-scrollbar {
   width: 8px;
 }
+
 .chatMessages::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 4px;
 }
+
 .chatMessages::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 4px;
 }
+
 .chatMessages::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
@@ -280,10 +313,12 @@
   margin: 20px;
   justify-content: center;
 }
+
 .waitingroomLeft {
   flex: 1 1 350px;
   min-width: 300px;
 }
+
 .waitingroomRight {
   flex: 1 1 400px;
   min-width: 300px;
