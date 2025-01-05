@@ -1,25 +1,93 @@
 /* WebinarView.module.css */
 
-/* Container for the entire webinar module */
+/* 
+  1) Fullscreen "Connecting you now..." overlay 
+     (shown for 2 seconds before the webinar loads)
+*/
+.connectingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0142ac; /* or #000 with some brand color overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.connectingBox {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 40px 60px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+.connectingText {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.5rem;
+  color: #0142ac;
+  font-weight: 700;
+}
+
+/* 
+  2) Custom exit warning overlay 
+     (non-blocking, since real "beforeunload" dialogs can't be styled)
+*/
+.exitWarningOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998; /* behind the connecting overlay if both ever happened */
+}
+.exitWarningBox {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px 40px;
+  max-width: 500px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+  font-family: 'Montserrat', sans-serif;
+  color: #333;
+}
+
+/* Container for the entire component */
 .container {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  /* add if you want spacing or background: */
-}
-
-/* The outermost video section wrapper */
-.videoSection {
-  background: #000;
   position: relative;
-  height: 750px; /* You can adjust if you want more or less height */
-  display: flex;
-  flex-direction: column;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-/* The top banner */
+/* The top row: 
+   left = banner, right = "Live for X minutes" 
+*/
+.bannerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* The "live for X minutes" text in top-right corner */
+.liveMinutes {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  color: white;
+  background: #0142ac;
+  padding: 6px 12px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* The left banner area with "LIVE" text */
 .banner {
   padding: 12px 15px;
   background: #0142ac;
@@ -27,30 +95,17 @@
   font-weight: 600;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   font-size: 0.95rem;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Wrapper containing the actual video */
-.videoWrapper {
-  position: relative;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #000;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-  overflow: hidden;
-}
-
-/* "LIVE" indicator dot + text */
+/* The "live" indicator dot */
 .liveIndicator {
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-right: 12px; /* small spacing before the main banner text */
 }
 .liveDot {
   width: 8px;
@@ -59,8 +114,47 @@
   border-radius: 50%;
   animation: pulse 1.5s infinite;
 }
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
 
-/* The click-to-enable-sound overlay */
+/* 
+  3) Two-column layout: 
+     left = 70% video, right = 30% chat
+*/
+.twoColumnLayout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.videoColumn {
+  flex: 0 0 70%;
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+}
+.chatColumn {
+  flex: 0 0 30%;
+  max-width: 30%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Where the main <video> is located */
+.videoWrapper {
+  position: relative;
+  background: #000;
+  flex: 1;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* 
+  4) The click-to-enable-sound overlay 
+     (unchanged from your previous code, just keep styling)
+*/
 .soundOverlay {
   position: absolute;
   top: 0;
@@ -87,16 +181,27 @@
   opacity: 0.9;
 }
 
-/* Simple pulse animation for the live dot */
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+/* Placeholder for the chat column 
+   (You’ll replace with real chat code later)
+*/
+.chatPlaceholder {
+  flex: 1;
+  background: #f0f2f5;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  padding: 20px;
 }
 
-/* Optional responsive adjustments */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-  .videoSection {
+  .twoColumnLayout {
+    flex-direction: column;
+  }
+  .videoColumn, .chatColumn {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  .videoWrapper {
     height: auto; /* Let the video size itself on smaller screens */
   }
 }
