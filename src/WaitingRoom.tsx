@@ -442,14 +442,15 @@ const WaitingRoom: React.FC = () => {
         </div>
       </div>
 
-{showBadge && (
-  <span className={styles.liveSoonBadge}>
-    LIVE SOON
-  </span>
-)}
+      {showBadge && (
+        <span className={styles.liveSoonBadge}>
+          LIVE SOON
+        </span>
+      )}
 
-{/* FOOTER BRANDING */}
-<div className={styles.customFooter}>© 2024 PrognosticAI</div>
+      {/* FOOTER BRANDING */}
+      <div className={styles.customFooter}>© 2024 PrognosticAI</div>
+    </div>
   );
 };
 
