@@ -2,55 +2,56 @@ import React, { useEffect, useState } from 'react';
 import styles from './LoadingCircle.module.css';
 
 const LoadingIndicator: React.FC = () => {
-    const loadingMessages = [
-        "Thinking...",
-"Analyzing the core elements...",
-"Discovering patterns and connections...",
-"Processing data points...",
-"Identifying key relationships...",
-"Mapping challenges and opportunities...",
-"Testing multiple hypotheses...",
-"Refining initial findings...",
-"Running secondary analysis...",
-"Crafting comprehensive insights...",
-"Synthesizing results...",
-"Success! Processing...",
-"Success! Finalizing...",
-"Success! Integrating...",
-"Success! Validating...",
-"Success! Completing..."
-    ];
-
-    const [messageIndex, setMessageIndex] = useState<number>(0);
-    const [fade, setFade] = useState<boolean>(true); // True for fade-in, false for fade-out
+    const [timeLeft, setTimeLeft] = useState<string>('');
+    const [nextSessionTime, setNextSessionTime] = useState<Date>(new Date());
 
     useEffect(() => {
-        const updateMessage = () => {
-            setFade(false); // Start fade-out
-
-            setTimeout(() => {
-                // After fade-out completes, update the message and fade-in
-                setMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
-                setFade(true); // Trigger fade-in
-            }, 500); // Match the duration of the fade-out
+        // Calculate next 15-minute increment
+        const calculateNextSession = () => {
+            const now = new Date();
+            const minutes = now.getMinutes();
+            const nextQuarter = Math.ceil(minutes / 15) * 15;
+            const next = new Date(now);
+            next.setMinutes(nextQuarter, 0, 0);
+            return next;
         };
 
-        // Set an interval to change the message every 5 seconds
-        const intervalId = setInterval(updateMessage, 5000);
+        // Set initial next session time
+        setNextSessionTime(calculateNextSession());
 
-        // Clean up on unmount
-        return () => clearInterval(intervalId);
-    }, [loadingMessages.length]);
+        // Update countdown every second
+        const timer = setInterval(() => {
+            const now = new Date();
+            const diff = nextSessionTime.getTime() - now.getTime();
+
+            if (diff <= 0) {
+                // Time to redirect to webinar
+                window.location.href = `/webinar.html${window.location.search}`;
+                return;
+            }
+
+            // Format remaining time
+            const minutes = Math.floor(diff / 60000);
+            const seconds = Math.floor((diff % 60000) / 1000);
+            setTimeLeft(`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`);
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [nextSessionTime]);
 
     return (
         <div className={styles['prognostic-ai-demo-results-container']}>
             <div className={styles['pai-dr-header']}>
-                Quantum Analysis In Process
+                Your Webinar Starts Soon
             </div>
             <div className={styles['pai-dr-content']}>
                 <div className={styles['pai-dr-spinner']}></div>
-                <div className={`${styles['pai-dr-message']} ${fade ? styles['fade-in'] : styles['fade-out']}`}>
-                    {loadingMessages[messageIndex]}
+                <div className={styles['pai-dr-message']}>
+                    Next session starts in:
+                    <div className={styles['countdown']}>{timeLeft}</div>
+                    <div className={styles['session-time']}>
+                        Session starts at {nextSessionTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </div>
                 </div>
             </div>
         </div>
