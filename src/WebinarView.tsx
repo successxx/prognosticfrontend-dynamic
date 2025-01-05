@@ -1,13 +1,13 @@
 /**
  * WebinarView.tsx
  *
- * - A "zoomContainer" with a top bar
- * - Larger video on the left (70%) + chat (30%) on the right
- * - "Connecting..." overlay with a PrognosticAI-blue spinner
- * - Exit-intent popup does not appear until after connecting
- * - Smaller "Live for X minutes" text
- * - beforeunload warning if user tries to refresh
- * - Clicking the "Click to enable sound" overlay sets unmute and calls .play() 
+ * - A bigger "zoomContainer" with more whitespace, fully responsive
+ * - Jony Ive minimal design, side-by-side layout
+ * - iMessage popup narrower (~280px)
+ * - Chat input aligned perfectly
+ * - Enough right padding so chat isn't flush with container edge
+ * - Autoplay fix: on click, explicitly call .play() + unmute
+ * - Subtle "© YEAR PrognosticAI" at bottom, auto year
  */
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -34,9 +34,9 @@ const WebinarView: React.FC = () => {
   // AI-generated exit message
   const [exitMessage, setExitMessage] = useState('');
   const defaultExitMessage = "Wait! Are you sure you want to leave?";
-  // Whether the exit overlay is currently visible
+  // Whether the exit overlay is visible
   const [showExitOverlay, setShowExitOverlay] = useState(false);
-  // Whether we have already shown the overlay once
+  // Whether we have shown it once
   const [hasShownOverlay, setHasShownOverlay] = useState(false);
 
   // 1) Warn user if they try to refresh
@@ -44,7 +44,7 @@ const WebinarView: React.FC = () => {
     function handleBeforeUnload(e: BeforeUnloadEvent) {
       e.preventDefault();
       e.returnValue =
-        "The webinar is currently full. If you reload, you might lose your spot. Are you sure you want to refresh?";
+        "The webinar is currently full. If you reload, you might lose your spot. Are you sure?";
     }
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => {
@@ -58,7 +58,7 @@ const WebinarView: React.FC = () => {
     const userEmail = params.get('user_email');
 
     if (userEmail) {
-      // Fetch audio_link + exit_message from your backend
+      // Fetch audio_link + exit_message
       const fetchData = async () => {
         try {
           const response = await fetch(
@@ -72,7 +72,7 @@ const WebinarView: React.FC = () => {
           }
           const data = await response.json();
 
-          // Personalized audio link
+          // Personalized audio
           if (data.audio_link && audioRef.current) {
             audioRef.current.src = data.audio_link;
           }
@@ -98,7 +98,7 @@ const WebinarView: React.FC = () => {
       // Attempt auto-play
       if (videoRef.current) {
         videoRef.current.play().catch(err => {
-          console.log('Auto-play prevented; user must click overlay', err);
+          console.log('Auto-play prevented. Must click overlay.', err);
         });
       }
     }, 2000);
@@ -117,7 +117,7 @@ const WebinarView: React.FC = () => {
     }
   }, [connecting]);
 
-  // 4) Play personalized audio at 3s 
+  // 4) Personalized audio at 3s
   useEffect(() => {
     if (connecting) return;
     const videoEl = videoRef.current;
@@ -128,7 +128,7 @@ const WebinarView: React.FC = () => {
       if (videoEl.currentTime >= 3) {
         audioEl
           .play()
-          .catch(err => console.error('Error starting personalized audio playback:', err));
+          .catch(err => console.error('Error starting personalized audio:', err));
         videoEl.removeEventListener('timeupdate', handleTimeUpdate);
       }
     };
@@ -137,22 +137,18 @@ const WebinarView: React.FC = () => {
     return () => videoEl.removeEventListener('timeupdate', handleTimeUpdate);
   }, [connecting]);
 
-  // 5) Mouse-based "exit intent" overlay (top 10%),
-  //    only after connecting => so it doesn’t appear immediately
+  // 5) Exit-intent overlay after connecting
   useEffect(() => {
     if (connecting) return;
 
     function handleMouseMove(e: MouseEvent) {
-      // If we've already shown it once, do nothing
       if (hasShownOverlay) return;
 
-      // If user's Y coord is above top 10%, show overlay
       const threshold = window.innerHeight * 0.1;
       if (e.clientY < threshold) {
         setShowExitOverlay(true);
         setHasShownOverlay(true);
 
-        // Play the iMessage tone if user has already interacted with the page
         if (messageToneRef.current) {
           messageToneRef.current.play().catch(err =>
             console.warn('iMessage tone autoplay blocked:', err)
@@ -167,25 +163,28 @@ const WebinarView: React.FC = () => {
     };
   }, [connecting, hasShownOverlay]);
 
-  // 6) If connecting => show the spinner overlay
+  // 6) If connecting => show spinner
   if (connecting) {
     return (
       <div className={styles.connectingOverlay}>
         <div className={styles.connectingBox}>
           <div className={styles.connectingSpinner}></div>
-          <p className={styles.connectingText}>Connecting you now...</p>
+          <p className={styles.connectingText}>
+            Connecting you now...
+          </p>
         </div>
       </div>
     );
   }
 
-  // 7) Handler for closing the exit overlay if they click outside the bubble
+  // Handle overlay click (exit-intent)
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       setShowExitOverlay(false);
     }
   };
 
+  // 7) Render
   return (
     <div className={styles.zoomContainer}>
       {/* iPhone text message tone (hidden) */}
@@ -199,7 +198,6 @@ const WebinarView: React.FC = () => {
       {showExitOverlay && (
         <div className={styles.exitOverlay} onClick={handleOverlayClick}>
           <div className={styles.iphoneMessageBubble}>
-            {/* X button to close */}
             <button
               className={styles.exitCloseBtn}
               onClick={() => setShowExitOverlay(false)}
@@ -216,21 +214,21 @@ const WebinarView: React.FC = () => {
         </div>
       )}
 
-      {/* TOP BAR INSIDE THE ZOOM-LIKE CONTAINER */}
+      {/* TOP BAR */}
       <div className={styles.zoomTopBar}>
-        {/* Left: Title with "LIVE" dot */}
+        {/* Title left */}
         <div className={styles.zoomTitle}>
           <div className={styles.zoomLiveDot}></div>
           PrognosticAI Advanced Training
         </div>
 
-        {/* Right: small "Live for X minutes" */}
+        {/* "Live for X minutes" right */}
         <div className={styles.zoomLiveMinutes}>
           Live for {liveMinutes} minute{liveMinutes !== 1 ? 's' : ''}
         </div>
       </div>
 
-      {/* 70%/30% layout: video left, chat right, bigger + more "Zoom" style */}
+      {/* 70%/30% layout */}
       <div className={styles.twoColumnLayout}>
         {/* Video column */}
         <div className={styles.videoColumn}>
@@ -249,20 +247,19 @@ const WebinarView: React.FC = () => {
               Your browser does not support HTML5 video.
             </video>
 
-            {/* Hidden <audio> for personalized track */}
+            {/* Personalized audio hidden */}
             <audio ref={audioRef} style={{ display: 'none' }} />
 
-            {/* Sound Overlay if not yet interacted or autoplay was blocked */}
+            {/* Sound Overlay if user hasn't interacted */}
             {!hasInteracted && (
               <div
                 className={styles.soundOverlay}
                 onClick={() => {
                   if (videoRef.current) {
-                    // Unmute and try to play again
                     videoRef.current.muted = false;
-                    videoRef.current.play().catch(err =>
-                      console.log('User clicked to play, but error:', err)
-                    );
+                    videoRef.current
+                      .play()
+                      .catch(err => console.log('Play error:', err));
                   }
                   setHasInteracted(true);
                 }}
@@ -281,14 +278,16 @@ const WebinarView: React.FC = () => {
           <WebinarChatBox />
         </div>
       </div>
+
+      {/* Subtle footer with dynamic year */}
+      <p className={styles.zoomFooter}>
+        © {new Date().getFullYear()} PrognosticAI
+      </p>
     </div>
   );
 };
 
-/**
- * The entire chatbox logic as a React component, with all CSS classes
- * now mapped to the .module.css (styles.xxx).
- */
+/* Chatbox code unchanged except for existing styles from .module.css */
 const WebinarChatBox: React.FC = () => {
   const chatMessagesRef = useRef<HTMLDivElement | null>(null);
   const messageInputRef = useRef<HTMLInputElement | null>(null);
@@ -298,10 +297,8 @@ const WebinarChatBox: React.FC = () => {
   const countdownRef = useRef<HTMLDivElement | null>(null);
   const investButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  // WebSocket
   const socketRef = useRef<WebSocket | null>(null);
 
-  // Random name sets
   const names = [
     "Emma","Liam","Olivia","Noah","Ava","Ethan","Sophia","Mason",
     "Isabella","William","Mia","James","Charlotte","Benjamin","Amelia",
@@ -356,7 +353,7 @@ const WebinarChatBox: React.FC = () => {
     {time:3300, text:"What makes PrognosticAI different from competitors?",user:"Maria"}
   ];
 
-  let isUserScrolling = false; // track user scroll state
+  let isUserScrolling = false; 
 
   useEffect(() => {
     const chatEl = chatMessagesRef.current;
@@ -372,7 +369,6 @@ const WebinarChatBox: React.FC = () => {
       return;
     }
 
-    // Scroll helper
     function isNearBottom(element: HTMLDivElement) {
       const threshold = 50;
       return (element.scrollHeight - element.clientHeight - element.scrollTop) <= threshold;
@@ -393,6 +389,7 @@ const WebinarChatBox: React.FC = () => {
     ) {
       const messageDiv = document.createElement('div');
       messageDiv.classList.add(styles.message);
+
       if (type === 'user') {
         messageDiv.classList.add('user');
       } else if (type === 'host') {
@@ -403,7 +400,7 @@ const WebinarChatBox: React.FC = () => {
 
       messageDiv.textContent = userName ? `${userName}: ${text}` : text;
 
-      // For participant messages, hide if toggle is off
+      // participant messages hidden if toggle is off
       messageDiv.style.display = 'block';
       if (type === 'user' && userName !== 'You') {
         messageDiv.setAttribute('data-participant', 'true');
@@ -415,7 +412,6 @@ const WebinarChatBox: React.FC = () => {
 
       chatEl.appendChild(messageDiv);
 
-      // auto-scroll if near bottom
       if (!isUserScrolling || userName === 'You') {
         scrollToBottom(chatEl);
       }
@@ -433,7 +429,7 @@ const WebinarChatBox: React.FC = () => {
     }
     toggleEl.addEventListener('change', handleToggleChange);
 
-    // Connect WebSocket
+    // WebSocket
     const newSocket = new WebSocket("wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com");
     socketRef.current = newSocket;
 
@@ -454,7 +450,7 @@ const WebinarChatBox: React.FC = () => {
       console.error("WebSocket error:", error);
     };
 
-    // Schedule random attendee messages
+    // random attendee messages
     function scheduleAttendeeMessages() {
       const numMessages = Math.floor(Math.random() * 6) + 15;
       let delay = 500;
@@ -480,7 +476,6 @@ const WebinarChatBox: React.FC = () => {
     preloadedQuestions.forEach(q => {
       setTimeout(() => {
         addMessage(q.text, 'user', q.user);
-        // Optionally show "Selina is typing..."
         setTimeout(() => {
           typingEl.textContent = "Selina is typing...";
           const randomDelay = Math.random() * 10000 + 10000;
@@ -491,7 +486,7 @@ const WebinarChatBox: React.FC = () => {
       }, q.time * 1000);
     });
 
-    // Investment notifications
+    // random investment notifications
     function showInvestmentNotification() {
       const name = names[Math.floor(Math.random() * names.length)];
       const line = investmentMessages[Math.floor(Math.random() * investmentMessages.length)];
@@ -508,7 +503,7 @@ const WebinarChatBox: React.FC = () => {
       showInvestmentNotification();
     }, Math.random() * 30000 + 30000);
 
-    // Update viewer count every 5s
+    // viewer count
     let currentViewers = 41;
     setInterval(() => {
       const change = Math.random() < 0.5 ? -1 : 1;
@@ -519,19 +514,19 @@ const WebinarChatBox: React.FC = () => {
       }
     }, 5000);
 
-    // Show special offer after 60s
+    // special offer after 60s
     setTimeout(() => {
       specialOfferEl.style.display = "block";
       addMessage(
         "🚨 Special Offer Alert! For the next 10 minutes only, secure your spot in PrognosticAI for just $999. Don't miss out! 🚀",
         "system"
       );
-      let t = 600; // 10 minutes
+      let t = 600;
       const countdownInt = setInterval(() => {
         t--;
         const min = Math.floor(t / 60);
         const sec = t % 60;
-        countdownEl.textContent = `Special Offer Ends In: ${min}:${sec.toString().padStart(2, "0")}`;
+        countdownEl.textContent = `Special Offer Ends In: ${min}:${sec.toString().padStart(2,"0")}`;
         if (t <= 0) {
           clearInterval(countdownInt);
           specialOfferEl.style.display = "none";
@@ -540,12 +535,12 @@ const WebinarChatBox: React.FC = () => {
       }, 1000);
     }, 60000);
 
-    // Invest button
+    // invest button
     investBtn.addEventListener('click', () => {
       window.location.href = "https://yes.prognostic.ai";
     });
 
-    // If user sends a real message
+    // handle user messages
     async function handleUserMessage(msg: string) {
       try {
         const randomDelay = Math.random() * 4000;
@@ -576,7 +571,7 @@ const WebinarChatBox: React.FC = () => {
       }
     }
 
-    // When user presses Enter in chat
+    // input Enter => send message
     function handleKeypress(e: KeyboardEvent) {
       if (e.key === "Enter" && inputEl.value.trim()) {
         const userMsg = inputEl.value.trim();
@@ -587,7 +582,6 @@ const WebinarChatBox: React.FC = () => {
     }
     inputEl.addEventListener('keypress', handleKeypress);
 
-    // Cleanup
     return () => {
       chatEl.removeEventListener('scroll', handleScroll);
       toggleEl.removeEventListener('change', handleToggleChange);
