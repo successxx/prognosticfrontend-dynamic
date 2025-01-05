@@ -1,655 +1,500 @@
-/**
- * WebinarView.tsx
- *
- * - 2-second "Connecting" overlay
- * - Large video (70% width) + the webinar chatbox (30%) in the same row
- * - Personalized audio at 3s
- * - "Live for X minutes" label top-right
- * - Mouse-based "exit intent" overlay with AI-generated message from backend
- * - Chatbox logic fully integrated (no inline styles; all in .module.css)
- * - If user tries to refresh, show "webinar is full" warning
- * - Exit popup can be closed by X or clicking outside bubble
- */
+/* WebinarView.module.css */
 
-import React, { useEffect, useRef, useState } from 'react';
-import styles from './WebinarView.module.css';
+/* =============================== */
+/* 1) "Connecting you now..." overlay */
+/* =============================== */
+.connectingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0142ac; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.connectingBox {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 40px 60px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+.connectingText {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.5rem;
+  color: #0142ac;
+  font-weight: 700;
+}
 
-const WebinarView: React.FC = () => {
-  // Refs for <video> and <audio> elements
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
+/* =============================== */
+/* 2) Container around everything */
+/* =============================== */
+.container {
+  width: 100%;
+  max-width: 1400px; 
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
 
-  // iPhone message tone
-  const messageToneRef = useRef<HTMLAudioElement>(null);
+/* =============================== */
+/* 3) Banner row (LIVE label, etc.) */
+/* =============================== */
+.bannerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.banner {
+  padding: 12px 15px;
+  background: #0142ac;
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+.liveMinutes {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  color: white;
+  background: #0142ac;
+  padding: 6px 12px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
 
-  // Track if user has unmuted
-  const [hasInteracted, setHasInteracted] = useState(false);
+/* "LIVE" dot animation */
+.liveIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 12px;
+}
+.liveDot {
+  width: 8px;
+  height: 8px;
+  background: #ff0000;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.5; }
+  100% { opacity: 1; }
+}
 
-  // Show "Connecting..." overlay for 2 seconds
-  const [connecting, setConnecting] = useState(true);
+/* =============================== */
+/* 4) Two-column layout: video left, chat right */
+/* =============================== */
+.twoColumnLayout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.videoColumn {
+  flex: 0 0 70%;
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+}
+.chatColumn {
+  flex: 0 0 30%;
+  max-width: 30%;
+  display: flex;
+  flex-direction: column;
+}
 
-  // "Live for X minutes"
-  const [liveMinutes, setLiveMinutes] = useState(0);
-  const startTimeRef = useRef<number | null>(null);
+/* The video wrapper: fill area, keep background black */
+.videoWrapper {
+  position: relative;
+  background: #000;
+  flex: 1;
+  border-radius: 12px;
+  overflow: hidden;
+}
 
-  // AI-generated exit message
-  const [exitMessage, setExitMessage] = useState('');
-  const defaultExitMessage = "Wait! Are you sure you want to leave?";
-  // Whether the exit overlay is currently visible
-  const [showExitOverlay, setShowExitOverlay] = useState(false);
-  // Whether we have already shown the overlay once
-  const [hasShownOverlay, setHasShownOverlay] = useState(false);
+/* =============================== */
+/* 5) Sound overlay if user hasn't interacted */
+/* =============================== */
+.soundOverlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  z-index: 4;
+}
+.soundIcon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  opacity: 0.9;
+}
+.soundText {
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
 
-  // 1) On mount, fetch user’s data + start 2s timer + beforeunload warning
-  useEffect(() => {
-    // If user tries to refresh, show a "webinar is full" style warning
-    function handleBeforeUnload(e: BeforeUnloadEvent) {
-      e.preventDefault();
-      e.returnValue =
-        "The webinar is currently full. If you reload, you might lose your spot. Are you sure you want to refresh?";
-    }
-    window.addEventListener('beforeunload', handleBeforeUnload);
+/* =============================== */
+/* 6) The "exit intent" overlay */
+/* 
+   We add a fadeIn animation to make it appear smoothly
+   Also, user can close by clicking anywhere outside bubble.
+*/
+/* =============================== */
+.exitOverlay {
+  position: fixed;
+  top: 0; 
+  left: 0; 
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.25s ease;
+  cursor: pointer; /* so user knows they can click outside */
+}
 
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, []);
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
 
-  // 2) Another effect to load user data
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const userEmail = params.get('user_email');
-
-    if (userEmail) {
-      // Fetch audio_link + exit_message from your backend
-      const fetchData = async () => {
-        try {
-          const response = await fetch(
-            `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_audio?user_email=${encodeURIComponent(
-              userEmail
-            )}`
-          );
-          if (!response.ok) {
-            console.error('Error retrieving personalized data:', response.statusText);
-            return;
-          }
-          const data = await response.json();
-
-          // Personalized audio link
-          if (data.audio_link && audioRef.current) {
-            audioRef.current.src = data.audio_link;
-          }
-
-          // AI-generated exit message
-          if (data.exit_message) {
-            setExitMessage(data.exit_message);
-          }
-        } catch (err) {
-          console.error('Error loading personalized data:', err);
-        }
-      };
-      fetchData();
-    } else {
-      console.warn('No user_email param found.');
-    }
-
-    // Show "Connecting..." overlay for 2s
-    const timer = setTimeout(() => {
-      setConnecting(false);
-      startTimeRef.current = Date.now();
-
-      // Attempt auto-play
-      if (videoRef.current) {
-        videoRef.current.play().catch(err => {
-          console.log('Auto-play prevented; user must interact', err);
-        });
-      }
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // 3) "Live for X minutes" timer
-  useEffect(() => {
-    if (!connecting && startTimeRef.current) {
-      const intervalId = setInterval(() => {
-        const diff = Date.now() - startTimeRef.current!;
-        setLiveMinutes(Math.floor(diff / 60000));
-      }, 60000);
-      return () => clearInterval(intervalId);
-    }
-  }, [connecting]);
-
-  // 4) Play personalized audio at 3s
-  useEffect(() => {
-    const videoEl = videoRef.current;
-    const audioEl = audioRef.current;
-    if (!videoEl || !audioEl) return;
-
-    const handleTimeUpdate = () => {
-      if (videoEl.currentTime >= 3) {
-        audioEl
-          .play()
-          .catch(err => console.error('Error starting personalized audio playback:', err));
-        videoEl.removeEventListener('timeupdate', handleTimeUpdate);
-      }
-    };
-
-    videoEl.addEventListener('timeupdate', handleTimeUpdate);
-    return () => videoEl.removeEventListener('timeupdate', handleTimeUpdate);
-  }, []);
-
-  // 5) Mouse-based "exit intent" overlay (top 10% of screen)
-  useEffect(() => {
-    function handleMouseMove(e: MouseEvent) {
-      // If we've already shown it once, do nothing
-      if (hasShownOverlay) return;
-
-      // If user's Y coord is above top 10%, show overlay
-      const threshold = window.innerHeight * 0.1;
-      if (e.clientY < threshold) {
-        setShowExitOverlay(true);
-        setHasShownOverlay(true);
-
-        // Play the iMessage tone if user has interacted with the page
-        if (messageToneRef.current) {
-          messageToneRef.current.play().catch(err =>
-            console.warn('iMessage tone autoplay blocked:', err)
-          );
-        }
-      }
-    }
-    window.addEventListener('mousemove', handleMouseMove);
-
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [hasShownOverlay]);
-
-  // 6) If connecting, just show "Connecting you now..."
-  if (connecting) {
-    return (
-      <div className={styles.connectingOverlay}>
-        <div className={styles.connectingBox}>
-          <p className={styles.connectingText}>Connecting you now...</p>
-        </div>
-      </div>
-    );
+/* iPhone-like bubble for the exit message */
+.iphoneMessageBubble {
+  position: relative;
+  max-width: 80%;
+  background: #0a84ff; /* iMessage blue in iOS14+ */
+  color: #fff;
+  border-radius: 18px;
+  padding: 14px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  animation: bubblePop 0.35s ease-out;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  cursor: auto; /* bubble itself not closing on click */
+}
+.iphoneSender {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.iphoneMessageText {
+  font-size: 1rem;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+.iphoneMessageBubble::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  bottom: 20px;
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  border-right-color: #0a84ff;
+}
+@keyframes bubblePop {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
   }
+  55% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 
-  // 7) Handler for closing the exit overlay if they click outside the bubble
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // If user clicked directly on the overlay (not the bubble), close
-    if (e.target === e.currentTarget) {
-      setShowExitOverlay(false);
-    }
-  };
+/* The "X" close button in top-right */
+.exitCloseBtn {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #fff;
+  opacity: 0.9;
+}
 
-  return (
-    <div className={styles.container}>
-      {/* iPhone text message tone (hidden) */}
-      <audio
-        ref={messageToneRef}
-        src="https://cdn.freesound.org/previews/613/613258_5674468-lq.mp3"
-        style={{ display: 'none' }}
-      />
+/* =============================== */
+/* 7) Responsive adjustments */
+/* =============================== */
+@media (max-width: 900px) {
+  .container {
+    max-width: 100%;
+    padding: 10px;
+  }
+  .twoColumnLayout {
+    flex-direction: column;
+  }
+  .videoColumn,
+  .chatColumn {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
 
-      {/* Show the exit overlay if needed */}
-      {showExitOverlay && (
-        <div className={styles.exitOverlay} onClick={handleOverlayClick}>
-          <div className={styles.iphoneMessageBubble}>
-            {/* X button to close */}
-            <button
-              className={styles.exitCloseBtn}
-              onClick={() => setShowExitOverlay(false)}
-            >
-              ×
-            </button>
+/* =============================== */
+/* 8) Chatbox CSS (unchanged) */
+/* =============================== */
+.chatSection {
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 750px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
 
-            <div className={styles.iphoneSender}>Selina</div>
-            <div className={styles.iphoneMessageText}>
-              {exitMessage && exitMessage.trim().length > 0
-                ? exitMessage
-                : defaultExitMessage}
-            </div>
-          </div>
-        </div>
-      )}
+.chatHeader {
+  padding: 12px 15px;
+  background: #0142AC;
+  color: #fff;
+  flex: 0 0 auto;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chatTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.toggleContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+.toggleSwitch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggleSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(255,255,255,0.2);
+  transition: .4s;
+  border-radius: 20px;
+}
+.toggleSlider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #fff;
+  transition: .4s;
+  border-radius: 50%;
+}
+.toggleSwitch input:checked + .toggleSlider {
+  background-color: #4CAF50;
+}
+.toggleSwitch input:checked + .toggleSlider:before {
+  transform: translateX(20px);
+}
+.toggleLabel {
+  color: #fff;
+  font-size: 0.45rem;
+}
+.viewerCount {
+  font-size: 0.55rem;
+  background: rgba(255,255,255,0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 
-      {/* Banner row (LIVE + label, and "Live for X minutes" on the right) */}
-      <div className={styles.bannerRow}>
-        <div className={styles.banner}>
-          <div className={styles.liveIndicator}>
-            <div className={styles.liveDot} />
-            LIVE
-          </div>
-          PrognosticAI Advanced Training
-        </div>
-        <div className={styles.liveMinutes}>
-          Live for {liveMinutes} minute{liveMinutes !== 1 ? 's' : ''}
-        </div>
-      </div>
+/* Special Offer section */
+.specialOffer {
+  background: #ff4444;
+  color: #fff;
+  padding: 12px 15px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: -0.02em;
+  display: none;
+  flex: 0 0 auto;
+}
+.investButton {
+  background: #0142AC;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  letter-spacing: -0.02em;
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 6px;
+}
+.investButton:hover {
+  background: #013289;
+}
 
-      {/* 70%/30% layout: video left, chat right */}
-      <div className={styles.twoColumnLayout}>
-        {/* Video column */}
-        <div className={styles.videoColumn}>
-          <div className={styles.videoWrapper}>
-            <video
-              ref={videoRef}
-              muted={!hasInteracted}
-              playsInline
-              controls={false}
-              style={{ width: '100%', height: 'auto' }}
-            >
-              <source
-                src="https://paivid.s3.us-east-2.amazonaws.com/homepage222.mp4"
-                type="video/mp4"
-              />
-              Your browser does not support HTML5 video.
-            </video>
+/* Chat messages */
+.chatMessages {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 15px;
+  background: #f8f9fa;
+  min-height: 0;
+}
 
-            {/* Hidden <audio> for personalized track */}
-            <audio ref={audioRef} style={{ display: 'none' }} />
+/* Actual messages with different roles */
+.message {
+  margin-bottom: 10px;
+  line-height: 1.4;
+  animation: fadeIn 0.3s ease;
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  border-radius: 6px;
+  max-width: 90%;
+  text-align: left;
+}
+.message.user {
+  background: #f0f2f5;
+  margin-left: auto;
+  color: #2c3135;
+}
+.message.host {
+  background: #e7f0ff;
+  color: #0142AC;
+  font-weight: 500;
+}
+.message.system {
+  background: #fff3cd;
+  color: #856404;
+  text-align: center;
+  max-width: 100%;
+  margin: 15px 0;
+  font-size: 0.85rem;
+}
 
-            {/* Sound Overlay if not yet interacted */}
-            {!hasInteracted && (
-              <div
-                className={styles.soundOverlay}
-                onClick={() => {
-                  if (videoRef.current) {
-                    videoRef.current.muted = false;
-                  }
-                  setHasInteracted(true);
-                }}
-              >
-                <div className={styles.soundIcon}>🔊</div>
-                <div className={styles.soundText}>Click to Enable Sound</div>
-              </div>
-            )}
-          </div>
-        </div>
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-        {/* Chat column */}
-        <div className={styles.chatColumn}>
-          <WebinarChatBox />
-        </div>
-      </div>
-    </div>
-  );
-};
+/* Input area */
+.chatInput {
+  padding: 15px;
+  background: #fff;
+  border-top: 1px solid #eee;
+  flex: 0 0 auto;
+}
+.chatInput input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dfe3e8;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  color: #2c3135;
+}
+.chatInput input:focus {
+  outline: none;
+  border-color: #0142AC;
+  box-shadow: 0 0 0 2px rgba(1,66,172,0.1);
+}
+.typingIndicator {
+  color: #6c757d;
+  font-size: 0.85rem;
+  margin-top: 8px;
+  font-style: italic;
+  height: 20px;
+  padding-left: 2px;
+}
 
-/**
- * The entire chatbox logic as a React component, with all CSS classes
- * now mapped to the .module.css (styles.xxx).
- */
-const WebinarChatBox: React.FC = () => {
-  const chatMessagesRef = useRef<HTMLDivElement | null>(null);
-  const messageInputRef = useRef<HTMLInputElement | null>(null);
-  const typingIndicatorRef = useRef<HTMLDivElement | null>(null);
-  const participantToggleRef = useRef<HTMLInputElement | null>(null);
-  const specialOfferRef = useRef<HTMLDivElement | null>(null);
-  const countdownRef = useRef<HTMLDivElement | null>(null);
-  const investButtonRef = useRef<HTMLButtonElement | null>(null);
+/* Notification popup (somebody invested) */
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #fff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideIn 0.5s ease, fadeOut 0.5s ease 4.5s forwards;
+  z-index: 100;
+  font-size: 0.9rem;
+  max-width: 300px;
+}
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes fadeOut {
+  to { opacity: 0; }
+}
+.notificationIcon {
+  background: #0142AC;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
 
-  // WebSocket
-  const socketRef = useRef<WebSocket | null>(null);
-
-  // Random name sets
-  const names = [
-    "Emma","Liam","Olivia","Noah","Ava","Ethan","Sophia","Mason",
-    "Isabella","William","Mia","James","Charlotte","Benjamin","Amelia",
-    "Lucas","Harper","Henry","Evelyn","Alexander"
-  ];
-  const investmentMessages = [
-    "just invested in PrognosticAI! 🚀",
-    "secured their spot in PrognosticAI! ✨",
-    "joined the PrognosticAI family! 🎉",
-    "made a smart investment! 💡",
-    "is starting their AI journey with us! 🌟",
-    "got early access to PrognosticAI! 🔥",
-    "upgraded to PrognosticAI Pro! 💪",
-    "joined our success story! ⭐"
-  ];
-  const attendeeMessages = [
-    "hows everyone doing today??",
-    "Hi from Seattle! super excited 2 be here",
-    "first time in one of these... hope im not late!",
-    "cant wait to learn more bout this AI stuff 🤓",
-    "hello everyone....joining from australia",
-    "Any1 else here run advanced funnels for clients??",
-    "This looks amazing, can't wait to see more advanced strategies!",
-    "who else uses multi-step funnels with email marketing?",
-    "omg the potential of this is INSANE for scaling funnels",
-    "quick q - will this wrk with shopify or high-level??",
-    "joining late...did i miss anything important???",
-    "im blown away by the capabilities tbh",
-    "this will save me so much time in my funnels",
-    "anyone else do big product launches? this is a game changer",
-    "thx for putting this together!! 🙌",
-    "just got here...hope i didnt miss too much",
-    "can someone explain the pricing again??",
-    "this is exactly what ive been looking for!!1!",
-    "sry if this was covered already but will there b updates?",
-    "im big in affiliate marketing, and this is wild!"
-  ];
-  const preloadedQuestions = [
-    {time:180,  text:"How does this integrate with existing business systems?",user:"Michael"},
-    {time:300,  text:"Can you explain more about the AI capabilities?",user:"Sarah"},
-    {time:450,  text:"Does this work with Zapier?",user:"David"},
-    {time:600,  text:"What kind of ROI can we expect?",user:"Rachel"},
-    {time:750,  text:"How long does implementation typically take?",user:"James"},
-    {time:900,  text:"This is incredible! Can't believe the accuracy levels 🔥",user:"Emma"},
-    {time:1200, text:"Do you offer enterprise solutions?",user:"Thomas"},
-    {time:1500, text:"Just amazing how far AI has come!",user:"Lisa"},
-    {time:1800, text:"What about data security?",user:"Alex"},
-    {time:2100, text:"Can small businesses benefit from this?",user:"Jennifer"},
-    {time:2400, text:"The predictive analytics are mind-blowing!",user:"Daniel"},
-    {time:2700, text:"How often do you release updates?",user:"Sophie"},
-    {time:3000, text:"Wow, the demo exceeded my expectations!",user:"Ryan"},
-    {time:3300, text:"What makes PrognosticAI different from competitors?",user:"Maria"}
-  ];
-
-  let isUserScrolling = false; // track user scroll state
-
-  useEffect(() => {
-    const chatEl = chatMessagesRef.current;
-    const inputEl = messageInputRef.current;
-    const typingEl = typingIndicatorRef.current;
-    const toggleEl = participantToggleRef.current;
-    const specialOfferEl = specialOfferRef.current;
-    const countdownEl = countdownRef.current;
-    const investBtn = investButtonRef.current;
-
-    // If we’re missing any crucial element, just bail
-    if (!chatEl || !inputEl || !typingEl || !toggleEl || !specialOfferEl || !countdownEl || !investBtn) {
-      console.error("WebinarChatBox: Missing required refs.");
-      return;
-    }
-
-    // Scroll helper
-    function isNearBottom(element: HTMLDivElement) {
-      const threshold = 50;
-      return (element.scrollHeight - element.clientHeight - element.scrollTop) <= threshold;
-    }
-    function scrollToBottom(element: HTMLDivElement) {
-      element.scrollTop = element.scrollHeight;
-    }
-
-    // On scroll, detect if user is near bottom
-    function handleScroll() {
-      isUserScrolling = !isNearBottom(chatEl!);
-    }
-    chatEl.addEventListener('scroll', handleScroll);
-
-    // Add a message
-    function addMessage(
-      text: string,
-      type: 'user' | 'host' | 'system',
-      userName = ''
-    ) {
-      const messageDiv = document.createElement('div');
-
-      // base class
-      messageDiv.classList.add(styles.message);
-      if (type === 'user') {
-        messageDiv.classList.add('user');
-      } else if (type === 'host') {
-        messageDiv.classList.add('host');
-      } else if (type === 'system') {
-        messageDiv.classList.add('system');
-      }
-
-      messageDiv.textContent = userName ? `${userName}: ${text}` : text;
-
-      // Tag user messages from others so they can be hidden if toggle is off
-      messageDiv!.style.display = 'block'; // ensures the element is shown by default
-      if (type === 'user' && userName !== 'You') {
-        messageDiv.setAttribute('data-participant', 'true');
-        messageDiv.setAttribute('data-auto-generated', 'true');
-        if (!toggleEl!.checked) {
-          messageDiv.style.display = 'none';
-        }
-      }
-
-      chatEl!.appendChild(messageDiv);
-
-      // auto-scroll if near bottom
-      if (!isUserScrolling || userName === 'You') {
-        scrollToBottom(chatEl!);
-      }
-    }
-
-    // Toggle show/hide participant messages
-    function handleToggleChange(e: Event) {
-      const target = e.currentTarget as HTMLInputElement;
-      const participantMessages = chatEl!.querySelectorAll('[data-participant="true"]');
-      participantMessages.forEach(msg => {
-        (msg as HTMLElement).style.display = target.checked ? 'block' : 'none';
-      });
-      if (target.checked && !isUserScrolling) {
-        scrollToBottom(chatEl!);
-      }
-    }
-    toggleEl.addEventListener('change', handleToggleChange);
-
-    // Connect WebSocket
-    const newSocket = new WebSocket("wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com");
-    socketRef.current = newSocket;
-
-    newSocket.onopen = () => {
-      console.log("Connected to chat server");
-    };
-    newSocket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'message') {
-        addMessage(
-          data.text,
-          data.messageType as 'user' | 'host' | 'system',
-          data.user
-        );
-      }
-    };
-    newSocket.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    // Random attendee messages
-    function scheduleAttendeeMessages() {
-      const numMessages = Math.floor(Math.random() * 6) + 15;
-      let delay = 500;
-      for (let i = 0; i < numMessages; i++) {
-        const name = names[Math.floor(Math.random() * names.length)];
-        const msg = attendeeMessages[Math.floor(Math.random() * attendeeMessages.length)];
-        setTimeout(() => {
-          addMessage(msg, 'user', name);
-        }, delay);
-        delay += Math.random() * 1000 + 500;
-      }
-    }
-    setTimeout(() => {
-      addMessage(
-        "Welcome to the PrognosticAI Advanced Training! 👋 Let us know where you're joining from!",
-        'host',
-        'Selina (Host)'
-      );
-      scheduleAttendeeMessages();
-    }, 2000);
-
-    // Preloaded questions
-    preloadedQuestions.forEach(q => {
-      setTimeout(() => {
-        addMessage(q.text, 'user', q.user);
-        // Optionally show "Selina is typing..."
-        setTimeout(() => {
-          typingEl!.textContent = "Selina is typing...";
-          const randomDelay = Math.random() * 10000 + 10000;
-          setTimeout(() => {
-            typingEl!.textContent = "";
-          }, randomDelay);
-        }, 1000);
-      }, q.time * 1000);
-    });
-
-    // Investment notifications
-    function showInvestmentNotification() {
-      const name = names[Math.floor(Math.random() * names.length)];
-      const line = investmentMessages[Math.floor(Math.random() * investmentMessages.length)];
-      const notif = document.createElement('div');
-      notif.classList.add(styles.notification);
-      notif.innerHTML = `
-        <div class="${styles.notificationIcon}">🎉</div>
-        <div><strong>${name}</strong> ${line}</div>
-      `;
-      document.body.appendChild(notif);
-      setTimeout(() => notif.remove(), 5000);
-    }
-    setInterval(() => {
-      showInvestmentNotification();
-    }, Math.random() * 30000 + 30000);
-
-    // Update viewer count every 5s
-    let currentViewers = 41;
-    setInterval(() => {
-      const change = Math.random() < 0.5 ? -1 : 1;
-      currentViewers = Math.max(40, Math.min(50, currentViewers + change));
-      const vCount = document.getElementById('viewerCount');
-      if (vCount) {
-        vCount.textContent = `${currentViewers} watching`;
-      }
-    }, 5000);
-
-    // Show special offer after 60s
-    setTimeout(() => {
-      specialOfferEl!.style.display = "block";
-      addMessage(
-        "🚨 Special Offer Alert! For the next 10 minutes only, secure your spot in PrognosticAI for just $999. Don't miss out! 🚀",
-        "system"
-      );
-      let t = 600; // 10 minutes
-      const countdownInt = setInterval(() => {
-        t--;
-        const min = Math.floor(t / 60);
-        const sec = t % 60;
-        countdownEl!.textContent = `Special Offer Ends In: ${min}:${sec.toString().padStart(2, "0")}`;
-        if (t <= 0) {
-          clearInterval(countdownInt);
-          specialOfferEl!.style.display = "none";
-          addMessage("⌛ The special offer has ended.","system");
-        }
-      }, 1000);
-    }, 60000);
-
-    // Invest button
-    investBtn.addEventListener('click', () => {
-      window.location.href = "https://yes.prognostic.ai";
-    });
-
-    // If user sends a real message
-    async function handleUserMessage(msg: string) {
-      try {
-        const randomDelay = Math.random() * 4000;
-        await new Promise(resolve => setTimeout(resolve, randomDelay));
-        typingEl!.textContent = "Selina is typing...";
-
-        const response = await fetch("https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: msg, type: "user" })
-        });
-        if (!response.ok) throw new Error("API call failed");
-
-        const data = await response.json();
-        typingEl!.textContent = "";
-
-        if (data.response) {
-          addMessage(data.response, "host", "Selina (Host)");
-        }
-      } catch (err) {
-        console.error("Error:", err);
-        typingEl!.textContent = "";
-        addMessage(
-          "Apologies, I'm having trouble connecting. Please try again!",
-          "host",
-          "Selina (Host)"
-        );
-      }
-    }
-
-    // When user presses Enter in chat
-    function handleKeypress(e: KeyboardEvent) {
-      if (e.key === "Enter" && inputEl!.value.trim()) {
-        const userMsg = inputEl!.value.trim();
-        inputEl!.value = "";
-        addMessage(userMsg, "user", "You");
-        handleUserMessage(userMsg);
-      }
-    }
-    inputEl.addEventListener('keypress', handleKeypress);
-
-    // Cleanup
-    return () => {
-      chatEl.removeEventListener('scroll', handleScroll);
-      toggleEl.removeEventListener('change', handleToggleChange);
-      inputEl.removeEventListener('keypress', handleKeypress);
-      if (socketRef.current) {
-        socketRef.current.close();
-        socketRef.current = null;
-      }
-    };
-  }, []);
-
-  return (
-    <div className={styles.chatSection}>
-      {/* Chat Header */}
-      <div className={styles.chatHeader}>
-        <div className={styles.headerTop}>
-          <span className={styles.chatTitle}>Live Chat</span>
-          <div className={styles.toggleContainer}>
-            <label className={styles.toggleSwitch}>
-              <input
-                type="checkbox"
-                id="participantToggle"
-                ref={participantToggleRef}
-              />
-              <span className={styles.toggleSlider}></span>
-            </label>
-            <span className={styles.toggleLabel}>Show Others</span>
-          </div>
-          <span className={styles.viewerCount}>
-            <i>👥</i>
-            <span id="viewerCount">41 watching</span>
-          </span>
-        </div>
-      </div>
-
-      {/* Special Offer */}
-      <div className={styles.specialOffer} id="specialOffer" ref={specialOfferRef}>
-        <div className={styles.countdown} id="countdownTimer" ref={countdownRef}>
-          Special Offer Ends In: 10:00
-        </div>
-        <button className={styles.investButton} id="investButton" ref={investButtonRef}>
-          Invest $999 Now - Limited Time Offer
-        </button>
-      </div>
-
-      {/* Messages */}
-      <div className={styles.chatMessages} id="chatMessages" ref={chatMessagesRef}></div>
-
-      {/* Input */}
-      <div className={styles.chatInput}>
-        <input
-          type="text"
-          placeholder="Type your message here..."
-          id="messageInput"
-          ref={messageInputRef}
-        />
-        <div
-          className={styles.typingIndicator}
-          id="typingIndicator"
-          ref={typingIndicatorRef}
-        ></div>
-      </div>
-    </div>
-  );
-};
-
-export default WebinarView;
+/* Custom scrollbar on chat messages */
+.chatMessages::-webkit-scrollbar {
+  width: 8px;
+}
+.chatMessages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+.chatMessages::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+.chatMessages::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
