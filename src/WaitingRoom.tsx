@@ -1,397 +1,435 @@
-/* --------------------------------------------------
-   File: src/WaitingRoom.tsx
-   -------------------------------------------------- */
 import React, { useEffect, useRef, useState } from 'react';
-import './WaitingRoom.css'; // optional if you want to move the below <style> into a .css file
-import './index.css';
+import styles from './WaitingRoom.module.css';
 
 /**
- * WAITING ROOM COMPONENT
- * 
- * Renders:
- *   - Montserrat heavy title
- *   - Countdown text
- *   - Big spinner
- *   - "You will learn..." bullets
- *   - The chatbox on the right
- * 
- * The code also respects the 15-minute increments logic
- * (which you already do in App.tsx or wherever).
+ * A direct React-based port of your original "Waiting Room" HTML code,
+ * preserving the countdown, spinner, "You will learn...", and chat logic.
  */
-const WaitingRoom: React.FC<{ countdown: number; }> = ({ countdown }) => {
-  /**
-   * This is your existing Chat code, turned into React:
-   * We'll embed it in a <div> with dangerouslySetInnerHTML
-   * OR we can in-line it. Here, I’ll inline it so you can see everything plainly.
-   */
-  const chatContainerRef = useRef<HTMLDivElement>(null);
+const WaitingRoom: React.FC = () => {
+  // ========== COUNTDOWN STATES/LOGIC ==========
+  const [countdownText, setCountdownText] = useState<string>('calculating...');
 
-  // Keep track of WebSocket
-  const [socket, setSocket] = useState<WebSocket | null>(null);
+  /** Returns a Date object for the next quarter-hour (15/30/45/60) */
+  function getNextQuarterHour(): Date {
+    const now = new Date();
+    const nextQ = new Date(Math.ceil(now.getTime() / (15 * 60 * 1000)) * (15 * 60 * 1000));
+    return nextQ;
+  }
 
-  // For typed chat messages
-  const messageInputRef = useRef<HTMLInputElement>(null);
-  const [isUserScrolling, setIsUserScrolling] = useState(false);
-  const [viewerCount, setViewerCount] = useState(41);
+  /** Formats time left (ms) into "X minutes and Y seconds" or "Z seconds" */
+  function formatTimeLeft(ms: number) {
+    const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((ms % (1000 * 60)) / 1000);
 
-  // We'll store some random messages in local state
-  const [messages, setMessages] = useState<Array<{
-    text: string;
-    type: string;   // 'user', 'host', 'system'
-    user?: string;  // user name
-    auto?: boolean; // auto-generated
-  }>>([]);
+    if (minutes > 0) {
+      return `${minutes} minute${minutes !== 1 ? 's' : ''} and ${seconds} second${seconds !== 1 ? 's' : ''}`;
+    } else {
+      return `${seconds} second${seconds !== 1 ? 's' : ''}`;
+    }
+  }
 
-  // The toggle "Show Others"
-  const [showParticipantMsgs, setShowParticipantMsgs] = useState(false);
-
-  /** 
-   * This function loads your timed preloaded messages, 
-   * plus random chat lines from your big array.
-   */
   useEffect(() => {
-    // open the WebSocket
-    const ws = new WebSocket('wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com');
-    setSocket(ws);
-
-    ws.onopen = () => {
-      console.log('Connected to chat server');
-    };
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'message') {
-        addMessage(data.text, data.messageType, data.user, true);
+    // Replicating the old script
+    const updateCountdown = () => {
+      const now = new Date();
+      const nextTime = getNextQuarterHour();
+      const timeLeft = nextTime.getTime() - now.getTime();
+      if (timeLeft <= 0) {
+        // old code used redirectToWebinar() here, but you said we are not redirecting.
+        // So we'll just say "starting now..."
+        setCountdownText('starting now...');
+      } else {
+        setCountdownText(formatTimeLeft(timeLeft));
       }
     };
 
-    // Preloaded messages on a timer (like your snippet)
-    const preloaded = [
+    // Initial call
+    updateCountdown();
+    // Update every second
+    const timerId = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(timerId);
+  }, []);
+
+  // ========== CHATBOX LOGIC ==========
+  const chatMessagesRef = useRef<HTMLDivElement | null>(null);
+  const messageInputRef = useRef<HTMLInputElement | null>(null);
+  const typingIndicatorRef = useRef<HTMLDivElement | null>(null);
+  const participantToggleRef = useRef<HTMLInputElement | null>(null);
+
+  // For the WebSocket
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+  // We'll store the chat messages in the DOM ourselves (like the old code) or we can store in React state.
+  // To preserve EXACT logic, let's do the DOM approach but in a React-friendly way:
+
+  /** Helper to auto-scroll if near bottom, like the old code. */
+  function isNearBottom(element: HTMLDivElement): boolean {
+    const threshold = 50;
+    return (element.scrollHeight - element.clientHeight - element.scrollTop) <= threshold;
+  }
+
+  function scrollToBottom(element: HTMLDivElement) {
+    element.scrollTop = element.scrollHeight;
+  }
+
+  // Instead of a big <script> block, replicate the same logic in useEffect:
+  useEffect(() => {
+    const el = chatMessagesRef.current;
+    const inputEl = messageInputRef.current;
+    const typingEl = typingIndicatorRef.current;
+    const toggleEl = participantToggleRef.current;
+
+    if (!el || !inputEl || !typingEl || !toggleEl) {
+      console.error("WaitingRoom: Missing refs for chat box or input or toggle switch.");
+      return;
+    }
+
+    let isUserScrolling = false;
+
+    // Scroll listener
+    function handleScroll() {
+      isUserScrolling = !isNearBottom(el);
+    }
+    el.addEventListener('scroll', handleScroll);
+
+    // Exactly the same line arrays
+    const names = [
+      "Emma", "Liam", "Olivia", "Noah", "Ava", "Ethan", "Sophia", "Mason",
+      "Isabella", "William", "Mia", "James", "Charlotte", "Benjamin", "Amelia",
+      "Lucas", "Harper", "Henry", "Evelyn", "Alexander"
+    ];
+
+    let attendeeMessages = [
+      "Cant wait for this to start!",
+      "First time here... excited!!",
+      "Anyone else waiting?",
+      "Advanced question: Has anyone integrated this with Zapier for complex funnels?",
+      "Setting up multi-step retargeting is my priority right now",
+      "I'm interested in the analytics side of things",
+      "Hello everyone from the waiting room!",
+      "What about affiliate tracking with UTMs and multi-touch attribution?",
+      "Hoping to see a funnel breakdown today",
+      "So ready for advanced marketing hacks",
+      "Just wanted to see if we can import data from our CRM?",
+      "We focus heavily on remarketing campaigns, so I'm curious about that",
+      "Looking forward to the Q&A on conversion funnels",
+      "We use advanced tracking pixels, does your platform handle that?",
+      "Hope we get some real actionable tips here",
+      "Is the audio working for everyone?",
+      "Anyone else from the marketing dept?",
+      "We want to build a segmentation funnel, any best practices?",
+      "Cant wait to compare notes after the webinar!",
+      "Hello from the social media team!"
+    ];
+
+    const preloadedQuestions = [
       { time: 30, text: "hey everyone! excited for this", user: "Emma" },
       { time: 45, text: "same here! first time in one of these", user: "Michael" },
       { time: 60, text: "do we need to have our cameras on?", user: "Sarah" },
-      // ... etc. (use your full array from your snippet)
+      { time: 90, text: "dont think so, pretty sure its just a webinar", user: "James" },
+      { time: 120, text: "what time does this start exactly?", user: "David" },
+      { time: 150, text: "should be in about 15 mins i think", user: "Rachel" },
+      { time: 180, text: "perfect timing to grab a coffee then!", user: "Thomas" },
+      { time: 210, text: "anyone else having audio issues? cant hear anything", user: "Lisa" },
+      { time: 240, text: "i think it hasnt started yet thats why", user: "Alex" },
+      { time: 270, text: "oh that makes sense lol", user: "Lisa" },
+      { time: 300, text: "anyone here used their product before?", user: "Jennifer" },
+      { time: 330, text: "not yet but heard good things", user: "Daniel" },
+      { time: 360, text: "same, my colleague recommended it", user: "Sophie" },
+      { time: 390, text: "will there be a replay available?", user: "Ryan" },
+      { time: 420, text: "usually is for these types of webinars", user: "Maria" },
+      { time: 450, text: "anyone taking notes? im ready with my notebook", user: "William" },
+      { time: 480, text: "got my notepad open too!", user: "Emma" },
+      { time: 510, text: "hope theres a q&a section at the end", user: "Noah" },
+      { time: 540, text: "same, got lots of questions prepared", user: "Olivia" },
+      { time: 570, text: "anyone else from marketing dept here?", user: "Liam" },
+      { time: 600, text: "yep! social media manager here", user: "Ava" },
+      { time: 630, text: "content marketing team checking in", user: "Ethan" },
+      { time: 660, text: "excited to see the analytics features", user: "Sophia" },
+      { time: 690, text: "hope they show the dashboard demo", user: "Mason" },
+      { time: 720, text: "getting some coffee, brb!", user: "Isabella" },
+      { time: 750, text: "good idea, might do the same", user: "Benjamin" },
+      { time: 780, text: "anyone know how long the webinar is?", user: "Charlotte" },
+      { time: 810, text: "think its an hour with q&a after", user: "Henry" },
+      { time: 840, text: "perfect length imo", user: "Amelia" },
+      { time: 870, text: "cant wait to see whats new", user: "Lucas" },
+      { time: 900, text: "almost time to start!", user: "Harper" }
     ];
-    preloaded.forEach(m => {
+
+    // Generic function to add a message to the chat
+    function addMessage(text: string, type: 'user' | 'host' | 'system', user = '', isAutoGenerated = true) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `${styles.message} ${type === 'user'
+          ? styles.user
+          : type === 'host'
+          ? styles.host
+          : styles.system
+        }`;
+      // We'll just manually set the className for "system", "host", "user" so the styling is correct
+      // The original approach used .message.user, .message.host, .message.system
+      if (type === 'user') {
+        messageDiv.classList.add('user');
+      } else if (type === 'host') {
+        messageDiv.classList.add('host');
+      } else if (type === 'system') {
+        messageDiv.classList.add('system');
+      }
+
+      // Construct the text
+      messageDiv.textContent = user ? `${user}: ${text}` : text;
+
+      // If it's a real (non-auto) host message, briefly show "typing..."
+      if (type === 'host' && !isAutoGenerated) {
+        typingEl.textContent = 'Selina is typing...';
+        setTimeout(() => {
+          typingEl.textContent = '';
+        }, 2000);
+      }
+
+      // Tag user messages from others so they can be hidden if toggle is off
+      if (type === 'user' && user !== 'You') {
+        messageDiv.setAttribute('data-participant', 'true');
+        messageDiv.setAttribute('data-auto-generated', 'true');
+        // The toggle only affects display, not the ability to type
+        messageDiv.style.display = toggleEl.checked ? 'block' : 'none';
+      }
+
+      el.appendChild(messageDiv);
+
+      // auto-scroll if we are near bottom
+      if (!isUserScrolling || user === 'You') {
+        scrollToBottom(el);
+      }
+    }
+
+    // Toggle "Show Others" on/off
+    function handleToggleChange(e: Event) {
+      const target = e.currentTarget as HTMLInputElement;
+      const participantMessages = el.querySelectorAll('[data-participant="true"]');
+      participantMessages.forEach(msg => {
+        (msg as HTMLElement).style.display = target.checked ? 'block' : 'none';
+      });
+      if (target.checked && !isUserScrolling) {
+        scrollToBottom(el);
+      }
+    }
+    toggleEl.addEventListener('change', handleToggleChange);
+
+    // Connect WebSocket
+    const newSocket = new WebSocket('wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com');
+    setSocket(newSocket);
+
+    newSocket.onopen = () => {
+      console.log('Connected to chat server');
+      scrollToBottom(el);
+    };
+    newSocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'message') {
+        addMessage(data.text, data.messageType as 'user' | 'host' | 'system', data.user, true);
+      }
+    };
+    newSocket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    // Schedule a certain number of random attendee messages (unique, no duplicates)
+    function scheduleLocationMessages() {
+      // We'll send between 15 and 20 random messages
+      const numMessages = Math.min(attendeeMessages.length, Math.floor(Math.random() * 6) + 15);
+      const available = [...attendeeMessages];
+      let delay = 500;
+
+      for (let i = 0; i < numMessages; i++) {
+        const index = Math.floor(Math.random() * available.length);
+        const message = available[index];
+        available.splice(index, 1); // remove the used line
+
+        const name = names[Math.floor(Math.random() * names.length)];
+        setTimeout(() => {
+          addMessage(message, 'user', name, true);
+        }, delay);
+
+        delay += Math.random() * 1000 + 500;
+      }
+    }
+
+    // Pre-loaded timed messages
+    preloadedQuestions.forEach(question => {
       setTimeout(() => {
-        addMessage(m.text, 'user', m.user, true);
-      }, m.time * 1000);
+        addMessage(question.text, 'user', question.user, true);
+      }, question.time * 1000);
     });
 
-    // Start the viewerCount random updates
-    const intervalId = setInterval(() => {
-      setViewerCount(prev => {
-        const change = Math.random() < 0.5 ? -1 : 1;
-        const updated = Math.max(40, Math.min(50, prev + change));
-        return updated;
-      });
+    // AI/Host response logic — only runs for real user messages
+    async function handleHostResponse(userMessage: string, isAutomated: boolean = false) {
+      if (isAutomated) return;
+      try {
+        const randomDelay = Math.random() * 2000;
+        await new Promise(resolve => setTimeout(resolve, randomDelay));
+
+        typingEl.textContent = 'Selina is typing...';
+
+        const response = await fetch('https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: userMessage,
+            type: 'user'
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('API call failed');
+        }
+
+        const data = await response.json();
+        typingEl.textContent = '';
+
+        if (data.response) {
+          addMessage(data.response, 'host', 'Kyle', false);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        typingEl.textContent = '';
+        addMessage("Apologies, I'm having trouble connecting. Please try again!", 'host', 'Selina', false);
+      }
+    }
+
+    // Randomly adjust viewer count
+    let currentViewers = 41;
+    setInterval(() => {
+      const change = Math.random() < 0.5 ? -1 : 1;
+      currentViewers = Math.max(40, Math.min(50, currentViewers + change));
+      const viewerCountEl = document.getElementById('viewerCount');
+      if (viewerCountEl) {
+        viewerCountEl.textContent = `${currentViewers} waiting`;
+      }
     }, 5000);
 
+    // Initial host message, schedule random lines, start viewer count
+    setTimeout(() => {
+      addMessage("we'll get started here in just one minute", 'host', 'Selina', true);
+      scheduleLocationMessages();
+      scrollToBottom(el);
+    }, 4000);
+
+    // Real user typing => triggers AI
+    function handleKeypress(e: KeyboardEvent) {
+      if (e.key === 'Enter' && inputEl.value.trim()) {
+        const userMessage = inputEl.value.trim();
+        inputEl.value = '';
+
+        // Real user’s own message
+        addMessage(userMessage, 'user', 'You', false);
+        // Ask the AI for a host response
+        handleHostResponse(userMessage, false);
+      }
+    }
+    inputEl.addEventListener('keypress', handleKeypress);
+
+    // Cleanup
     return () => {
-      clearInterval(intervalId);
-      ws.close();
+      el.removeEventListener('scroll', handleScroll);
+      toggleEl.removeEventListener('change', handleToggleChange);
+      inputEl.removeEventListener('keypress', handleKeypress);
+      if (newSocket) {
+        newSocket.close();
+      }
     };
-    // eslint-disable-next-line
   }, []);
 
-  // Add message to local state
-  function addMessage(text: string, type: string, user?: string, auto = false) {
-    setMessages(prev => {
-      return [...prev, { text, type, user, auto }];
-    });
-  }
+  // ========== RENDER ==========
 
-  const handleSendMessage = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && messageInputRef.current && messageInputRef.current.value.trim()) {
-      const userMessage = messageInputRef.current.value.trim();
-      messageInputRef.current.value = '';
-
-      // Add user’s own message
-      addMessage(userMessage, 'user', 'You', false);
-
-      // If you need AI/Host response:
-      await handleHostResponse(userMessage);
-    }
-  };
-
-  // The AI/Host response function from your snippet:
-  async function handleHostResponse(userMessage: string) {
-    try {
-      // Simulate slight random delay
-      await new Promise(r => setTimeout(r, Math.random() * 2000));
-
-      // Real AI host call
-      const response = await fetch('https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage, type: 'user' })
-      });
-      if (!response.ok) throw new Error('API call failed');
-
-      const data = await response.json();
-      if (data.response) {
-        addMessage(data.response, 'host', 'Kyle', false);
-      }
-    } catch (error) {
-      console.error('Error from AI:', error);
-      addMessage('Sorry, having trouble connecting. Please try again!', 'host', 'Selina', false);
-    }
-  }
-
-  // Scrolling logic
-  const chatMessagesRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!isUserScrolling) {
-      // auto-scroll to bottom
-      if (chatMessagesRef.current) {
-        chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
-      }
-    }
-  }, [messages, isUserScrolling]);
-
-  const handleChatScroll = () => {
-    if (!chatMessagesRef.current) return;
-    const threshold = 50;
-    const nearBottom = (chatMessagesRef.current.scrollHeight -
-      chatMessagesRef.current.clientHeight -
-      chatMessagesRef.current.scrollTop) <= threshold;
-    setIsUserScrolling(!nearBottom);
-  };
-
-  // Toggling others' messages
-  const toggleParticipantMessages = () => {
-    setShowParticipantMsgs(prev => !prev);
-  };
-
-  // ======== RENDER ========
   return (
-    <div className="waiting-room-page" style={{display: 'flex', flexWrap: 'wrap', gap: '20px'}}>
-      {/* LEFT Column: Title, Countdown, Spinner, Bullets */}
-      <div style={{flex: '1 1 400px', minWidth: '300px'}}>
-        <h1 style={{
-          fontFamily: 'Montserrat, sans-serif',
-          textAlign: 'center',
-          fontSize: '48px',
-          fontWeight: 800,
-          margin: '20px auto',
-          padding: '10px',
-          color: '#2E2E2E',
-          lineHeight: '1.2',
-        }}>
-          Your webinar begins in&nbsp;
-          <span style={{ color: '#0142ac', fontWeight: 900 }}>
-            {countdown > 0 ? formatTime(countdown) : 'starting soon...'}
-          </span>
-        </h1>
+    <div>
+      {/* TOP COUNTDOWN */}
+      <div className={styles.awhp2024HeaderWrapper} id="awhp2024-header-wrapper">
+        Your webinar begins in{' '}
+        <span className={styles.awhp2024TimerText} id="awhp2024-countdown-text">
+          {countdownText}
+        </span>
+      </div>
 
-        {/* The spinner + "We are preparing" message */}
-        <div style={{
-          display: 'flex', 
-          flexDirection: 'column',
-          alignItems: 'center',
-          background: 'none', // transparent
-          marginBottom: '2rem',
-        }}>
-          <div style={{
-            border: '8px solid rgba(228, 232, 241, 0.5)',
-            borderTop: '8px solid #0142ac',
-            borderRadius: '50%',
-            width: '80px',
-            height: '80px',
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto'
-          }} />
-          <p style={{
-            fontFamily: 'Montserrat, sans-serif',
-            color: '#0142ac',
-            fontSize: '24px',
-            fontWeight: 700,
-            marginTop: '20px',
-            textAlign: 'center',
-            maxWidth: '350px',
-          }}>
-            We are preparing the webinar... grab a notepad and pen while you wait!
-          </p>
+      {/* TWO COLUMN WRAPPER */}
+      <div className={styles.waitingroomWrapper}>
+        {/* LEFT COLUMN */}
+        <div className={styles.waitingroomLeft}>
+          {/* SPINNER */}
+          <div className={styles.webinarLoading}>
+            <div className={styles.loadingContainer}>
+              <div className={styles.loadingSpinner}></div>
+              <p className={styles.loadingText}>
+                We are preparing the webinar... grab a notepad and pen while you wait!
+              </p>
+              <a
+                href="https://prognostic.ai"
+                className={styles.loadingLogo}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Powered by PrognosticAI
+              </a>
+            </div>
+          </div>
 
-          <hr style={{ width: '60%', margin: '20px auto', borderColor: '#ccc' }} />
+          {/* LIGHT DIVIDER */}
+          <hr className={styles.lightDivider} />
 
-          <p style={{
-            fontFamily: 'Montserrat, sans-serif',
-            fontSize: '18px',
-            color: '#2E2E2E',
-            marginTop: '20px',
-            textAlign: 'center',
-            fontWeight: 500
-          }}>
+          {/* "You will learn..." */}
+          <p className={styles.bulletsTitle}>
             <strong>You will learn...</strong>
           </p>
-          <ul style={{
-            fontFamily: 'Montserrat, sans-serif',
-            listStyleType: 'disc',
-            color: '#2E2E2E',
-            paddingLeft: '1.5rem',
-            marginTop: '10px'
-          }}>
+          <ul className={styles.bulletsList}>
             <li>How PrognosticAI personalizes your marketing funnels</li>
             <li>Tips for advanced retargeting strategies</li>
             <li>Free resources to scale your funnel</li>
           </ul>
-
-          <a href="https://prognostic.ai"
-             style={{
-               marginTop: '20px',
-               display: 'inline-block',
-               padding: '8px 16px',
-               backgroundColor: '#0142ac',
-               color: 'white',
-               borderRadius: '5px',
-               textDecoration: 'none',
-               fontWeight: 700,
-               fontSize: '14px'
-             }}
-             target="_blank" 
-             rel="noopener noreferrer"
-          >
-            Powered by PrognosticAI
-          </a>
         </div>
-      </div>
 
-      {/* RIGHT Column: Chat */}
-      <div style={{flex: '1 1 400px', minWidth: '300px'}}>
-        {/* Chat container */}
-        <div className="chat-section" style={{
-          background: '#fff',
-          display: 'flex',
-          flexDirection: 'column',
-          height: '750px',
-          borderRadius: '12px',
-          overflow: 'hidden',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-        }}>
-          <div className="chat-header" style={{
-            padding: '12px 15px',
-            background: '#0142AC',
-            color: 'white',
-            flex: '0 0 auto',
-            borderTopLeftRadius: '12px',
-            borderTopRightRadius: '12px'
-          }}>
-            <div className="header-top" style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-              <span className="chat-title" style={{fontSize: '0.85rem', fontWeight: 600}}>Live Chat</span>
-              <div className="toggle-container" style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                <label className="toggle-switch" style={{position: 'relative', display: 'inline-block', width: '40px', height: '20px'}}>
-                  <input 
-                    type="checkbox"
-                    style={{opacity: 0, width: 0, height: 0}}
-                    checked={showParticipantMsgs}
-                    onChange={toggleParticipantMessages}
-                    id="participantToggle"
-                  />
-                  <span className="toggle-slider" style={{
-                    position: 'absolute', cursor: 'pointer', top:0, left:0, right:0, bottom:0,
-                    backgroundColor: showParticipantMsgs ? '#4CAF50' : 'rgba(255,255,255,0.2)',
-                    transition: '.4s', borderRadius: '20px'
-                  }} />
-                  <span style={{
-                    position:'absolute', content:'""', height:'16px', width:'16px', left:'2px', bottom:'2px',
-                    backgroundColor:'white', transition:'.4s', borderRadius:'50%',
-                    transform: showParticipantMsgs ? 'translateX(20px)' : 'translateX(0)'
-                  }} />
-                </label>
-                <span className="toggle-label" style={{color:'white', fontSize:'0.45rem'}}>
-                  Show Others
+        {/* RIGHT COLUMN: THE CHAT */}
+        <div className={styles.waitingroomRight}>
+          <div className={styles.chatSection}>
+            <div className={styles.chatHeader}>
+              <div className={styles.headerTop}>
+                <span className={styles.chatTitle}>Live Chat</span>
+                <div className={styles.toggleContainer}>
+                  <label className={styles.toggleSwitch}>
+                    <input
+                      ref={participantToggleRef}
+                      type="checkbox"
+                      id="participantToggle"
+                    />
+                    <span className={styles.toggleSlider}></span>
+                  </label>
+                  <span className={styles.toggleLabel}>Show Others</span>
+                </div>
+                <span className={styles.viewerCount}>
+                  <i>👥</i>
+                  <span id="viewerCount">41 waiting</span>
                 </span>
               </div>
-              <span className="viewer-count" style={{
-                fontSize:'0.55rem', background:'rgba(255,255,255,0.1)', padding:'4px 10px', borderRadius:'20px',
-                display:'flex', alignItems:'center', gap:'5px'
-              }}>
-                <i>👥</i>
-                <span id="viewerCount">{viewerCount} waiting</span>
-              </span>
             </div>
-          </div>
-
-          <div 
-            className="chat-messages" 
-            id="chatMessages"
-            style={{
-              flex:'1 1 auto', overflowY:'auto', padding:'15px', background:'#f8f9fa', minHeight:0
-            }}
-            ref={chatMessagesRef}
-            onScroll={handleChatScroll}
-          >
-            {messages.map((msg, idx) => {
-              // If it's from others and "Show Others" is off, hide it
-              const isParticipantMsg = (msg.type === 'user' && msg.user !== 'You');
-              if (isParticipantMsg && !showParticipantMsgs) return null;
-
-              // color-coded classes
-              let className = 'message ' + msg.type;
-              return (
-                <div key={idx} className={className} style={{
-                  marginBottom:'10px', lineHeight:'1.4', fontSize:'0.85rem',
-                  padding:'8px 12px', borderRadius:'6px', maxWidth:'90%',
-                  animation:'fadeIn 0.3s ease', textAlign:'left',
-                  marginLeft: (msg.type==='user' && msg.user==='You') ? 'auto' : undefined,
-                  background: msg.type==='user'
-                    ? (msg.user==='You' ? '#f0f2f5' : '#fff')
-                    : (msg.type==='host' ? '#e7f0ff' : '#fff3cd'),
-                  color: msg.type==='host' ? '#0142AC'
-                    : (msg.type==='system' ? '#856404'
-                      : (msg.user==='You' ? '#2c3135' : '#2c3135')),
-                  fontWeight: msg.type==='host' ? 500 : 400,
-                  textAlign: msg.type==='system' ? 'center' : 'left',
-                }}>
-                  {msg.user 
-                    ? `${msg.user}: ${msg.text}`
-                    : msg.text}
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="chat-input" style={{
-            padding:'15px', background:'#fff', borderTop:'1px solid #eee', flex:'0 0 auto'
-          }}>
-            <input 
-              ref={messageInputRef}
-              type="text"
-              placeholder="Type your message here..."
-              style={{
-                width:'100%', padding:'12px', border:'1px solid #dfe3e8', borderRadius:'6px',
-                fontSize:'0.9rem', transition:'all 0.3s ease', color:'#2c3135',
-                outline:'none'
-              }}
-              onKeyPress={handleSendMessage}
-            />
-            {/* You had typingIndicator before; optionally add that <div> if you want */}
+            <div className={styles.chatMessages} id="chatMessages" ref={chatMessagesRef}></div>
+            <div className={styles.chatInput}>
+              <input
+                type="text"
+                placeholder="Type your message here..."
+                id="messageInput"
+                ref={messageInputRef}
+              />
+              <div className={styles.typingIndicator} id="typingIndicator" ref={typingIndicatorRef}></div>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* FOOTER BRANDING */}
+      <div className={styles.customFooter}>© 2024 PrognosticAI</div>
     </div>
   );
 };
-
-/** 
- * Helper to format the countdown (in seconds)
- * into mm:ss or X minutes and X seconds 
- */
-function formatTime(secondsTotal: number): string {
-  const m = Math.floor(secondsTotal / 60);
-  const s = secondsTotal % 60;
-  if (m > 0) {
-    return `${m} minute${m !== 1 ? 's' : ''} and ${s} second${s !== 1 ? 's' : ''}`;
-  } else {
-    return `${s} second${s !== 1 ? 's' : ''}`;
-  }
-}
 
 export default WaitingRoom;
