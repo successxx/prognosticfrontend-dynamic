@@ -59,6 +59,7 @@ const App: React.FC = () => {
       // Quarter hour arrived => hide waiting room, show webinar
       setShowWaitingRoom(false);
       setIsContentVisible(true);
+    }, msLeft);
 
     return () => clearTimeout(timerId);
   }, []);
