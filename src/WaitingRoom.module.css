@@ -15,10 +15,9 @@
 
 /* The blinking "Live Soon" badge */
 .liveSoonBadge {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: -150px; /* shift to the right of the main text */
+  display: block;
+  margin: 0 auto 20px auto; /* horizontally center + some bottom space */
+  text-align: center;
   background: #ff4c4c;
   color: white;
   font-size: 0.9rem;
@@ -26,6 +25,7 @@
   border-radius: 4px;
   padding: 4px 8px;
   animation: liveBlink 1.3s infinite alternate;
+  /* removed ALL absolute positioning so it's a normal, centered element */
 }
 
 /* Slight blinking for the badge */
