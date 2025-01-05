@@ -58,16 +58,6 @@ body {
     opacity: 1;
 }
 
-/* index.css */
-.footer-fade-in {
-    opacity: 0;
-    transition: opacity 1s ease-in-out; /* Smooth fade-in over 1 second */
-}
-
-.footer-fade-in.visible {
-    opacity: 1;
-}
-
 .first-context-box {
     background-color: white;
     border-radius: 0px 0px 10px 10px;
