@@ -1,49 +1,47 @@
 /**
  * WebinarView.tsx
  *
- * A React component that:
- *  - Shows "Connecting you now..." overlay for 2 seconds
- *  - Plays the main webinar video (fake live)
- *  - Fetches personalized audio from your backend and plays it at 3s
- *  - Displays "Live for X minutes" top-right
- *  - Shows a custom exit warning overlay using text from your backend
- *  - Uses a 70%/30% layout for video vs chat
+ * - 2-second "Connecting" overlay
+ * - Large video (70% of width) + future chat placeholder (30%)
+ * - Personalized audio at 3s
+ * - "Live for X minutes" label top-right
+ * - Mouse-based "exit intent" overlay with AI-generated message from backend
+ *   (shows once if user moves cursor above top 10% of screen).
  */
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './WebinarView.module.css';
 
 const WebinarView: React.FC = () => {
-  // References to <video> and <audio>
+  // Refs for <video> and <audio> elements
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // State controlling whether user has clicked to unmute
+  // Track if user has unmuted
   const [hasInteracted, setHasInteracted] = useState(false);
 
-  // Two-second "connecting" overlay
+  // Show "Connecting..." overlay for 2 seconds
   const [connecting, setConnecting] = useState(true);
 
   // "Live for X minutes"
   const [liveMinutes, setLiveMinutes] = useState(0);
   const startTimeRef = useRef<number | null>(null);
 
-  // AI-generated exit message from backend
-  const [exitMessage, setExitMessage] = useState<string>('');
-  // Whether to show custom exit warning overlay
-  const [showExitWarning, setShowExitWarning] = useState(false);
+  // AI-generated exit message (from your backend / make.com)
+  const [exitMessage, setExitMessage] = useState('');
+  const defaultExitMessage = "Wait! Are you sure you want to leave?";
+  // Whether the exit overlay is currently visible
+  const [showExitOverlay, setShowExitOverlay] = useState(false);
+  // Whether we have already shown the overlay (so we don't show it again)
+  const [hasShownOverlay, setHasShownOverlay] = useState(false);
 
-  // 1) On mount, fetch user’s audio + exit message and start "connecting" timer
+  // 1) On mount, fetch user’s data + start 2s timer
   useEffect(() => {
-    // Grab user_email from ?user_email=
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get('user_email');
 
-    if (!userEmail) {
-      console.warn('No user_email param found.');
-      // We won't block anything, just no personalized audio or exit message
-    } else {
-      // Fetch audio & exit message from backend
-      const fetchAudioAndExitMsg = async () => {
+    if (userEmail) {
+      // Fetch audio_link + exit_message from your backend
+      const fetchData = async () => {
         try {
           const response = await fetch(
             `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_audio?user_email=${encodeURIComponent(
@@ -56,13 +54,12 @@ const WebinarView: React.FC = () => {
           }
           const data = await response.json();
 
-          // Fill the audio <source>
+          // Personalized audio
           if (data.audio_link && audioRef.current) {
             audioRef.current.src = data.audio_link;
-            console.log('Personalized audio link loaded:', data.audio_link);
           }
 
-          // Fill the AI-generated exit message if provided
+          // AI-generated exit message
           if (data.exit_message) {
             setExitMessage(data.exit_message);
           }
@@ -70,20 +67,20 @@ const WebinarView: React.FC = () => {
           console.error('Error loading personalized data:', err);
         }
       };
-      fetchAudioAndExitMsg();
+      fetchData();
+    } else {
+      console.warn('No user_email param found.');
     }
 
-    // Start the 2s "Connecting" timer
+    // Show "Connecting..." for 2s
     const timer = setTimeout(() => {
       setConnecting(false);
-
-      // Once "connecting" is done, we begin real "live" time
       startTimeRef.current = Date.now();
 
-      // Attempt to play the video automatically
+      // Attempt auto-play
       if (videoRef.current) {
         videoRef.current.play().catch(err => {
-          console.log('Auto-play prevented; user must interact.', err);
+          console.log('Auto-play prevented; user must interact', err);
         });
       }
     }, 2000);
@@ -91,19 +88,18 @@ const WebinarView: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // 2) Synchronize the "Live for X minutes" label
+  // 2) "Live for X minutes" timer
   useEffect(() => {
-    // Only start counting once connecting is false and we have a start time
     if (!connecting && startTimeRef.current) {
-      const interval = setInterval(() => {
+      const intervalId = setInterval(() => {
         const diff = Date.now() - startTimeRef.current!;
         setLiveMinutes(Math.floor(diff / 60000));
       }, 60000);
-      return () => clearInterval(interval);
+      return () => clearInterval(intervalId);
     }
   }, [connecting]);
 
-  // 3) Play the personalized audio at 3s into the video
+  // 3) Play personalized audio at 3s
   useEffect(() => {
     const videoEl = videoRef.current;
     const audioEl = audioRef.current;
@@ -119,32 +115,33 @@ const WebinarView: React.FC = () => {
     };
 
     videoEl.addEventListener('timeupdate', handleTimeUpdate);
-
     return () => {
       videoEl.removeEventListener('timeupdate', handleTimeUpdate);
     };
   }, []);
 
-  // 4) Show a custom exit warning overlay if user tries to close tab
+  // 4) Mouse-based "exit intent" overlay (top 10% of screen)
   useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      // For the system dialog (un-stylable):
-      if (exitMessage) {
-        e.preventDefault();
-        e.returnValue = exitMessage; // some browsers show a generic text
+    function handleMouseMove(e: MouseEvent) {
+      // If we've already shown it once, do nothing
+      if (hasShownOverlay) return;
+
+      // If user's Y coord is above top 10%, show overlay
+      const threshold = window.innerHeight * 0.1;
+      if (e.clientY < threshold) {
+        // show overlay
+        setShowExitOverlay(true);
+        setHasShownOverlay(true);
       }
-      // Show our custom overlay in the background
-      setShowExitWarning(true);
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    }
+    window.addEventListener('mousemove', handleMouseMove);
 
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [exitMessage]);
+  }, [hasShownOverlay]);
 
-  // 5) Render
-  // If still "connecting," show the connecting overlay
+  // 5) If connecting, just show "Connecting you now..."
   if (connecting) {
     return (
       <div className={styles.connectingOverlay}>
@@ -155,19 +152,29 @@ const WebinarView: React.FC = () => {
     );
   }
 
-  // Otherwise, show the real webinar
+  // 6) Render the actual webinar
   return (
     <div className={styles.container}>
-      {/* If user tries to leave, we show our custom overlay (non-blocking). */}
-      {showExitWarning && exitMessage && (
-        <div className={styles.exitWarningOverlay}>
-          <div className={styles.exitWarningBox}>
-            <p>{exitMessage}</p>
+      {/* Show the exit overlay if needed */}
+      {showExitOverlay && (
+        <div className={styles.exitOverlay}>
+          <div className={styles.exitOverlayBox}>
+            <button
+              className={styles.exitCloseBtn}
+              onClick={() => setShowExitOverlay(false)}
+            >
+              ×
+            </button>
+            <p>
+              {exitMessage && exitMessage.trim().length > 0
+                ? exitMessage
+                : defaultExitMessage}
+            </p>
           </div>
         </div>
       )}
 
-      {/* Banner row with the "LIVE" area (left) and "live for X minutes" (right) */}
+      {/* Banner row (LIVE + label, and "Live for X minutes" on the right) */}
       <div className={styles.bannerRow}>
         <div className={styles.banner}>
           <div className={styles.liveIndicator}>
@@ -181,9 +188,9 @@ const WebinarView: React.FC = () => {
         </div>
       </div>
 
-      {/* The main 2-column layout: 70% video, 30% chat (placeholder) */}
+      {/* 70%/30% layout */}
       <div className={styles.twoColumnLayout}>
-        {/* Left side => video */}
+        {/* Video column */}
         <div className={styles.videoColumn}>
           <div className={styles.videoWrapper}>
             <video
@@ -200,10 +207,10 @@ const WebinarView: React.FC = () => {
               Your browser does not support HTML5 video.
             </video>
 
-            {/* The hidden audio element for personalized playback */}
+            {/* Hidden <audio> for personalized track */}
             <audio ref={audioRef} style={{ display: 'none' }} />
 
-            {/* If user hasn't interacted yet => sound overlay */}
+            {/* Sound Overlay if not yet interacted */}
             {!hasInteracted && (
               <div
                 className={styles.soundOverlay}
@@ -221,12 +228,8 @@ const WebinarView: React.FC = () => {
           </div>
         </div>
 
-        {/* Right side => chat placeholder (30%) */}
+        {/* Chat column placeholder */}
         <div className={styles.chatColumn}>
-          {/* 
-            We'll eventually place your chat here in a separate step.
-            For now, just a placeholder div to hold the space.
-          */}
           <div className={styles.chatPlaceholder}>
             <p style={{ textAlign: 'center', color: '#555' }}>
               [Chat Box Coming Soon!]
