@@ -1,0 +1,88 @@
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.videoSection {
+    background: #000;
+    position: relative;
+    height: 750px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.banner {
+    padding: 12px 15px;
+    background: #0142ac;
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.videoWrapper {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    overflow: hidden;
+}
+
+.liveIndicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.liveDot {
+    width: 8px;
+    height: 8px;
+    background: #ff0000;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+.soundOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    cursor: pointer;
+    z-index: 4;
+}
+
+.soundIcon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    opacity: 0.9;
+}
+
+.soundText {
+    font-size: 1rem;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
