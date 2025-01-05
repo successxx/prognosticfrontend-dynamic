@@ -3,10 +3,11 @@
  *
  * - A "zoomContainer" with a top bar
  * - Larger video on the left (70%) + chat (30%) on the right
- * - "Connecting..." overlay with a tasteful PrognosticAI-blue spinner
+ * - "Connecting..." overlay with a PrognosticAI-blue spinner
  * - Exit-intent popup does not appear until after connecting
  * - Smaller "Live for X minutes" text
  * - beforeunload warning if user tries to refresh
+ * - Clicking the "Click to enable sound" overlay sets unmute and calls .play() 
  */
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -97,7 +98,7 @@ const WebinarView: React.FC = () => {
       // Attempt auto-play
       if (videoRef.current) {
         videoRef.current.play().catch(err => {
-          console.log('Auto-play prevented; user must interact', err);
+          console.log('Auto-play prevented; user must click overlay', err);
         });
       }
     }, 2000);
@@ -116,7 +117,7 @@ const WebinarView: React.FC = () => {
     }
   }, [connecting]);
 
-  // 4) Play personalized audio at 3s
+  // 4) Play personalized audio at 3s 
   useEffect(() => {
     if (connecting) return;
     const videoEl = videoRef.current;
@@ -137,7 +138,7 @@ const WebinarView: React.FC = () => {
   }, [connecting]);
 
   // 5) Mouse-based "exit intent" overlay (top 10%),
-  //    only after connecting is false => so it doesn't trigger immediately
+  //    only after connecting => so it doesn’t appear immediately
   useEffect(() => {
     if (connecting) return;
 
@@ -251,19 +252,25 @@ const WebinarView: React.FC = () => {
             {/* Hidden <audio> for personalized track */}
             <audio ref={audioRef} style={{ display: 'none' }} />
 
-            {/* Sound Overlay if not yet interacted */}
+            {/* Sound Overlay if not yet interacted or autoplay was blocked */}
             {!hasInteracted && (
               <div
                 className={styles.soundOverlay}
                 onClick={() => {
                   if (videoRef.current) {
+                    // Unmute and try to play again
                     videoRef.current.muted = false;
+                    videoRef.current.play().catch(err =>
+                      console.log('User clicked to play, but error:', err)
+                    );
                   }
                   setHasInteracted(true);
                 }}
               >
                 <div className={styles.soundIcon}>🔊</div>
-                <div className={styles.soundText}>Click to Enable Sound</div>
+                <div className={styles.soundText}>
+                  Click here to unmute &amp; play
+                </div>
               </div>
             )}
           </div>
@@ -360,7 +367,6 @@ const WebinarChatBox: React.FC = () => {
     const countdownEl = countdownRef.current;
     const investBtn = investButtonRef.current;
 
-    // If we’re missing any crucial element, just bail
     if (!chatEl || !inputEl || !typingEl || !toggleEl || !specialOfferEl || !countdownEl || !investBtn) {
       console.error("WebinarChatBox: Missing required refs.");
       return;
@@ -375,21 +381,17 @@ const WebinarChatBox: React.FC = () => {
       element.scrollTop = element.scrollHeight;
     }
 
-    // On scroll, detect if user is near bottom
     function handleScroll() {
-      isUserScrolling = !isNearBottom(chatEl!);
+      isUserScrolling = !isNearBottom(chatEl);
     }
     chatEl.addEventListener('scroll', handleScroll);
 
-    // Add a message
     function addMessage(
       text: string,
       type: 'user' | 'host' | 'system',
       userName = ''
     ) {
       const messageDiv = document.createElement('div');
-
-      // base class
       messageDiv.classList.add(styles.message);
       if (type === 'user') {
         messageDiv.classList.add('user');
@@ -401,33 +403,32 @@ const WebinarChatBox: React.FC = () => {
 
       messageDiv.textContent = userName ? `${userName}: ${text}` : text;
 
-      // Tag user messages from others so they can be hidden if toggle is off
+      // For participant messages, hide if toggle is off
       messageDiv.style.display = 'block';
       if (type === 'user' && userName !== 'You') {
         messageDiv.setAttribute('data-participant', 'true');
         messageDiv.setAttribute('data-auto-generated', 'true');
-        if (!toggleEl!.checked) {
+        if (!toggleEl.checked) {
           messageDiv.style.display = 'none';
         }
       }
 
-      chatEl!.appendChild(messageDiv);
+      chatEl.appendChild(messageDiv);
 
       // auto-scroll if near bottom
       if (!isUserScrolling || userName === 'You') {
-        scrollToBottom(chatEl!);
+        scrollToBottom(chatEl);
       }
     }
 
-    // Toggle show/hide participant messages
     function handleToggleChange(e: Event) {
       const target = e.currentTarget as HTMLInputElement;
-      const participantMessages = chatEl!.querySelectorAll('[data-participant="true"]');
+      const participantMessages = chatEl.querySelectorAll('[data-participant="true"]');
       participantMessages.forEach(msg => {
         (msg as HTMLElement).style.display = target.checked ? 'block' : 'none';
       });
       if (target.checked && !isUserScrolling) {
-        scrollToBottom(chatEl!);
+        scrollToBottom(chatEl);
       }
     }
     toggleEl.addEventListener('change', handleToggleChange);
@@ -453,7 +454,7 @@ const WebinarChatBox: React.FC = () => {
       console.error("WebSocket error:", error);
     };
 
-    // Random attendee messages
+    // Schedule random attendee messages
     function scheduleAttendeeMessages() {
       const numMessages = Math.floor(Math.random() * 6) + 15;
       let delay = 500;
@@ -481,10 +482,10 @@ const WebinarChatBox: React.FC = () => {
         addMessage(q.text, 'user', q.user);
         // Optionally show "Selina is typing..."
         setTimeout(() => {
-          typingEl!.textContent = "Selina is typing...";
+          typingEl.textContent = "Selina is typing...";
           const randomDelay = Math.random() * 10000 + 10000;
           setTimeout(() => {
-            typingEl!.textContent = "";
+            typingEl.textContent = "";
           }, randomDelay);
         }, 1000);
       }, q.time * 1000);
@@ -520,7 +521,7 @@ const WebinarChatBox: React.FC = () => {
 
     // Show special offer after 60s
     setTimeout(() => {
-      specialOfferEl!.style.display = "block";
+      specialOfferEl.style.display = "block";
       addMessage(
         "🚨 Special Offer Alert! For the next 10 minutes only, secure your spot in PrognosticAI for just $999. Don't miss out! 🚀",
         "system"
@@ -530,10 +531,10 @@ const WebinarChatBox: React.FC = () => {
         t--;
         const min = Math.floor(t / 60);
         const sec = t % 60;
-        countdownEl!.textContent = `Special Offer Ends In: ${min}:${sec.toString().padStart(2, "0")}`;
+        countdownEl.textContent = `Special Offer Ends In: ${min}:${sec.toString().padStart(2, "0")}`;
         if (t <= 0) {
           clearInterval(countdownInt);
-          specialOfferEl!.style.display = "none";
+          specialOfferEl.style.display = "none";
           addMessage("⌛ The special offer has ended.","system");
         }
       }, 1000);
@@ -549,7 +550,7 @@ const WebinarChatBox: React.FC = () => {
       try {
         const randomDelay = Math.random() * 4000;
         await new Promise(resolve => setTimeout(resolve, randomDelay));
-        typingEl!.textContent = "Selina is typing...";
+        typingEl.textContent = "Selina is typing...";
 
         const response = await fetch("https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message", {
           method: "POST",
@@ -559,14 +560,14 @@ const WebinarChatBox: React.FC = () => {
         if (!response.ok) throw new Error("API call failed");
 
         const data = await response.json();
-        typingEl!.textContent = "";
+        typingEl.textContent = "";
 
         if (data.response) {
           addMessage(data.response, "host", "Selina (Host)");
         }
       } catch (err) {
         console.error("Error:", err);
-        typingEl!.textContent = "";
+        typingEl.textContent = "";
         addMessage(
           "Apologies, I'm having trouble connecting. Please try again!",
           "host",
@@ -577,9 +578,9 @@ const WebinarChatBox: React.FC = () => {
 
     // When user presses Enter in chat
     function handleKeypress(e: KeyboardEvent) {
-      if (e.key === "Enter" && inputEl!.value.trim()) {
-        const userMsg = inputEl!.value.trim();
-        inputEl!.value = "";
+      if (e.key === "Enter" && inputEl.value.trim()) {
+        const userMsg = inputEl.value.trim();
+        inputEl.value = "";
         addMessage(userMsg, "user", "You");
         handleUserMessage(userMsg);
       }
