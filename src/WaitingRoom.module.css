@@ -10,8 +10,44 @@
   padding: 10px;
   color: #2E2E2E;
   line-height: 1.2;
+  position: relative; /* allow absolutely positioned badge */
 }
 
+/* The blinking "Live Soon" badge */
+.liveSoonBadge {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: -150px; /* shift to the right of the main text */
+  background: #ff4c4c;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 4px 8px;
+  animation: liveBlink 1.3s infinite alternate;
+}
+
+/* Slight blinking for the badge */
+@keyframes liveBlink {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.65;
+  }
+}
+
+/* The motivational tagline just under the countdown text */
+.motivationalTagline {
+  margin-top: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #555555;
+}
+
+/* This was your original .awhp2024TimerText class */
 .awhp2024TimerText {
   color: #0142ac;
   display: inline;
@@ -36,7 +72,7 @@
 }
 
 .loadingContainer {
-  text-align: center;
+  text-align: left; /* changed from center to left for a more "seminar" look */
 }
 
 .loadingText {
@@ -72,7 +108,6 @@
   border-radius: 5px;
   text-decoration: none;
 }
-
 .loadingLogo:hover {
   background-color: #022c78;
   transition: background-color 0.3s;
@@ -93,19 +128,15 @@
   color: #2E2E2E;
   margin-top: 20px;
   font-weight: 500;
-  /* CHANGED from center to left: */
-  text-align: left;
-  margin-left: 20px; /* so it’s clearly left-aligned */
+  text-align: left; /* changed to left alignment */
 }
-
 .bulletsList {
   font-family: 'Montserrat', sans-serif;
   list-style-type: disc;
   color: #2E2E2E;
-  padding-left: 2rem; /* for visible left indentation */
+  padding-left: 1.5rem;
   margin-top: 10px;
-  /* ensure left alignment: */
-  text-align: left;
+  text-align: left; /* ensure the bullets are left-aligned */
 }
 
 /* ========================= */
@@ -115,11 +146,23 @@
   background: #fff;
   display: flex;
   flex-direction: column;
-  /* CHANGED from 750px to 375px */
-  height: 425px;
+  /* halved from 750px to 375px: */
+  height: 375px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+  /* Subtle pulsing glow to give a "live" feel */
+  animation: chatGlow 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes chatGlow {
+  0% {
+    box-shadow: 0 0 10px rgba(1,66,172,0.2);
+  }
+  100% {
+    box-shadow: 0 0 24px rgba(1,66,172,0.45);
+  }
 }
 
 .chatHeader {
@@ -130,19 +173,16 @@
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
 }
-
 .headerTop {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
 .chatTitle {
   font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: -0.02em;
 }
-
 .toggleContainer {
   display: flex;
   align-items: center;
@@ -151,20 +191,17 @@
   padding-left: 15px;
   padding-right: 15px;
 }
-
 .toggleSwitch {
   position: relative;
   display: inline-block;
   width: 40px;
   height: 20px;
 }
-
 .toggleSwitch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-
 .toggleSlider {
   position: absolute;
   cursor: pointer;
@@ -173,7 +210,6 @@
   transition: .4s;
   border-radius: 20px;
 }
-
 .toggleSlider:before {
   position: absolute;
   content: "";
@@ -185,20 +221,16 @@
   transition: .4s;
   border-radius: 50%;
 }
-
 .toggleSwitch input:checked + .toggleSlider {
   background-color: #4CAF50;
 }
-
 .toggleSwitch input:checked + .toggleSlider:before {
   transform: translateX(20px);
 }
-
 .toggleLabel {
   color: white;
   font-size: 0.45rem;
 }
-
 .viewerCount {
   font-size: 0.55rem;
   background: rgba(255,255,255,0.1);
@@ -208,7 +240,6 @@
   align-items: center;
   gap: 5px;
 }
-
 .chatMessages {
   flex: 1 1 auto;
   overflow-y: auto;
@@ -216,7 +247,6 @@
   background: #f8f9fa;
   min-height: 0;
 }
-
 .message {
   margin-bottom: 10px;
   line-height: 1.4;
@@ -227,19 +257,16 @@
   max-width: 90%;
   text-align: left;
 }
-
 .message.user {
   background: #f0f2f5;
   margin-left: auto;
   color: #2c3135;
 }
-
 .message.host {
   background: #e7f0ff;
   color: #0142AC;
   font-weight: 500;
 }
-
 .message.system {
   background: #fff3cd;
   color: #856404;
@@ -248,19 +275,16 @@
   margin: 15px 0;
   font-size: 0.85rem;
 }
-
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 .chatInput {
   padding: 15px;
   background: #fff;
   border-top: 1px solid #eee;
   flex: 0 0 auto;
 }
-
 .chatInput input {
   width: 100%;
   padding: 12px;
@@ -270,13 +294,11 @@
   transition: all 0.3s ease;
   color: #2c3135;
 }
-
 .chatInput input:focus {
   outline: none;
   border-color: #0142AC;
   box-shadow: 0 0 0 2px rgba(1, 66, 172, 0.1);
 }
-
 .typingIndicator {
   color: #6c757d;
   font-size: 0.85rem;
@@ -285,21 +307,17 @@
   height: 20px;
   padding-left: 2px;
 }
-
 .chatMessages::-webkit-scrollbar {
   width: 8px;
 }
-
 .chatMessages::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 4px;
 }
-
 .chatMessages::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 4px;
 }
-
 .chatMessages::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
@@ -313,12 +331,10 @@
   margin: 20px;
   justify-content: center;
 }
-
 .waitingroomLeft {
   flex: 1 1 350px;
   min-width: 300px;
 }
-
 .waitingroomRight {
   flex: 1 1 400px;
   min-width: 300px;
