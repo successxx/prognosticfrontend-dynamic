@@ -91,7 +91,7 @@
 }
 
 /* =============================== */
-/* 4) Two-column layout */
+/* 4) Two-column layout: video left, chat right */
 /* =============================== */
 .twoColumnLayout {
   display: flex;
@@ -146,17 +146,12 @@
   opacity: 0.9;
 }
 
-/* If you previously had a chatPlaceholder, we can remove it now or keep as fallback */
-.chatPlaceholder {
-  flex: 1;
-  background: #f0f2f5;
-  border-radius: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  padding: 20px;
-}
-
 /* =============================== */
 /* 6) The "exit intent" overlay */
+/* 
+   We add a fadeIn animation to make it appear smoothly
+   Also, user can close by clicking anywhere outside bubble.
+*/
 /* =============================== */
 .exitOverlay {
   position: fixed;
@@ -169,6 +164,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: fadeIn 0.25s ease;
+  cursor: pointer; /* so user knows they can click outside */
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 /* iPhone-like bubble for the exit message */
@@ -182,6 +184,7 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
   animation: bubblePop 0.35s ease-out;
   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  cursor: auto; /* bubble itself not closing on click */
 }
 .iphoneSender {
   font-weight: 600;
@@ -217,16 +220,19 @@
     opacity: 1;
   }
 }
+
+/* The "X" close button in top-right */
 .exitCloseBtn {
   position: absolute;
-  top: 8px;
-  right: 14px;
+  top: 6px;
+  right: 12px;
   border: none;
   background: transparent;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   line-height: 1;
   cursor: pointer;
   color: #fff;
+  opacity: 0.9;
 }
 
 /* =============================== */
@@ -248,7 +254,7 @@
 }
 
 /* =============================== */
-/* 8) Chatbox CSS (formerly inline in the snippet) */
+/* 8) Chatbox CSS (unchanged) */
 /* =============================== */
 .chatSection {
   background: #fff;
