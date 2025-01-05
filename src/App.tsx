@@ -5,7 +5,6 @@ import StreakCounter from './StreakCounter';
 import Fireworks from './Fireworks';
 import './index.css';
 import LoadingCircle from './LoadingCircle';
-import Footer from './Footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Import your new React-based waiting room component
@@ -24,7 +23,6 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [isContentVisible, setIsContentVisible] = useState<boolean>(false);
-  const [isFooterVisible, setIsFooterVisible] = useState<boolean>(false);
   const [showWaitingRoom, setShowWaitingRoom] = useState<boolean>(true); // NEW
   const [streak] = useState<number>(1);
 
@@ -49,11 +47,6 @@ const App: React.FC = () => {
       setLoading(false);
       setIsContentVisible(true);
 
-      // Show footer after 7 seconds
-      setTimeout(() => {
-        setIsFooterVisible(true);
-      }, 7000);
-
       return;
     }
 
@@ -66,12 +59,6 @@ const App: React.FC = () => {
       // Quarter hour arrived => hide waiting room, show webinar
       setShowWaitingRoom(false);
       setIsContentVisible(true);
-
-      // Show footer after e.g. 7 seconds
-      setTimeout(() => {
-        setIsFooterVisible(true);
-      }, 7000);
-    }, msLeft);
 
     return () => clearTimeout(timerId);
   }, []);
@@ -130,9 +117,6 @@ const App: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* 5) Footer, which can fade in after 7s once the webinar is visible */}
-            <Footer isFooterVisible={isFooterVisible} />
           </div>
         </div>
       </div>
