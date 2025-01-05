@@ -1,132 +1,144 @@
 /* WebinarView.module.css */
 
-/* =============================== */
-/* 1) "Connecting you now..." overlay */
-/* =============================== */
+/* ===========================
+   1) "Zoom-like Container"
+   =========================== */
+.zoomContainer {
+  background: #fff; /* White background like Zoom window */
+  border: 2px solid #dcdcdc;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 16px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* A top bar within the Zoom container for the Title + "live for X minutes" */
+.zoomTopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* Title in the top-left, e.g. "PrognosticAI Advanced Training" */
+.zoomTitle {
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* The "LIVE" dot can remain from existing code; we can place it inside zoomTitle if we want */
+.zoomLiveDot {
+  width: 8px;
+  height: 8px;
+  background: #ff0000;
+  border-radius: 50%;
+  animation: pulseZoom 1.5s infinite;
+  margin-right: 4px;
+}
+@keyframes pulseZoom {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* The small "Live for X minutes" text on top-right */
+.zoomLiveMinutes {
+  font-size: 0.55rem; /* Quite small, akin to Show Others text */
+  color: #666;
+  font-weight: 500;
+  background: #f0f0f0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* ===========================
+   2) "Connecting" overlay
+   with a spinner
+   =========================== */
 .connectingOverlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: #0142ac; 
+  background: rgba(1,66,172,0.9); 
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
 }
 .connectingBox {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 12px;
-  padding: 40px 60px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+.connectingSpinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #cce0ff; /* Light ring */
+  border-top-color: #0142ac; /* PrognosticAI blue */
+  border-radius: 50%;
+  animation: spin 1s infinite linear;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 .connectingText {
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.5rem;
-  color: #0142ac;
-  font-weight: 700;
-}
-
-/* =============================== */
-/* 2) Container around everything */
-/* =============================== */
-.container {
-  width: 100%;
-  max-width: 1400px; 
-  margin: 0 auto;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-/* =============================== */
-/* 3) Banner row (LIVE label, etc.) */
-/* =============================== */
-.bannerRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-.banner {
-  padding: 12px 15px;
-  background: #0142ac;
-  color: white;
+  font-size: 1.2rem;
+  color: #fff;
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  font-size: 0.95rem;
-  border-radius: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-}
-.liveMinutes {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.85rem;
-  color: white;
-  background: #0142ac;
-  padding: 6px 12px;
-  border-radius: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* "LIVE" dot animation */
-.liveIndicator {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-right: 12px;
-}
-.liveDot {
-  width: 8px;
-  height: 8px;
-  background: #ff0000;
-  border-radius: 50%;
-  animation: pulse 1.5s infinite;
-}
-@keyframes pulse {
-  0%   { opacity: 1; }
-  50%  { opacity: 0.5; }
-  100% { opacity: 1; }
-}
-
-/* =============================== */
-/* 4) Two-column layout: video left, chat right */
-/* =============================== */
+/* ===========================
+   3) The 70/30 layout
+   inside .zoomContainer
+   =========================== */
 .twoColumnLayout {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  flex-wrap: nowrap; /* So chat won't drop below the video */
+  gap: 16px;
+  height: 550px; /* Taller to mimic "Zoom" style */
 }
 .videoColumn {
   flex: 0 0 70%;
   max-width: 70%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 .chatColumn {
   flex: 0 0 30%;
   max-width: 30%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
-/* The video wrapper: fill area, keep background black */
+/* The video wrapper: fill area, keep background black, bigger like Zoom */
 .videoWrapper {
   position: relative;
   background: #000;
-  flex: 1;
-  border-radius: 12px;
+  border-radius: 6px;
   overflow: hidden;
+  flex: 1;
 }
 
-/* =============================== */
-/* 5) Sound overlay if user hasn't interacted */
-/* =============================== */
+/* ===========================
+   4) Sound overlay
+   =========================== */
 .soundOverlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.65);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -136,7 +148,7 @@
   z-index: 4;
 }
 .soundIcon {
-  font-size: 2.5rem;
+  font-size: 2rem;
   margin-bottom: 12px;
   opacity: 0.9;
 }
@@ -146,13 +158,10 @@
   opacity: 0.9;
 }
 
-/* =============================== */
-/* 6) The "exit intent" overlay */
-/* 
-   We add a fadeIn animation to make it appear smoothly
-   Also, user can close by clicking anywhere outside bubble.
-*/
-/* =============================== */
+/* ===========================
+   5) The "exit intent" overlay
+   (no immediate changes, just keep fadeIn)
+   =========================== */
 .exitOverlay {
   position: fixed;
   top: 0; 
@@ -165,26 +174,49 @@
   justify-content: center;
   align-items: center;
   animation: fadeIn 0.25s ease;
-  cursor: pointer; /* so user knows they can click outside */
+  cursor: pointer;
 }
-
 @keyframes fadeIn {
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
-
-/* iPhone-like bubble for the exit message */
 .iphoneMessageBubble {
   position: relative;
   max-width: 80%;
-  background: #0a84ff; /* iMessage blue in iOS14+ */
+  background: #0a84ff;
   color: #fff;
   border-radius: 18px;
   padding: 14px 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
   animation: bubblePop 0.35s ease-out;
   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  cursor: auto; /* bubble itself not closing on click */
+  cursor: auto;
+}
+@keyframes bubblePop {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.exitCloseBtn {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #fff;
+  opacity: 0.9;
 }
 .iphoneSender {
   font-weight: 600;
@@ -206,64 +238,19 @@
   border: 10px solid transparent;
   border-right-color: #0a84ff;
 }
-@keyframes bubblePop {
-  0% {
-    transform: scale(0.85);
-    opacity: 0;
-  }
-  55% {
-    transform: scale(1.05);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
 
-/* The "X" close button in top-right */
-.exitCloseBtn {
-  position: absolute;
-  top: 6px;
-  right: 12px;
-  border: none;
-  background: transparent;
-  font-size: 1.2rem;
-  line-height: 1;
-  cursor: pointer;
-  color: #fff;
-  opacity: 0.9;
-}
-
-/* =============================== */
-/* 7) Responsive adjustments */
-/* =============================== */
-@media (max-width: 900px) {
-  .container {
-    max-width: 100%;
-    padding: 10px;
-  }
-  .twoColumnLayout {
-    flex-direction: column;
-  }
-  .videoColumn,
-  .chatColumn {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
-}
-
-/* =============================== */
-/* 8) Chatbox CSS (unchanged) */
-/* =============================== */
+/* ===========================
+   6) Chatbox CSS
+   (Unchanged except we ensure .chatSection can fill parent)
+   =========================== */
 .chatSection {
   background: #fff;
   display: flex;
   flex-direction: column;
-  height: 750px;
-  border-radius: 12px;
+  border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  flex: 1; /* fill height so it aligns with the video height */
 }
 
 .chatHeader {
@@ -271,8 +258,8 @@
   background: #0142AC;
   color: #fff;
   flex: 0 0 auto;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
 }
 .headerTop {
   display: flex;
@@ -372,7 +359,7 @@
   background: #013289;
 }
 
-/* Chat messages */
+/* Chat messages area */
 .chatMessages {
   flex: 1 1 auto;
   overflow-y: auto;
