@@ -344,8 +344,7 @@ const WebinarChatBox: React.FC = () => {
 
     // On scroll, detect if user is near bottom
     function handleScroll() {
-      // chatEl is definitely not null here due to early return
-      isUserScrolling = !isNearBottom(chatEl);
+      isUserScrolling = !isNearBottom(chatEl!);
     }
     chatEl.addEventListener('scroll', handleScroll);
 
@@ -370,29 +369,33 @@ const WebinarChatBox: React.FC = () => {
       messageDiv.textContent = userName ? `${userName}: ${text}` : text;
 
       // Tag user messages from others so they can be hidden if toggle is off
+      messageDiv!.style.display = 'block'; // ensures the element is shown by default
       if (type === 'user' && userName !== 'You') {
         messageDiv.setAttribute('data-participant', 'true');
         messageDiv.setAttribute('data-auto-generated', 'true');
-        messageDiv.style.display = toggleEl.checked ? 'block' : 'none';
+        // Use toggleEl!.checked
+        if (!toggleEl!.checked) {
+          messageDiv.style.display = 'none';
+        }
       }
 
-      chatEl.appendChild(messageDiv);
+      chatEl!.appendChild(messageDiv);
 
       // auto-scroll if near bottom
       if (!isUserScrolling || userName === 'You') {
-        scrollToBottom(chatEl);
+        scrollToBottom(chatEl!);
       }
     }
 
     // Toggle show/hide participant messages
     function handleToggleChange(e: Event) {
       const target = e.currentTarget as HTMLInputElement;
-      const participantMessages = chatEl.querySelectorAll('[data-participant="true"]');
+      const participantMessages = chatEl!.querySelectorAll('[data-participant="true"]');
       participantMessages.forEach(msg => {
         (msg as HTMLElement).style.display = target.checked ? 'block' : 'none';
       });
       if (target.checked && !isUserScrolling) {
-        scrollToBottom(chatEl);
+        scrollToBottom(chatEl!);
       }
     }
     toggleEl.addEventListener('change', handleToggleChange);
@@ -446,11 +449,10 @@ const WebinarChatBox: React.FC = () => {
         addMessage(q.text, 'user', q.user);
         // Optionally show "Selina is typing..."
         setTimeout(() => {
-          typingEl.textContent = "Selina is typing...";
+          typingEl!.textContent = "Selina is typing...";
           const randomDelay = Math.random() * 10000 + 10000;
           setTimeout(() => {
-            typingEl.textContent = "";
-            // If you want an actual AI response, you’d call handleHostResponse or similar
+            typingEl!.textContent = "";
           }, randomDelay);
         }, 1000);
       }, q.time * 1000);
@@ -486,7 +488,7 @@ const WebinarChatBox: React.FC = () => {
 
     // Show special offer after 60s
     setTimeout(() => {
-      specialOfferEl.style.display = "block";
+      specialOfferEl!.style.display = "block";
       addMessage(
         "🚨 Special Offer Alert! For the next 10 minutes only, secure your spot in PrognosticAI for just $999. Don't miss out! 🚀",
         "system"
@@ -496,10 +498,10 @@ const WebinarChatBox: React.FC = () => {
         t--;
         const min = Math.floor(t / 60);
         const sec = t % 60;
-        countdownEl.textContent = `Special Offer Ends In: ${min}:${sec.toString().padStart(2, "0")}`;
+        countdownEl!.textContent = `Special Offer Ends In: ${min}:${sec.toString().padStart(2, "0")}`;
         if (t <= 0) {
           clearInterval(countdownInt);
-          specialOfferEl.style.display = "none";
+          specialOfferEl!.style.display = "none";
           addMessage("⌛ The special offer has ended.","system");
         }
       }, 1000);
@@ -515,7 +517,7 @@ const WebinarChatBox: React.FC = () => {
       try {
         const randomDelay = Math.random() * 4000;
         await new Promise(resolve => setTimeout(resolve, randomDelay));
-        typingEl.textContent = "Selina is typing...";
+        typingEl!.textContent = "Selina is typing...";
 
         const response = await fetch("https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message", {
           method: "POST",
@@ -525,14 +527,14 @@ const WebinarChatBox: React.FC = () => {
         if (!response.ok) throw new Error("API call failed");
 
         const data = await response.json();
-        typingEl.textContent = "";
+        typingEl!.textContent = "";
 
         if (data.response) {
           addMessage(data.response, "host", "Selina (Host)");
         }
       } catch (err) {
         console.error("Error:", err);
-        typingEl.textContent = "";
+        typingEl!.textContent = "";
         addMessage(
           "Apologies, I'm having trouble connecting. Please try again!",
           "host",
@@ -543,9 +545,9 @@ const WebinarChatBox: React.FC = () => {
 
     // When user presses Enter in chat
     function handleKeypress(e: KeyboardEvent) {
-      if (e.key === "Enter" && inputEl.value.trim()) {
-        const userMsg = inputEl.value.trim();
-        inputEl.value = "";
+      if (e.key === "Enter" && inputEl!.value.trim()) {
+        const userMsg = inputEl!.value.trim();
+        inputEl!.value = "";
         addMessage(userMsg, "user", "You");
         handleUserMessage(userMsg);
       }
