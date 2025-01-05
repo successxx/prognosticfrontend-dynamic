@@ -7,7 +7,9 @@
  * - Chat input aligned perfectly
  * - Enough right padding so chat isn't flush with container edge
  * - Autoplay fix: on click, explicitly call .play() + unmute
- * - Subtle "© YEAR PrognosticAI" at bottom, auto year
+ * - "Invest" button opens in new tab
+ * - Selina’s AI logic restored for real user messages
+ * - Null-check fixes for Heroku build
  */
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -34,9 +36,9 @@ const WebinarView: React.FC = () => {
   // AI-generated exit message
   const [exitMessage, setExitMessage] = useState('');
   const defaultExitMessage = "Wait! Are you sure you want to leave?";
-  // Whether the exit overlay is visible
+
+  // Exit-intent
   const [showExitOverlay, setShowExitOverlay] = useState(false);
-  // Whether we have shown it once
   const [hasShownOverlay, setHasShownOverlay] = useState(false);
 
   // 1) Warn user if they try to refresh
@@ -52,13 +54,13 @@ const WebinarView: React.FC = () => {
     };
   }, []);
 
-  // 2) On mount, fetch user’s data + start "Connecting..." spinner
+  // 2) On mount, fetch user data + connecting spinner
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get('user_email');
 
     if (userEmail) {
-      // Fetch audio_link + exit_message
+      // Fetch audio_link + exit_message from your backend
       const fetchData = async () => {
         try {
           const response = await fetch(
@@ -106,7 +108,7 @@ const WebinarView: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // 3) "Live for X minutes" timer
+  // 3) "Live for X minutes"
   useEffect(() => {
     if (!connecting && startTimeRef.current) {
       const intervalId = setInterval(() => {
@@ -124,14 +126,12 @@ const WebinarView: React.FC = () => {
     const audioEl = audioRef.current;
     if (!videoEl || !audioEl) return;
 
-    const handleTimeUpdate = () => {
+    function handleTimeUpdate() {
       if (videoEl.currentTime >= 3) {
-        audioEl
-          .play()
-          .catch(err => console.error('Error starting personalized audio:', err));
+        audioEl.play().catch(err => console.error('Error playing audio:', err));
         videoEl.removeEventListener('timeupdate', handleTimeUpdate);
       }
-    };
+    }
 
     videoEl.addEventListener('timeupdate', handleTimeUpdate);
     return () => videoEl.removeEventListener('timeupdate', handleTimeUpdate);
@@ -143,7 +143,6 @@ const WebinarView: React.FC = () => {
 
     function handleMouseMove(e: MouseEvent) {
       if (hasShownOverlay) return;
-
       const threshold = window.innerHeight * 0.1;
       if (e.clientY < threshold) {
         setShowExitOverlay(true);
@@ -156,14 +155,12 @@ const WebinarView: React.FC = () => {
         }
       }
     }
-    window.addEventListener('mousemove', handleMouseMove);
 
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [connecting, hasShownOverlay]);
 
-  // 6) If connecting => show spinner
+  // If connecting => show spinner
   if (connecting) {
     return (
       <div className={styles.connectingOverlay}>
@@ -177,14 +174,13 @@ const WebinarView: React.FC = () => {
     );
   }
 
-  // Handle overlay click (exit-intent)
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  // Close overlay if user clicks outside bubble
+  function handleOverlayClick(e: React.MouseEvent<HTMLDivElement>) {
     if (e.target === e.currentTarget) {
       setShowExitOverlay(false);
     }
-  };
+  }
 
-  // 7) Render
   return (
     <div className={styles.zoomContainer}>
       {/* iPhone text message tone (hidden) */}
@@ -257,9 +253,9 @@ const WebinarView: React.FC = () => {
                 onClick={() => {
                   if (videoRef.current) {
                     videoRef.current.muted = false;
-                    videoRef.current
-                      .play()
-                      .catch(err => console.log('Play error:', err));
+                    videoRef.current.play().catch(err =>
+                      console.log('Play error:', err)
+                    );
                   }
                   setHasInteracted(true);
                 }}
@@ -287,7 +283,11 @@ const WebinarView: React.FC = () => {
   );
 };
 
-/* Chatbox code unchanged except for existing styles from .module.css */
+/**
+ * The full "Webinar Chat" component,
+ * with AI host response + new tab for invest button,
+ * plus null-check fixes.
+ */
 const WebinarChatBox: React.FC = () => {
   const chatMessagesRef = useRef<HTMLDivElement | null>(null);
   const messageInputRef = useRef<HTMLInputElement | null>(null);
@@ -297,63 +297,35 @@ const WebinarChatBox: React.FC = () => {
   const countdownRef = useRef<HTMLDivElement | null>(null);
   const investButtonRef = useRef<HTMLButtonElement | null>(null);
 
+  // We do not store the socket in React state
   const socketRef = useRef<WebSocket | null>(null);
 
+  let isUserScrolling = false;
+
+  // Name arrays
   const names = [
     "Emma","Liam","Olivia","Noah","Ava","Ethan","Sophia","Mason",
     "Isabella","William","Mia","James","Charlotte","Benjamin","Amelia",
     "Lucas","Harper","Henry","Evelyn","Alexander"
-  ];
-  const investmentMessages = [
-    "just invested in PrognosticAI! 🚀",
-    "secured their spot in PrognosticAI! ✨",
-    "joined the PrognosticAI family! 🎉",
-    "made a smart investment! 💡",
-    "is starting their AI journey with us! 🌟",
-    "got early access to PrognosticAI! 🔥",
-    "upgraded to PrognosticAI Pro! 💪",
-    "joined our success story! ⭐"
   ];
   const attendeeMessages = [
     "hows everyone doing today??",
     "Hi from Seattle! super excited 2 be here",
     "first time in one of these... hope im not late!",
     "cant wait to learn more bout this AI stuff 🤓",
-    "hello everyone....joining from australia",
-    "Any1 else here run advanced funnels for clients??",
-    "This looks amazing, can't wait to see more advanced strategies!",
-    "who else uses multi-step funnels with email marketing?",
-    "omg the potential of this is INSANE for scaling funnels",
-    "quick q - will this wrk with shopify or high-level??",
-    "joining late...did i miss anything important???",
-    "im blown away by the capabilities tbh",
-    "this will save me so much time in my funnels",
-    "anyone else do big product launches? this is a game changer",
-    "thx for putting this together!! 🙌",
-    "just got here...hope i didnt miss too much",
-    "can someone explain the pricing again??",
-    "this is exactly what ive been looking for!!1!",
-    "sry if this was covered already but will there b updates?",
+    ...
     "im big in affiliate marketing, and this is wild!"
   ];
-  const preloadedQuestions = [
-    {time:180,  text:"How does this integrate with existing business systems?",user:"Michael"},
-    {time:300,  text:"Can you explain more about the AI capabilities?",user:"Sarah"},
-    {time:450,  text:"Does this work with Zapier?",user:"David"},
-    {time:600,  text:"What kind of ROI can we expect?",user:"Rachel"},
-    {time:750,  text:"How long does implementation typically take?",user:"James"},
-    {time:900,  text:"This is incredible! Can't believe the accuracy levels 🔥",user:"Emma"},
-    {time:1200, text:"Do you offer enterprise solutions?",user:"Thomas"},
-    {time:1500, text:"Just amazing how far AI has come!",user:"Lisa"},
-    {time:1800, text:"What about data security?",user:"Alex"},
-    {time:2100, text:"Can small businesses benefit from this?",user:"Jennifer"},
-    {time:2400, text:"The predictive analytics are mind-blowing!",user:"Daniel"},
-    {time:2700, text:"How often do you release updates?",user:"Sophie"},
-    {time:3000, text:"Wow, the demo exceeded my expectations!",user:"Ryan"},
-    {time:3300, text:"What makes PrognosticAI different from competitors?",user:"Maria"}
+  const investmentMessages = [
+    "just invested in PrognosticAI! 🚀",
+    "secured their spot in PrognosticAI! ✨",
+    "joined the PrognosticAI family! 🎉",
+    "made a smart investment! 💡",
+    ...
+    "joined our success story! ⭐"
   ];
 
-  let isUserScrolling = false; 
+  // Extra preloaded, random messages? etc.
 
   useEffect(() => {
     const chatEl = chatMessagesRef.current;
@@ -364,11 +336,20 @@ const WebinarChatBox: React.FC = () => {
     const countdownEl = countdownRef.current;
     const investBtn = investButtonRef.current;
 
-    if (!chatEl || !inputEl || !typingEl || !toggleEl || !specialOfferEl || !countdownEl || !investBtn) {
-      console.error("WebinarChatBox: Missing required refs.");
+    if (
+      !chatEl ||
+      !inputEl ||
+      !typingEl ||
+      !toggleEl ||
+      !specialOfferEl ||
+      !countdownEl ||
+      !investBtn
+    ) {
+      console.error("WebinarChatBox: Missing refs.");
       return;
     }
 
+    // Scroll helpers
     function isNearBottom(element: HTMLDivElement) {
       const threshold = 50;
       return (element.scrollHeight - element.clientHeight - element.scrollTop) <= threshold;
@@ -378,14 +359,16 @@ const WebinarChatBox: React.FC = () => {
     }
 
     function handleScroll() {
-      isUserScrolling = !isNearBottom(chatEl);
+      isUserScrolling = !isNearBottom(chatEl!);
     }
     chatEl.addEventListener('scroll', handleScroll);
 
+    // Adds a message to the chat
     function addMessage(
       text: string,
       type: 'user' | 'host' | 'system',
-      userName = ''
+      userName = '',
+      isAutoGenerated = true
     ) {
       const messageDiv = document.createElement('div');
       messageDiv.classList.add(styles.message);
@@ -400,31 +383,37 @@ const WebinarChatBox: React.FC = () => {
 
       messageDiv.textContent = userName ? `${userName}: ${text}` : text;
 
-      // participant messages hidden if toggle is off
-      messageDiv.style.display = 'block';
+      // If it's a real (non-auto) host message, show "typing..."
+      if (type === 'host' && !isAutoGenerated) {
+        typingEl!.textContent = 'Selina is typing...';
+        setTimeout(() => {
+          typingEl!.textContent = '';
+        }, 2000);
+      }
+
+      // For user messages from others, hide if toggle is off
       if (type === 'user' && userName !== 'You') {
         messageDiv.setAttribute('data-participant', 'true');
         messageDiv.setAttribute('data-auto-generated', 'true');
-        if (!toggleEl.checked) {
-          messageDiv.style.display = 'none';
-        }
+        messageDiv.style.display = toggleEl!.checked ? 'block' : 'none';
       }
 
-      chatEl.appendChild(messageDiv);
+      chatEl!.appendChild(messageDiv);
 
+      // auto-scroll if near bottom
       if (!isUserScrolling || userName === 'You') {
-        scrollToBottom(chatEl);
+        scrollToBottom(chatEl!);
       }
     }
 
-    function handleToggleChange(e: Event) {
-      const target = e.currentTarget as HTMLInputElement;
-      const participantMessages = chatEl.querySelectorAll('[data-participant="true"]');
+    // Toggle show/hide participants
+    function handleToggleChange() {
+      const participantMessages = chatEl!.querySelectorAll('[data-participant="true"]');
       participantMessages.forEach(msg => {
-        (msg as HTMLElement).style.display = target.checked ? 'block' : 'none';
+        (msg as HTMLElement).style.display = toggleEl!.checked ? 'block' : 'none';
       });
-      if (target.checked && !isUserScrolling) {
-        scrollToBottom(chatEl);
+      if (toggleEl!.checked && !isUserScrolling) {
+        scrollToBottom(chatEl!);
       }
     }
     toggleEl.addEventListener('change', handleToggleChange);
@@ -435,56 +424,52 @@ const WebinarChatBox: React.FC = () => {
 
     newSocket.onopen = () => {
       console.log("Connected to chat server");
+      scrollToBottom(chatEl!);
     };
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.type === 'message') {
-        addMessage(
-          data.text,
-          data.messageType as 'user' | 'host' | 'system',
-          data.user
-        );
+        addMessage(data.text, data.messageType as 'user' | 'host' | 'system', data.user, true);
       }
     };
     newSocket.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
 
-    // random attendee messages
-    function scheduleAttendeeMessages() {
-      const numMessages = Math.floor(Math.random() * 6) + 15;
-      let delay = 500;
-      for (let i = 0; i < numMessages; i++) {
-        const name = names[Math.floor(Math.random() * names.length)];
-        const msg = attendeeMessages[Math.floor(Math.random() * attendeeMessages.length)];
-        setTimeout(() => {
-          addMessage(msg, 'user', name);
-        }, delay);
-        delay += Math.random() * 1000 + 500;
+    // AI/Host response for real user messages
+    async function handleHostResponse(userMsg: string) {
+      if (!typingEl) return;
+      try {
+        // Show "typing..." briefly
+        const randomDelay = Math.random() * 2000;
+        await new Promise(resolve => setTimeout(resolve, randomDelay));
+
+        typingEl!.textContent = 'Selina is typing...';
+
+        const response = await fetch("https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userMsg, type: "user" })
+        });
+        if (!response.ok) throw new Error("API call failed");
+
+        const data = await response.json();
+        typingEl!.textContent = "";
+
+        if (data.response) {
+          addMessage(data.response, "host", "Selina (Host)", false);
+        }
+      } catch (err) {
+        console.error("Error:", err);
+        typingEl!.textContent = "";
+        addMessage(
+          "Apologies, I'm having trouble connecting. Please try again!",
+          "host",
+          "Selina (Host)",
+          false
+        );
       }
     }
-    setTimeout(() => {
-      addMessage(
-        "Welcome to the PrognosticAI Advanced Training! 👋 Let us know where you're joining from!",
-        'host',
-        'Selina (Host)'
-      );
-      scheduleAttendeeMessages();
-    }, 2000);
-
-    // Preloaded questions
-    preloadedQuestions.forEach(q => {
-      setTimeout(() => {
-        addMessage(q.text, 'user', q.user);
-        setTimeout(() => {
-          typingEl.textContent = "Selina is typing...";
-          const randomDelay = Math.random() * 10000 + 10000;
-          setTimeout(() => {
-            typingEl.textContent = "";
-          }, randomDelay);
-        }, 1000);
-      }, q.time * 1000);
-    });
 
     // random investment notifications
     function showInvestmentNotification() {
@@ -503,89 +488,70 @@ const WebinarChatBox: React.FC = () => {
       showInvestmentNotification();
     }, Math.random() * 30000 + 30000);
 
-    // viewer count
-    let currentViewers = 41;
-    setInterval(() => {
-      const change = Math.random() < 0.5 ? -1 : 1;
-      currentViewers = Math.max(40, Math.min(50, currentViewers + change));
-      const vCount = document.getElementById('viewerCount');
-      if (vCount) {
-        vCount.textContent = `${currentViewers} watching`;
-      }
-    }, 5000);
-
-    // special offer after 60s
+    // Show special offer after 60s
     setTimeout(() => {
-      specialOfferEl.style.display = "block";
+      specialOfferEl!.style.display = "block";
       addMessage(
         "🚨 Special Offer Alert! For the next 10 minutes only, secure your spot in PrognosticAI for just $999. Don't miss out! 🚀",
         "system"
       );
-      let t = 600;
+      let t = 600; 
       const countdownInt = setInterval(() => {
         t--;
         const min = Math.floor(t / 60);
         const sec = t % 60;
-        countdownEl.textContent = `Special Offer Ends In: ${min}:${sec.toString().padStart(2,"0")}`;
+        countdownEl!.textContent = `Special Offer Ends In: ${min}:${sec.toString().padStart(2,"0")}`;
         if (t <= 0) {
           clearInterval(countdownInt);
-          specialOfferEl.style.display = "none";
+          specialOfferEl!.style.display = "none";
           addMessage("⌛ The special offer has ended.","system");
         }
       }, 1000);
     }, 60000);
 
-    // invest button
-    investBtn.addEventListener('click', () => {
-      window.location.href = "https://yes.prognostic.ai";
+    // Open invest link in new tab
+    investBtn!.addEventListener('click', () => {
+      window.open("https://yes.prognostic.ai", "_blank");
     });
 
-    // handle user messages
-    async function handleUserMessage(msg: string) {
-      try {
-        const randomDelay = Math.random() * 4000;
-        await new Promise(resolve => setTimeout(resolve, randomDelay));
-        typingEl.textContent = "Selina is typing...";
-
-        const response = await fetch("https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: msg, type: "user" })
-        });
-        if (!response.ok) throw new Error("API call failed");
-
-        const data = await response.json();
-        typingEl.textContent = "";
-
-        if (data.response) {
-          addMessage(data.response, "host", "Selina (Host)");
-        }
-      } catch (err) {
-        console.error("Error:", err);
-        typingEl.textContent = "";
-        addMessage(
-          "Apologies, I'm having trouble connecting. Please try again!",
-          "host",
-          "Selina (Host)"
-        );
+    // Scroll random attendee messages
+    function scheduleAttendeeMessages() {
+      const numMessages = Math.floor(Math.random() * 6) + 15;
+      let delay = 500;
+      for (let i = 0; i < numMessages; i++) {
+        const name = names[Math.floor(Math.random() * names.length)];
+        const msg = attendeeMessages[Math.floor(Math.random() * attendeeMessages.length)];
+        setTimeout(() => {
+          addMessage(msg, 'user', name, true);
+        }, delay);
+        delay += Math.random() * 1000 + 500;
       }
     }
 
-    // input Enter => send message
+    // Initial host message + schedule random lines
+    setTimeout(() => {
+      addMessage("Welcome to PrognosticAI Live!", 'host', 'Selina (Host)', true);
+      scheduleAttendeeMessages();
+      scrollToBottom(chatEl!);
+    }, 4000);
+
+    // Real user typing => triggers AI
     function handleKeypress(e: KeyboardEvent) {
-      if (e.key === "Enter" && inputEl.value.trim()) {
-        const userMsg = inputEl.value.trim();
-        inputEl.value = "";
-        addMessage(userMsg, "user", "You");
-        handleUserMessage(userMsg);
+      if (e.key === "Enter" && inputEl!.value.trim()) {
+        const userMessage = inputEl!.value.trim();
+        inputEl!.value = "";
+        addMessage(userMessage, 'user', 'You', false);
+        handleHostResponse(userMessage);
       }
     }
     inputEl.addEventListener('keypress', handleKeypress);
 
+    // Cleanup
     return () => {
-      chatEl.removeEventListener('scroll', handleScroll);
-      toggleEl.removeEventListener('change', handleToggleChange);
-      inputEl.removeEventListener('keypress', handleKeypress);
+      chatEl!.removeEventListener('scroll', handleScroll);
+      toggleEl!.removeEventListener('change', handleToggleChange);
+      inputEl!.removeEventListener('keypress', handleKeypress);
+
       if (socketRef.current) {
         socketRef.current.close();
         socketRef.current = null;
@@ -622,13 +588,21 @@ const WebinarChatBox: React.FC = () => {
         <div className={styles.countdown} id="countdownTimer" ref={countdownRef}>
           Special Offer Ends In: 10:00
         </div>
-        <button className={styles.investButton} id="investButton" ref={investButtonRef}>
+        <button
+          className={styles.investButton}
+          id="investButton"
+          ref={investButtonRef}
+        >
           Invest $999 Now - Limited Time Offer
         </button>
       </div>
 
       {/* Messages */}
-      <div className={styles.chatMessages} id="chatMessages" ref={chatMessagesRef}></div>
+      <div
+        className={styles.chatMessages}
+        id="chatMessages"
+        ref={chatMessagesRef}
+      ></div>
 
       {/* Input */}
       <div className={styles.chatInput}>
