@@ -1,37 +1,31 @@
 /* WebinarView.module.css */
 
-/* 
-   1) Main container, big + side-by-side layout, 
-      with a "video-section" (video + clock widget overlays, etc.)
-      and a chat column on the right. 
-*/
+/* ===========================
+   1) Main container, big + side-by-side layout
+   =========================== */
 .webinarContainer {
   width: 90%;
-  max-width: 1600px; /* bigger than before for your 50% scale-up */
-  margin: 2rem auto; 
+  max-width: 1600px;
+  margin: 2rem auto;
   display: flex;
   flex-wrap: wrap;
-  gap: 30px; /* bigger gap for Jony Ive minimalism */
+  gap: 30px;
   font-family: 'Montserrat', sans-serif;
 }
 
-/* The video area with timer widget etc. 
-   We keep the old classes from your snippet but in CSS modules style
-*/
+/* The video snippet's container */
 .videoSection {
   background: #000;
   position: relative;
-  /* bigger height than the snippet’s 750px to scale up 50%: ~1100px (or use min-height) */
-  min-height: 750px; 
-  flex: 1 1 900px; /* bigger default if space is available */
+  min-height: 750px;
+  flex: 1 1 900px;
   display: flex;
   flex-direction: column;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden; /* so the clock can’t overflow, if it does. */
+  overflow: hidden;
 }
 
-/* The top bar with LIVE indicator, etc. */
 .banner {
   padding: 12px 15px;
   background: #0142ac;
@@ -65,7 +59,6 @@
   100% { opacity: 1; }
 }
 
-/* The main area (video) below the banner */
 .videoWrapper {
   position: relative;
   flex: 1;
@@ -77,23 +70,20 @@
   border-bottom-right-radius: 12px;
   overflow: hidden;
 }
-
 .videoWrapper video {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* 2) The clock widget that drags in at 10s, then drags out, 
-      plus optional natural movement 
-*/
+/* Clock widget */
 .clockWidget {
   position: absolute;
   transform: translate(-120%, -120%);
   top: 40%;
   left: 45%;
   pointer-events: none;
-  display: none; 
+  display: none;
   width: 320px;
   background: rgba(255, 255, 255, 0.98);
   border-radius: 10px;
@@ -126,10 +116,15 @@
   height: 12px;
   border-radius: 50%;
 }
-
-.closeButton { background: #ff5f57; }
-.minimizeButton { background: #febc2e; }
-.maximizeButton { background: #28c840; }
+.closeButton {
+  background: #ff5f57;
+}
+.minimizeButton {
+  background: #febc2e;
+}
+.maximizeButton {
+  background: #28c840;
+}
 
 .widgetTitle {
   width: 100%;
@@ -160,13 +155,11 @@
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
   letter-spacing: -0.02em;
 }
-
 .clockDate {
   font-size: 0.9rem;
   color: #86868b;
   font-weight: 400;
   text-align: center;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
 
 @keyframes dragIn {
@@ -184,7 +177,6 @@
   70% { transform: translate(140%, -3%); }
   100% { transform: translate(200%, 10%); }
 }
-
 .animateIn {
   animation: dragIn 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
@@ -192,7 +184,7 @@
   animation: dragOut 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-/* 3) Sound overlay on top of the video */
+/* Sound overlay */
 .soundOverlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -217,7 +209,7 @@
   letter-spacing: -0.02em;
 }
 
-/* 4) Replay overlay if the video ends */
+/* Replay overlay */
 .replayOverlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -256,8 +248,6 @@
 
 /* 
    5) Chat column 
-   We'll replicate your waiting room chat styling, 
-   but in a new .chatSection for the webinar 
 */
 .chatSection {
   background: #fff;
@@ -267,10 +257,9 @@
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   flex: 1;
-  min-height: 750px; 
+  min-height: 750px;
 }
 
-/* Chat header */
 .chatHeader {
   padding: 12px 15px;
   background: #0142AC;
@@ -356,7 +345,6 @@
   min-height: 0;
 }
 
-/* Messages styling */
 .message {
   margin-bottom: 10px;
   line-height: 1.4;
@@ -421,7 +409,7 @@
   padding-left: 2px;
 }
 
-/* The special offer in the chat */
+/* Special Offer in chat */
 .specialOffer {
   background: #ff4444;
   color: #fff;
@@ -455,7 +443,7 @@
   background: #013289;
 }
 
-/* Notification popup (someone invests) */
+/* Notification (someone invests) */
 .notification {
   position: fixed;
   bottom: 20px;
@@ -492,10 +480,7 @@
   flex-shrink: 0;
 }
 
-/* 
-   6) 
-   If below e.g. 900px wide, stack the video + chat 
-*/
+/* If below 900px wide, stack columns */
 @media (max-width: 900px) {
   .webinarContainer {
     flex-direction: column;
