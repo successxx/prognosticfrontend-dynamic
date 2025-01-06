@@ -1,12 +1,18 @@
 /* 
    WebinarView.module.css
-   Incorporates your Zoom-like design, doubled container size,
-   clock widget drag in/out, subtle copyright,
-   plus the chat logic from your original snippet.
+   Carefully updated per your requests, ensuring no Heroku build errors
+   while retaining everything that was working.
+   Key changes:
+   1) CTA -> new tab
+   2) No extra white background behind .zoomContainer; .container uses #EAEFF3
+   3) 16:9 video always
+   4) Chat header top-right corner fix
+   5) Clock widget drag in/out remains
+   6) Responsive with aspect-ratio
 */
 
 /**************************************/
-/* 1) Outer Container + Loading Overlay*/
+/* 1) Outer container: #EAEFF3 BG     */
 /**************************************/
 .container {
   display: flex;
@@ -17,7 +23,7 @@
   padding: 20px;
   max-width: 100%;
   min-height: 100vh;
-  background: #fff; /* or none if you prefer */
+  background: #EAEFF3; /* removed white bg */
   position: relative;
 }
 
@@ -55,7 +61,7 @@
 }
 
 /**************************************/
-/* 2) Zoom-like container (DOUBLE SIZE)*/
+/* 2) Zoom-like container (no outer white) */
 /**************************************/
 .zoomContainer {
   background: #fff;
@@ -63,7 +69,7 @@
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   padding: 16px;
-  max-width: 1600px; /* bigger than 1280 for "double" effect */
+  max-width: 1400px; /* not huge, but wide enough */
   margin: 0 auto;
 }
 
@@ -112,31 +118,31 @@
   display: flex;
   flex-wrap: nowrap;
   gap: 16px;
-  /* Double the height from 550px to around 900px or so, for bigger scale. */
-  height: 900px; 
+  /* Instead of a fixed height, rely on the aspect ratio for video. */
+  height: auto;
 }
 .videoColumn {
   flex: 0 0 70%;
   max-width: 70%;
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 .chatColumn {
   flex: 0 0 30%;
   max-width: 30%;
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
-/* The video wrapper: fill area, keep background black, bigger like Zoom */
+/* The video wrapper: enforce 16:9 aspect ratio responsively */
 .videoWrapper {
   position: relative;
   background: #000;
   border-radius: 6px;
   overflow: hidden;
-  flex: 1;
+  width: 100%;
+  /* Force 16:9 aspect ratio */
+  aspect-ratio: 16 / 9;
 }
 
 /**************************************/
@@ -275,7 +281,7 @@
 }
 
 /**************************************/
-/* 7) Clock Widget (dragIn, dragOut)  */
+/* 7) Clock Widget (drag in/out)      */
 /**************************************/
 .clockWidget {
   position: fixed;
@@ -379,7 +385,7 @@
 }
 
 /**************************************/
-/* 8) Chat Section                    */
+/* 8) Chat Section: top-right corner fix*/
 /**************************************/
 .chatSection {
   background: #fff;
@@ -389,8 +395,7 @@
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   flex: 1;
-  /* Add some extra right padding to match spacing on the left */
-  padding-right: 10px; 
+  padding-right: 10px; /* padding on the right to match left spacing */
 }
 
 .chatHeader {
@@ -398,6 +403,8 @@
   background: #0142AC;
   color: #fff;
   flex: 0 0 auto;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px; /* top-right corner fix */
 }
 .headerTop {
   display: flex;
@@ -598,7 +605,7 @@
 }
 
 /**************************************/
-/* 10) Footer (auto-updating year)    */
+/* 10) Footer (on #EAEFF3 background) */
 /**************************************/
 .footer {
   text-align: center;
@@ -627,24 +634,22 @@
 }
 
 /**************************************/
-/* Responsive Adjustments            */
+/* 12) Responsive Adjustments         */
 /**************************************/
 @media (max-width: 1024px) {
   .zoomContainer {
-    max-width: 95vw; /* keep it large but allow smaller screens */
+    max-width: 95vw;
   }
   .twoColumnLayout {
     flex-direction: column;
-    height: auto;
   }
   .videoColumn,
   .chatColumn {
     flex: none;
     width: 100%;
     max-width: 100%;
-    height: auto;
   }
   .videoWrapper {
-    height: auto;
+    aspect-ratio: 16 / 9;
   }
 }
