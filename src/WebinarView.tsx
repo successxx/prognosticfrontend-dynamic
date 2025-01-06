@@ -5,7 +5,7 @@ import styles from './WebinarView.module.css';
  * The entire "Webinar" page:
  * 1) A big video snippet with clock widget + replay overlay
  * 2) A side-by-side chat on the right
- * 3) Non-null checks for `vid` to avoid TS error
+ * 3) Proper type safety throughout
  */
 
 const WebinarView: React.FC = () => {
@@ -18,57 +18,60 @@ const WebinarView: React.FC = () => {
 };
 
 const VideoSection: React.FC = () => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const soundOverlayRef = useRef<HTMLDivElement | null>(null);
-  const replayOverlayRef = useRef<HTMLDivElement | null>(null);
-
-  const clockWidgetRef = useRef<HTMLDivElement | null>(null);
-  const clockTimeRef = useRef<HTMLDivElement | null>(null);
-  const clockDateRef = useRef<HTMLDivElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const soundOverlayRef = useRef<HTMLDivElement>(null);
+  const replayOverlayRef = useRef<HTMLDivElement>(null);
+  const clockWidgetRef = useRef<HTMLDivElement>(null);
+  const clockTimeRef = useRef<HTMLDivElement>(null);
+  const clockDateRef = useRef<HTMLDivElement>(null);
 
   const [hasInteracted, setHasInteracted] = useState(false);
   const [clockTriggered, setClockTriggered] = useState(false);
 
-  // We store intervals in refs so we can clear them
-  const movementIntervalRef = useRef<number | null>(null);
-  const clockIntervalRef = useRef<number | null>(null);
+  const movementIntervalRef = useRef<number>();
+  const clockIntervalRef = useRef<number>();
 
   // Try to start video on mount
   useEffect(() => {
     const vid = videoRef.current;
-    // If `vid` is null, exit to satisfy TS
     if (!vid) return;
 
-    vid.currentTime = 0; 
+    vid.currentTime = 0;
     vid.play().catch(err => console.log("Auto-play prevented:", err));
   }, []);
 
   // Update the clock every second
-  function updateClock() {
-    if (!clockTimeRef.current || !clockDateRef.current) return;
+  const updateClock = () => {
+    const timeEl = clockTimeRef.current;
+    const dateEl = clockDateRef.current;
+    if (!timeEl || !dateEl) return;
+
     const now = new Date();
-    clockTimeRef.current.textContent = now.toLocaleTimeString("en-US", {
+    timeEl.textContent = now.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
     });
-    clockDateRef.current.textContent = now.toLocaleDateString("en-US", {
+    dateEl.textContent = now.toLocaleDateString("en-US", {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
     });
-  }
+  };
 
   // Subtle "natural" movement for the clock
-  function addNaturalMovement() {
+  const addNaturalMovement = () => {
     let baseX = 0;
     let baseY = 0;
     let velocityX = 0;
     let velocityY = 0;
     let lastTime = Date.now();
 
-    const moveInterval = setInterval(() => {
+    const moveInterval = window.setInterval(() => {
+      const clockWidget = clockWidgetRef.current;
+      if (!clockWidget) return;
+
       const currentTime = Date.now();
       const deltaTime = (currentTime - lastTime) / 1000;
       lastTime = currentTime;
@@ -85,109 +88,100 @@ const VideoSection: React.FC = () => {
       const wobbleX = Math.sin(currentTime * 0.002) * 0.3;
       const wobbleY = Math.cos(currentTime * 0.002) * 0.3;
 
-      if (clockWidgetRef.current) {
-        clockWidgetRef.current.style.transform =
-          `translate(${baseX + wobbleX}px, ${baseY + wobbleY}px)`;
-      }
+      clockWidget.style.transform = `translate(${baseX + wobbleX}px, ${baseY + wobbleY}px)`;
     }, 16);
 
     return moveInterval;
-  }
+  };
 
   // Trigger clock widget at 10s
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
 
-    function handleTimeUpdate() {
-      // at 10s => show clock
-      if (vid.currentTime >= 10 && !clockTriggered) {
-        setClockTriggered(true);
+    const handleTimeUpdate = () => {
+      const clockWidget = clockWidgetRef.current;
+      if (!clockWidget || clockTriggered) return;
 
-        if (clockWidgetRef.current) {
-          clockWidgetRef.current.style.display = "block";
-          clockWidgetRef.current.classList.add(styles.animateIn);
-        }
-        // Start clock
+      if (vid.currentTime >= 10) {
+        setClockTriggered(true);
+        clockWidget.style.display = "block";
+        clockWidget.classList.add(styles.animateIn);
+
         clockIntervalRef.current = window.setInterval(updateClock, 1000);
         updateClock();
 
-        // After ~1.3s animateIn, add movement
         setTimeout(() => {
           const moveInt = addNaturalMovement();
-          movementIntervalRef.current = moveInt as unknown as number;
+          movementIntervalRef.current = moveInt;
 
-          // Keep clock for ~10s
           setTimeout(() => {
             if (movementIntervalRef.current) {
               clearInterval(movementIntervalRef.current);
             }
-            if (clockWidgetRef.current) {
-              clockWidgetRef.current.classList.remove(styles.animateIn);
-              clockWidgetRef.current.classList.add(styles.animateOut);
+            
+            if (clockWidget) {
+              clockWidget.classList.remove(styles.animateIn);
+              clockWidget.classList.add(styles.animateOut);
 
               setTimeout(() => {
                 if (clockIntervalRef.current) {
                   clearInterval(clockIntervalRef.current);
                 }
-                if (clockWidgetRef.current) {
-                  clockWidgetRef.current.style.display = "none";
-                }
+                clockWidget.style.display = "none";
               }, 1000);
             }
           }, 10000);
         }, 1300);
       }
-    }
+    };
 
     vid.addEventListener("timeupdate", handleTimeUpdate);
     return () => vid.removeEventListener("timeupdate", handleTimeUpdate);
   }, [clockTriggered]);
 
-  // Sound overlay
-  function handleSoundClick() {
-    if (!hasInteracted) {
-      const vid = videoRef.current;
-      if (vid) {
-        vid.muted = false;
-        vid.play().catch(err => console.log("Play error:", err));
-      }
-      if (soundOverlayRef.current) {
-        soundOverlayRef.current.style.display = "none";
-      }
-      setHasInteracted(true);
-    }
-  }
+  const handleSoundClick = () => {
+    if (hasInteracted) return;
 
-  // If video ends => show replay overlay
-  function handleVideoEnded() {
-    if (replayOverlayRef.current) {
-      replayOverlayRef.current.style.display = "flex";
-    }
-  }
-
-  function handleReplay() {
-    if (replayOverlayRef.current) {
-      replayOverlayRef.current.style.display = "none";
-    }
     const vid = videoRef.current;
-    if (!vid) return;
+    const soundOverlay = soundOverlayRef.current;
+    if (!vid || !soundOverlay) return;
+
+    vid.muted = false;
+    vid.play().catch(err => console.log("Play error:", err));
+    soundOverlay.style.display = "none";
+    setHasInteracted(true);
+  };
+
+  const handleVideoEnded = () => {
+    const replayOverlay = replayOverlayRef.current;
+    if (!replayOverlay) return;
+    replayOverlay.style.display = "flex";
+  };
+
+  const handleReplay = () => {
+    const vid = videoRef.current;
+    const replayOverlay = replayOverlayRef.current;
+    const clockWidget = clockWidgetRef.current;
+    
+    if (!vid || !replayOverlay || !clockWidget) return;
+
+    replayOverlay.style.display = "none";
     vid.currentTime = 0;
     setClockTriggered(false);
-    if (clockWidgetRef.current) {
-      clockWidgetRef.current.classList.remove(styles.animateOut);
-      clockWidgetRef.current.style.display = "none";
-    }
+    
+    clockWidget.classList.remove(styles.animateOut);
+    clockWidget.style.display = "none";
+    
     vid.play().catch(err => console.log("Replay error:", err));
-  }
+  };
 
-  function handleReplayInvest() {
+  const handleReplayInvest = () => {
     window.open("https://yes.prognostic.ai", "_blank");
-  }
+  };
 
   return (
     <div className={styles.videoSection}>
-      {/* Banner across top */}
       <div className={styles.banner}>
         <div className={styles.liveIndicator}>
           <div className={styles.liveDot}></div>
@@ -210,7 +204,6 @@ const VideoSection: React.FC = () => {
           />
         </video>
 
-        {/* Clock widget */}
         <div className={styles.clockWidget} ref={clockWidgetRef}>
           <div className={styles.widgetHeader}>
             <div className={styles.windowControls}>
@@ -226,7 +219,6 @@ const VideoSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Sound overlay */}
         <div
           className={styles.soundOverlay}
           ref={soundOverlayRef}
@@ -236,7 +228,6 @@ const VideoSection: React.FC = () => {
           <div className={styles.soundText}>Click to Enable Sound</div>
         </div>
 
-        {/* Replay overlay */}
         <div className={styles.replayOverlay} ref={replayOverlayRef}>
           <h2 className={styles.replayTitle}>Webinar Ended</h2>
           <button
@@ -257,19 +248,14 @@ const VideoSection: React.FC = () => {
   );
 };
 
-////////////////////////////////////////////////////////////////////////////////
-// The Chat side
-////////////////////////////////////////////////////////////////////////////////
-
 const WebinarChatBox: React.FC = () => {
-  const chatMessagesRef = useRef<HTMLDivElement | null>(null);
-  const messageInputRef = useRef<HTMLInputElement | null>(null);
-  const typingIndicatorRef = useRef<HTMLDivElement | null>(null);
-  const participantToggleRef = useRef<HTMLInputElement | null>(null);
-  const specialOfferRef = useRef<HTMLDivElement | null>(null);
-  const countdownRef = useRef<HTMLDivElement | null>(null);
-  const investButtonRef = useRef<HTMLButtonElement | null>(null);
-
+  const chatMessagesRef = useRef<HTMLDivElement>(null);
+  const messageInputRef = useRef<HTMLInputElement>(null);
+  const typingIndicatorRef = useRef<HTMLDivElement>(null);
+  const participantToggleRef = useRef<HTMLInputElement>(null);
+  const specialOfferRef = useRef<HTMLDivElement>(null);
+  const countdownRef = useRef<HTMLDivElement>(null);
+  const investButtonRef = useRef<HTMLButtonElement>(null);
   const socketRef = useRef<WebSocket | null>(null);
 
   let isUserScrolling = false;
@@ -279,6 +265,7 @@ const WebinarChatBox: React.FC = () => {
     "Isabella","William","Mia","James","Charlotte","Benjamin","Amelia",
     "Lucas","Harper","Henry","Evelyn","Alexander"
   ];
+
   const attendeeMessages = [
     "hows everyone doing today??",
     "Hi from Seattle! super excited 2 be here",
@@ -289,6 +276,7 @@ const WebinarChatBox: React.FC = () => {
     "This looks amazing, can't wait to see more advanced strategies!",
     "im big in affiliate marketing, and this is wild!"
   ];
+
   const investmentMessages = [
     "just invested in PrognosticAI! 🚀",
     "secured their spot in PrognosticAI! ✨",
@@ -310,30 +298,31 @@ const WebinarChatBox: React.FC = () => {
     const investBtn = investButtonRef.current;
 
     if (!chatEl || !inputEl || !typingEl || !toggleEl || !specialOfferEl || !countdownEl || !investBtn) {
-      console.error("WebinarChatBox: Missing required refs.");
+      console.error("WebinarChatBox: Missing required refs");
       return;
     }
 
-    function isNearBottom(element: HTMLDivElement) {
+    const isNearBottom = (element: HTMLDivElement) => {
       const threshold = 50;
       return (element.scrollHeight - element.clientHeight - element.scrollTop) <= threshold;
-    }
-    function scrollToBottom(element: HTMLDivElement) {
-      element.scrollTop = element.scrollHeight;
-    }
+    };
 
-    function handleScroll() {
+    const scrollToBottom = (element: HTMLDivElement) => {
+      element.scrollTop = element.scrollHeight;
+    };
+
+    const handleScroll = () => {
       isUserScrolling = !isNearBottom(chatEl);
-    }
+    };
+
     chatEl.addEventListener('scroll', handleScroll);
 
-    // Add a message
-    function addMessage(
+    const addMessage = (
       text: string,
       type: 'user' | 'host' | 'system',
       userName = '',
       isAutoGenerated = true
-    ) {
+    ) => {
       const messageDiv = document.createElement('div');
       messageDiv.classList.add(styles.message);
 
@@ -347,7 +336,6 @@ const WebinarChatBox: React.FC = () => {
 
       messageDiv.textContent = userName ? `${userName}: ${text}` : text;
 
-      // If it's a real (non-auto) host message => show "typing..."
       if (type === 'host' && !isAutoGenerated) {
         typingEl.textContent = 'Selina is typing...';
         setTimeout(() => {
@@ -355,7 +343,6 @@ const WebinarChatBox: React.FC = () => {
         }, 2000);
       }
 
-      // If user from others => hide if toggle is off
       if (type === 'user' && userName !== 'You') {
         messageDiv.setAttribute('data-participant', 'true');
         messageDiv.setAttribute('data-auto-generated', 'true');
@@ -364,13 +351,12 @@ const WebinarChatBox: React.FC = () => {
 
       chatEl.appendChild(messageDiv);
 
-      // auto-scroll if near bottom
       if (!isUserScrolling || userName === 'You') {
         scrollToBottom(chatEl);
       }
-    }
+    };
 
-    function handleToggleChange() {
+    const handleToggleChange = () => {
       const participantMessages = chatEl.querySelectorAll('[data-participant="true"]');
       participantMessages.forEach(msg => {
         (msg as HTMLElement).style.display = toggleEl.checked ? 'block' : 'none';
@@ -378,10 +364,10 @@ const WebinarChatBox: React.FC = () => {
       if (toggleEl.checked && !isUserScrolling) {
         scrollToBottom(chatEl);
       }
-    }
+    };
+
     toggleEl.addEventListener('change', handleToggleChange);
 
-    // Socket
     const newSocket = new WebSocket("wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com");
     socketRef.current = newSocket;
 
@@ -389,18 +375,19 @@ const WebinarChatBox: React.FC = () => {
       console.log("Connected to chat server");
       scrollToBottom(chatEl);
     };
+
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.type === 'message') {
         addMessage(data.text, data.messageType as 'user' | 'host' | 'system', data.user, true);
       }
     };
+
     newSocket.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
 
-    // Host AI response
-    async function handleHostResponse(userMsg: string) {
+    const handleHostResponse = async (userMsg: string) => {
       try {
         const randomDelay = Math.random() * 2000;
         await new Promise(resolve => setTimeout(resolve, randomDelay));
@@ -411,6 +398,7 @@ const WebinarChatBox: React.FC = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: userMsg, type: "user" })
         });
+
         if (!response.ok) throw new Error("API call failed");
 
         const data = await response.json();
@@ -429,10 +417,9 @@ const WebinarChatBox: React.FC = () => {
           false
         );
       }
-    }
+    };
 
-    // Random invests
-    function showInvestmentNotification() {
+    const showInvestmentNotification = () => {
       const name = names[Math.floor(Math.random() * names.length)];
       const line = investmentMessages[Math.floor(Math.random() * investmentMessages.length)];
       const notif = document.createElement('div');
@@ -443,40 +430,41 @@ const WebinarChatBox: React.FC = () => {
       `;
       document.body.appendChild(notif);
       setTimeout(() => notif.remove(), 5000);
-    }
-    setInterval(() => {
+    };
+
+    const investmentInterval = setInterval(() => {
       showInvestmentNotification();
     }, Math.random() * 30000 + 30000);
 
-    // Show special offer at 60s
     setTimeout(() => {
       specialOfferEl.style.display = "block";
       addMessage(
         "🚨 Special Offer Alert! For the next 10 minutes only, secure your spot in PrognosticAI for just $999. Don't miss out! 🚀",
         "system"
       );
+
       let t = 600;
       const countdownInt = setInterval(() => {
         t--;
         const min = Math.floor(t / 60);
         const sec = t % 60;
-        countdownEl.textContent = `Special Offer Ends In: ${min}:${sec.toString().padStart(2,"0")}`;
+        countdownEl.textContent = `Special Offer Ends In: ${min}:${sec.toString().padStart(2, "0")}`;
         if (t <= 0) {
           clearInterval(countdownInt);
           specialOfferEl.style.display = "none";
-          addMessage("⌛ The special offer has ended.","system");
+          addMessage("⌛ The special offer has ended.", "system");
         }
       }, 1000);
     }, 60000);
 
-    // invest => new tab
     investBtn.addEventListener('click', () => {
       window.open("https://yes.prognostic.ai", "_blank");
     });
 
-    function scheduleAttendeeMessages() {
+    const scheduleAttendeeMessages = () => {
       const numMessages = Math.floor(Math.random() * 6) + 15;
       let delay = 500;
+      
       for (let i = 0; i < numMessages; i++) {
         const name = names[Math.floor(Math.random() * names.length)];
         const msg = attendeeMessages[Math.floor(Math.random() * attendeeMessages.length)];
@@ -485,28 +473,30 @@ const WebinarChatBox: React.FC = () => {
         }, delay);
         delay += Math.random() * 1000 + 500;
       }
-    }
+    };
+
     setTimeout(() => {
       addMessage("Welcome to PrognosticAI Live!", "host", "Selina (Host)", true);
       scheduleAttendeeMessages();
       scrollToBottom(chatEl);
     }, 4000);
 
-    // Real user => triggers AI
-    function handleKeypress(e: KeyboardEvent) {
+    const handleKeypress = (e: KeyboardEvent) => {
       if (e.key === "Enter" && inputEl.value.trim()) {
         const userMsg = inputEl.value.trim();
         inputEl.value = "";
         addMessage(userMsg, "user", "You", false);
         handleHostResponse(userMsg);
       }
-    }
+    };
+
     inputEl.addEventListener('keypress', handleKeypress);
 
     return () => {
       chatEl.removeEventListener('scroll', handleScroll);
       toggleEl.removeEventListener('change', handleToggleChange);
       inputEl.removeEventListener('keypress', handleKeypress);
+      clearInterval(investmentInterval);
 
       if (socketRef.current) {
         socketRef.current.close();
@@ -525,6 +515,7 @@ const WebinarChatBox: React.FC = () => {
               <input
                 type="checkbox"
                 ref={participantToggleRef}
+                defaultChecked
               />
               <span className={styles.toggleSlider}></span>
             </label>
