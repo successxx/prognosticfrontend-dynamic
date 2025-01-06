@@ -1,5 +1,23 @@
 /* WebinarView.module.css */
 
+/* 
+   Increased everything by ~50% visually by adjusting font-sizes, container widths, etc.
+   Also added a bit of right-side padding for the chat to match left spacing.
+   Cleaned up input alignment so the text input sits nicely. 
+*/
+
+/* ===========================
+   0) Global Footer
+   =========================== */
+.footer {
+  font-family: "Montserrat", sans-serif;
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #666;
+  opacity: 0.8;
+}
+
 /* ===========================
    1) "Zoom-like Container"
    =========================== */
@@ -7,10 +25,12 @@
   background: #fff; /* White background like Zoom window */
   border: 2px solid #dcdcdc;
   border-radius: 10px;
+  /* 50% bigger container widths: */
+  max-width: 1920px;
+  /* Center it with extra space around */
+  margin: 2rem auto;
+  padding: 24px; /* Add overall internal padding to help right side spacing */
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  padding: 16px;
-  max-width: 1280px;
-  margin: 0 auto;
 }
 
 /* A top bar within the Zoom container for the Title + "live for X minutes" */
@@ -18,23 +38,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 24px; /* bigger spacing */
 }
 
 /* Title in the top-left, e.g. "PrognosticAI Advanced Training" */
 .zoomTitle {
   color: #333;
-  font-size: 1.1rem;
+  font-size: 1.65rem; /* bigger font-size */
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 /* The blinking red dot for "LIVE" */
 .zoomLiveDot {
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
   background: #ff0000;
   border-radius: 50%;
   animation: pulseZoom 1.5s infinite;
@@ -48,11 +68,11 @@
 
 /* The small "Live for X minutes" text on top-right */
 .zoomLiveMinutes {
-  font-size: 0.55rem; /* quite small, akin to "Show Others" text */
+  font-size: 0.85rem; 
   color: #666;
   font-weight: 500;
   background: #f0f0f0;
-  padding: 3px 8px;
+  padding: 6px 12px;
   border-radius: 6px;
   display: inline-block;
 }
@@ -80,9 +100,9 @@
   gap: 15px;
 }
 .connectingSpinner {
-  width: 60px;
-  height: 60px;
-  border: 6px solid #cce0ff; /* Light ring */
+  width: 90px; /* bigger spinner */
+  height: 90px;
+  border: 8px solid #cce0ff; /* Light ring */
   border-top-color: #0142ac; /* PrognosticAI blue */
   border-radius: 50%;
   animation: spin 1s infinite linear;
@@ -93,7 +113,7 @@
 }
 .connectingText {
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   color: #fff;
   font-weight: 600;
 }
@@ -105,8 +125,9 @@
 .twoColumnLayout {
   display: flex;
   flex-wrap: nowrap; /* so chat won't drop below the video on medium screens */
-  gap: 16px;
-  height: 550px; /* Taller to mimic "Zoom" style */
+  gap: 24px; /* bigger gap */
+  /* 50% taller to mimic a bigger Zoom window: */
+  height: 825px;
 }
 .videoColumn {
   flex: 0 0 70%;
@@ -134,6 +155,7 @@
 
 /* ===========================
    4) Sound overlay
+   (tasteful enticement to click)
    =========================== */
 .soundOverlay {
   position: absolute;
@@ -148,19 +170,27 @@
   z-index: 4;
 }
 .soundIcon {
-  font-size: 2rem;
-  margin-bottom: 12px;
+  font-size: 3rem;
+  margin-bottom: 16px;
   opacity: 0.9;
+  animation: bounceIcon 1.2s infinite alternate;
+}
+@keyframes bounceIcon {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-7px); }
 }
 .soundText {
-  font-size: 1rem;
+  font-size: 1.15rem;
   font-weight: 500;
   opacity: 0.9;
+  text-align: center;
+  line-height: 1.4;
 }
 
 /* ===========================
    5) The "exit intent" overlay
    (fadeIn)
+   - limited bubble width for iPhone style
    =========================== */
 .exitOverlay {
   position: fixed;
@@ -182,7 +212,8 @@
 }
 .iphoneMessageBubble {
   position: relative;
-  max-width: 80%;
+  /* limit to approximate iPhone bubble width */
+  max-width: 280px;
   background: #0a84ff;
   color: #fff;
   border-radius: 18px;
@@ -249,12 +280,12 @@
   flex-direction: column;
   border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 14px rgba(0,0,0,0.1);
   flex: 1; 
 }
 
 .chatHeader {
-  padding: 12px 15px;
+  padding: 18px;
   background: #0142AC;
   color: #fff;
   flex: 0 0 auto;
@@ -267,7 +298,7 @@
   align-items: center;
 }
 .chatTitle {
-  font-size: 0.85rem;
+  font-size: 1.25rem;
   font-weight: 600;
   letter-spacing: -0.02em;
 }
@@ -282,8 +313,8 @@
 .toggleSwitch {
   position: relative;
   display: inline-block;
-  width: 40px;
-  height: 20px;
+  width: 60px;
+  height: 30px;
 }
 .toggleSwitch input {
   opacity: 0;
@@ -296,15 +327,15 @@
   top: 0; left: 0; right: 0; bottom: 0;
   background-color: rgba(255,255,255,0.2);
   transition: .4s;
-  border-radius: 20px;
+  border-radius: 30px;
 }
 .toggleSlider:before {
   position: absolute;
   content: "";
-  height: 16px;
-  width: 16px;
-  left: 2px;
-  bottom: 2px;
+  height: 24px;
+  width: 24px;
+  left: 3px;
+  bottom: 3px;
   background-color: #fff;
   transition: .4s;
   border-radius: 50%;
@@ -313,16 +344,16 @@
   background-color: #4CAF50;
 }
 .toggleSwitch input:checked + .toggleSlider:before {
-  transform: translateX(20px);
+  transform: translateX(30px);
 }
 .toggleLabel {
   color: #fff;
-  font-size: 0.45rem;
+  font-size: 0.65rem;
 }
 .viewerCount {
-  font-size: 0.55rem;
+  font-size: 0.8rem;
   background: rgba(255,255,255,0.1);
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -333,10 +364,10 @@
 .specialOffer {
   background: #ff4444;
   color: #fff;
-  padding: 12px 15px;
+  padding: 18px;
   text-align: center;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 1.15rem;
   letter-spacing: -0.02em;
   display: none;
   flex: 0 0 auto;
@@ -345,14 +376,14 @@
   background: #0142AC;
   color: #fff;
   border: none;
-  padding: 12px 20px;
+  padding: 14px 24px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.85rem;
+  font-size: 1rem;
   letter-spacing: -0.02em;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 12px;
   border-radius: 6px;
 }
 .investButton:hover {
@@ -363,18 +394,18 @@
 .chatMessages {
   flex: 1 1 auto;
   overflow-y: auto;
-  padding: 15px;
+  padding: 20px;
   background: #f8f9fa;
   min-height: 0;
 }
 
 /* Actual messages with different roles */
 .message {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   line-height: 1.4;
   animation: fadeIn 0.3s ease;
-  font-size: 0.85rem;
-  padding: 8px 12px;
+  font-size: 1rem;
+  padding: 10px 14px;
   border-radius: 6px;
   max-width: 90%;
   text-align: left;
@@ -395,7 +426,7 @@
   text-align: center;
   max-width: 100%;
   margin: 15px 0;
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 @keyframes fadeIn {
@@ -405,17 +436,19 @@
 
 /* Input area */
 .chatInput {
-  padding: 15px;
+  padding: 18px;
   background: #fff;
   border-top: 1px solid #eee;
   flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 .chatInput input {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   border: 1px solid #dfe3e8;
   border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   transition: all 0.3s ease;
   color: #2c3135;
 }
@@ -426,10 +459,10 @@
 }
 .typingIndicator {
   color: #6c757d;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   margin-top: 8px;
   font-style: italic;
-  height: 20px;
+  height: 24px;
   padding-left: 2px;
 }
 
@@ -439,7 +472,7 @@
   bottom: 20px;
   right: 20px;
   background: #fff;
-  padding: 12px 16px;
+  padding: 14px 18px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   display: flex;
@@ -447,8 +480,8 @@
   gap: 10px;
   animation: slideIn 0.5s ease, fadeOut 0.5s ease 4.5s forwards;
   z-index: 100;
-  font-size: 0.9rem;
-  max-width: 300px;
+  font-size: 1rem;
+  max-width: 350px;
 }
 @keyframes slideIn {
   from { transform: translateX(100%); }
@@ -460,19 +493,19 @@
 .notificationIcon {
   background: #0142AC;
   color: #fff;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 
 /* Custom scrollbar on chat messages */
 .chatMessages::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 .chatMessages::-webkit-scrollbar-track {
   background: #f1f1f1;
