@@ -78,9 +78,17 @@ const WebinarView: React.FC = () => {
           const data = await resp.json();
 
           // audio_link -> audioRef
+          // if (audioRef.current && data.audio_link) {
+          //   audioRef.current.src = data.audio_link;
+          // }
+
           if (audioRef.current && data.audio_link) {
-            audioRef.current.src = data.audio_link;
+            // Convert Google Drive URL to direct download URL
+            const fileId = data.audio_link.split("id=")[1];
+            const directUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+            audioRef.current.src = directUrl;
           }
+
           // exit message
           if (data.exit_message) {
             setExitMessage(data.exit_message);
