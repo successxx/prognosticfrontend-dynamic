@@ -1,29 +1,27 @@
 /* 
    WebinarView.module.css
-   Carefully updated per your requests, ensuring no Heroku build errors
-   while retaining everything that was working.
-   Key changes:
-   1) CTA -> new tab
-   2) No extra white background behind .zoomContainer; .container uses #EAEFF3
-   3) 16:9 video always
-   4) Chat header top-right corner fix
-   5) Clock widget drag in/out remains
-   6) Responsive with aspect-ratio
+   Carefully updated to:
+   - Double container size (width & height)
+   - Chat + video share the same height
+   - AI chat from snippet
+   - "Show Others" default off
+   - More spacing between "Show Others" & watchers
+   - Clock widget with original "human wobble"
 */
 
 /**************************************/
-/* 1) Outer container: #EAEFF3 BG     */
+/* 1) Outer container, subtle background*/
 /**************************************/
 .container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
   font-family: 'Montserrat', sans-serif;
   box-sizing: border-box;
   padding: 20px;
-  max-width: 100%;
+  width: 100%;
   min-height: 100vh;
-  background: #EAEFF3; /* removed white bg */
+  background: #EAEFF3;
+  gap: 20px;
   position: relative;
 }
 
@@ -45,7 +43,7 @@
 .connectingSpinner {
   width: 60px;
   height: 60px;
-  border: 6px solid #cce0ff; 
+  border: 6px solid #cce0ff;
   border-top-color: #0142ac;
   border-radius: 50%;
   animation: spin 1s infinite linear;
@@ -61,7 +59,7 @@
 }
 
 /**************************************/
-/* 2) Zoom-like container (no outer white) */
+/* 2) Zoom Container (Double Size)    */
 /**************************************/
 .zoomContainer {
   background: #fff;
@@ -69,11 +67,13 @@
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   padding: 16px;
-  max-width: 1400px; /* not huge, but wide enough */
+  /* Double the typical width, so it's large */
+  max-width: 1800px;
+  /* Also let height grow for a bigger layout */
   margin: 0 auto;
 }
 
-/* Zoom top bar for Title + "live for X minutes" */
+/* Top bar for Title & Live for X min */
 .zoomTopBar {
   display: flex;
   justify-content: space-between;
@@ -112,37 +112,39 @@
 }
 
 /**************************************/
-/* 3) The main 70/30 layout           */
+/* 3) The 70/30 layout, same height   */
 /**************************************/
 .twoColumnLayout {
   display: flex;
   flex-wrap: nowrap;
   gap: 16px;
-  /* Instead of a fixed height, rely on the aspect ratio for video. */
-  height: auto;
+  /* Force a bigger container so video & chat share height. */
+  height: 800px; /* double from smaller ~400px. Adjust as needed. */
 }
 .videoColumn {
   flex: 0 0 70%;
   max-width: 70%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 .chatColumn {
   flex: 0 0 30%;
   max-width: 30%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
-/* The video wrapper: enforce 16:9 aspect ratio responsively */
+/* For the video, strictly keep 16:9 within the forced container height */
 .videoWrapper {
   position: relative;
   background: #000;
   border-radius: 6px;
   overflow: hidden;
   width: 100%;
-  /* Force 16:9 aspect ratio */
-  aspect-ratio: 16 / 9;
+  /* Fill parent's height, but keep aspect ratio by object-fit in <video> */
+  flex: 1;
 }
 
 /**************************************/
@@ -156,7 +158,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: #fff;
   cursor: pointer;
   z-index: 4;
 }
@@ -281,10 +283,10 @@
 }
 
 /**************************************/
-/* 7) Clock Widget (drag in/out)      */
+/* 7) Clock Widget with "human wobble"*/
 /**************************************/
 .clockWidget {
-  position: fixed;
+  position: absolute;
   top: 40%;
   left: 45%;
   width: 320px;
@@ -296,6 +298,7 @@
   transform: translate(-120%, -120%);
 }
 
+/* Named keyframes so we can detect them in TS */
 @keyframes dragIn {
   0% { transform: translate(-120%, -120%); }
   25% { transform: translate(-78%, -65%); }
@@ -327,7 +330,10 @@
 .wobble {
   animation: wobble 2s infinite ease-in-out;
 }
-.dragInKeyframeName:empty {} /* hack for detection */
+
+/* For TS detection of name */
+.dragInKeyframeName:empty {}
+.dragOutKeyframeName:empty {}
 
 .widgetHeader {
   background: #f5f5f7;
@@ -385,7 +391,7 @@
 }
 
 /**************************************/
-/* 8) Chat Section: top-right corner fix*/
+/* 8) Chat Section: EXACT snippet     */
 /**************************************/
 .chatSection {
   background: #fff;
@@ -395,7 +401,7 @@
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   flex: 1;
-  padding-right: 10px; /* padding on the right to match left spacing */
+  /* ensure it fills parent height */
 }
 
 .chatHeader {
@@ -404,12 +410,13 @@
   color: #fff;
   flex: 0 0 auto;
   border-top-left-radius: 6px;
-  border-top-right-radius: 6px; /* top-right corner fix */
+  border-top-right-radius: 6px;
 }
 .headerTop {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 16px; /* ensure spacing between "Show Others" & watchers */
 }
 .chatTitle {
   font-size: 0.85rem;
@@ -425,8 +432,7 @@
 .toggleSwitch {
   position: relative;
   display: inline-block;
-  width: 40px;
-  height: 20px;
+  width: 40px; height: 20px;
 }
 .toggleSlider {
   position: absolute;
@@ -503,7 +509,6 @@
   padding: 15px;
   background: #f8f9fa;
 }
-
 .message {
   margin-bottom: 10px;
   line-height: 1.4;
@@ -536,7 +541,6 @@
   margin: 15px 0;
   font-size: 0.85rem;
 }
-
 .chatInput {
   padding: 15px;
   background: #fff;
@@ -594,7 +598,7 @@
 .notificationIcon {
   background: #0142AC;
   color: #fff;
-  width: 28px; 
+  width: 28px;
   height: 28px;
   border-radius: 50%;
   display: flex;
@@ -605,7 +609,7 @@
 }
 
 /**************************************/
-/* 10) Footer (on #EAEFF3 background) */
+/* 10) Footer                         */
 /**************************************/
 .footer {
   text-align: center;
@@ -636,11 +640,12 @@
 /**************************************/
 /* 12) Responsive Adjustments         */
 /**************************************/
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .zoomContainer {
-    max-width: 95vw;
+    max-width: 90vw;
   }
   .twoColumnLayout {
+    height: auto; /* let them stack if too narrow */
     flex-direction: column;
   }
   .videoColumn,
@@ -648,8 +653,11 @@
     flex: none;
     width: 100%;
     max-width: 100%;
+    height: auto;
   }
   .videoWrapper {
-    aspect-ratio: 16 / 9;
+    width: 100%;
+    flex: none;
+    aspect-ratio: 16/9;
   }
 }
