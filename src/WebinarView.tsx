@@ -293,7 +293,7 @@ const ChatSection: React.FC = () => {
       setSpecialOfferVisible(true);
       setMessages(prev => [...prev, {
         type: 'system',
-        text: '🚨 Special Offer Alert! For the next 10 minutes only, secure your spot in PrognosticAI for just $999. Don't miss out! 🚀'
+        text: 'For the next 10 minutes only, secure your spot in PrognosticAI for just $999. Don\'t miss out.'
       }]);
 
       // Countdown timer
