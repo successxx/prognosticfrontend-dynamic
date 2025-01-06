@@ -13,31 +13,35 @@ let isUserScrolling = false;
 
 /** 
  * Check if user is near bottom of a scrollable div
- * @param element A guaranteed non-null <div> 
+ * Accepts HTMLDivElement | null for safety.
  */
-function isNearBottom(element: HTMLDivElement): boolean {
+function isNearBottom(element: HTMLDivElement | null): boolean {
+  if (!element) return false;
   const threshold = 50;
   return (element.scrollHeight - element.clientHeight - element.scrollTop) <= threshold;
 }
 
 /**
- * Scroll to bottom of a guaranteed non-null <div>
+ * Scroll to bottom of a scrollable div safely.
  */
-function scrollToBottom(element: HTMLDivElement): void {
+function scrollToBottom(element: HTMLDivElement | null): void {
+  if (!element) return;
   element.scrollTop = element.scrollHeight;
 }
 
 /**
- * Add a message <div> into the chatEl, respecting "toggleEl" for participant messages,
- * then auto-scroll if near bottom or if it's your own message.
+ * Safely add a message <div> into the chatEl. 
+ * If chatEl or toggleEl is null, we just bail out.
  */
 function addMessage(
-  chatEl: HTMLDivElement,
-  toggleEl: HTMLInputElement,
+  chatEl: HTMLDivElement | null,
+  toggleEl: HTMLInputElement | null,
   text: string,
   type: 'user' | 'host' | 'system',
   userName = ''
 ): void {
+  if (!chatEl || !toggleEl) return;
+
   const messageDiv = document.createElement('div');
   messageDiv.classList.add(styles.message);
 
@@ -160,11 +164,9 @@ const WebinarView: React.FC = () => {
       startTimeRef.current = Date.now();
 
       // Attempt auto-play
-      if (videoRef.current) {
-        videoRef.current.play().catch(err => {
-          console.log('Auto-play prevented; user must click overlay', err);
-        });
-      }
+      videoRef.current?.play().catch(err => {
+        console.log('Auto-play prevented; user must click overlay', err);
+      });
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -213,11 +215,9 @@ const WebinarView: React.FC = () => {
       if (e.clientY < threshold) {
         setShowExitOverlay(true);
         setHasShownOverlay(true);
-        if (messageToneRef.current) {
-          messageToneRef.current.play().catch(err =>
-            console.warn('iMessage tone autoplay blocked:', err)
-          );
-        }
+        messageToneRef.current?.play().catch(err =>
+          console.warn('iMessage tone autoplay blocked:', err)
+        );
       }
     }
     window.addEventListener('mousemove', handleMouseMove);
@@ -238,7 +238,7 @@ const WebinarView: React.FC = () => {
 
         // Start clock updates
         clockIntervalRef.current = window.setInterval(() => {
-          // Force re-render
+          // Force re-render by toggling state
           setClockVisible(prev => prev);
         }, 1000);
 
@@ -256,7 +256,7 @@ const WebinarView: React.FC = () => {
     }
     videoEl.addEventListener('timeupdate', handleClockVideoTime);
     return () => {
-      videoEl.removeEventListener('timeupdate', handleClockVideoTime);
+      videoEl?.removeEventListener('timeupdate', handleClockVideoTime);
     };
   }, [clockAnimationTriggered]);
 
@@ -264,21 +264,22 @@ const WebinarView: React.FC = () => {
   const [showReplay, setShowReplay] = useState(false);
   function handleReplay() {
     setShowReplay(false);
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-      setClockAnimationTriggered(false);
-      setClockVisible(false);
-      videoRef.current.play().catch(err => console.log('Replay error:', err));
-    }
+    const vid = videoRef.current;
+    if (!vid) return;
+    vid.currentTime = 0;
+    setClockAnimationTriggered(false);
+    setClockVisible(false);
+    vid.play().catch(err => console.log('Replay error:', err));
   }
   useEffect(() => {
-    if (!videoRef.current) return;
+    const videoEl = videoRef.current;
+    if (!videoEl) return;
     function onEnded() {
       setShowReplay(true);
     }
-    videoRef.current.addEventListener('ended', onEnded);
+    videoEl.addEventListener('ended', onEnded);
     return () => {
-      videoRef.current?.removeEventListener('ended', onEnded);
+      videoEl.removeEventListener('ended', onEnded);
     };
   }, []);
 
@@ -419,9 +420,10 @@ const WebinarView: React.FC = () => {
               <div
                 className={styles.soundOverlay}
                 onClick={() => {
-                  if (videoRef.current) {
-                    videoRef.current.muted = false;
-                    videoRef.current.play().catch(err =>
+                  const vid = videoRef.current;
+                  if (vid) {
+                    vid.muted = false;
+                    vid.play().catch(err =>
                       console.log('User clicked to play, but error:', err)
                     );
                   }
@@ -611,7 +613,15 @@ const WebinarChatBox: React.FC = () => {
     const investBtn = investButtonRef.current;
 
     /** If any are missing, skip the rest. This kills "possibly null" errors. */
-    if (!chatEl || !inputEl || !typingEl || !toggleEl || !specialOfferEl || !countdownEl || !investBtn) {
+    if (
+      !chatEl ||
+      !inputEl ||
+      !typingEl ||
+      !toggleEl ||
+      !specialOfferEl ||
+      !countdownEl ||
+      !investBtn
+    ) {
       console.error("WebinarChatBox: Missing required refs.");
       return;
     }
