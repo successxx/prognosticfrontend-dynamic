@@ -1,160 +1,239 @@
-/* 
-   WebinarView.module.css
-   A merged style combining:
-   1) Zoom-like structure 
-   2) Clock widget animations 
-   3) Replay overlay 
-   4) Loading spinner 
-   5) iPhone bubble 
-   6) Chat design 
-*/
-
-/* ======================= */
-/* 1) Container + Loading */
-/* ======================= */
+/**************************************/
+/* 1) Zoom-like container + top bar   */
+/**************************************/
 .container {
   display: flex;
   flex-direction: column;
-  max-width: 1500px;
-  margin: 0 auto;
-  padding: 20px;
+  gap: 20px;
   font-family: 'Montserrat', sans-serif;
-  height: 100vh; /* or min-height if you prefer */
   box-sizing: border-box;
+  padding: 20px;
+  max-width: 100%;
+  min-height: 100vh;
+  /* We'll rely on .zoomContainer for the main structure. */
 }
 
-.connectingOverlay {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(255,255,255,0.95);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
+/* The "Zoom-like" box */
+.zoomContainer {
+  background: #fff; 
+  border: 2px solid #dcdcdc;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 16px;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
-.loaderSpinner {
-  width: 60px;
-  height: 60px;
-  border: 8px solid #0142ac;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.loadingText {
-  font-size: 1rem;
-  color: #0142ac;
-  font-weight: 600;
-}
-
-/* ======================= */
-/* 2) Banner Row */
-/* ======================= */
-.bannerRow {
+.zoomTopBar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
-.bannerLeft {
-  display: flex;
-  align-items: center;
-  background: #0142ac;
-  padding: 10px 15px;
-  border-radius: 10px;
-  color: #fff;
+
+.zoomTitle {
+  color: #333;
+  font-size: 1.1rem;
   font-weight: 600;
-  gap: 10px;
-  font-size: 1rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-}
-.liveIndicator {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.liveDot {
-  width: 10px; height: 10px;
+
+.zoomLiveDot {
+  width: 8px;
+  height: 8px;
   background: #ff0000;
   border-radius: 50%;
-  animation: pulse 1.5s infinite;
+  animation: pulseZoom 1.5s infinite;
+  margin-right: 4px;
 }
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.3; }
+@keyframes pulseZoom {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.4; }
   100% { opacity: 1; }
 }
-.bannerTitle {
-  font-size: 0.95rem;
-}
-.liveMinutes {
-  background: #0142ac;
-  color: #fff;
-  font-size: 0.8rem;
-  padding: 5px 10px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+
+.zoomLiveMinutes {
+  font-size: 0.55rem; /* quite small, like you asked */
+  color: #666;
+  font-weight: 500;
+  background: #f0f0f0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-block;
 }
 
-/* ======================= */
-/* 3) Main Layout (Video + Chat) */
-/* ======================= */
-.mainRow {
+/**************************************/
+/* 2) Connecting overlay + spinner    */
+/**************************************/
+.connectingOverlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(1,66,172,0.9);
   display: flex;
-  gap: 20px;
-  flex: 1;
-  min-height: 0;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
-
-/* Video Section */
-.videoSection {
-  flex: 0 0 70%;
-  position: relative;
-  background: #000;
-  border-radius: 10px;
-  overflow: hidden;
+.connectingBox {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
-.webinarVideo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  flex: 1;
+.connectingSpinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #cce0ff; 
+  border-top-color: #0142ac; 
+  border-radius: 50%;
+  animation: spin 1s infinite linear;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.connectingText {
+  font-size: 1.2rem;
+  color: #fff;
+  font-weight: 600;
 }
 
-/* Sound overlay */
+/**************************************/
+/* 3) Two-column layout 70/30         */
+/**************************************/
+.twoColumnLayout {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+  height: 550px; /* similar to a "Zoom" window */
+}
+.videoColumn {
+  flex: 0 0 70%;
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.chatColumn {
+  flex: 0 0 30%;
+  max-width: 30%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.videoWrapper {
+  position: relative;
+  background: #000;
+  border-radius: 6px;
+  overflow: hidden;
+  flex: 1;
+  /* force 16:9 shape:
+     BUT we rely on the <video> for aspect ratio
+     or could do aspect-ratio: 16/9
+  */
+}
+
+/**************************************/
+/* 4) Sound overlay                   */
+/**************************************/
 .soundOverlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.65);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: #fff;
+  color: white;
   cursor: pointer;
   z-index: 4;
 }
 .soundIcon {
-  font-size: 2.5rem;
+  font-size: 2rem;
   margin-bottom: 12px;
+  opacity: 0.9;
 }
 .soundText {
   font-size: 1rem;
   font-weight: 500;
+  opacity: 0.9;
 }
 
-/* ======================= */
-/* 4) Replay Overlay */
-/* ======================= */
+/**************************************/
+/* 5) Exit-intent iPhone bubble       */
+/**************************************/
+.exitOverlay {
+  position: fixed;
+  top: 0; 
+  left: 0; 
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.25s ease;
+  cursor: pointer;
+}
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.iphoneMessageBubble {
+  position: relative;
+  max-width: 80%;
+  width: 320px;
+  background: #0a84ff;
+  color: #fff;
+  border-radius: 18px;
+  padding: 14px 20px;
+  animation: bubblePop 0.35s ease-out;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  cursor: auto;
+}
+@keyframes bubblePop {
+  0%   { transform: scale(0.85); opacity: 0; }
+  55%  { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.exitCloseBtn {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #fff;
+  opacity: 0.9;
+}
+.iphoneSender {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.iphoneMessageText {
+  font-size: 1rem;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+.iphoneMessageBubble::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  bottom: 20px;
+  width: 0; height: 0;
+  border: 10px solid transparent;
+  border-right-color: #0a84ff;
+}
+
+/**************************************/
+/* 6) Replay overlay                  */
+/**************************************/
 .replayOverlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -171,8 +250,7 @@
   font-weight: 600;
   margin-bottom: 20px;
 }
-.replayButton,
-.investButton {
+.replayButton, .investButton {
   background: #fff;
   color: #0142ac;
   padding: 12px 24px;
@@ -194,85 +272,21 @@
   background: #eee;
 }
 
-/* ======================= */
-/* 5) Exit-intent iPhone Bubble */
-/* ======================= */
-.exitOverlay {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
-  z-index: 9998;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 0.25s ease;
-  cursor: pointer;
-}
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-.iphoneMessageBubble {
-  position: relative;
-  max-width: 300px;
-  background: #0a84ff;
-  color: #fff;
-  border-radius: 18px;
-  padding: 14px 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  animation: bubblePop 0.35s ease-out;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  cursor: auto;
-}
-@keyframes bubblePop {
-  0% { transform: scale(0.85); opacity: 0; }
-  55% { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-.iphoneMessageBubble::before {
-  content: "";
-  position: absolute;
-  left: -10px;
-  bottom: 20px;
-  width: 0; height: 0;
-  border: 10px solid transparent;
-  border-right-color: #0a84ff;
-}
-.iphoneSender {
-  font-weight: 600;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-}
-.iphoneMessageText {
-  font-size: 1rem;
-  line-height: 1.4;
-}
-.exitCloseBtn {
-  position: absolute;
-  top: 6px; right: 12px;
-  border: none;
-  background: transparent;
-  font-size: 1.2rem;
-  color: #fff;
-  cursor: pointer;
-  opacity: 0.8;
-}
-
-/* ======================= */
-/* 6) Clock Widget */
-/* ======================= */
+/**************************************/
+/* 7) Clock widget (drag in/out)      */
+/**************************************/
 .clockWidget {
-  position: absolute;
+  position: fixed;
+  top: 30%;
+  left: 30%;
   width: 320px;
   background: rgba(255,255,255,0.98);
   border-radius: 10px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-  z-index: 3;
-  top: 30%; left: 30%;
+  z-index: 9000;
   opacity: 0;
 }
 
-/* Named keyframes for detection */
 @keyframes dragIn {
   0% { transform: translate(-120%, -120%); opacity: 0; }
   25% { transform: translate(-78%, -65%); opacity: 0.5; }
@@ -304,7 +318,7 @@
 .wobble {
   animation: wobble 2s infinite ease-in-out;
 }
-.dragInKeyframeName:empty {} /* placeholder, helps identify */
+.dragInKeyframeName:empty {} /* a hack for detection */
 
 .widgetHeader {
   background: #f5f5f7;
@@ -352,58 +366,41 @@
   font-weight: 500;
   color: #1d1d1f;
   margin-bottom: 4px;
-  text-align: center;
 }
 .clockDate {
   font-size: 0.9rem;
   color: #86868b;
   font-weight: 400;
-  text-align: center;
 }
 
-/* ======================= */
-/* 7) Footer */
-/* ======================= */
-.footer {
-  text-align: center;
-  font-size: 0.75rem;
-  color: #666;
-  margin-top: 15px;
-}
-
-/* ======================= */
-/* 8) Chat Container */
-/* ======================= */
+/**************************************/
+/* 8) Chat Section                    */
+/**************************************/
 .chatSection {
-  flex: 0 0 30%;
-  border-radius: 10px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.chatContainer {
-  display: flex;
-  flex-direction: column;
   background: #fff;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  flex: 1;
 }
 
 .chatHeader {
-  background: #0142ac;
-  color: #fff;
   padding: 12px 15px;
+  background: #0142AC;
+  color: #fff;
   flex: 0 0 auto;
 }
 .headerTop {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
 }
 .chatTitle {
   font-size: 0.85rem;
   font-weight: 600;
+  letter-spacing: -0.02em;
 }
 .toggleContainer {
   display: flex;
@@ -414,37 +411,44 @@
 .toggleSwitch {
   position: relative;
   display: inline-block;
-  width: 40px; height: 20px;
+  width: 40px;
+  height: 20px;
 }
 .toggleSlider {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(255,255,255,0.2);
   cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(255,255,255,0.2);
+  transition: .4s;
   border-radius: 20px;
-  transition: 0.4s;
 }
 .toggleSlider:before {
-  content: "";
   position: absolute;
-  height: 16px; width: 16px;
-  left: 2px; bottom: 2px;
-  background: #fff;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #fff;
+  transition: .4s;
   border-radius: 50%;
-  transition: 0.4s;
+}
+.toggleSwitch input {
+  opacity: 0;
+  width: 0; height: 0;
 }
 .toggleSwitch input:checked + .toggleSlider {
-  background: #4CAF50;
+  background-color: #4CAF50;
 }
 .toggleSwitch input:checked + .toggleSlider:before {
   transform: translateX(20px);
 }
 .toggleLabel {
-  font-size: 0.65rem;
   color: #fff;
+  font-size: 0.45rem;
 }
 .viewerCount {
-  font-size: 0.65rem;
+  font-size: 0.55rem;
   background: rgba(255,255,255,0.1);
   padding: 4px 10px;
   border-radius: 20px;
@@ -453,35 +457,6 @@
   gap: 5px;
 }
 
-/* Special offer */
-.specialOffer {
-  background: #ff4444;
-  color: #fff;
-  padding: 12px 15px;
-  text-align: center;
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-.countdown {
-  margin-bottom: 8px;
-}
-.investButton {
-  background: #0142ac;
-  color: #fff;
-  border: none;
-  padding: 12px 20px;
-  font-weight: 600;
-  cursor: pointer;
-  width: 100%;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  transition: background 0.3s ease;
-}
-.investButton:hover {
-  background: #013289;
-}
-
-/* Chat messages container */
 .chatMessages {
   flex: 1 1 auto;
   overflow-y: auto;
@@ -489,7 +464,6 @@
   background: #f8f9fa;
 }
 
-/* Messages */
 .message {
   margin-bottom: 10px;
   line-height: 1.4;
@@ -504,18 +478,17 @@
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
-.user {
+.message.user {
   background: #f0f2f5;
   margin-left: auto;
   color: #2c3135;
 }
-.host {
+.message.host {
   background: #e7f0ff;
-  color: #0142ac;
+  color: #0142AC;
   font-weight: 500;
 }
-.system {
+.message.system {
   background: #fff3cd;
   color: #856404;
   text-align: center;
@@ -524,11 +497,11 @@
   font-size: 0.85rem;
 }
 
-/* Chat input */
 .chatInput {
   padding: 15px;
   background: #fff;
   border-top: 1px solid #eee;
+  flex: 0 0 auto;
 }
 .chatInput input {
   width: 100%;
@@ -537,10 +510,11 @@
   border-radius: 6px;
   font-size: 0.9rem;
   transition: all 0.3s ease;
+  color: #2c3135;
 }
 .chatInput input:focus {
   outline: none;
-  border-color: #0142ac;
+  border-color: #0142AC;
   box-shadow: 0 0 0 2px rgba(1,66,172,0.1);
 }
 .typingIndicator {
@@ -552,7 +526,9 @@
   padding-left: 2px;
 }
 
-/* Notification popup (someone invests) */
+/**************************************/
+/* 9) Notification popup (invest)     */
+/**************************************/
 .notification {
   position: fixed;
   bottom: 20px; right: 20px;
@@ -576,7 +552,7 @@
   to { opacity: 0; }
 }
 .notificationIcon {
-  background: #0142ac;
+  background: #0142AC;
   color: #fff;
   width: 28px; height: 28px;
   border-radius: 50%;
@@ -587,7 +563,9 @@
   flex-shrink: 0;
 }
 
-/* Custom scrollbar for chat */
+/**************************************/
+/* 10) Custom scrollbar for chat      */
+/**************************************/
 .chatMessages::-webkit-scrollbar {
   width: 8px;
 }
@@ -603,17 +581,22 @@
   background: #a8a8a8;
 }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .mainRow {
+/**************************************/
+/* Responsive adjustments            */
+/**************************************/
+@media (max-width: 1024px) {
+  .twoColumnLayout {
     flex-direction: column;
+    height: auto;
   }
-  .videoSection {
-    flex: 0 0 auto;
+  .videoColumn, .chatColumn {
+    flex: none;
     width: 100%;
+    max-width: 100%;
+    height: auto;
   }
-  .chatSection {
-    width: 100%;
-    margin-top: 20px;
+  .videoWrapper {
+    height: auto;
+    aspect-ratio: 16 / 9;
   }
 }
