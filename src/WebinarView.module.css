@@ -1,10 +1,5 @@
 /* WebinarView.module.css */
 
-/* 
-   A mostly copy-paste from your previous working style,
-   with the clock widget, replay overlay, chat, etc.
-*/
-
 /* ===========================
    1) "Zoom-like Container"
    =========================== */
@@ -36,7 +31,7 @@
   gap: 8px;
 }
 
-/* The blinking red "LIVE" dot */
+/* The "LIVE" dot can remain from existing code; we can place it inside zoomTitle if we want */
 .zoomLiveDot {
   width: 8px;
   height: 8px;
@@ -53,7 +48,7 @@
 
 /* The small "Live for X minutes" text on top-right */
 .zoomLiveMinutes {
-  font-size: 0.55rem;
+  font-size: 0.55rem; /* Quite small, akin to Show Others text */
   color: #666;
   font-weight: 500;
   background: #f0f0f0;
@@ -64,6 +59,7 @@
 
 /* ===========================
    2) "Connecting" overlay
+   with a spinner
    =========================== */
 .connectingOverlay {
   position: fixed;
@@ -104,12 +100,13 @@
 
 /* ===========================
    3) The 70/30 layout
+   inside .zoomContainer
    =========================== */
 .twoColumnLayout {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: nowrap; /* So chat won't drop below the video */
   gap: 16px;
-  height: 550px; /* approximate Zoom-like height */
+  height: 550px; /* Taller to mimic "Zoom" style */
 }
 .videoColumn {
   flex: 0 0 70%;
@@ -126,7 +123,7 @@
   height: 100%;
 }
 
-/* The video wrapper: fill area, keep background black */
+/* The video wrapper: fill area, keep background black, bigger like Zoom */
 .videoWrapper {
   position: relative;
   background: #000;
@@ -162,7 +159,8 @@
 }
 
 /* ===========================
-   5) Exit intent overlay
+   5) The "exit intent" overlay
+   (no immediate changes, just keep fadeIn)
    =========================== */
 .exitOverlay {
   position: fixed;
@@ -175,7 +173,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: fadeIn 0.25s ease;
   cursor: pointer;
+}
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 .iphoneMessageBubble {
   position: relative;
@@ -185,8 +188,23 @@
   border-radius: 18px;
   padding: 14px 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  animation: bubblePop 0.35s ease-out;
   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
   cursor: auto;
+}
+@keyframes bubblePop {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 .exitCloseBtn {
   position: absolute;
@@ -223,6 +241,7 @@
 
 /* ===========================
    6) Chatbox CSS
+   (Unchanged except we ensure .chatSection can fill parent)
    =========================== */
 .chatSection {
   background: #fff;
@@ -231,7 +250,7 @@
   border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  flex: 1;
+  flex: 1; /* fill height so it aligns with the video height */
 }
 
 .chatHeader {
@@ -451,36 +470,18 @@
   flex-shrink: 0;
 }
 
-/* Minimal clock widget + replay overlay classes */
-.clockWidget {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: none; /* hidden at first */
-  z-index: 5;
-  width: 320px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 10px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-  padding: 20px;
-  text-align: center;
+/* Custom scrollbar on chat messages */
+.chatMessages::-webkit-scrollbar {
+  width: 8px;
 }
-.clockWidget.show {
-  display: block;
+.chatMessages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
 }
-
-.replayOverlay {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.9);
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  color: #fff;
-  z-index: 6;
+.chatMessages::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
 }
-.replayOverlay.show {
-  display: flex;
+.chatMessages::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
