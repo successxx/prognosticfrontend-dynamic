@@ -36,8 +36,25 @@ const VideoSection: React.FC = () => {
     const vid = videoRef.current;
     if (!vid) return;
 
+    // Set initial time and play
     vid.currentTime = 0;
     vid.play().catch(err => console.log("Auto-play prevented:", err));
+
+    // Load and play audio at 3s
+    const audioEl = new Audio();
+    audioEl.src = "https://drive.google.com/uc?export=download&id=1T4omuEQuX1I4iWIspW6fXWgm0aTnztky";
+    
+    const timeCheck = setInterval(() => {
+      if (vid.currentTime >= 3) {
+        audioEl.play().catch(err => console.log("Audio play error:", err));
+        clearInterval(timeCheck);
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(timeCheck);
+      audioEl.pause();
+    };
   }, []);
 
   // Update the clock every second
@@ -393,10 +410,22 @@ const WebinarChatBox: React.FC = () => {
         await new Promise(resolve => setTimeout(resolve, randomDelay));
         typingEl.textContent = "Selina is typing...";
 
-        const response = await fetch("https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message", {
+        // Use Claude API instead of previous endpoint
+        const response = await fetch("https://api.anthropic.com/v1/messages", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: userMsg, type: "user" })
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.CLAUDE_API_KEY || "",
+            "anthropic-version": "2023-06-01"
+          },
+          body: JSON.stringify({
+            model: "claude-3-opus-20240229",
+            max_tokens: 1024,
+            messages: [{
+              role: "user",
+              content: userMsg
+            }]
+          })
         });
 
         if (!response.ok) throw new Error("API call failed");
