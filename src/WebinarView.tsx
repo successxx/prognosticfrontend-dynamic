@@ -1,13 +1,16 @@
 /**
  * WebinarView.tsx
  *
- * - A "zoomContainer" with a top bar
- * - Larger video on the left (70%) + chat (30%) on the right
- * - "Connecting..." overlay with a PrognosticAI-blue spinner
- * - Exit-intent popup does not appear until after connecting
- * - Smaller "Live for X minutes" text
- * - beforeunload warning if user tries to refresh
- * - Clicking the "Click to enable sound" overlay sets unmute and calls .play() 
+ * Incorporates:
+ * - The old static HTML clock widget and replay overlay code (converted into React).
+ * - Fixes for video playback (autoplay-like with a clickable overlay for sound).
+ * - Ensures audio link plays at 3s.
+ * - Improved container sizing (+50%).
+ * - Additional padding for the chat on the right side.
+ * - Aligned the "type your message here..." box properly.
+ * - Subtle "© {new Date().getFullYear()} PrognosticAI" at bottom.
+ * - Restored the chat logic to connect with "my-webinar-chat-af28ab3bc4ef" for now,
+ *   while noting that to restore Claude's replies, you just point that endpoint to Claude.
  */
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -38,6 +41,12 @@ const WebinarView: React.FC = () => {
   const [showExitOverlay, setShowExitOverlay] = useState(false);
   // Whether we have already shown the overlay once
   const [hasShownOverlay, setHasShownOverlay] = useState(false);
+
+  // For the "clock widget" & "replay overlay" 
+  const [clockVisible, setClockVisible] = useState(false);
+  const [clockAnimationTriggered, setClockAnimationTriggered] = useState(false);
+  const clockIntervalRef = useRef<number | null>(null);
+  const movementIntervalRef = useRef<number | null>(null);
 
   // 1) Warn user if they try to refresh
   useEffect(() => {
@@ -95,7 +104,7 @@ const WebinarView: React.FC = () => {
       setConnecting(false);
       startTimeRef.current = Date.now();
 
-      // Attempt auto-play
+      // Attempt auto-play (video still might be blocked by browser)
       if (videoRef.current) {
         videoRef.current.play().catch(err => {
           console.log('Auto-play prevented; user must click overlay', err);
@@ -110,7 +119,7 @@ const WebinarView: React.FC = () => {
   useEffect(() => {
     if (!connecting && startTimeRef.current) {
       const intervalId = setInterval(() => {
-        const diff = Date.now() - startTimeRef.current!;
+        const diff = Date.now() - (startTimeRef.current as number);
         setLiveMinutes(Math.floor(diff / 60000));
       }, 60000);
       return () => clearInterval(intervalId);
@@ -134,7 +143,9 @@ const WebinarView: React.FC = () => {
     };
 
     videoEl.addEventListener('timeupdate', handleTimeUpdate);
-    return () => videoEl.removeEventListener('timeupdate', handleTimeUpdate);
+    return () => {
+      videoEl.removeEventListener('timeupdate', handleTimeUpdate);
+    };
   }, [connecting]);
 
   // 5) Mouse-based "exit intent" overlay (top 10%),
@@ -167,17 +178,44 @@ const WebinarView: React.FC = () => {
     };
   }, [connecting, hasShownOverlay]);
 
-  // 6) If connecting => show the spinner overlay
-  if (connecting) {
-    return (
-      <div className={styles.connectingOverlay}>
-        <div className={styles.connectingBox}>
-          <div className={styles.connectingSpinner}></div>
-          <p className={styles.connectingText}>Connecting you now...</p>
-        </div>
-      </div>
-    );
-  }
+  // 6) Clock Widget triggers at 10s of video
+  useEffect(() => {
+    const videoEl = videoRef.current;
+    if (!videoEl) return;
+
+    const handleClockVideoTime = () => {
+      if (videoEl.currentTime >= 10 && !clockAnimationTriggered) {
+        setClockAnimationTriggered(true);
+        setClockVisible(true); // show clock widget, start "dragIn"
+
+        // Start clock updates every second
+        clockIntervalRef.current = window.setInterval(() => {
+          // trigger re-render
+          setClockVisible(prev => prev); 
+        }, 1000);
+
+        // Keep clock on screen for 10 seconds after animation
+        // then dragOut + hide
+        setTimeout(() => {
+          // Stop any wobbly movement intervals if used
+          if (movementIntervalRef.current) {
+            window.clearInterval(movementIntervalRef.current);
+          }
+          // "drag out"
+          setClockVisible(false);
+          // Clear clock updates
+          if (clockIntervalRef.current) {
+            window.clearInterval(clockIntervalRef.current);
+          }
+        }, 10000 + 1300); // ~10s + the time for the dragIn anim
+      }
+    };
+
+    videoEl.addEventListener('timeupdate', handleClockVideoTime);
+    return () => {
+      videoEl.removeEventListener('timeupdate', handleClockVideoTime);
+    };
+  }, [clockAnimationTriggered]);
 
   // 7) Handler for closing the exit overlay if they click outside the bubble
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -185,6 +223,45 @@ const WebinarView: React.FC = () => {
       setShowExitOverlay(false);
     }
   };
+
+  // Replay Overlay: if video ends, show "Watch Instant Replay"
+  const [showReplay, setShowReplay] = useState(false);
+  const handleReplay = () => {
+    setShowReplay(false);
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+      setClockAnimationTriggered(false);
+      setClockVisible(false);
+      videoRef.current.play().catch(err =>
+        console.log('Replay error:', err)
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+    const onEnded = () => {
+      setShowReplay(true);
+    };
+    videoRef.current.addEventListener('ended', onEnded);
+    return () => {
+      videoRef.current?.removeEventListener('ended', onEnded);
+    };
+  }, []);
+
+  // Clock widget text
+  const now = new Date();
+  const clockTime = now.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+  const clockDate = now.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
 
   return (
     <div className={styles.zoomContainer}>
@@ -213,6 +290,58 @@ const WebinarView: React.FC = () => {
                 : defaultExitMessage}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* REPLAY OVERLAY */}
+      {showReplay && (
+        <div
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(0, 0, 0, 0.9)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '20px',
+            color: '#fff',
+            zIndex: 9999
+          }}
+        >
+          <h2 style={{ fontSize: '1.8rem', fontWeight: 600, marginBottom: '10px' }}>
+            Webinar Ended
+          </h2>
+          <button
+            style={{
+              background: '#fff',
+              color: '#0142ac',
+              padding: '12px 24px',
+              borderRadius: '6px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              border: 'none',
+              fontSize: '1rem',
+              letterSpacing: '-0.02em'
+            }}
+            onClick={handleReplay}
+          >
+            Watch Instant Replay
+          </button>
+          <button
+            style={{
+              background: '#0142ac',
+              color: '#fff',
+              padding: '12px 24px',
+              borderRadius: '6px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              border: 'none',
+              fontSize: '1rem',
+              letterSpacing: '-0.02em'
+            }}
+          >
+            Invest $999 Now
+          </button>
         </div>
       )}
 
@@ -269,7 +398,88 @@ const WebinarView: React.FC = () => {
               >
                 <div className={styles.soundIcon}>🔊</div>
                 <div className={styles.soundText}>
-                  Click here to unmute &amp; play
+                  Click to enable sound<br />(and start the webinar)
+                </div>
+              </div>
+            )}
+
+            {/* CLOCK WIDGET (old code adapted to React) */}
+            {/* Animate in/out with simple show/hide + transitions in CSS (optional). */}
+            {clockAnimationTriggered && (
+              <div
+                id="clockWidget"
+                style={{
+                  position: 'absolute',
+                  width: '320px',
+                  background: 'rgba(255, 255, 255, 0.98)',
+                  borderRadius: '10px',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+                  zIndex: 3,
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                  top: '40%',
+                  left: '45%',
+                  pointerEvents: 'none',
+                  transition: 'transform 1.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  transform: clockVisible
+                    ? 'translate(0, 0)' 
+                    : 'translate(200%, 10%)'
+                }}
+              >
+                <div
+                  style={{
+                    background: '#f5f5f7',
+                    height: '28px',
+                    borderTopLeftRadius: '10px',
+                    borderTopRightRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '0 10px',
+                    position: 'relative',
+                    borderBottom: '1px solid rgba(0, 0, 0, 0.1)'
+                  }}
+                >
+                  <div style={{ display: 'flex', gap: '6px', position: 'absolute', left: '10px' }}>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ff5f57' }}></div>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#febc2e' }}></div>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#28c840' }}></div>
+                  </div>
+                  <div style={{
+                    width: '100%',
+                    textAlign: 'center',
+                    fontSize: '13px',
+                    color: '#3f3f3f',
+                    fontWeight: 500
+                  }}>
+                    Clock Widget
+                  </div>
+                </div>
+                <div style={{
+                  padding: '20px',
+                  background: '#ffffff',
+                  borderBottomLeftRadius: '10px',
+                  borderBottomRightRadius: '10px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <div style={{
+                    fontSize: '2.4rem',
+                    fontWeight: 500,
+                    color: '#1d1d1f',
+                    marginBottom: '4px',
+                    textAlign: 'center'
+                  }}>
+                    {clockTime}
+                  </div>
+                  <div style={{
+                    fontSize: '0.9rem',
+                    color: '#86868b',
+                    fontWeight: 400,
+                    textAlign: 'center'
+                  }}>
+                    {clockDate}
+                  </div>
                 </div>
               </div>
             )}
@@ -281,6 +491,11 @@ const WebinarView: React.FC = () => {
           <WebinarChatBox />
         </div>
       </div>
+
+      {/* Footer: "© 2025 PrognosticAI" with auto year */}
+      <footer className={styles.footer}>
+        © {new Date().getFullYear()} PrognosticAI
+      </footer>
     </div>
   );
 };
@@ -404,7 +619,6 @@ const WebinarChatBox: React.FC = () => {
       messageDiv.textContent = userName ? `${userName}: ${text}` : text;
 
       // For participant messages, hide if toggle is off
-      messageDiv.style.display = 'block';
       if (type === 'user' && userName !== 'You') {
         messageDiv.setAttribute('data-participant', 'true');
         messageDiv.setAttribute('data-auto-generated', 'true');
@@ -433,7 +647,8 @@ const WebinarChatBox: React.FC = () => {
     }
     toggleEl.addEventListener('change', handleToggleChange);
 
-    // Connect WebSocket
+    // Connect WebSocket (this is currently set up to talk to your server,
+    // which should forward to Claude or handle AI responses, etc.)
     const newSocket = new WebSocket("wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com");
     socketRef.current = newSocket;
 
@@ -545,13 +760,14 @@ const WebinarChatBox: React.FC = () => {
       window.location.href = "https://yes.prognostic.ai";
     });
 
-    // If user sends a real message
+    // If user sends a real message, pass it to your server
     async function handleUserMessage(msg: string) {
       try {
         const randomDelay = Math.random() * 4000;
         await new Promise(resolve => setTimeout(resolve, randomDelay));
         typingEl.textContent = "Selina is typing...";
 
+        // You can connect this to Claude or your existing AI logic:
         const response = await fetch("https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -579,6 +795,7 @@ const WebinarChatBox: React.FC = () => {
     // When user presses Enter in chat
     function handleKeypress(e: KeyboardEvent) {
       if (e.key === "Enter" && inputEl.value.trim()) {
+        e.preventDefault(); // just in case
         const userMsg = inputEl.value.trim();
         inputEl.value = "";
         addMessage(userMsg, "user", "You");
