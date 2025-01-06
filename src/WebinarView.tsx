@@ -10,7 +10,14 @@ import styles from './WebinarView.module.css';
 
 const WebinarView: React.FC = () => {
   return (
-    <div className={styles.webinarContainer}>
+    <div className={styles.webinarContainer} style={{
+      display: 'grid',
+      gridTemplateColumns: 'minmax(0, 2fr) minmax(300px, 400px)',
+      gap: '20px',
+      width: '98%',
+      maxWidth: '1800px',
+      margin: '1rem auto'
+    }}>
       <VideoSection />
       <WebinarChatBox />
     </div>
@@ -410,22 +417,11 @@ const WebinarChatBox: React.FC = () => {
         await new Promise(resolve => setTimeout(resolve, randomDelay));
         typingEl.textContent = "Selina is typing...";
 
-        // Use Claude API instead of previous endpoint
-        const response = await fetch("https://api.anthropic.com/v1/messages", {
+        const response = await fetch("https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": process.env.CLAUDE_API_KEY || "",
-            "anthropic-version": "2023-06-01"
-          },
-          body: JSON.stringify({
-            model: "claude-3-opus-20240229",
-            max_tokens: 1024,
-            messages: [{
-              role: "user",
-              content: userMsg
-            }]
-          })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userMsg, type: "user" })
+        });
         });
 
         if (!response.ok) throw new Error("API call failed");
