@@ -57,7 +57,7 @@ const WebinarView: React.FC = () => {
   }, []);
 
   // =======================================================
-  // 1) On Mount: fetch data, show "Connecting" overlay, etc.
+  // 1) On Mount: fetch data, show "Connecting", etc.
   // =======================================================
   useEffect(() => {
     // If user tries to refresh
@@ -71,6 +71,7 @@ const WebinarView: React.FC = () => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get('user_email');
 
+    // Attempt to fetch personalized audio + exit message
     if (userEmail) {
       (async () => {
         try {
@@ -81,6 +82,7 @@ const WebinarView: React.FC = () => {
           );
           if (!resp.ok) throw new Error('Failed to fetch user data');
           const data = await resp.json();
+          // If we have an audio link, set it
           if (audioRef.current && data.audio_link) {
             audioRef.current.src = data.audio_link;
           }
@@ -144,7 +146,7 @@ const WebinarView: React.FC = () => {
   }, [safePlayAudio]);
 
   // =======================================================
-  // 4) Exit-intent overlay: show once user moves near top
+  // 4) Exit-intent overlay
   // =======================================================
   useEffect(() => {
     if (hasShownOverlay) return;
@@ -177,7 +179,7 @@ const WebinarView: React.FC = () => {
   }, []);
 
   // =======================================================
-  // 6) Clock widget logic
+  // 6) Clock widget logic (drag in at 10s, drag out after 10s)
   // =======================================================
   useEffect(() => {
     const vid = videoRef.current;
@@ -209,6 +211,7 @@ const WebinarView: React.FC = () => {
     }
 
     function handleTimeUpdate() {
+      // Show clock widget at 10s
       if (vid.currentTime >= 10 && !showClockWidget && !clockRemoved) {
         setShowClockWidget(true);
         startClockUpdates();
@@ -262,7 +265,7 @@ const WebinarView: React.FC = () => {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} /* #EAEFF3 background */>
       {/* Hidden audios */}
       <audio
         ref={messageToneRef}
@@ -299,7 +302,7 @@ const WebinarView: React.FC = () => {
         />
       )}
 
-      {/* Zoom-like Container (Double size, but remains responsive) */}
+      {/* Zoom-like Container (No extra white box behind it) */}
       <div className={styles.zoomContainer}>
         <div className={styles.zoomTopBar}>
           {/* Left side: LIVE + Title */}
@@ -318,6 +321,10 @@ const WebinarView: React.FC = () => {
           {/* Video column */}
           <div className={styles.videoColumn}>
             <div className={styles.videoWrapper}>
+              {/* 
+                Force aspect ratio 16:9 + autoPlay + controls={false}
+                so it looks “live” 
+              */}
               <video
                 ref={videoRef}
                 autoPlay
@@ -370,7 +377,7 @@ const WebinarView: React.FC = () => {
         />
       )}
 
-      {/* Subtle Copyright */}
+      {/* Subtle Copyright on background */}
       <footer className={styles.footer}>
         © {new Date().getFullYear()} PrognosticAI
       </footer>
@@ -417,11 +424,10 @@ const ReplayOverlay: React.FC<{
       <button className={styles.replayButton} onClick={onReplay}>
         Watch Instant Replay
       </button>
+      {/* CTA in new tab */}
       <button
         className={styles.investButton}
-        onClick={() => {
-          window.location.href = 'https://yes.prognostic.ai';
-        }}
+        onClick={() => window.open('https://yes.prognostic.ai', '_blank')}
       >
         Invest $999 Now
       </button>
@@ -489,7 +495,7 @@ const ClockWidget: React.FC<{
 };
 
 // ------------------------------------------------------------------
-// The Chat Box: merges original random attendees logic + "show others" toggle
+// The Chat Box: merges your original random messages logic
 // ------------------------------------------------------------------
 const WebinarChatBox: React.FC = () => {
   const chatMessagesRef = useRef<HTMLDivElement | null>(null);
@@ -502,13 +508,9 @@ const WebinarChatBox: React.FC = () => {
 
   const socketRef = useRef<WebSocket | null>(null);
 
-  // Chat states
+  // For scroll detection
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [showParticipants, setShowParticipants] = useState(true);
-
-  // We won't store messages in React state here; we'll do DOM-based approach
-  // to replicate your original snippet. Alternatively, you could store them in a
-  // 'messages' array state, but we'll keep your approach for minimal changes.
 
   useEffect(() => {
     const chatEl = chatMessagesRef.current;
@@ -524,7 +526,7 @@ const WebinarChatBox: React.FC = () => {
       return;
     }
 
-    // Scrolling helpers
+    // Scroll helpers
     function isNearBottom() {
       const threshold = 50;
       return (chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop) <= threshold;
@@ -540,14 +542,9 @@ const WebinarChatBox: React.FC = () => {
     // Show/hide participant messages
     function handleToggleChange() {
       setShowParticipants(toggleEl.checked);
-
       const others = chatEl.querySelectorAll('[data-participant="true"]');
       others.forEach((m) => {
-        if (toggleEl.checked) {
-          (m as HTMLElement).style.display = 'block';
-        } else {
-          (m as HTMLElement).style.display = 'none';
-        }
+        (m as HTMLElement).style.display = toggleEl.checked ? 'block' : 'none';
       });
       if (toggleEl.checked && !isUserScrolling) {
         scrollToBottom();
@@ -555,7 +552,7 @@ const WebinarChatBox: React.FC = () => {
     }
     toggleEl.addEventListener('change', handleToggleChange);
 
-    // Minimal function to add a message to the DOM
+    // Helper to add message
     function addMessage(
       text: string,
       msgType: 'user' | 'host' | 'system',
@@ -567,16 +564,15 @@ const WebinarChatBox: React.FC = () => {
       if (msgType === 'host') div.classList.add(styles.host);
       if (msgType === 'system') div.classList.add(styles.system);
 
-      if (userName && userName.trim() !== '') {
+      if (userName && userName.trim()) {
         div.textContent = `${userName}: ${text}`;
       } else {
         div.textContent = text;
       }
 
-      // If user from "others," tie it to data-participant
+      // If from other users
       if (msgType === 'user' && userName && userName !== 'You') {
         div.setAttribute('data-participant', 'true');
-        // Hide if showParticipants is off
         if (!toggleEl.checked) {
           div.style.display = 'none';
         }
@@ -584,13 +580,13 @@ const WebinarChatBox: React.FC = () => {
 
       chatEl.appendChild(div);
 
-      // Auto-scroll if near bottom or "You" typed
+      // auto-scroll
       if (!isUserScrolling || userName === 'You') {
         scrollToBottom();
       }
     }
 
-    // Connect WebSocket
+    // WebSocket
     const ws = new WebSocket("wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com");
     socketRef.current = ws;
     ws.onopen = () => console.log("Connected to chat server");
@@ -608,7 +604,7 @@ const WebinarChatBox: React.FC = () => {
       console.error("WebSocket error:", err);
     };
 
-    // Logic from your snippet: random attendee messages, investment notifs, etc.
+    // Original snippet data
     const names = [
       "Emma","Liam","Olivia","Noah","Ava","Ethan","Sophia","Mason",
       "Isabella","William","Mia","James","Charlotte","Benjamin","Amelia",
@@ -663,7 +659,7 @@ const WebinarChatBox: React.FC = () => {
       { time:3300, text:"What makes PrognosticAI different from competitors?", user:"Maria"}
     ];
 
-    // Greet + random attendee msgs
+    // Greet + random msgs
     setTimeout(() => {
       addMessage(
         "Welcome to the PrognosticAI Advanced Training! 👋 Let us know where you're joining from!",
@@ -690,7 +686,7 @@ const WebinarChatBox: React.FC = () => {
     preloadedQuestions.forEach((q) => {
       setTimeout(() => {
         addMessage(q.text, 'user', q.user);
-        // Show "Selina is typing..."
+        // "Selina is typing..."
         setTimeout(() => {
           typingEl.textContent = "Selina is typing...";
           const randomDelay = Math.random() * 10000 + 10000;
@@ -729,7 +725,7 @@ const WebinarChatBox: React.FC = () => {
       }
     }, 5000);
 
-    // Special offer after 60s
+    // Show special offer after 60s
     setTimeout(() => {
       specialOfferEl.style.display = 'block';
       addMessage(
@@ -748,14 +744,13 @@ const WebinarChatBox: React.FC = () => {
       }, 1000);
     }, 60000);
 
-    // Invest button
+    // Invest button (new tab)
     investBtn.addEventListener('click', () => {
-      window.location.href = 'https://yes.prognostic.ai';
+      window.open('https://yes.prognostic.ai', '_blank');
     });
 
-    // If user sends a real message
+    // AI response logic
     async function handleUserMessage(msg: string) {
-      // We do a small random delay so it feels more natural
       const randomDelay = Math.random() * 4000;
       await new Promise((res) => setTimeout(res, randomDelay));
       typingEl.textContent = "Selina is typing...";
@@ -785,7 +780,7 @@ const WebinarChatBox: React.FC = () => {
       }
     }
 
-    // On user pressing Enter in chat
+    // If user presses Enter
     function handleKeyPress(e: KeyboardEvent) {
       if (e.key === 'Enter' && inputEl.value.trim()) {
         const userMsg = inputEl.value.trim();
