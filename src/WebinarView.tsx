@@ -316,7 +316,8 @@ const WebinarView: React.FC = () => {
                 ref={videoRef}
                 muted={!hasInteracted}
                 playsInline
-                controls={true}  {/* Let user click Play */}
+                controls={true}  
+                //* Let user click Play
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               >
                 <source
