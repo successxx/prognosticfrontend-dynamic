@@ -411,7 +411,7 @@ const WebinarChatBox: React.FC = () => {
       console.error("WebSocket error:", error);
     };
 
-    const handleHostResponse = async (userMsg: string) => {
+   const handleHostResponse = async (userMsg: string) => {
       try {
         const randomDelay = Math.random() * 2000;
         await new Promise(resolve => setTimeout(resolve, randomDelay));
@@ -421,7 +421,6 @@ const WebinarChatBox: React.FC = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: userMsg, type: "user" })
-        });
         });
 
         if (!response.ok) throw new Error("API call failed");
