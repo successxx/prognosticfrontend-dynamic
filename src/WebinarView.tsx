@@ -7,7 +7,7 @@
  * - Ensures audio link plays at 3s.
  * - Improved container sizing (+50%).
  * - Additional padding for the chat on the right side.
- * - Aligned the "type your message here..." box properly.
+ * - Aligned the "type your message here..." input so it looks polished.
  * - Subtle "© {new Date().getFullYear()} PrognosticAI" at bottom.
  * - Restored the chat logic to connect with "my-webinar-chat-af28ab3bc4ef" for now,
  *   while noting that to restore Claude's replies, you just point that endpoint to Claude.
@@ -190,7 +190,7 @@ const WebinarView: React.FC = () => {
 
         // Start clock updates every second
         clockIntervalRef.current = window.setInterval(() => {
-          // trigger re-render
+          // force re-render by toggling state
           setClockVisible(prev => prev); 
         }, 1000);
 
@@ -217,14 +217,7 @@ const WebinarView: React.FC = () => {
     };
   }, [clockAnimationTriggered]);
 
-  // 7) Handler for closing the exit overlay if they click outside the bubble
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      setShowExitOverlay(false);
-    }
-  };
-
-  // Replay Overlay: if video ends, show "Watch Instant Replay"
+  // 7) Replay Overlay: if video ends, show "Watch Instant Replay"
   const [showReplay, setShowReplay] = useState(false);
   const handleReplay = () => {
     setShowReplay(false);
@@ -237,7 +230,6 @@ const WebinarView: React.FC = () => {
       );
     }
   };
-
   useEffect(() => {
     if (!videoRef.current) return;
     const onEnded = () => {
@@ -248,6 +240,13 @@ const WebinarView: React.FC = () => {
       videoRef.current?.removeEventListener('ended', onEnded);
     };
   }, []);
+
+  // 8) Handler for closing the exit overlay if they click outside the bubble
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      setShowExitOverlay(false);
+    }
+  };
 
   // Clock widget text
   const now = new Date();
@@ -404,7 +403,6 @@ const WebinarView: React.FC = () => {
             )}
 
             {/* CLOCK WIDGET (old code adapted to React) */}
-            {/* Animate in/out with simple show/hide + transitions in CSS (optional). */}
             {clockAnimationTriggered && (
               <div
                 id="clockWidget"
@@ -503,18 +501,26 @@ const WebinarView: React.FC = () => {
 /**
  * The entire chatbox logic as a React component, with all CSS classes
  * now mapped to the .module.css (styles.xxx).
+ * 
+ * NOTE: The main TypeScript fixes are here:
+ * - We do a single "null check" block early; if any ref is missing, we return.
+ * - Then we can safely use the "!" operator or just treat them as non-null.
+ * - Also we properly type the event handlers: (e: Event), (e: KeyboardEvent), etc.
  */
 const WebinarChatBox: React.FC = () => {
-  const chatMessagesRef = useRef<HTMLDivElement | null>(null);
-  const messageInputRef = useRef<HTMLInputElement | null>(null);
-  const typingIndicatorRef = useRef<HTMLDivElement | null>(null);
-  const participantToggleRef = useRef<HTMLInputElement | null>(null);
-  const specialOfferRef = useRef<HTMLDivElement | null>(null);
-  const countdownRef = useRef<HTMLDivElement | null>(null);
-  const investButtonRef = useRef<HTMLButtonElement | null>(null);
+  const chatMessagesRef = useRef<HTMLDivElement>(null);
+  const messageInputRef = useRef<HTMLInputElement>(null);
+  const typingIndicatorRef = useRef<HTMLDivElement>(null);
+  const participantToggleRef = useRef<HTMLInputElement>(null);
+  const specialOfferRef = useRef<HTMLDivElement>(null);
+  const countdownRef = useRef<HTMLDivElement>(null);
+  const investButtonRef = useRef<HTMLButtonElement>(null);
 
   // WebSocket
   const socketRef = useRef<WebSocket | null>(null);
+
+  // Used to track if user is actively scrolling up
+  let isUserScrolling = false;
 
   // Random name sets
   const names = [
@@ -571,9 +577,8 @@ const WebinarChatBox: React.FC = () => {
     {time:3300, text:"What makes PrognosticAI different from competitors?",user:"Maria"}
   ];
 
-  let isUserScrolling = false; // track user scroll state
-
   useEffect(() => {
+    // Grab all the refs once
     const chatEl = chatMessagesRef.current;
     const inputEl = messageInputRef.current;
     const typingEl = typingIndicatorRef.current;
@@ -582,25 +587,45 @@ const WebinarChatBox: React.FC = () => {
     const countdownEl = countdownRef.current;
     const investBtn = investButtonRef.current;
 
+    // If any are missing, skip the rest
     if (!chatEl || !inputEl || !typingEl || !toggleEl || !specialOfferEl || !countdownEl || !investBtn) {
       console.error("WebinarChatBox: Missing required refs.");
       return;
     }
 
-    // Scroll helper
-    function isNearBottom(element: HTMLDivElement) {
+    // Helper: check if near bottom
+    function isNearBottom(element: HTMLDivElement): boolean {
       const threshold = 50;
       return (element.scrollHeight - element.clientHeight - element.scrollTop) <= threshold;
     }
-    function scrollToBottom(element: HTMLDivElement) {
+
+    // Helper: auto-scroll
+    function scrollToBottom(element: HTMLDivElement): void {
       element.scrollTop = element.scrollHeight;
     }
 
-    function handleScroll() {
+    // On scroll, check if user scrolled away from bottom
+    function handleScroll(): void {
       isUserScrolling = !isNearBottom(chatEl);
     }
     chatEl.addEventListener('scroll', handleScroll);
 
+    // Toggle participant messages on/off
+    function handleToggleChange(e: Event): void {
+      const target = e.currentTarget as HTMLInputElement;
+      const participantMessages = chatEl.querySelectorAll('[data-participant="true"]');
+      participantMessages.forEach(msg => {
+        (msg as HTMLElement).style.display = target.checked ? 'block' : 'none';
+      });
+      if (target.checked && !isUserScrolling) {
+        scrollToBottom(chatEl);
+      }
+    }
+    toggleEl.addEventListener('change', handleToggleChange);
+
+    /**
+     * Utility to add a message to the chat.
+     */
     function addMessage(
       text: string,
       type: 'user' | 'host' | 'system',
@@ -618,7 +643,7 @@ const WebinarChatBox: React.FC = () => {
 
       messageDiv.textContent = userName ? `${userName}: ${text}` : text;
 
-      // For participant messages, hide if toggle is off
+      // For participant messages, hide if the "Show Others" toggle is off
       if (type === 'user' && userName !== 'You') {
         messageDiv.setAttribute('data-participant', 'true');
         messageDiv.setAttribute('data-auto-generated', 'true');
@@ -629,29 +654,15 @@ const WebinarChatBox: React.FC = () => {
 
       chatEl.appendChild(messageDiv);
 
-      // auto-scroll if near bottom
+      // auto-scroll if near bottom OR if it's our (You) message
       if (!isUserScrolling || userName === 'You') {
         scrollToBottom(chatEl);
       }
     }
 
-    function handleToggleChange(e: Event) {
-      const target = e.currentTarget as HTMLInputElement;
-      const participantMessages = chatEl.querySelectorAll('[data-participant="true"]');
-      participantMessages.forEach(msg => {
-        (msg as HTMLElement).style.display = target.checked ? 'block' : 'none';
-      });
-      if (target.checked && !isUserScrolling) {
-        scrollToBottom(chatEl);
-      }
-    }
-    toggleEl.addEventListener('change', handleToggleChange);
-
-    // Connect WebSocket (this is currently set up to talk to your server,
-    // which should forward to Claude or handle AI responses, etc.)
+    // Connect WebSocket
     const newSocket = new WebSocket("wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com");
     socketRef.current = newSocket;
-
     newSocket.onopen = () => {
       console.log("Connected to chat server");
     };
@@ -669,7 +680,7 @@ const WebinarChatBox: React.FC = () => {
       console.error("WebSocket error:", error);
     };
 
-    // Schedule random attendee messages
+    // Show host welcome & schedule random attendee messages
     function scheduleAttendeeMessages() {
       const numMessages = Math.floor(Math.random() * 6) + 15;
       let delay = 500;
@@ -691,7 +702,7 @@ const WebinarChatBox: React.FC = () => {
       scheduleAttendeeMessages();
     }, 2000);
 
-    // Preloaded questions
+    // Preloaded Q&A
     preloadedQuestions.forEach(q => {
       setTimeout(() => {
         addMessage(q.text, 'user', q.user);
@@ -706,7 +717,7 @@ const WebinarChatBox: React.FC = () => {
       }, q.time * 1000);
     });
 
-    // Investment notifications
+    // Random investment notifications
     function showInvestmentNotification() {
       const name = names[Math.floor(Math.random() * names.length)];
       const line = investmentMessages[Math.floor(Math.random() * investmentMessages.length)];
@@ -719,13 +730,13 @@ const WebinarChatBox: React.FC = () => {
       document.body.appendChild(notif);
       setTimeout(() => notif.remove(), 5000);
     }
-    setInterval(() => {
+    const investInterval = setInterval(() => {
       showInvestmentNotification();
     }, Math.random() * 30000 + 30000);
 
-    // Update viewer count every 5s
+    // Viewer count
     let currentViewers = 41;
-    setInterval(() => {
+    const viewerInterval = setInterval(() => {
       const change = Math.random() < 0.5 ? -1 : 1;
       currentViewers = Math.max(40, Math.min(50, currentViewers + change));
       const vCount = document.getElementById('viewerCount');
@@ -734,7 +745,7 @@ const WebinarChatBox: React.FC = () => {
       }
     }, 5000);
 
-    // Show special offer after 60s
+    // Special offer after 60s
     setTimeout(() => {
       specialOfferEl.style.display = "block";
       addMessage(
@@ -760,14 +771,13 @@ const WebinarChatBox: React.FC = () => {
       window.location.href = "https://yes.prognostic.ai";
     });
 
-    // If user sends a real message, pass it to your server
-    async function handleUserMessage(msg: string) {
+    // If user sends a real message => AI response
+    async function handleUserMessage(msg: string): Promise<void> {
       try {
         const randomDelay = Math.random() * 4000;
         await new Promise(resolve => setTimeout(resolve, randomDelay));
         typingEl.textContent = "Selina is typing...";
 
-        // You can connect this to Claude or your existing AI logic:
         const response = await fetch("https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -792,10 +802,10 @@ const WebinarChatBox: React.FC = () => {
       }
     }
 
-    // When user presses Enter in chat
-    function handleKeypress(e: KeyboardEvent) {
+    // Keypress handler
+    function handleKeypress(e: KeyboardEvent): void {
       if (e.key === "Enter" && inputEl.value.trim()) {
-        e.preventDefault(); // just in case
+        e.preventDefault(); // So no unintended form submission
         const userMsg = inputEl.value.trim();
         inputEl.value = "";
         addMessage(userMsg, "user", "You");
@@ -804,11 +814,14 @@ const WebinarChatBox: React.FC = () => {
     }
     inputEl.addEventListener('keypress', handleKeypress);
 
-    // Cleanup
+    // Cleanup on unmount
     return () => {
       chatEl.removeEventListener('scroll', handleScroll);
       toggleEl.removeEventListener('change', handleToggleChange);
       inputEl.removeEventListener('keypress', handleKeypress);
+      clearInterval(investInterval);
+      clearInterval(viewerInterval);
+
       if (socketRef.current) {
         socketRef.current.close();
         socketRef.current = null;
