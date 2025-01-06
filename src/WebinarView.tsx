@@ -77,18 +77,13 @@ const WebinarView: React.FC = () => {
           if (!resp.ok) throw new Error("Error fetching user data");
           const data = await resp.json();
 
+          const response = await fetch(data.audio_link);
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
           // audio_link -> audioRef
-          // if (audioRef.current && data.audio_link) {
-          //   audioRef.current.src = data.audio_link;
-          // }
-
           if (audioRef.current && data.audio_link) {
-            // Convert Google Drive URL to direct download URL
-            const fileId = data.audio_link.split("id=")[1];
-            const directUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
-            audioRef.current.src = directUrl;
+            audioRef.current.src = url;
           }
-
           // exit message
           if (data.exit_message) {
             setExitMessage(data.exit_message);
