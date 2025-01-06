@@ -1,35 +1,35 @@
-/**
- * WebinarView.tsx
- *
- * Same functional/UI code as before, with minimal TypeScript fixes:
- * - We define strict helper functions (isNearBottom, scrollToBottom, addMessage) outside the useEffect
- * - Inside the useEffect, we pass non-null HTML elements to those helpers
- * - We do the same early return check for null refs
- *
- * Everything else is unchanged.
- */
-
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './WebinarView.module.css';
 
-/** Global (file-level) tracking so we don't lose messages from the older approach: */
+/* 
+  A file-level global so we can track if the user is scrolling up 
+  in the chat. (Same as before, but carefully used in helper fns.)
+*/
 let isUserScrolling = false;
 
-/** Strict type-safe helpers: 
- *  -- Ensure we only call these with non-null HTML elements
+/** ===================
+ *  1) HELPER FUNCTIONS
+ *  =================== **/
+
+/** 
+ * Check if user is near bottom of a scrollable div
+ * @param element A guaranteed non-null <div> 
  */
 function isNearBottom(element: HTMLDivElement): boolean {
   const threshold = 50;
   return (element.scrollHeight - element.clientHeight - element.scrollTop) <= threshold;
 }
 
+/**
+ * Scroll to bottom of a guaranteed non-null <div>
+ */
 function scrollToBottom(element: HTMLDivElement): void {
   element.scrollTop = element.scrollHeight;
 }
 
 /**
- * addMessage helper
- * We'll pass in the guaranteed non-null chatEl + toggleEl, plus isUserScrolling from the global scope.
+ * Add a message <div> into the chatEl, respecting "toggleEl" for participant messages,
+ * then auto-scroll if near bottom or if it's your own message.
  */
 function addMessage(
   chatEl: HTMLDivElement,
@@ -37,9 +37,10 @@ function addMessage(
   text: string,
   type: 'user' | 'host' | 'system',
   userName = ''
-) {
+): void {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add(styles.message);
+
   if (type === 'user') {
     messageDiv.classList.add('user');
   } else if (type === 'host') {
@@ -61,15 +62,15 @@ function addMessage(
 
   chatEl.appendChild(messageDiv);
 
-  // Auto-scroll if near bottom or user = "You"
+  // Auto-scroll if near bottom or user = 'You'
   if (!isUserScrolling || userName === 'You') {
     scrollToBottom(chatEl);
   }
 }
 
-/**
- * Main WebinarView component
- */
+/** =========================
+ * 2) MAIN COMPONENT: WebinarView
+ * ========================= **/
 const WebinarView: React.FC = () => {
   // Refs for <video> and <audio> elements
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -158,8 +159,8 @@ const WebinarView: React.FC = () => {
       setConnecting(false);
       startTimeRef.current = Date.now();
 
+      // Attempt auto-play
       if (videoRef.current) {
-        // Attempt auto-play
         videoRef.current.play().catch(err => {
           console.log('Auto-play prevented; user must click overlay', err);
         });
@@ -173,7 +174,7 @@ const WebinarView: React.FC = () => {
   useEffect(() => {
     if (!connecting && startTimeRef.current) {
       const intervalId = setInterval(() => {
-        const diff = Date.now() - (startTimeRef.current as number);
+        const diff = Date.now() - startTimeRef.current!;
         setLiveMinutes(Math.floor(diff / 60000));
       }, 60000);
       return () => clearInterval(intervalId);
@@ -187,14 +188,14 @@ const WebinarView: React.FC = () => {
     const audioEl = audioRef.current;
     if (!videoEl || !audioEl) return;
 
-    const handleTimeUpdate = () => {
+    function handleTimeUpdate() {
       if (videoEl.currentTime >= 3) {
         audioEl
           .play()
           .catch(err => console.error('Error starting personalized audio playback:', err));
         videoEl.removeEventListener('timeupdate', handleTimeUpdate);
       }
-    };
+    }
 
     videoEl.addEventListener('timeupdate', handleTimeUpdate);
     return () => {
@@ -230,7 +231,7 @@ const WebinarView: React.FC = () => {
     const videoEl = videoRef.current;
     if (!videoEl) return;
 
-    const handleClockVideoTime = () => {
+    function handleClockVideoTime() {
       if (videoEl.currentTime >= 10 && !clockAnimationTriggered) {
         setClockAnimationTriggered(true);
         setClockVisible(true); // "dragIn"
@@ -252,7 +253,7 @@ const WebinarView: React.FC = () => {
           }
         }, 10000 + 1300);
       }
-    };
+    }
     videoEl.addEventListener('timeupdate', handleClockVideoTime);
     return () => {
       videoEl.removeEventListener('timeupdate', handleClockVideoTime);
@@ -261,7 +262,7 @@ const WebinarView: React.FC = () => {
 
   // 7) Replay Overlay
   const [showReplay, setShowReplay] = useState(false);
-  const handleReplay = () => {
+  function handleReplay() {
     setShowReplay(false);
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
@@ -269,12 +270,12 @@ const WebinarView: React.FC = () => {
       setClockVisible(false);
       videoRef.current.play().catch(err => console.log('Replay error:', err));
     }
-  };
+  }
   useEffect(() => {
     if (!videoRef.current) return;
-    const onEnded = () => {
+    function onEnded() {
       setShowReplay(true);
-    };
+    }
     videoRef.current.addEventListener('ended', onEnded);
     return () => {
       videoRef.current?.removeEventListener('ended', onEnded);
@@ -282,11 +283,11 @@ const WebinarView: React.FC = () => {
   }, []);
 
   // 8) Exit overlay click
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  function handleOverlayClick(e: React.MouseEvent<HTMLDivElement>) {
     if (e.target === e.currentTarget) {
       setShowExitOverlay(false);
     }
-  };
+  }
 
   // Clock widget text
   const now = new Date();
@@ -530,12 +531,8 @@ const WebinarView: React.FC = () => {
 };
 
 /** 
- * WebinarChatBox 
- * 
- * EXACT same code as before except:
- * - We rely on top-level helpers (isNearBottom, scrollToBottom, addMessage)
- * - We pass in chatEl/toggleEl as arguments to those helpers instead of referencing them inside 
- * - We do an early return if refs are missing, so TS knows they're not null.
+ * 3) The WebinarChatBox component 
+ *    (fully typed and restructured)
  */
 const WebinarChatBox: React.FC = () => {
   const chatMessagesRef = useRef<HTMLDivElement>(null);
@@ -546,10 +543,9 @@ const WebinarChatBox: React.FC = () => {
   const countdownRef = useRef<HTMLDivElement>(null);
   const investButtonRef = useRef<HTMLButtonElement>(null);
 
-  // WebSocket
   const socketRef = useRef<WebSocket | null>(null);
 
-  // Attendee data
+  // Some sample data arrays
   const names = [
     "Emma","Liam","Olivia","Noah","Ava","Ethan","Sophia","Mason",
     "Isabella","William","Mia","James","Charlotte","Benjamin","Amelia",
@@ -605,6 +601,7 @@ const WebinarChatBox: React.FC = () => {
   ];
 
   useEffect(() => {
+    /** Gather all references */
     const chatEl = chatMessagesRef.current;
     const inputEl = messageInputRef.current;
     const typingEl = typingIndicatorRef.current;
@@ -613,19 +610,19 @@ const WebinarChatBox: React.FC = () => {
     const countdownEl = countdownRef.current;
     const investBtn = investButtonRef.current;
 
-    // Early return if any required refs are missing
+    /** If any are missing, skip the rest. This kills "possibly null" errors. */
     if (!chatEl || !inputEl || !typingEl || !toggleEl || !specialOfferEl || !countdownEl || !investBtn) {
       console.error("WebinarChatBox: Missing required refs.");
       return;
     }
 
     /** On scroll, check if user scrolled away from bottom */
-    function handleScroll(): void {
+    function handleScroll() {
       isUserScrolling = !isNearBottom(chatEl);
     }
 
     /** Toggle participant messages on/off */
-    function handleToggleChange(e: Event): void {
+    function handleToggleChange(e: Event) {
       const target = e.currentTarget as HTMLInputElement;
       const participantMessages = chatEl.querySelectorAll('[data-participant="true"]');
       participantMessages.forEach(msg => {
@@ -636,10 +633,10 @@ const WebinarChatBox: React.FC = () => {
       }
     }
 
-    /** If user sends a real message => ask "Selina" for response */
-    async function handleUserMessage(msg: string): Promise<void> {
+    /** If user sends a real message => fetch AI response */
+    async function handleUserMessage(msg: string) {
       try {
-        // Simulate typing
+        // Simulate 'Selina is typing...'
         typingEl.textContent = "Selina is typing...";
         const randomDelay = Math.random() * 4000;
         await new Promise(resolve => setTimeout(resolve, randomDelay));
@@ -671,7 +668,7 @@ const WebinarChatBox: React.FC = () => {
     }
 
     /** Keypress handler for user input */
-    function handleKeypress(e: KeyboardEvent): void {
+    function handleKeypress(e: KeyboardEvent) {
       if (e.key === "Enter" && inputEl.value.trim()) {
         e.preventDefault();
         const userMsg = inputEl.value.trim();
@@ -686,13 +683,14 @@ const WebinarChatBox: React.FC = () => {
     toggleEl.addEventListener('change', handleToggleChange);
     inputEl.addEventListener('keypress', handleKeypress);
 
-    // Connect WebSocket
+    /** Connect WebSocket */
     const newSocket = new WebSocket("wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com");
     socketRef.current = newSocket;
+
     newSocket.onopen = () => {
       console.log("Connected to chat server");
     };
-    newSocket.onmessage = (event) => {
+    newSocket.onmessage = event => {
       const data = JSON.parse(event.data);
       if (data.type === 'message') {
         addMessage(
@@ -704,11 +702,11 @@ const WebinarChatBox: React.FC = () => {
         );
       }
     };
-    newSocket.onerror = (error) => {
+    newSocket.onerror = error => {
       console.error("WebSocket error:", error);
     };
 
-    // Show welcome + schedule random attendee messages
+    /** Show a welcome message + schedule random attendee messages */
     function scheduleAttendeeMessages() {
       const numMessages = Math.floor(Math.random() * 6) + 15;
       let delay = 500;
@@ -736,7 +734,7 @@ const WebinarChatBox: React.FC = () => {
     preloadedQuestions.forEach(q => {
       setTimeout(() => {
         addMessage(chatEl, toggleEl, q.text, 'user', q.user);
-        // Optionally show "Selina is typing..."
+        // "Selina is typing..." simulation
         setTimeout(() => {
           typingEl.textContent = "Selina is typing...";
           const randomDelay = Math.random() * 10000 + 10000;
@@ -747,7 +745,7 @@ const WebinarChatBox: React.FC = () => {
       }, q.time * 1000);
     });
 
-    // Investment notifications
+    // Random investment notifications
     function showInvestmentNotification() {
       const name = names[Math.floor(Math.random() * names.length)];
       const line = investmentMessages[Math.floor(Math.random() * investmentMessages.length)];
@@ -818,6 +816,7 @@ const WebinarChatBox: React.FC = () => {
     };
   }, []);
 
+  // Original return with all your existing structure
   return (
     <div className={styles.chatSection}>
       <div className={styles.chatHeader}>
