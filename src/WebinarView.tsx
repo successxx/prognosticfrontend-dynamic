@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import styles from "./WebinarView.module.css";
-import { clearInterval } from "timers";
+// import { clearInterval } from "timers";
 
 // For the chat logic
 interface ChatMessage {
