@@ -26,7 +26,7 @@
   font-family: 'Montserrat', sans-serif;
 }
 
-/* A top bar for Title + "live for X minutes" */
+/* A top bar for the Title + "live for X minutes" */
 .zoomTopBar {
   display: flex;
   justify-content: space-between;
@@ -43,7 +43,7 @@
   gap: 8px;
 }
 
-/* Blinking red dot for "LIVE" */
+/* The blinking red dot for "LIVE" */
 .zoomLiveDot {
   width: 8px;
   height: 8px;
