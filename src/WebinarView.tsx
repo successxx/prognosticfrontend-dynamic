@@ -1,16 +1,12 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback
-} from 'react';
-import { createPortal } from 'react-dom';
-import styles from './WebinarView.module.css';
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
+import styles from "./WebinarView.module.css";
+import { clearInterval } from "timers";
 
 // For the chat logic
 interface ChatMessage {
   text: string;
-  type: 'user' | 'host' | 'system';
+  type: "user" | "host" | "system";
   userName?: string;
 }
 
@@ -28,7 +24,7 @@ const WebinarView: React.FC = () => {
   // Overlays
   const [showExitOverlay, setShowExitOverlay] = useState(false);
   const [hasShownOverlay, setHasShownOverlay] = useState(false);
-  const [exitMessage, setExitMessage] = useState('');
+  const [exitMessage, setExitMessage] = useState("");
 
   const [showReplayOverlay, setShowReplayOverlay] = useState(false);
 
@@ -36,7 +32,7 @@ const WebinarView: React.FC = () => {
   const [showClockWidget, setShowClockWidget] = useState(false);
   const [clockDragInComplete, setClockDragInComplete] = useState(false);
   const [clockRemoved, setClockRemoved] = useState(false);
-  const [currentTimeString, setCurrentTimeString] = useState('');
+  const [currentTimeString, setCurrentTimeString] = useState("");
   const [currentDateObj, setCurrentDateObj] = useState<Date | null>(null);
   const clockIntervalRef = useRef<NodeJS.Timer | null>(null);
 
@@ -44,14 +40,17 @@ const WebinarView: React.FC = () => {
   const startTimeRef = useRef<number>(Date.now());
 
   // Safe audio playback
-  const safePlayAudio = useCallback(async (element: HTMLAudioElement | null) => {
-    if (!element) return;
-    try {
-      await element.play();
-    } catch (err) {
-      console.warn('Audio playback prevented:', err);
-    }
-  }, []);
+  const safePlayAudio = useCallback(
+    async (element: HTMLAudioElement | null) => {
+      if (!element) return;
+      try {
+        await element.play();
+      } catch (err) {
+        console.warn("Audio playback prevented:", err);
+      }
+    },
+    []
+  );
 
   // =====================================================
   // 1) On Mount: fetch audio + exit message, show "Connecting"
@@ -59,12 +58,13 @@ const WebinarView: React.FC = () => {
   useEffect(() => {
     function handleBeforeUnload(e: BeforeUnloadEvent) {
       e.preventDefault();
-      e.returnValue = "The webinar is currently full. If you reload, you might lose your spot.";
+      e.returnValue =
+        "The webinar is currently full. If you reload, you might lose your spot.";
     }
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     const params = new URLSearchParams(window.location.search);
-    const userEmail = params.get('user_email');
+    const userEmail = params.get("user_email");
 
     if (userEmail) {
       (async () => {
@@ -74,7 +74,7 @@ const WebinarView: React.FC = () => {
               userEmail
             )}`
           );
-          if (!resp.ok) throw new Error('Error fetching user data');
+          if (!resp.ok) throw new Error("Error fetching user data");
           const data = await resp.json();
 
           // audio_link -> audioRef
@@ -86,7 +86,7 @@ const WebinarView: React.FC = () => {
             setExitMessage(data.exit_message);
           }
         } catch (err) {
-          console.error('Error loading user data:', err);
+          console.error("Error loading user data:", err);
         }
       })();
     }
@@ -99,14 +99,14 @@ const WebinarView: React.FC = () => {
       // Try autoplay
       if (videoRef.current) {
         videoRef.current.play().catch((err) => {
-          console.warn('Video autoplay blocked:', err);
+          console.warn("Video autoplay blocked:", err);
         });
       }
     }, 2000);
 
     return () => {
       clearTimeout(connectTimer);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [safePlayAudio]);
 
@@ -133,11 +133,11 @@ const WebinarView: React.FC = () => {
     function handleTimeUpdate() {
       if (vid.currentTime >= 3) {
         safePlayAudio(audioRef.current);
-        vid.removeEventListener('timeupdate', handleTimeUpdate);
+        vid?.removeEventListener("timeupdate", handleTimeUpdate);
       }
     }
-    vid.addEventListener('timeupdate', handleTimeUpdate);
-    return () => vid.removeEventListener('timeupdate', handleTimeUpdate);
+    vid.addEventListener("timeupdate", handleTimeUpdate);
+    return () => vid.removeEventListener("timeupdate", handleTimeUpdate);
   }, [safePlayAudio]);
 
   // =====================================================
@@ -154,8 +154,8 @@ const WebinarView: React.FC = () => {
         safePlayAudio(messageToneRef.current);
       }
     }
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [hasShownOverlay, safePlayAudio]);
 
   // =====================================================
@@ -168,8 +168,8 @@ const WebinarView: React.FC = () => {
     function handleEnded() {
       setShowReplayOverlay(true);
     }
-    vid.addEventListener('ended', handleEnded);
-    return () => vid.removeEventListener('ended', handleEnded);
+    vid.addEventListener("ended", handleEnded);
+    return () => vid.removeEventListener("ended", handleEnded);
   }, []);
 
   // =====================================================
@@ -183,11 +183,11 @@ const WebinarView: React.FC = () => {
       const now = new Date();
       setCurrentDateObj(now);
       setCurrentTimeString(
-        now.toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: true
+        now.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
         })
       );
     }
@@ -199,7 +199,7 @@ const WebinarView: React.FC = () => {
 
     function stopClockUpdates() {
       if (clockIntervalRef.current) {
-        clearInterval(clockIntervalRef.current);
+        clearInterval(+clockIntervalRef.current);
         clockIntervalRef.current = null;
       }
     }
@@ -210,10 +210,10 @@ const WebinarView: React.FC = () => {
         startClockUpdates();
       }
     }
-    vid.addEventListener('timeupdate', handleTimeUpdate);
+    vid.addEventListener("timeupdate", handleTimeUpdate);
 
     return () => {
-      vid.removeEventListener('timeupdate', handleTimeUpdate);
+      vid.removeEventListener("timeupdate", handleTimeUpdate);
       stopClockUpdates();
     };
   }, [showClockWidget, clockRemoved]);
@@ -232,7 +232,7 @@ const WebinarView: React.FC = () => {
     // Once removed is true, hide fully after 1s
     if (clockRemoved) {
       if (clockIntervalRef.current) {
-        clearInterval(clockIntervalRef.current);
+        clearInterval(clockIntervalRef.current as unknown as number);
       }
       const hideTimer = setTimeout(() => {
         setShowClockWidget(false);
@@ -261,9 +261,9 @@ const WebinarView: React.FC = () => {
       <audio
         ref={messageToneRef}
         src="https://cdn.freesound.org/previews/613/613258_5674468-lq.mp3"
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
       />
-      <audio ref={audioRef} style={{ display: 'none' }} />
+      <audio ref={audioRef} style={{ display: "none" }} />
 
       {/* Exit Overlay */}
       {showExitOverlay &&
@@ -303,7 +303,7 @@ const WebinarView: React.FC = () => {
           </div>
           {/* Right side: smaller "Live for X minutes" */}
           <div className={styles.zoomLiveMinutes}>
-            Live for {liveMinutes} minute{liveMinutes === 1 ? '' : 's'}
+            Live for {liveMinutes} minute{liveMinutes === 1 ? "" : "s"}
           </div>
         </div>
 
@@ -318,7 +318,7 @@ const WebinarView: React.FC = () => {
                 muted={!hasInteracted}
                 playsInline
                 controls={false}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
               >
                 <source
                   src="https://paivid.s3.us-east-2.amazonaws.com/homepage222.mp4"
@@ -413,7 +413,7 @@ const ReplayOverlay: React.FC<{
       {/* CTA in new tab */}
       <button
         className={styles.investButton}
-        onClick={() => window.open('https://yes.prognostic.ai', '_blank')}
+        onClick={() => window.open("https://yes.prognostic.ai", "_blank")}
       >
         Invest $999 Now
       </button>
@@ -436,10 +436,14 @@ const ClockWidget: React.FC<{
   currentDate,
   dragInComplete,
   setDragInComplete,
-  clockRemoved
+  clockRemoved,
 }) => {
   const widgetRef = useRef<HTMLDivElement | null>(null);
-  const [movementIntervalId, setMovementIntervalId] = useState<NodeJS.Timer | null>(null);
+  const [movementIntervalId, setMovementIntervalId] =
+    useState<NodeJS.Timer | null>(null);
+
+  // const [movementIntervalId, setMovementIntervalId] =
+  //   useState<NodeJS.Timeout | null>(null);
 
   // The random "human" wobble
   const addNaturalMovement = useCallback(() => {
@@ -469,7 +473,9 @@ const ClockWidget: React.FC<{
       const wobbleX = Math.sin(currentTimeMs * 0.002) * 0.3;
       const wobbleY = Math.cos(currentTimeMs * 0.002) * 0.3;
 
-      widgetRef.current!.style.transform = `translate(${baseX + wobbleX}px, ${baseY + wobbleY}px)`;
+      widgetRef.current!.style.transform = `translate(${baseX + wobbleX}px, ${
+        baseY + wobbleY
+      }px)`;
     }, 16);
   }, []);
 
@@ -486,21 +492,23 @@ const ClockWidget: React.FC<{
   };
 
   // If we forcibly remove
+  // ...
+
   useEffect(() => {
     if (clockRemoved && movementIntervalId) {
-      clearInterval(movementIntervalId);
+      clearInterval(movementIntervalId as NodeJS.Timeout);
       setMovementIntervalId(null);
     }
   }, [clockRemoved, movementIntervalId]);
 
   const dateString = currentDate
-    ? currentDate.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+    ? currentDate.toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       })
-    : '';
+    : "";
 
   let widgetClass = styles.clockWidget;
   if (!clockRemoved) {
@@ -560,7 +568,15 @@ const WebinarChatBox: React.FC = () => {
     const countdownElRef = countdownRef.current;
     const investBtn = investButtonRef.current;
 
-    if (!chatEl || !inputEl || !typingEl || !toggleEl || !specialOfferEl || !countdownElRef || !investBtn) {
+    if (
+      !chatEl ||
+      !inputEl ||
+      !typingEl ||
+      !toggleEl ||
+      !specialOfferEl ||
+      !countdownElRef ||
+      !investBtn
+    ) {
       console.warn("Some chat refs missing; chat may not fully work.");
       return;
     }
@@ -568,7 +584,10 @@ const WebinarChatBox: React.FC = () => {
     // Scroll helpers
     function isNearBottom() {
       const threshold = 50;
-      return (chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop) <= threshold;
+      return (
+        chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop <=
+        threshold
+      );
     }
     function scrollToBottom() {
       chatEl.scrollTop = chatEl.scrollHeight;
@@ -576,34 +595,36 @@ const WebinarChatBox: React.FC = () => {
     function handleScroll() {
       setIsUserScrolling(!isNearBottom());
     }
-    chatEl.addEventListener('scroll', handleScroll);
+    chatEl.addEventListener("scroll", handleScroll);
 
     // Toggle show/hide
     function handleToggle() {
       setShowParticipants(toggleEl.checked);
-      const participantMsgs = chatEl.querySelectorAll('[data-participant="true"]');
-      participantMsgs.forEach(m => {
-        (m as HTMLElement).style.display = toggleEl.checked ? 'block' : 'none';
+      const participantMsgs = chatEl.querySelectorAll(
+        '[data-participant="true"]'
+      );
+      participantMsgs.forEach((m) => {
+        (m as HTMLElement).style.display = toggleEl.checked ? "block" : "none";
       });
       if (toggleEl.checked && !isUserScrolling) {
         scrollToBottom();
       }
     }
     toggleEl.checked = false; // default OFF
-    toggleEl.addEventListener('change', handleToggle);
+    toggleEl.addEventListener("change", handleToggle);
 
     // Add a message
     function addMessage(
       text: string,
-      msgType: 'user' | 'host' | 'system',
+      msgType: "user" | "host" | "system",
       userName?: string,
       autoScroll = true
     ) {
-      const div = document.createElement('div');
+      const div = document.createElement("div");
       div.classList.add(styles.message);
-      if (msgType === 'user') div.classList.add(styles.user);
-      if (msgType === 'host') div.classList.add(styles.host);
-      if (msgType === 'system') div.classList.add(styles.system);
+      if (msgType === "user") div.classList.add(styles.user);
+      if (msgType === "host") div.classList.add(styles.host);
+      if (msgType === "system") div.classList.add(styles.system);
 
       if (userName && userName.trim()) {
         div.textContent = `${userName}: ${text}`;
@@ -612,17 +633,17 @@ const WebinarChatBox: React.FC = () => {
       }
 
       // If from other participants
-      if (msgType === 'user' && userName && userName !== 'You') {
-        div.setAttribute('data-participant', 'true');
+      if (msgType === "user" && userName && userName !== "You") {
+        div.setAttribute("data-participant", "true");
         // hide if toggle is off
         if (!toggleEl.checked) {
-          div.style.display = 'none';
+          div.style.display = "none";
         }
       }
 
       chatEl.appendChild(div);
 
-      if (autoScroll || userName === 'You') {
+      if (autoScroll || userName === "You") {
         if (!isUserScrolling) {
           scrollToBottom();
         }
@@ -630,24 +651,48 @@ const WebinarChatBox: React.FC = () => {
     }
 
     // Connect socket
-    const ws = new WebSocket("wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com");
+    const ws = new WebSocket(
+      "wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com"
+    );
     socketRef.current = ws;
     ws.onopen = () => console.log("Connected to chat server");
-    ws.onmessage = evt => {
+    ws.onmessage = (evt) => {
       const data = JSON.parse(evt.data);
-      if (data.type === 'message') {
-        addMessage(data.text, data.messageType as 'user' | 'host' | 'system', data.user, true);
+      if (data.type === "message") {
+        addMessage(
+          data.text,
+          data.messageType as "user" | "host" | "system",
+          data.user,
+          true
+        );
       }
     };
-    ws.onerror = err => {
+    ws.onerror = (err) => {
       console.error("WebSocket error:", err);
     };
 
     // Original snippet arrays
     const names = [
-      "Emma","Liam","Olivia","Noah","Ava","Ethan","Sophia","Mason",
-      "Isabella","William","Mia","James","Charlotte","Benjamin","Amelia",
-      "Lucas","Harper","Henry","Evelyn","Alexander"
+      "Emma",
+      "Liam",
+      "Olivia",
+      "Noah",
+      "Ava",
+      "Ethan",
+      "Sophia",
+      "Mason",
+      "Isabella",
+      "William",
+      "Mia",
+      "James",
+      "Charlotte",
+      "Benjamin",
+      "Amelia",
+      "Lucas",
+      "Harper",
+      "Henry",
+      "Evelyn",
+      "Alexander",
     ];
     const attendeeMessages = [
       "hows everyone doing today??",
@@ -669,7 +714,7 @@ const WebinarChatBox: React.FC = () => {
       "can someone explain the pricing again??",
       "this is exactly what ive been looking for!!1!",
       "sry if this was covered already but will there b updates?",
-      "im big in affiliate marketing, and this is wild!"
+      "im big in affiliate marketing, and this is wild!",
     ];
     const investmentMessages = [
       "just invested in PrognosticAI! 🚀",
@@ -679,28 +724,68 @@ const WebinarChatBox: React.FC = () => {
       "is starting their AI journey with us! 🌟",
       "got early access to PrognosticAI! 🔥",
       "upgraded to PrognosticAI Pro! 💪",
-      "joined our success story! ⭐"
+      "joined our success story! ⭐",
     ];
     const preloadedQuestions = [
-      {time:180,text:"How does this integrate with existing business systems?",user:"Michael"},
-      {time:300,text:"Can you explain more about the AI capabilities?",user:"Sarah"},
-      {time:450,text:"Does this work with Zapier?",user:"David"},
-      {time:600,text:"What kind of ROI can we expect?",user:"Rachel"},
-      {time:750,text:"How long does implementation typically take?",user:"James"},
-      {time:900,text:"This is incredible! Can't believe the accuracy levels 🔥",user:"Emma"},
-      {time:1200,text:"Do you offer enterprise solutions?",user:"Thomas"},
-      {time:1500,text:"Just amazing how far AI has come!",user:"Lisa"},
-      {time:1800,text:"What about data security?",user:"Alex"},
-      {time:2100,text:"Can small businesses benefit from this?",user:"Jennifer"},
-      {time:2400,text:"The predictive analytics are mind-blowing!",user:"Daniel"},
-      {time:2700,text:"How often do you release updates?",user:"Sophie"},
-      {time:3000,text:"Wow, the demo exceeded my expectations!",user:"Ryan"},
-      {time:3300,text:"What makes PrognosticAI different from competitors?",user:"Maria"}
+      {
+        time: 180,
+        text: "How does this integrate with existing business systems?",
+        user: "Michael",
+      },
+      {
+        time: 300,
+        text: "Can you explain more about the AI capabilities?",
+        user: "Sarah",
+      },
+      { time: 450, text: "Does this work with Zapier?", user: "David" },
+      { time: 600, text: "What kind of ROI can we expect?", user: "Rachel" },
+      {
+        time: 750,
+        text: "How long does implementation typically take?",
+        user: "James",
+      },
+      {
+        time: 900,
+        text: "This is incredible! Can't believe the accuracy levels 🔥",
+        user: "Emma",
+      },
+      {
+        time: 1200,
+        text: "Do you offer enterprise solutions?",
+        user: "Thomas",
+      },
+      { time: 1500, text: "Just amazing how far AI has come!", user: "Lisa" },
+      { time: 1800, text: "What about data security?", user: "Alex" },
+      {
+        time: 2100,
+        text: "Can small businesses benefit from this?",
+        user: "Jennifer",
+      },
+      {
+        time: 2400,
+        text: "The predictive analytics are mind-blowing!",
+        user: "Daniel",
+      },
+      { time: 2700, text: "How often do you release updates?", user: "Sophie" },
+      {
+        time: 3000,
+        text: "Wow, the demo exceeded my expectations!",
+        user: "Ryan",
+      },
+      {
+        time: 3300,
+        text: "What makes PrognosticAI different from competitors?",
+        user: "Maria",
+      },
     ];
 
     // Greet
     setTimeout(() => {
-      addMessage("Welcome to the PrognosticAI Advanced Training! 👋 Let us know where you're joining from!", 'host', 'Selina (Host)');
+      addMessage(
+        "Welcome to the PrognosticAI Advanced Training! 👋 Let us know where you're joining from!",
+        "host",
+        "Selina (Host)"
+      );
       scheduleAttendeeMessages();
     }, 2000);
 
@@ -709,18 +794,19 @@ const WebinarChatBox: React.FC = () => {
       let delay = 500;
       for (let i = 0; i < num; i++) {
         const name = names[Math.floor(Math.random() * names.length)];
-        const msg = attendeeMessages[Math.floor(Math.random() * attendeeMessages.length)];
+        const msg =
+          attendeeMessages[Math.floor(Math.random() * attendeeMessages.length)];
         setTimeout(() => {
-          addMessage(msg, 'user', name, true);
+          addMessage(msg, "user", name, true);
         }, delay);
         delay += Math.random() * 1000 + 500;
       }
     }
 
     // Preloaded Q's
-    preloadedQuestions.forEach(q => {
+    preloadedQuestions.forEach((q) => {
       setTimeout(() => {
-        addMessage(q.text, 'user', q.user);
+        addMessage(q.text, "user", q.user);
         setTimeout(() => {
           typingEl.textContent = "Selina is typing...";
           const randomDelay = Math.random() * 10000 + 10000;
@@ -734,8 +820,11 @@ const WebinarChatBox: React.FC = () => {
     // Invest notifications
     function showInvestNotif() {
       const name = names[Math.floor(Math.random() * names.length)];
-      const line = investmentMessages[Math.floor(Math.random() * investmentMessages.length)];
-      const notif = document.createElement('div');
+      const line =
+        investmentMessages[
+          Math.floor(Math.random() * investmentMessages.length)
+        ];
+      const notif = document.createElement("div");
       notif.classList.add(styles.notification);
       notif.innerHTML = `
         <div class="${styles.notificationIcon}">🎉</div>
@@ -753,7 +842,7 @@ const WebinarChatBox: React.FC = () => {
     const viewerInterval = setInterval(() => {
       const change = Math.random() < 0.5 ? -1 : 1;
       currentViewers = Math.max(40, Math.min(50, currentViewers + change));
-      const vCount = document.getElementById('viewerCount');
+      const vCount = document.getElementById("viewerCount");
       if (vCount) {
         vCount.textContent = `${currentViewers} watching`;
       }
@@ -761,23 +850,28 @@ const WebinarChatBox: React.FC = () => {
 
     // Special offer after 60s
     setTimeout(() => {
-      specialOfferEl.style.display = 'block';
-      addMessage("🚨 Special Offer Alert! For the next 10 minutes only, secure your spot in PrognosticAI for just $999. Don't miss out! 🚀", 'system');
+      specialOfferEl.style.display = "block";
+      addMessage(
+        "🚨 Special Offer Alert! For the next 10 minutes only, secure your spot in PrognosticAI for just $999. Don't miss out! 🚀",
+        "system"
+      );
       let t = 600;
       const cdInt = setInterval(() => {
         t--;
-        countdownElRef.textContent = `Special Offer Ends In: ${Math.floor(t/60)}:${String(t%60).padStart(2, '0')}`;
+        countdownElRef.textContent = `Special Offer Ends In: ${Math.floor(
+          t / 60
+        )}:${String(t % 60).padStart(2, "0")}`;
         if (t <= 0) {
           clearInterval(cdInt);
-          specialOfferEl.style.display = 'none';
-          addMessage("⌛ The special offer has ended.", 'system');
+          specialOfferEl.style.display = "none";
+          addMessage("⌛ The special offer has ended.", "system");
         }
       }, 1000);
     }, 60000);
 
     // Invest button in new tab
-    investBtn.addEventListener('click', () => {
-      window.open('https://yes.prognostic.ai', '_blank');
+    investBtn.addEventListener("click", () => {
+      window.open("https://yes.prognostic.ai", "_blank");
     });
 
     // AI response logic
@@ -785,43 +879,51 @@ const WebinarChatBox: React.FC = () => {
       if (isAutoQuestion) return; // As in your snippet
       try {
         const randomDelay = Math.random() * 4000;
-        await new Promise(res => setTimeout(res, randomDelay));
+        await new Promise((res) => setTimeout(res, randomDelay));
         typingEl.textContent = "Selina is typing...";
 
-        const resp = await fetch("https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message", {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: msg, type: 'user' })
-        });
+        const resp = await fetch(
+          "https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: msg, type: "user" }),
+          }
+        );
         if (!resp.ok) throw new Error("API call failed");
         const data = await resp.json();
         typingEl.textContent = "";
         if (data.response) {
-          addMessage(data.response, 'host', 'Selina (Host)', true);
+          addMessage(data.response, "host", "Selina (Host)", true);
         }
       } catch (err) {
         console.error("Error:", err);
         typingEl.textContent = "";
-        addMessage("Apologies, I'm having trouble connecting. Please try again!", 'host', 'Selina (Host)', true);
+        addMessage(
+          "Apologies, I'm having trouble connecting. Please try again!",
+          "host",
+          "Selina (Host)",
+          true
+        );
       }
     }
 
     // On user pressing Enter
     function handleKeyPress(e: KeyboardEvent) {
-      if (e.key === 'Enter' && inputEl.value.trim()) {
+      if (e.key === "Enter" && inputEl.value.trim()) {
         const userMsg = inputEl.value.trim();
-        inputEl.value = '';
-        addMessage(userMsg, 'user', 'You', false);
+        inputEl.value = "";
+        addMessage(userMsg, "user", "You", false);
         handleUserMessage(userMsg);
       }
     }
-    inputEl.addEventListener('keypress', handleKeyPress);
+    inputEl.addEventListener("keypress", handleKeyPress);
 
     // Cleanup
     return () => {
-      chatEl.removeEventListener('scroll', handleScroll);
-      toggleEl.removeEventListener('change', handleToggle);
-      inputEl.removeEventListener('keypress', handleKeyPress);
+      chatEl.removeEventListener("scroll", handleScroll);
+      toggleEl.removeEventListener("change", handleToggle);
+      inputEl.removeEventListener("keypress", handleKeyPress);
       if (socketRef.current) {
         socketRef.current.close();
       }
@@ -850,14 +952,18 @@ const WebinarChatBox: React.FC = () => {
           </div>
 
           {/* spacing between label & watchers -> gap in CSS or margin-left */}
-          <span className={styles.viewerCount} style={{ marginLeft: '10px' }}>
+          <span className={styles.viewerCount} style={{ marginLeft: "10px" }}>
             <i>👥</i>
             <span id="viewerCount">41 watching</span>
           </span>
         </div>
       </div>
 
-      <div className={styles.specialOffer} ref={specialOfferRef} style={{ display: 'none' }}>
+      <div
+        className={styles.specialOffer}
+        ref={specialOfferRef}
+        style={{ display: "none" }}
+      >
         <div className={styles.countdown} ref={countdownRef}>
           Special Offer Ends In: 10:00
         </div>
@@ -874,10 +980,7 @@ const WebinarChatBox: React.FC = () => {
           placeholder="Type your message here..."
           ref={messageInputRef}
         />
-        <div
-          className={styles.typingIndicator}
-          ref={typingIndicatorRef}
-        ></div>
+        <div className={styles.typingIndicator} ref={typingIndicatorRef}></div>
       </div>
     </div>
   );
