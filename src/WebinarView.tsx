@@ -76,17 +76,9 @@ const WebinarView: React.FC = () => {
           );
           if (!resp.ok) throw new Error("Error fetching user data");
           const data = await resp.json();
-
-          const id = data.audio_link.split("id=")[1];
-
-          // const response = await fetch(data.audio_link);
-
-          const url = `https://drive.google.com/file/d/${id}/uc?usp=drivesdk`;
-          // const blob = await response.blob();
-          // const url = URL.createObjectURL(blob);
           // audio_link -> audioRef
           if (audioRef.current && data.audio_link) {
-            audioRef.current.src = url;
+            audioRef.current.src = data.audio_link;
           }
           // exit message
           if (data.exit_message) {
