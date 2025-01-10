@@ -1,6 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './WaitingRoom.module.css';
 
+/**
+ * A direct React-based port of your original "Waiting Room" HTML code,
+ * preserving the countdown, spinner, "You will learn..." bullets, and chat logic.
+ * 
+ * Additional small enhancements for a more "live" feel:
+ *   1) A blinking "Live Soon" badge next to the countdown
+ *   2) A short motivational tagline under the countdown
+ *   3) A subtle pulsing glow around the chat box
+ */
 const WaitingRoom: React.FC = () => {
   // ========== COUNTDOWN STATES/LOGIC ==========
   const [countdownText, setCountdownText] = useState<string>('calculating...');
@@ -33,6 +42,7 @@ const WaitingRoom: React.FC = () => {
       if (timeLeft <= 0) {
         // old code used redirectToWebinar(), but we do not redirect automatically.
         setCountdownText('starting now...');
+        // optionally hide the badge once we reach time
         setShowBadge(false);
       } else {
         setCountdownText(formatTimeLeft(timeLeft));
@@ -43,14 +53,16 @@ const WaitingRoom: React.FC = () => {
     updateCountdown();
     // Update every second
     const timerId = setInterval(updateCountdown, 1000);
+
     return () => clearInterval(timerId);
   }, []);
 
-  // ========== CHATBOX LOGIC (unchanged) ==========
+  // ========== CHATBOX LOGIC ==========
   const chatMessagesRef = useRef<HTMLDivElement | null>(null);
   const messageInputRef = useRef<HTMLInputElement | null>(null);
   const typingIndicatorRef = useRef<HTMLDivElement | null>(null);
   const participantToggleRef = useRef<HTMLInputElement | null>(null);
+  // We do *not* store the socket in React state, because you said you don't read it anywhere
   const socketRef = useRef<WebSocket | null>(null);
 
   /** Helper to auto-scroll if near bottom, like the old code. */
@@ -159,9 +171,9 @@ const WaitingRoom: React.FC = () => {
       if (!typingEl) return;
 
       const messageDiv = document.createElement('div');
-      messageDiv.className = `${styles.wrMessage} ${type}`;
+      messageDiv.className = `${styles.message} ${type}`;
 
-      // For the styling, also add them as raw classes for the same look
+      // For the styling to match your old CSS, also add them as raw classes
       if (type === 'user') {
         messageDiv.classList.add('user');
       } else if (type === 'host') {
@@ -239,7 +251,7 @@ const WaitingRoom: React.FC = () => {
       for (let i = 0; i < numMessages; i++) {
         const index = Math.floor(Math.random() * available.length);
         const message = available[index];
-        available.splice(index, 1);
+        available.splice(index, 1); // remove the used line
         const name = names[Math.floor(Math.random() * names.length)];
 
         setTimeout(() => {
@@ -345,109 +357,99 @@ const WaitingRoom: React.FC = () => {
   // ========== RENDER ==========
 
   return (
-    <div className={styles.wrContainer}>
-      {/* Large "zoomContainer"-style wrapper */}
-      <div className={styles.wrZoomContainer}>
-        {/* Top bar (similar to .zoomTopBar) */}
-        <div className={styles.wrTopBar}>
-          <div className={styles.wrTopTitle}>
-            {/* Left side: We'll show a label for the countdown */}
-            <span className={styles.wrWebinarSoonLabel}>
-              Webinar begins in <strong>{countdownText}</strong>
-            </span>
-            {/* (Below it) Motivational tagline */}
-            <div className={styles.wrMotivation}>
-              “Get ready to transform your marketing strategy!”
+    <div>
+      {/* TOP COUNTDOWN */}
+      <div className={styles.awhp2024HeaderWrapper}>
+        Your webinar begins in{' '}
+        <span className={styles.awhp2024TimerText}>
+          {countdownText}
+        </span>
+        <div className={styles.motivationalTagline}>
+          “Get ready to transform your marketing strategy!”
+        </div>
+      </div>
+
+      {/* TWO COLUMN WRAPPER */}
+      <div className={styles.waitingroomWrapper}>
+        {/* LEFT COLUMN */}
+        <div className={styles.waitingroomLeft}>
+          {/* SPINNER */}
+          <div className={styles.webinarLoading}>
+            <div className={styles.loadingContainer}>
+              <div className={styles.loadingSpinner}></div>
+              <p className={styles.loadingText}>
+                We are preparing the webinar... grab a notepad and pen while you wait!
+              </p>
             </div>
           </div>
 
-          {/* Right side: "X waiting" + toggle if desired (we can place the badge too) */}
-          <div className={styles.wrTopRight}>
-            <span className={styles.wrViewerCount}>
-              <i>👥</i>
-              <span id="viewerCount">41 waiting</span>
-            </span>
-            {showBadge && (
-              <span className={styles.liveSoonBadge}>LIVE SOON</span>
-            )}
-          </div>
+          {/* LIGHT DIVIDER */}
+          <hr className={styles.lightDivider} />
+
+          {/* "You will learn..." */}
+          <p className={styles.bulletsTitle}>
+            <strong>You will learn...</strong>
+          </p>
+          <ul className={styles.bulletsList}>
+            <li>How PrognosticAI personalizes your marketing funnels</li>
+            <li>Tips for advanced retargeting strategies</li>
+            <li>Free resources to scale your funnel</li>
+          </ul>
         </div>
 
-        {/* Two-column layout: left side = spinner & bullets, right side = chat */}
-        <div className={styles.wrTwoColumnLayout}>
-          {/* LEFT COLUMN */}
-          <div className={styles.wrLeftColumn}>
-            {/* SPINNER + text */}
-            <div className={styles.webinarLoading}>
-              <div className={styles.loadingContainer}>
-                <div className={styles.loadingSpinner}></div>
-                <p className={styles.loadingText}>
-                  We are preparing the webinar... grab a notepad and pen while you wait!
-                </p>
+        {/* RIGHT COLUMN: THE CHAT */}
+        <div className={styles.waitingroomRight}>
+          <div className={styles.chatSection}>
+            <div className={styles.chatHeader}>
+              <div className={styles.headerTop}>
+                <span className={styles.chatTitle}>Live Chat</span>
+                <div className={styles.toggleContainer}>
+                  <label className={styles.toggleSwitch}>
+                    <input
+                      ref={participantToggleRef}
+                      type="checkbox"
+                      id="participantToggle"
+                    />
+                    <span className={styles.toggleSlider}></span>
+                  </label>
+                  <span className={styles.toggleLabel}>Show Others</span>
+                </div>
+                <span className={styles.viewerCount}>
+                  <i>👥</i>
+                  <span id="viewerCount">41 waiting</span>
+                </span>
               </div>
             </div>
-
-            <hr className={styles.wrLightDivider} />
-
-            {/* "You will learn..." */}
-            <p className={styles.wrBulletsTitle}>
-              <strong>You will learn...</strong>
-            </p>
-            <ul className={styles.wrBulletsList}>
-              <li>How PrognosticAI personalizes your marketing funnels</li>
-              <li>Tips for advanced retargeting strategies</li>
-              <li>Free resources to scale your funnel</li>
-            </ul>
-          </div>
-
-          {/* RIGHT COLUMN: THE CHAT */}
-          <div className={styles.wrRightColumn}>
-            <div className={styles.wrChatSection}>
-              <div className={styles.wrChatHeader}>
-                <div className={styles.wrHeaderTop}>
-                  <span className={styles.wrChatTitle}>Live Chat</span>
-                  <div className={styles.toggleContainer}>
-                    <label className={styles.toggleSwitch}>
-                      <input
-                        ref={participantToggleRef}
-                        type="checkbox"
-                        id="participantToggle"
-                      />
-                      <span className={styles.toggleSlider}></span>
-                    </label>
-                    <span className={styles.toggleLabel}>Show Others</span>
-                  </div>
-                </div>
-              </div>
-
+            <div
+              className={styles.chatMessages}
+              id="chatMessages"
+              ref={chatMessagesRef}
+            ></div>
+            <div className={styles.chatInput}>
+              <input
+                type="text"
+                placeholder="Type your message here..."
+                id="messageInput"
+                ref={messageInputRef}
+              />
               <div
-                className={styles.wrChatMessages}
-                id="chatMessages"
-                ref={chatMessagesRef}
+                className={styles.typingIndicator}
+                id="typingIndicator"
+                ref={typingIndicatorRef}
               ></div>
-
-              <div className={styles.wrChatInput}>
-                <input
-                  type="text"
-                  placeholder="Type your message here..."
-                  id="messageInput"
-                  ref={messageInputRef}
-                />
-                <div
-                  className={styles.wrTypingIndicator}
-                  id="typingIndicator"
-                  ref={typingIndicatorRef}
-                ></div>
-              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* FOOTER BRANDING (similar to the webinar’s footer) */}
-      <footer className={styles.wrFooter}>
-        © 2024 PrognosticAI
-      </footer>
+      {showBadge && (
+        <span className={styles.liveSoonBadge}>
+          LIVE SOON
+        </span>
+      )}
+
+      {/* FOOTER BRANDING */}
+      <div className={styles.customFooter}>© 2024 PrognosticAI</div>
     </div>
   );
 };
