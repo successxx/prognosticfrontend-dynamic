@@ -1,189 +1,243 @@
-/* ============================ */
-/* ======  TOP COUNTDOWN ====== */
-/* ============================ */
-.awhp2024HeaderWrapper {
+/****************************************************/
+/* 1) Outer Container & Overall Look (like webinar) */
+/****************************************************/
+.wrContainer {
+  display: flex;
+  flex-direction: column;
   font-family: 'Montserrat', sans-serif;
-  text-align: center;
-  font-size: 48px;
-  font-weight: 800;
-  margin: 20px auto;
-  padding: 10px;
-  color: #2E2E2E;
-  line-height: 1.2;
-  position: relative; /* allow absolutely positioned badge */
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100vh;
+  background: #EAEFF3; /* matches the webinar's background */
+  gap: 20px;
+  position: relative;
+  padding: 20px;
 }
 
-/* The blinking "Live Soon" badge */
+/* The large "zoom container" panel (like .zoomContainer) */
+.wrZoomContainer {
+  background: #fff;
+  border: 2px solid #dcdcdc;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 16px;
+  max-width: 1800px; 
+  margin: 0 auto;
+}
+
+/****************************************************/
+/* 2) Top Bar Section (similar to .zoomTopBar)      */
+/****************************************************/
+.wrTopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Left side: label for “Webinar begins in X” + tagline */
+.wrTopTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.wrWebinarSoonLabel {
+  color: #333;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.wrMotivation {
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* Right side: watchers + “LIVE SOON” badge, if present */
+.wrTopRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.wrViewerCount {
+  font-size: 0.7rem;
+  color: #666;
+  background: #f0f0f0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* The blinking "Live Soon" badge (kept from your original) */
 .liveSoonBadge {
-  display: block;
-  margin: 0 auto 20px auto; /* horizontally center + some bottom space */
-  text-align: center;
   background: #ff4c4c;
   color: white;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 700;
   border-radius: 4px;
   padding: 4px 8px;
   animation: liveBlink 1.3s infinite alternate;
-  /* removed ALL absolute positioning so it's a normal, centered element */
+  text-align: center;
 }
-
-/* Slight blinking for the badge */
 @keyframes liveBlink {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.65;
-  }
+  0% { opacity: 1; }
+  100% { opacity: 0.65; }
 }
 
-/* The motivational tagline just under the countdown text */
-.motivationalTagline {
-  margin-top: 8px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #555555;
+/****************************************************/
+/* 3) Two-Column Layout (70/30) like Webinar        */
+/****************************************************/
+.wrTwoColumnLayout {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+  /* height for big container, as in the webinar (optional): */
+  height: 800px;
 }
 
-/* This was your original .awhp2024TimerText class */
-.awhp2024TimerText {
-  color: #0142ac;
-  display: inline;
-  font-weight: 900;
+.wrLeftColumn {
+  flex: 0 0 70%;
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-/* ========================= */
-/* ======  LOADING UI ====== */
-/* ========================= */
+.wrRightColumn {
+  flex: 0 0 30%;
+  max-width: 30%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* For any sub-wrappers in the left, we allow them to flex as needed */
+
+/****************************************************/
+/* 4) Spinner + “You will learn” list, left column  */
+/****************************************************/
 .webinarLoading {
   font-family: 'Montserrat', sans-serif;
   color: #0142ac;
-  margin: 0;
-  padding: 0;
-  display: inline-flex; /* Inline layout to avoid extra block space */
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  background: transparent; /* Transparent background */
-  width: auto; /* Adjust width to fit content */
-  height: auto; /* Adjust height to fit content */
+  background: transparent;
+  width: auto;
+  height: auto;
 }
 
 .loadingContainer {
-  text-align: left; /* changed from center to left for a more "seminar" look */
+  text-align: left; 
 }
 
 .loadingText {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 600;
   color: #0142ac;
-  margin-top: 20px;
+  margin-top: 15px;
+  max-width: 300px;
+  line-height: 1.3;
 }
 
 .loadingSpinner {
-  border: 8px solid rgba(228, 232, 241, 0.5); /* Transparent grey */
-  border-top: 8px solid #0142ac; /* Brand color */
+  border: 8px solid rgba(228, 232, 241, 0.5);
+  border-top: 8px solid #0142ac;
   border-radius: 50%;
   width: 80px;
   height: 80px;
-  animation: spin 1s linear infinite;
+  animation: wrSpin 1s linear infinite;
   margin: 0 auto;
 }
 
-@keyframes spin {
+@keyframes wrSpin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-/* A tasteful light divider */
-.lightDivider {
+/* A light divider within the left column */
+.wrLightDivider {
   width: 60%;
-  margin: 20px auto;
+  margin: 20px 0;
   border: 0;
   border-top: 1px solid #ccc;
 }
 
-/* "You will learn..." styling */
-.bulletsTitle {
+/* “You will learn” heading + bullets */
+.wrBulletsTitle {
   font-family: 'Montserrat', sans-serif;
-  font-size: 18px;
+  font-size: 1rem;
   color: #2E2E2E;
-  margin-top: 20px;
+  margin-top: 5px;
   font-weight: 500;
-  text-align: left; /* changed to left alignment */
+  text-align: left;
 }
-.bulletsList {
+.wrBulletsList {
   font-family: 'Montserrat', sans-serif;
   list-style-type: disc;
   color: #2E2E2E;
   padding-left: 1.5rem;
   margin-top: 10px;
-  text-align: left; /* ensure the bullets are left-aligned */
+  text-align: left;
+  line-height: 1.4;
 }
 
-/* ========================= */
-/* ======  CHAT BOX  ======= */
-/* ========================= */
-.chatSection {
+/****************************************************/
+/* 5) Chat Section, Right Column (mirroring webinar)*/
+/****************************************************/
+.wrChatSection {
   background: #fff;
   display: flex;
   flex-direction: column;
-  /* halved from 750px to 375px: */
-  height: 375px;
-  border-radius: 12px;
+  border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-
-  /* Subtle pulsing glow to give a "live" feel */
-  animation: chatGlow 2.5s ease-in-out infinite alternate;
+  flex: 1;
 }
 
-@keyframes chatGlow {
-  0% {
-    box-shadow: 0 0 10px rgba(1,66,172,0.2);
-  }
-  100% {
-    box-shadow: 0 0 24px rgba(1,66,172,0.45);
-  }
-}
-
-.chatHeader {
+.wrChatHeader {
   padding: 12px 15px;
   background: #0142AC;
-  color: white;
+  color: #fff;
   flex: 0 0 auto;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
 }
-.headerTop {
+.wrHeaderTop {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 16px;
+  justify-content: space-between;
 }
-.chatTitle {
+.wrChatTitle {
   font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: -0.02em;
 }
+
 .toggleContainer {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
 }
 .toggleSwitch {
   position: relative;
   display: inline-block;
-  width: 40px;
+  width: 40px; 
   height: 20px;
 }
 .toggleSwitch input {
-  opacity: 0;
-  width: 0;
+  opacity: 0; 
+  width: 0; 
   height: 0;
 }
 .toggleSlider {
@@ -197,11 +251,11 @@
 .toggleSlider:before {
   position: absolute;
   content: "";
-  height: 16px;
+  height: 16px; 
   width: 16px;
-  left: 2px;
+  left: 2px; 
   bottom: 2px;
-  background-color: white;
+  background-color: #fff;
   transition: .4s;
   border-radius: 50%;
 }
@@ -212,46 +266,46 @@
   transform: translateX(20px);
 }
 .toggleLabel {
-  color: white;
+  color: #fff;
   font-size: 0.45rem;
 }
-.viewerCount {
-  font-size: 0.55rem;
-  background: rgba(255,255,255,0.1);
-  padding: 4px 10px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.chatMessages {
+
+/* Chat messages area */
+.wrChatMessages {
   flex: 1 1 auto;
   overflow-y: auto;
   padding: 15px;
   background: #f8f9fa;
-  min-height: 0;
 }
-.message {
+
+/* Single chat message bubble (mirroring webinar code) */
+.wrMessage {
   margin-bottom: 10px;
   line-height: 1.4;
-  animation: fadeIn 0.3s ease;
+  animation: wrFadeIn 0.3s ease;
   font-size: 0.85rem;
   padding: 8px 12px;
   border-radius: 6px;
   max-width: 90%;
   text-align: left;
 }
-.message.user {
+@keyframes wrFadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Distinguish user vs host vs system */
+.wrMessage.user {
   background: #f0f2f5;
   margin-left: auto;
   color: #2c3135;
 }
-.message.host {
+.wrMessage.host {
   background: #e7f0ff;
   color: #0142AC;
   font-weight: 500;
 }
-.message.system {
+.wrMessage.system {
   background: #fff3cd;
   color: #856404;
   text-align: center;
@@ -259,17 +313,15 @@
   margin: 15px 0;
   font-size: 0.85rem;
 }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.chatInput {
+
+/* Chat input */
+.wrChatInput {
   padding: 15px;
   background: #fff;
   border-top: 1px solid #eee;
   flex: 0 0 auto;
 }
-.chatInput input {
+.wrChatInput input {
   width: 100%;
   padding: 12px;
   border: 1px solid #dfe3e8;
@@ -278,12 +330,14 @@
   transition: all 0.3s ease;
   color: #2c3135;
 }
-.chatInput input:focus {
+.wrChatInput input:focus {
   outline: none;
   border-color: #0142AC;
   box-shadow: 0 0 0 2px rgba(1, 66, 172, 0.1);
 }
-.typingIndicator {
+
+/* Typing indicator */
+.wrTypingIndicator {
   color: #6c757d;
   font-size: 0.85rem;
   margin-top: 8px;
@@ -291,45 +345,50 @@
   height: 20px;
   padding-left: 2px;
 }
-.chatMessages::-webkit-scrollbar {
+
+/* Custom scrollbar for chat */
+.wrChatMessages::-webkit-scrollbar {
   width: 8px;
 }
-.chatMessages::-webkit-scrollbar-track {
+.wrChatMessages::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 4px;
 }
-.chatMessages::-webkit-scrollbar-thumb {
+.wrChatMessages::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 4px;
 }
-.chatMessages::-webkit-scrollbar-thumb:hover {
+.wrChatMessages::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
 
-/* ================================ */
-/* TWO-COLUMN LAYOUT (Spinner Left, Chat Right) */
-.waitingroomWrapper {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  margin: 20px;
-  justify-content: center;
-}
-.waitingroomLeft {
-  flex: 1 1 350px;
-  min-width: 300px;
-}
-.waitingroomRight {
-  flex: 1 1 400px;
-  min-width: 300px;
+/****************************************************/
+/* 6) Footer (similar to webinar)                   */
+/****************************************************/
+.wrFooter {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #999;
+  margin-top: 25px;
+  font-family: 'Montserrat', sans-serif;
 }
 
-/* Footer branding at bottom */
-.customFooter {
-  font-family: 'Montserrat', sans-serif;
-  text-align: center;
-  font-size: 0.9rem;
-  font-weight: 400;
-  color: rgba(0,0,0,0.5);
-  margin-top: 40px;
+/****************************************************/
+/* 7) Media Queries for Responsiveness             */
+/****************************************************/
+@media (max-width: 1200px) {
+  .wrZoomContainer {
+    max-width: 90vw;
+  }
+  .wrTwoColumnLayout {
+    height: auto; /* let them stack if too narrow */
+    flex-direction: column;
+  }
+  .wrLeftColumn,
+  .wrRightColumn {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
 }
