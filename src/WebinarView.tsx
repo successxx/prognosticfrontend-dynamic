@@ -14,6 +14,7 @@ const WebinarView: React.FC = () => {
   // ------------------ Refs ------------------
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRefTwo = useRef<HTMLAudioElement | null>(null);
   const messageToneRef = useRef<HTMLAudioElement | null>(null);
 
   // ------------------ States ------------------
@@ -80,6 +81,10 @@ const WebinarView: React.FC = () => {
           if (audioRef.current && data.audio_link) {
             audioRef.current.src = data.audio_link;
           }
+          // Second audio
+      if (audioRefTwo.current && data.audio_link_two) {
+        audioRefTwo.current.src = data.audio_link_two;
+      }
           // exit message
           if (data.exit_message) {
             setExitMessage(data.exit_message);
@@ -126,18 +131,34 @@ const WebinarView: React.FC = () => {
   // 3) Audio playback at 3s of the video
   // =====================================================
   useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid || !audioRef.current) return;
+  const vid = videoRef.current;
+  if (!vid || !audioRef.current || !audioRefTwo.current) return;
 
-    function handleTimeUpdate() {
-      if (vid.currentTime >= 3) {
-        safePlayAudio(audioRef.current);
-        vid?.removeEventListener("timeupdate", handleTimeUpdate);
-      }
+  // First audio at 3 seconds
+  function handleFirstAudio() {
+    if (vid.currentTime >= 3) {
+      safePlayAudio(audioRef.current);
+      vid?.removeEventListener("timeupdate", handleFirstAudio);
     }
-    vid.addEventListener("timeupdate", handleTimeUpdate);
-    return () => vid.removeEventListener("timeupdate", handleTimeUpdate);
-  }, [safePlayAudio]);
+  }
+
+  // Second audio at 7 seconds (easily changeable)
+  function handleSecondAudio() {
+    const secondAudioTime = 7; // Change this value to adjust when second audio plays (in seconds)
+    if (vid.currentTime >= secondAudioTime) {
+      safePlayAudio(audioRefTwo.current);
+      vid?.removeEventListener("timeupdate", handleSecondAudio);
+    }
+  }
+
+  vid.addEventListener("timeupdate", handleFirstAudio);
+  vid.addEventListener("timeupdate", handleSecondAudio);
+
+  return () => {
+    vid.removeEventListener("timeupdate", handleFirstAudio);
+    vid.removeEventListener("timeupdate", handleSecondAudio);
+  };
+}, [safePlayAudio]);
 
   // =====================================================
   // 4) Exit-intent
@@ -263,6 +284,8 @@ const WebinarView: React.FC = () => {
         style={{ display: "none" }}
       />
       <audio ref={audioRef} style={{ display: "none" }} />
+      <audio ref={audioRefTwo} style={{ display: "none" }} />
+
 
       {/* Exit Overlay */}
       {showExitOverlay &&
