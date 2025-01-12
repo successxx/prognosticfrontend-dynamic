@@ -304,7 +304,7 @@ const preloadedQuestions = [
 
     // Kick things off
     setTimeout(() => {
-      addMessage("we'll get started here in just one minute", 'host', 'Selina', true);
+      addMessage("we're about to go live - Kyle will be joining us in a sec.", 'host', 'Selina', true);
       scheduleLocationMessages();
       scrollToBottom(chatEl);
     }, 4000);
