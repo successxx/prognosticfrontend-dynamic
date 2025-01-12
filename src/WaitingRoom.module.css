@@ -1,541 +1,492 @@
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GLOBAL STYLES / PAGE BACKGROUND
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-html, body {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Montserrat', sans-serif;
-  background-color: #f8f9fa;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-}
+import React, { useEffect, useRef, useState } from 'react';
+import styles from './WaitingRoom.module.css';
 
-/* The outer "zoom-container" box */
-.zoomContainer {
-  background: #fff;
-  border: 2px solid #dcdcdc;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  padding: 16px;
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  position: relative;
-}
+const WaitingRoom: React.FC = () => {
+  // ====== COUNTDOWN STATES & LOGIC ======
+  const [countdownText, setCountdownText] = useState<string>('calculating...');
+  const [showLiveSoon, setShowLiveSoon] = useState<boolean>(true);
+  const [todayDate, setTodayDate] = useState<string>('');
 
-/* Top bar with "LIVE SOON" & "PrognosticAI Advanced Training" & "Live Webinar: date" */
-.zoomTopBar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #eee;
-}
-
-.liveSoonSubtle {
-  color: #ff4c4c;
-  font-weight: 600;
-  font-size: 0.85rem;
-  animation: subtleBlink 1.6s infinite alternate;
-}
-@keyframes subtleBlink {
-  0% { opacity: 1; }
-  100% { opacity: 0.5; }
-}
-
-.zoomTitle {
-  color: #333;
-  font-size: 1.1rem;
-  font-weight: 600;
-  display: inline-block;
-}
-
-/* The top divider under the bar */
-.topDivider {
-  border: 0;
-  border-top: 1px solid #ccc;
-  margin: 8px 0 12px 0;
-}
-
-/* Right side heading: "Live Webinar: date" */
-.awh2024Header {
-  color: #2c3135;
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-left: auto;
-  padding-left: 20px;
-}
-
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    TWO COLUMNS 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-.twoColumnLayout {
-  display: flex;
-  gap: 16px;
-  /* We'll let the content define the height, 
-     so no forced 550px. That way no left scroll. */
-}
-
-/* LEFT COLUMN => bigger portion, no scrolling */
-.leftColumn {
-  flex: 0 0 60%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* A small "box" to show the countdown more obviously */
-.countdownBox {
-  background-color: #f8f9fa;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  padding: 12px;
-  text-align: center;
-  width: 100%;
-}
-.countdownLabel {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #555;
-  margin-bottom: 4px;
-}
-.countdownNumber {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: #0142ac;
-}
-
-/* The spinner area */
-.spinnerArea {
-  background-color: transparent;
-  border: none;
-  display: block;
-}
-.spinnerAndText {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.loadingSpinner {
-  border: 8px solid rgba(228,232,241,0.5);
-  border-top: 8px solid #0142ac;
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-.loadingText {
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
-  margin-top: 12px;
-}
-
-/* A tasteful light divider for left column sections */
-.lightDivider {
-  width: 100%;
-  border: 0;
-  border-top: 1px solid #ccc;
-}
-
-/* "You will learn..." bullets */
-.bulletsTitle {
-  font-size: 18px;
-  color: #2E2E2E;
-  font-weight: 500;
-  text-align: left;
-  margin-top: 10px;
-}
-.bulletsList {
-  list-style-type: disc;
-  color: #2E2E2E;
-  padding-left: 1.5rem;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  text-align: left;
-}
-
-/* Presenter "cards" => left-aligned, no scroll */
-.presentersArea {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.presenterRow {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-.presenterImage {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-.presenterInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.presenterName {
-  font-weight: 600;
-  color: #2c3135;
-}
-.presenterTitle {
-  font-size: 0.85rem;
-  color: #555;
-}
-.presenterDesc {
-  font-size: 0.85rem;
-  line-height: 1.4;
-  color: #333;
-}
-
-/* RIGHT COLUMN => chat box */
-.rightColumn {
-  flex: 0 0 40%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    CHAT SECTION 
-    (height: 375px as you prefer)
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-.chatSection {
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  height: 375px;
-
-  /* Subtle pulsing glow */
-  animation: chatGlow 2.5s ease-in-out infinite alternate;
-}
-@keyframes chatGlow {
-  0%   { box-shadow: 0 0 10px rgba(1,66,172,0.2); }
-  100% { box-shadow: 0 0 24px rgba(1,66,172,0.45); }
-}
-.chatHeader {
-  padding: 12px 15px;
-  background: #0142AC;
-  color: white;
-  flex: 0 0 auto;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-.headerTop {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.chatTitle {
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-.toggleContainer {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-.toggleSwitch {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 20px;
-}
-.toggleSwitch input {
-  opacity: 0;
-  width: 0; height: 0;
-}
-.toggleSlider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(255,255,255,0.2);
-  transition: .4s;
-  border-radius: 20px;
-}
-.toggleSlider:before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  left: 2px; bottom: 2px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-}
-.toggleSwitch input:checked + .toggleSlider {
-  background-color: #4CAF50;
-}
-.toggleSwitch input:checked + .toggleSlider:before {
-  transform: translateX(20px);
-}
-.toggleLabel {
-  color: white;
-  font-size: 0.45rem;
-}
-.viewerCount {
-  font-size: 0.55rem;
-  background: rgba(255,255,255,0.1);
-  padding: 4px 10px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.chatMessages {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  padding: 15px;
-  background: #f8f9fa;
-}
-.message {
-  margin-bottom: 10px;
-  line-height: 1.4;
-  animation: fadeIn 0.3s ease;
-  font-size: 0.85rem;
-  padding: 8px 12px;
-  border-radius: 6px;
-  max-width: 90%;
-  text-align: left;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.message.user {
-  background: #f0f2f5;
-  margin-left: auto;
-  color: #2c3135;
-}
-.message.host {
-  background: #e7f0ff;
-  color: #0142AC;
-  font-weight: 500;
-}
-.message.system {
-  background: #fff3cd;
-  color: #856404;
-  text-align: center;
-  max-width: 100%;
-  margin: 15px 0;
-  font-size: 0.85rem;
-}
-.chatInput {
-  padding: 15px;
-  background: #fff;
-  border-top: 1px solid #eee;
-  flex: 0 0 auto;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-}
-.chatInput input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #dfe3e8;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-  color: #2c3135;
-}
-.chatInput input:focus {
-  outline: none;
-  border-color: #0142AC;
-  box-shadow: 0 0 0 2px rgba(1,66,172,0.1);
-}
-.typingIndicator {
-  color: #6c757d;
-  font-size: 0.85rem;
-  margin-top: 8px;
-  font-style: italic;
-  height: 20px;
-  padding-left: 2px;
-}
-.chatMessages::-webkit-scrollbar {
-  width: 8px;
-}
-.chatMessages::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-.chatMessages::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
-}
-.chatMessages::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    The "You will be automatically redirected" row
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-.redirectNoteRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 16px;
-}
-.noticeIcon {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  background-color: rgba(1,66,172,0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.redirectNoteText {
-  font-size: 0.85rem;
-  color: #333;
-  text-align: left;
-  line-height: 1.4;
-  max-width: 800px;
-}
-
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    FOOTER
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-.footerBranding {
-  margin-top: 16px;
-  text-align: center;
-  font-size: 0.9rem;
-  font-weight: 400;
-  color: rgba(0,0,0,0.5);
-}
-
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    MOBILE-ONLY iMESSAGE BUBBLE
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-.exitOverlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
-  z-index: 9999;
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 0.25s ease;
-  cursor: pointer;
-}
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-.iphoneMessageBubble {
-  position: relative;
-  max-width: 80%;
-  width: 320px;
-  background: #0a84ff;
-  color: #fff;
-  border-radius: 18px;
-  padding: 14px 20px;
-  animation: bubblePop 0.35s ease-out;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  cursor: auto;
-  text-align: left; /* left aligned text */
-}
-@keyframes bubblePop {
-  0% { transform: scale(0.85); opacity: 0; }
-  55%{ transform: scale(1.05); opacity: 1; }
-  100%{ transform: scale(1); opacity: 1; }
-}
-.exitCloseBtn {
-  position: absolute;
-  top: 6px; right: 12px;
-  border: none;
-  background: transparent;
-  font-size: 1.2rem;
-  line-height: 1;
-  cursor: pointer;
-  color: #fff;
-  opacity: 0.9;
-}
-.iphoneSender {
-  font-weight: 600;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-}
-.iphoneMessageText {
-  font-size: 1rem;
-  line-height: 1.4;
-  white-space: pre-line;
-}
-.iphoneMessageBubble::before {
-  content: "";
-  position: absolute;
-  left: -10px; bottom: 20px;
-  width: 0; height: 0;
-  border: 10px solid transparent;
-  border-right-color: #0a84ff;
-}
-
-/*
-  Show overlay if on mobile
-*/
-@media (max-width: 768px) {
-  .exitOverlay {
-    display: flex;
+  // Next quarter-hour
+  function getNextQuarterHour(): Date {
+    const now = new Date();
+    return new Date(Math.ceil(now.getTime() / (15 * 60 * 1000)) * (15 * 60 * 1000));
   }
-}
 
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    RESPONSIVE
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-@media (max-width: 768px) {
-  .zoomTopBar {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding-bottom: 12px;
+  // Format X minutes and Y seconds
+  function formatTimeLeft(ms: number) {
+    const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+    if (minutes > 0) {
+      return `${minutes} minute${minutes !== 1 ? 's' : ''} and ${seconds} second${seconds !== 1 ? 's' : ''}`;
+    } else {
+      return `${seconds} second${seconds !== 1 ? 's' : ''}`;
+    }
   }
-  .awh2024Header {
-    margin-left: 0;
-    padding-left: 0;
-    margin-top: 8px;
+
+  // On mount, set date & start countdown
+  useEffect(() => {
+    // Today’s date (e.g. "September 15")
+    const now = new Date();
+    const options: Intl.DateTimeFormatOptions = { month: 'long', day: 'numeric' };
+    const dateStr = now.toLocaleDateString('en-US', options);
+    setTodayDate(dateStr);
+
+    const updateCountdown = () => {
+      const current = new Date();
+      const nextTime = getNextQuarterHour();
+      const timeLeft = nextTime.getTime() - current.getTime();
+
+      if (timeLeft <= 0) {
+        setCountdownText('starting now...');
+        setShowLiveSoon(false);
+      } else {
+        setCountdownText(formatTimeLeft(timeLeft));
+      }
+    };
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // ====== MOBILE POPUP (iMessage style) ======
+  const [showMobilePopup, setShowMobilePopup] = useState<boolean>(false);
+  useEffect(() => {
+    if (window.innerWidth <= 768) {
+      setShowMobilePopup(true);
+    }
+  }, []);
+  const handleClosePopup = () => setShowMobilePopup(false);
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      setShowMobilePopup(false);
+    }
+  };
+
+  // ====== CHAT LOGIC (unchanged so AI still replies) ======
+  const chatMessagesRef = useRef<HTMLDivElement | null>(null);
+  const messageInputRef = useRef<HTMLInputElement | null>(null);
+  const typingIndicatorRef = useRef<HTMLDivElement | null>(null);
+  const participantToggleRef = useRef<HTMLInputElement | null>(null);
+  const socketRef = useRef<WebSocket | null>(null);
+
+  function isNearBottom(element: HTMLDivElement): boolean {
+    const threshold = 50;
+    return (element.scrollHeight - element.clientHeight - element.scrollTop) <= threshold;
   }
-  .twoColumnLayout {
-    flex-direction: column;
+  function scrollToBottom(element: HTMLDivElement) {
+    element.scrollTop = element.scrollHeight;
   }
-  .leftColumn,
-  .rightColumn {
-    flex: 1 1 auto;
-    margin-bottom: 20px;
-  }
-  .chatSection {
-    height: 375px; /* or reduce to 350 if needed on mobile */
-  }
-}
+
+  useEffect(() => {
+    const chatEl = chatMessagesRef.current;
+    const inputEl = messageInputRef.current;
+    const typingEl = typingIndicatorRef.current;
+    const toggleEl = participantToggleRef.current;
+
+    if (!chatEl || !inputEl || !typingEl || !toggleEl) {
+      console.error('WaitingRoom: Missing chat or input/toggle elements.');
+      return;
+    }
+
+    let isUserScrolling = false;
+    function handleScroll() {
+      if (!chatEl) return;
+      isUserScrolling = !isNearBottom(chatEl);
+    }
+    chatEl.addEventListener('scroll', handleScroll);
+
+    // Some user messages
+    const names = [
+      "Emma", "Liam", "Olivia", "Noah", "Ava", "Ethan", "Sophia", "Mason",
+      "Isabella", "William", "Mia", "James", "Charlotte", "Benjamin", "Amelia",
+      "Lucas", "Harper", "Henry", "Evelyn", "Alexander"
+    ];
+    let attendeeMessages = [
+      "Cant wait for this to start!",
+      "First time here... excited!!",
+      "Anyone else waiting?",
+      "question: Has anyone integrated this with Zapier for complex funnels?",
+      "Setting up multi-step retargeting is my priority right now",
+      "Im interested in the analytics side of things",
+      "Hello from the waiting room!",
+      "What about affiliate tracking with UTMs and multi-touch attribution?",
+      "So ready for advanced marketing hacks",
+      "Hope we get real actionable tips today",
+      "So ready for advanced marketing hacks",
+      "Just wanted to see if we can import data from our CRM?",
+      "We focus heavily on remarketing campaigns, so I'm curious about that",
+      "Looking forward to the Q&A on conversion funnels",
+      "We use advanced tracking pixels, does your platform handle that?",
+      "Hope we get some real actionable tips here",
+      "Is the audio working for everyone?",
+      "Anyone else from the marketing dept?",
+      "We want to build a segmentation funnel, any best practices?",
+      "Cant wait to compare notes after the webinar!",
+      "Hello from the social media team!"
+    ];
+    const preloadedQuestions = [
+      { time: 30, text: "hey everyone! excited for this", user: "Emma" },
+      { time: 45, text: "same here! first time in one of these", user: "Michael" },
+      { time: 60, text: "do we need to have our cameras on?", user: "Sarah" },
+      { time: 90, text: "dont think so, pretty sure its just a webinar", user: "James" },
+      { time: 120, text: "what time does this start exactly?", user: "David" },
+      { time: 150, text: "should be in about 15 mins i think", user: "Rachel" },
+      { time: 180, text: "perfect timing to grab a coffee then!", user: "Thomas" },
+      { time: 210, text: "anyone else having audio issues? cant hear anything", user: "Lisa" },
+      { time: 240, text: "i think it hasnt started yet thats why", user: "Alex" },
+      { time: 270, text: "oh that makes sense lol", user: "Lisa" },
+      { time: 300, text: "anyone here used their product before?", user: "Jennifer" },
+      { time: 330, text: "not yet but heard good things", user: "Daniel" },
+      { time: 360, text: "same, my colleague recommended it", user: "Sophie" },
+      { time: 390, text: "will there be a replay available?", user: "Ryan" },
+      { time: 420, text: "usually is for these types of webinars", user: "Maria" },
+      { time: 450, text: "anyone taking notes? im ready with my notebook", user: "William" },
+      { time: 480, text: "got my notepad open too!", user: "Emma" },
+      { time: 510, text: "hope theres a q&a section at the end", user: "Noah" },
+      { time: 540, text: "same, got lots of questions prepared", user: "Olivia" },
+      { time: 570, text: "anyone else from marketing dept here?", user: "Liam" },
+      { time: 600, text: "yep! social media manager here", user: "Ava" },
+      { time: 630, text: "content marketing team checking in", user: "Ethan" },
+      { time: 660, text: "excited to see the analytics features", user: "Sophia" },
+      { time: 690, text: "hope they show the dashboard demo", user: "Mason" },
+      { time: 720, text: "getting some coffee, brb!", user: "Isabella" },
+      { time: 750, text: "good idea, might do the same", user: "Benjamin" },
+      { time: 780, text: "anyone know how long the webinar is?", user: "Charlotte" },
+      { time: 810, text: "think its an hour with q&a after", user: "Henry" },
+      { time: 840, text: "perfect length imo", user: "Amelia" },
+      { time: 870, text: "cant wait to see whats new", user: "Lucas" },
+      { time: 900, text: "almost time to start!", user: "Harper" }
+    ];
+
+    function addMessage(
+      text: string,
+      type: 'user' | 'host' | 'system',
+      user = '',
+      isAutoGenerated = true
+    ) {
+      if (!chatEl || !toggleEl || !typingEl) return;
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `${styles.message} ${type}`;
+
+      // old CSS classes
+      if (type === 'user') {
+        msgDiv.classList.add('user');
+      } else if (type === 'host') {
+        msgDiv.classList.add('host');
+      } else if (type === 'system') {
+        msgDiv.classList.add('system');
+      }
+
+      msgDiv.textContent = user ? `${user}: ${text}` : text;
+
+      // If real host message => "Selina is typing..."
+      if (type === 'host' && !isAutoGenerated) {
+        typingEl.textContent = 'Selina is typing...';
+        setTimeout(() => {
+          typingEl.textContent = '';
+        }, 2000);
+      }
+
+      // Hide from participants if toggle is off
+      if (type === 'user' && user !== 'You') {
+        msgDiv.setAttribute('data-participant', 'true');
+        msgDiv.setAttribute('data-auto-generated', 'true');
+        msgDiv.style.display = toggleEl.checked ? 'block' : 'none';
+      }
+
+      chatEl.appendChild(msgDiv);
+
+      // autoscroll if near bottom or user typed
+      if (!isUserScrolling || user === 'You') {
+        scrollToBottom(chatEl);
+      }
+    }
+
+    function handleToggleChange(e: Event) {
+      if (!chatEl) return;
+      const participantMessages = chatEl.querySelectorAll('[data-participant="true"]');
+      const target = e.currentTarget as HTMLInputElement;
+      participantMessages.forEach(msg => {
+        (msg as HTMLElement).style.display = target.checked ? 'block' : 'none';
+      });
+      if (target.checked && !isUserScrolling) {
+        scrollToBottom(chatEl);
+      }
+    }
+    toggleEl.addEventListener('change', handleToggleChange);
+
+    // WebSocket
+    const newSocket = new WebSocket('wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com');
+    socketRef.current = newSocket;
+
+    newSocket.onopen = () => {
+      console.log('Connected to chat server');
+      scrollToBottom(chatEl);
+    };
+    newSocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'message') {
+        addMessage(data.text, data.messageType as 'user' | 'host' | 'system', data.user, true);
+      }
+    };
+    newSocket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    // random lines
+    function scheduleLocationMessages() {
+      const numMessages = Math.min(attendeeMessages.length, Math.floor(Math.random() * 5) + 5);
+      const available = [...attendeeMessages];
+      let delay = 500;
+      for (let i = 0; i < numMessages; i++) {
+        const index = Math.floor(Math.random() * available.length);
+        const message = available[index];
+        available.splice(index, 1);
+        const name = names[Math.floor(Math.random() * names.length)];
+
+        setTimeout(() => {
+          addMessage(message, 'user', name, true);
+        }, delay);
+        delay += Math.random() * 1000 + 500;
+      }
+    }
+
+    // Preloaded
+    preloadedQuestions.forEach(q => {
+      setTimeout(() => {
+        addMessage(q.text, 'user', q.user, true);
+      }, q.time * 1000);
+    });
+
+    // AI/host response
+    async function handleHostResponse(userMsg: string, isAutomated = false) {
+      if (isAutomated) return;
+      if (!typingEl) return;
+      try {
+        const randomDelay = Math.random() * 2000;
+        await new Promise(resolve => setTimeout(resolve, randomDelay));
+        typingEl.textContent = 'Selina is typing...';
+
+        const resp = await fetch('https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userMsg, type: 'user' })
+        });
+        if (!resp.ok) throw new Error('API call failed');
+        const data = await resp.json();
+        typingEl.textContent = '';
+
+        if (data.response) {
+          addMessage(data.response, 'host', 'Kyle', false);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        typingEl.textContent = '';
+        addMessage("Apologies, having trouble connecting. Please try again!", 'host', 'Selina', false);
+      }
+    }
+
+    // viewer count
+    let currentViewers = 41;
+    const viewerInterval = setInterval(() => {
+      const change = Math.random() < 0.5 ? -1 : 1;
+      currentViewers = Math.max(40, Math.min(50, currentViewers + change));
+      const vcEl = document.getElementById('viewerCount');
+      if (vcEl) {
+        vcEl.textContent = `${currentViewers} waiting`;
+      }
+    }, 5000);
+
+    // Initial msg => schedule random lines
+    setTimeout(() => {
+      addMessage("getting everything prepared. Kyle will be here soon", 'host', 'Selina', true);
+      scheduleLocationMessages();
+      scrollToBottom(chatEl);
+    }, 4000);
+
+    // Enter => AI
+    function handleKeypress(e: KeyboardEvent) {
+      if (!inputEl) return;
+      if (e.key === 'Enter' && inputEl.value.trim()) {
+        const userMsg = inputEl.value.trim();
+        inputEl.value = '';
+        addMessage(userMsg, 'user', 'You', false);
+        handleHostResponse(userMsg, false);
+      }
+    }
+    inputEl.addEventListener('keypress', handleKeypress);
+
+    // Cleanup
+    return () => {
+      chatEl.removeEventListener('scroll', handleScroll);
+      toggleEl.removeEventListener('change', handleToggleChange);
+      inputEl.removeEventListener('keypress', handleKeypress);
+      clearInterval(viewerInterval);
+      if (socketRef.current) {
+        socketRef.current.close();
+        socketRef.current = null;
+      }
+    };
+  }, []);
+
+  return (
+    <>
+      {/* MOBILE-ONLY iMessage Bubble => "Selina" aligned left */}
+      {showMobilePopup && (
+        <div className={styles.exitOverlay} onClick={handleOverlayClick}>
+          <div className={styles.iphoneMessageBubble}>
+            <button className={styles.exitCloseBtn} onClick={handleClosePopup}>
+              &times;
+            </button>
+            <div className={styles.iphoneSender} style={{ textAlign: 'left' }}>Selina</div>
+            <div className={styles.iphoneMessageText} style={{ textAlign: 'left' }}>
+              We recommend joining from a computer for the best experience.
+              Please check your email for the link and open it on desktop!
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Zoom-like box */}
+      <div className={styles.zoomContainer}>
+        {/* TOP BAR */}
+        <div className={styles.zoomTopBar}>
+          {/* Left side: subtle blinking "LIVE SOON" + Title */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {showLiveSoon && (
+              <span className={styles.liveSoonSubtle}>LIVE SOON</span>
+            )}
+            <span className={styles.zoomTitle}>PrognosticAI Advanced Training</span>
+          </div>
+
+          {/* Right side => "Live Webinar: {todayDate}" */}
+          <div className={styles.awh2024Header}>
+            Live Webinar: {todayDate}
+          </div>
+        </div>
+
+        {/* Horizontal divider under header */}
+        <hr className={styles.topDivider} />
+
+        {/* TWO COLUMNS */}
+        <div className={styles.twoColumnLayout}>
+          {/* LEFT => Countdown, spinner, bullets, presenters, no scroll */}
+          <div className={styles.leftColumn}>
+            {/* Minimalist countdown box */}
+            <div className={styles.countdownBox}>
+              <div className={styles.countdownLabel}>Time Remaining</div>
+              <div className={styles.countdownNumber}>
+                {countdownText}
+              </div>
+            </div>
+
+            {/* Spinner & text */}
+            <div className={styles.spinnerArea}>
+              <div className={styles.spinnerAndText}>
+                <div className={styles.loadingSpinner}></div>
+                <p className={styles.loadingText}>
+                  We are preparing the webinar... grab a notepad & pen while you wait!
+                </p>
+              </div>
+            </div>
+
+            <hr className={styles.lightDivider} />
+
+            <p className={styles.bulletsTitle}><strong>You will learn...</strong></p>
+            <ul className={styles.bulletsList}>
+              <li>How PrognosticAI personalizes your marketing funnels</li>
+              <li>Tips for advanced retargeting strategies</li>
+              <li>Free resources to scale your funnel</li>
+            </ul>
+
+            {/* Presenters => left aligned; countdown plain text in Kyle's desc */}
+            <div className={styles.presentersArea}>
+              <div className={styles.presenterRow}>
+                <img
+                  src="https://i.ibb.co/rGNvSw9/78-Klwbhtn4ags-B0k-Lplo1701987382.png"
+                  alt="Kyle Campbell"
+                  className={styles.presenterImage}
+                />
+                <div className={styles.presenterInfo}>
+                  <div className={styles.presenterName}>Kyle Campbell</div>
+                  <div className={styles.presenterTitle}>Webinar Host</div>
+                  <div className={styles.presenterDesc}>
+                    Stop losing sales—in {countdownText} Kyle will begin revealing the secret new AI 
+                    that took him from rock bottom to $1M+ in 44 weeks.
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.presenterRow}>
+                <img
+                  src="https://i.ibb.co/NWZQXfV/1-Zi961cr56d-Nrw-Onim8j1701987437.png"
+                  alt="Selina Harris"
+                  className={styles.presenterImage}
+                />
+                <div className={styles.presenterInfo}>
+                  <div className={styles.presenterName}>Selina Harris</div>
+                  <div className={styles.presenterTitle}>Webinar Host</div>
+                  <div className={styles.presenterDesc}>
+                    Assisting Kyle today will be his team leader, Selina, PhD graduate student from Harvard.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT => Chat box (375px) */}
+          <div className={styles.rightColumn}>
+            <div className={styles.chatSection}>
+              <div className={styles.chatHeader}>
+                <div className={styles.headerTop}>
+                  <span className={styles.chatTitle}>Live Chat</span>
+                  <div className={styles.toggleContainer}>
+                    <label className={styles.toggleSwitch}>
+                      <input
+                        ref={participantToggleRef}
+                        type="checkbox"
+                        id="participantToggle"
+                      />
+                      <span className={styles.toggleSlider}></span>
+                    </label>
+                    <span className={styles.toggleLabel}>Show Others</span>
+                  </div>
+                  <span className={styles.viewerCount}>
+                    <i>👥</i>
+                    <span id="viewerCount">41 waiting</span>
+                  </span>
+                </div>
+              </div>
+              <div className={styles.chatMessages} ref={chatMessagesRef} id="chatMessages"></div>
+              <div className={styles.chatInput}>
+                <input
+                  type="text"
+                  placeholder="Type your message here..."
+                  ref={messageInputRef}
+                  id="messageInput"
+                />
+                <div className={styles.typingIndicator} ref={typingIndicatorRef} id="typingIndicator"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Note at bottom => bigger mail icon, smaller text */}
+        <div className={styles.redirectNoteRow}>
+          <div className={styles.noticeIcon}>
+            <span style={{ fontSize: '20px' }}>✉</span>
+          </div>
+          <p className={styles.redirectNoteText}>
+            You will be automatically redirected. If youre on a mobile device, please check your email from a computer to ensure access.
+          </p>
+        </div>
+      </div>
+
+      {/* Footer outside box */}
+      <div className={styles.footerBranding}>© 2025 PrognosticAI</div>
+    </>
+  );
+};
+
+export default WaitingRoom;
