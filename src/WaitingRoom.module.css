@@ -1,10 +1,8 @@
 /*
-  ------------------------------------------------------------------------------
-  We are removing the white background from the .zoomContainer, .previewColumn,
-  and .signupColumn to give a transparent feel. 
-  ------------------------------------------------------------------------------
+  -----------------------------------------------------------------------------------
+  Global / Root-level resets & basic body styling
+  -----------------------------------------------------------------------------------
 */
-
 *,
 *::before,
 *::after {
@@ -13,9 +11,17 @@
   box-sizing: border-box;
 }
 
-.bodyBackground {
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: #EAEFF3; /* The soft background behind the transparent container */
+  margin: 0;
+  padding: 0;
   font-family: 'Montserrat', sans-serif;
-  background-color: #f8f9fa; /* If you want a non-white page background, keep this. */
+}
+
+.bodyBackground {
+  /* We removed any extra white box behind; it’s now just a centered container. */
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -23,9 +29,13 @@
   padding: 40px 20px;
 }
 
-/* The main "zoom-style" container - now transparent. */
+/*
+  -----------------------------------------------------------------------------------
+  The main "zoom-like" container, now transparent except for border/box-shadow
+  -----------------------------------------------------------------------------------
+*/
 .zoomContainer {
-  background: transparent; /* was #fff */
+  background: transparent; /* No white box behind it. */
   border: 2px solid #dcdcdc;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -36,15 +46,33 @@
   position: relative;
 }
 
-/* The top bar with live dot, title, etc. */
+/*
+  -----------------------------------------------------------------------------------
+  Top bar with "LIVE SOON" + Title + date label
+  -----------------------------------------------------------------------------------
+*/
 .zoomTopBar {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 12px;
   padding-bottom: 12px;
   border-bottom: 1px solid #eee;
 }
+
+/* The blinking "LIVE SOON" text at the top left. */
+.zoomLiveSoonText {
+  color: #ff4c4c;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-right: 12px;
+  animation: liveSoonBlink 1.6s infinite alternate;
+}
+@keyframes liveSoonBlink {
+  0% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
 .zoomTitle {
   color: #333;
   font-size: 1.1rem;
@@ -53,45 +81,37 @@
   align-items: center;
   gap: 8px;
 }
-.zoomLiveDot {
-  width: 8px;
-  height: 8px;
-  background: #ff0000;
-  border-radius: 50%;
-  animation: pulseZoom 1.5s infinite;
-}
-@keyframes pulseZoom {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
-}
+
 .awh2024Header {
+  margin-left: auto;
   color: #2c3135;
   font-size: 0.85rem;
   font-weight: 500;
-  margin-left: auto;
   padding-left: 20px;
 }
 
-/* Two-column layout (borrowed from sign-up page). */
+/*
+  -----------------------------------------------------------------------------------
+  Two-column layout, now 60/40
+  -----------------------------------------------------------------------------------
+*/
 .twoColumnLayout {
   display: flex;
   gap: 16px;
-  height: 100%; /* changed from a fixed height so it can grow with new content */
+  width: 100%;
+  /* We let the content define the height, not forced. */
 }
 
-/* Left side (was .preview-column). Now transparent. */
 .previewColumn {
-  flex: 0 0 70%;
+  flex: 0 0 60%;
   padding: 24px;
-  background: transparent; /* was #f8f9fa */
+  background: transparent;
   border-radius: 6px;
   overflow-y: auto;
 }
 
-/* Right side (was .signup-column). Now transparent. */
 .signupColumn {
-  flex: 0 0 30%;
+  flex: 0 0 40%;
   display: flex;
   flex-direction: column;
   padding: 0 16px;
@@ -100,11 +120,12 @@
   overflow-y: auto;
 }
 
-/* ============================ */
-/* ======  TOP COUNTDOWN ====== */
-/* ============================ */
+/*
+  -----------------------------------------------------------------------------------
+  Countdown & heading
+  -----------------------------------------------------------------------------------
+*/
 .awhp2024HeaderWrapper {
-  font-family: 'Montserrat', sans-serif;
   text-align: center;
   font-size: 32px;
   font-weight: 800;
@@ -116,7 +137,6 @@
 }
 .motivationalTagline {
   margin-top: 8px;
-  font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
   font-weight: 500;
   color: #555555;
@@ -127,29 +147,12 @@
   font-weight: 900;
 }
 
-/* The blinking "Live Soon" badge */
-.liveSoonBadge {
-  display: block;
-  margin: 0 auto 20px auto;
-  text-align: center;
-  background: #ff4c4c;
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 700;
-  border-radius: 4px;
-  padding: 4px 8px;
-  animation: liveBlink 1.3s infinite alternate;
-}
-@keyframes liveBlink {
-  0% { opacity: 1; }
-  100% { opacity: 0.65; }
-}
-
-/* ========================= */
-/* ======  LOADING UI ====== */
-/* ========================= */
+/*
+  -----------------------------------------------------------------------------------
+  Loading UI (spinner)
+  -----------------------------------------------------------------------------------
+*/
 .webinarLoading {
-  font-family: 'Montserrat', sans-serif;
   color: #0142ac;
   margin: 0;
   padding: 0;
@@ -190,9 +193,12 @@
   border-top: 1px solid #ccc;
 }
 
-/* "You will learn..." styling */
+/*
+  -----------------------------------------------------------------------------------
+  "You will learn..." bullet styling
+  -----------------------------------------------------------------------------------
+*/
 .bulletsTitle {
-  font-family: 'Montserrat', sans-serif;
   font-size: 18px;
   color: #2E2E2E;
   margin-top: 20px;
@@ -200,7 +206,6 @@
   text-align: left;
 }
 .bulletsList {
-  font-family: 'Montserrat', sans-serif;
   list-style-type: disc;
   color: #2E2E2E;
   padding-left: 1.5rem;
@@ -208,8 +213,11 @@
   text-align: left;
 }
 
-/* ================================ */
-/* "Next Steps" + Date/Time + Hosts */
+/*
+  -----------------------------------------------------------------------------------
+  The new "HERE’S WHAT YOU SHOULD DO NOW" box
+  -----------------------------------------------------------------------------------
+*/
 .nextStepsBox {
   background: rgba(255,255,255,0.8);
   border-radius: 8px;
@@ -229,6 +237,9 @@
   margin-bottom: 20px;
   line-height: 1.5;
 }
+.nextStepsList li {
+  margin-bottom: 12px;
+}
 .webinarDate {
   font-weight: 600;
   margin-bottom: 4px;
@@ -238,11 +249,16 @@
   color: #666;
   margin-bottom: 12px;
 }
+
+/*
+  Slightly bigger, branded "Set reminder" button
+  – example uses a universal Google Calendar link
+*/
 .reminderLink {
   display: inline-block;
   color: #fff;
   background-color: #0142ac;
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-radius: 4px;
   text-decoration: none;
   font-weight: 500;
@@ -252,6 +268,35 @@
 .reminderLink:hover {
   background-color: #012f7a;
 }
+
+/* The small row for the link text + icon in place of "Link disabled" text */
+.linkNoticeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* The circle icon style for the email + computer icon, inspired by your "benefit-icon" snippet */
+.noticeIcon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background-color: rgba(1, 66, 172, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-size: 18px;
+  color: #0142AC;
+}
+
+/*
+  -----------------------------------------------------------------------------------
+  Hosts row
+  -----------------------------------------------------------------------------------
+*/
 .hostsBox {
   display: flex;
   flex-wrap: wrap;
@@ -279,14 +324,15 @@
   color: #555;
 }
 
-/* ========================= */
-/* ======  CHAT BOX  ======= */
-/* ========================= */
+/*
+  -----------------------------------------------------------------------------------
+  Chat box
+  -----------------------------------------------------------------------------------
+*/
 .chatSection {
   background: #fff;
   display: flex;
   flex-direction: column;
-  height: 100%;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -377,12 +423,15 @@
   align-items: center;
   gap: 5px;
 }
+
+/* We fix a comfortable height on the chat, so it doesn't keep extending. */
 .chatMessages {
   flex: 1 1 auto;
   overflow-y: auto;
   padding: 15px;
   background: #f8f9fa;
-  min-height: 0;
+  min-height: 200px;
+  max-height: 500px; /* So it doesn’t stretch the container indefinitely */
 }
 .message {
   margin-bottom: 10px;
@@ -393,6 +442,11 @@
   border-radius: 6px;
   max-width: 90%;
   text-align: left;
+  position: relative; /* for system styling below */
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .message.user {
   background: #f0f2f5;
@@ -405,17 +459,29 @@
   font-weight: 500;
 }
 .message.system {
-  background: #fff3cd;
+  background: #fff3cd; /* light yellowish tone */
   color: #856404;
   text-align: center;
   max-width: 100%;
   margin: 15px 0;
   font-size: 0.85rem;
 }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: translateY(0); }
+
+/* The special “YOU’RE REGISTERED!” pastel bubble. */
+.registeredNotice {
+  background: rgba(1, 66, 172, 0.1);
+  color: #0142ac;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+  max-width: 80%;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-left: auto; /* so it appears on the right side, or we can center it */
+  margin-right: auto;
 }
+
 .chatInput {
   padding: 15px;
   background: #fff;
@@ -459,9 +525,12 @@
   background: #a8a8a8;
 }
 
-/* Footer branding at bottom */
+/*
+  -----------------------------------------------------------------------------------
+  Footer branding
+  -----------------------------------------------------------------------------------
+*/
 .customFooter {
-  font-family: 'Montserrat', sans-serif;
   text-align: center;
   font-size: 0.9rem;
   font-weight: 400;
@@ -469,45 +538,113 @@
   margin-top: 40px;
 }
 
+/*
+  -----------------------------------------------------------------------------------
+  Mobile-only "iMessage bubble" overlay
+  -----------------------------------------------------------------------------------
+*/
+.exitOverlay {
+  display: none; /* Hidden by default; only show if on mobile. */
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.25s ease;
+  cursor: pointer;
+}
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.iphoneMessageBubble {
+  position: relative;
+  max-width: 80%;
+  width: 320px;
+  background: #0a84ff;
+  color: #fff;
+  border-radius: 18px;
+  padding: 14px 20px;
+  animation: bubblePop 0.35s ease-out;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  cursor: auto;
+}
+@keyframes bubblePop {
+  0%   { transform: scale(0.85); opacity: 0; }
+  55%  { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.exitCloseBtn {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #fff;
+  opacity: 0.9;
+}
+.iphoneSender {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.iphoneMessageText {
+  font-size: 1rem;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+.iphoneMessageBubble::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  bottom: 20px;
+  width: 0; height: 0;
+  border: 10px solid transparent;
+  border-right-color: #0a84ff;
+}
+
+/* 
+  Only show the iMessage bubble overlay if viewport <= 768 (basic check).
+  We'll handle the JS detection, but also safe to hide by default on bigger screens. 
+*/
 @media (max-width: 768px) {
-  .bodyBackground {
-    padding: 20px;
+  .exitOverlay {
+    display: flex;
   }
-  .zoomContainer {
-    padding: 12px;
-  }
-  .zoomTitle {
-    display: none;
-  }
+}
+
+/*
+  -----------------------------------------------------------------------------------
+  Media Queries for general layout tweaks
+  -----------------------------------------------------------------------------------
+*/
+@media (max-width: 768px) {
   .zoomTopBar {
-    justify-content: center;
     border-bottom: none;
     margin-bottom: 16px;
   }
   .awh2024Header {
     font-size: 0.85rem;
-    margin: 0;
-    padding: 0;
     text-align: center;
+    padding: 0;
   }
   .twoColumnLayout {
     flex-direction: column;
-    height: auto;
     gap: 12px;
   }
   .previewColumn {
     padding: 16px;
+    flex: 1 1 auto;
   }
   .signupColumn {
     padding: 0;
     margin: 16px 0;
-    min-height: 500px;
-  }
-  .chatSection {
-    min-height: 500px;
-  }
-  .chatInput {
-    min-height: auto;
+    flex: 1 1 auto;
+    min-height: 400px;
   }
   .awhp2024HeaderWrapper {
     font-size: 24px;
@@ -517,5 +654,8 @@
   }
   .nextStepsBox {
     padding: 16px;
+  }
+  .chatMessages {
+    max-height: 400px; /* reduce the max on mobile */
   }
 }
