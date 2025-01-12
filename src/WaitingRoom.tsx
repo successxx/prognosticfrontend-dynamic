@@ -5,6 +5,7 @@ const WaitingRoom: React.FC = () => {
   // ====== COUNTDOWN STATE/LOGIC ======
   const [countdownText, setCountdownText] = useState<string>('calculating...');
   const [showBadge, setShowBadge] = useState<boolean>(true);
+  const [showMobilePopup, setShowMobilePopup] = useState<boolean>(false);
 
   /** Next quarter-hour logic */
   function getNextQuarterHour(): Date {
@@ -41,6 +42,15 @@ const WaitingRoom: React.FC = () => {
     updateCountdown();
     const timerId = setInterval(updateCountdown, 1000);
     return () => clearInterval(timerId);
+  }, []);
+
+  // ====== MOBILE POPUP DETECTION ======
+  useEffect(() => {
+    // Show popup if on mobile
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      setShowMobilePopup(true);
+    }
   }, []);
 
   // ====== CHATBOX LOGIC (same as before) ======
@@ -109,12 +119,12 @@ const WaitingRoom: React.FC = () => {
     ];
 
     const preloadedQuestions = [
-      { time: 30, text: "hey Everyone! excited for this", user: "Emma" },
+      { time: 30, text: "hey everyone! excited for this", user: "Emma" },
       { time: 45, text: "same here! first time in one of these", user: "Michael" },
       { time: 60, text: "do we need to have our cameras on?", user: "Sarah" },
       { time: 90, text: "dont think so, pretty sure its just a webinar", user: "James" },
       { time: 120, text: "what time does this start exactly?", user: "David" },
-      { time: 150, text: "Should be in a few mins I think", user: "Rachel" },
+      { time: 150, text: "should be in about 15 mins i think", user: "Rachel" },
       { time: 180, text: "perfect timing to grab a coffee then!", user: "Thomas" },
       { time: 210, text: "anyone else having audio issues? cant hear anything", user: "Lisa" },
       { time: 240, text: "i think it hasnt started yet thats why", user: "Alex" },
@@ -129,7 +139,7 @@ const WaitingRoom: React.FC = () => {
       { time: 510, text: "hope theres a q&a section at the end", user: "Noah" },
       { time: 540, text: "same, got lots of questions prepared", user: "Olivia" },
       { time: 570, text: "anyone else from marketing dept here?", user: "Liam" },
-      { time: 600, text: "Yep! social media manager here", user: "Ava" },
+      { time: 600, text: "yep! social media manager here", user: "Ava" },
       { time: 630, text: "content marketing team checking in", user: "Ethan" },
       { time: 660, text: "excited to see the analytics features", user: "Sophia" },
       { time: 690, text: "hope they show the dashboard demo", user: "Mason" },
@@ -323,9 +333,35 @@ const WaitingRoom: React.FC = () => {
     };
   }, []);
 
+  // ====== EVENT HANDLERS FOR MOBILE POPUP ======
+  const handleClosePopup = () => {
+    setShowMobilePopup(false);
+  };
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      setShowMobilePopup(false);
+    }
+  };
+
   // ====== RENDER ======
   return (
     <>
+      {/* MOBILE-ONLY iMessage Bubble */}
+      {showMobilePopup && (
+        <div className={styles.exitOverlay} id="popupOverlay" onClick={handleOverlayClick}>
+          <div className={styles.iphoneMessageBubble}>
+            <button className={styles.exitCloseBtn} id="closeBtn" onClick={handleClosePopup}>
+              &times;
+            </button>
+            <div className={styles.iphoneSender}>System</div>
+            <div className={styles.iphoneMessageText}>
+              We recommend joining from a computer for the best experience.
+              Please check your email for the link and open it on desktop!
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className={styles.zoomContainer}>
         {/* TOP BAR */}
         <div className={styles.zoomTopBar}>
@@ -334,7 +370,6 @@ const WaitingRoom: React.FC = () => {
             <span>PrognosticAI Advanced Training</span>
           </div>
           <div className={styles.awh2024Header}>
-            {/* e.g. "Live webinar today, January 12" (auto updated) */}
             Your webinar begins in {countdownText}
           </div>
         </div>
@@ -343,17 +378,15 @@ const WaitingRoom: React.FC = () => {
         <div className={styles.twoColumnLayout}>
           {/* LEFT (Preview) Column (70%) */}
           <div className={styles.previewColumn}>
-            {/* SPINNER / LOADING */}
-            <div className={styles.webinarLoading}>
-              <div className={styles.loadingContainer}>
-                <div className={styles.loadingSpinner}></div>
-                <p className={styles.loadingText}>
-                  We are preparing the webinar... grab a notepad and pen while you wait!
-                </p>
-              </div>
+            {/* SPINNER / LOADING - center the text, dark color */}
+            <div className={styles.webinarLoading} style={{ flexDirection: 'column', textAlign: 'center' }}>
+              <div className={styles.loadingSpinner}></div>
+              <p className={styles.loadingText} style={{ color: '#333', fontWeight: '500' }}>
+                We are preparing the webinar... grab a notepad and pen while you wait!
+              </p>
             </div>
 
-            {/* Replacing "You will learn" with check bullets */}
+            {/* Checkmark bullets */}
             <div className={styles.benefitItem}>
               <div className={styles.benefitIcon}></div>
               <div className={styles.benefitText}>
@@ -379,7 +412,9 @@ const WaitingRoom: React.FC = () => {
               </div>
             </div>
 
+            {/* "Your presenters" heading, left-aligned */}
             <h3 className={styles.presentersHeading}>Your presenters...</h3>
+
             {/* Presenter Cards */}
             <div className={styles.hostCard}>
               <img
@@ -390,6 +425,10 @@ const WaitingRoom: React.FC = () => {
               <div>
                 <div className={styles.hostName}>Kyle Campbell</div>
                 <div className={styles.hostTitle}>Webinar Host</div>
+                {/* Additional text referencing countdownText */}
+                <div className={styles.hostDesc}>
+                  Stop losing sales—In <span className={styles.countdownInline}>{countdownText}</span>, Kyle will begin revealing the secret new AI that took him from rock bottom to $1M+ in 44 weeks.
+                </div>
               </div>
             </div>
             <div className={styles.hostCard}>
@@ -401,6 +440,9 @@ const WaitingRoom: React.FC = () => {
               <div>
                 <div className={styles.hostName}>Selina Harris</div>
                 <div className={styles.hostTitle}>Webinar Host</div>
+                <div className={styles.hostDesc}>
+                  Assisting Kyle today will be his team leader, Selina, PhD graduate student from Harvard.
+                </div>
               </div>
             </div>
           </div>
