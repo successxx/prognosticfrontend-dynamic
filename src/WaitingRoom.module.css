@@ -81,8 +81,7 @@ html, body {
 .twoColumnLayout {
   display: flex;
   gap: 16px;
-  /* We'll let the content define the height, 
-     so no forced 550px. That way no left scroll. */
+  /* We'll let content define height so no left scroll. */
 }
 
 /* LEFT COLUMN => bigger portion, no scrolling */
@@ -215,7 +214,7 @@ html, body {
 /* 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     CHAT SECTION 
-    (height: 375px as you prefer)
+    (ADJUST HEIGHT SO LEFT COLUMN FITS W/O SCROLL)
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 .chatSection {
@@ -225,8 +224,9 @@ html, body {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  height: 375px;
-
+  /* CHANGED FROM 375px TO 420px TO FIT SELINA INFO */
+  height: 420px;  /* <--- UPDATED */
+  
   /* Subtle pulsing glow */
   animation: chatGlow 2.5s ease-in-out infinite alternate;
 }
@@ -322,7 +322,7 @@ html, body {
   padding: 8px 12px;
   border-radius: 6px;
   max-width: 90%;
-  text-align: left;
+  text-align: left; 
 }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
@@ -338,10 +338,11 @@ html, body {
   color: #0142AC;
   font-weight: 500;
 }
+/* REMOVE CENTER ALIGN FOR SYSTEM MESSAGES */
 .message.system {
   background: #fff3cd;
   color: #856404;
-  text-align: center;
+  /* text-align: center;  <-- REMOVED */
   max-width: 100%;
   margin: 15px 0;
   font-size: 0.85rem;
