@@ -1,90 +1,127 @@
-/* ============================ */
-/* ======  TOP COUNTDOWN ====== */
-/* ============================ */
-.awhp2024HeaderWrapper {
+/* ====== GLOBAL BASE STYLES ====== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
   font-family: 'Montserrat', sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* ====== CONTAINER & TOP BAR (FROM SIGN-UP DESIGN) ====== */
+.zoomContainer {
+  background: #fff;
+  border: 2px solid #dcdcdc;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 16px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 20px auto;
+  position: relative;
+}
+
+.zoomTopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.zoomTitle {
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zoomLiveDot {
+  width: 8px;
+  height: 8px;
+  background: #ff0000;
+  border-radius: 50%;
+  animation: pulseZoom 1.5s infinite;
+}
+
+.webinarHeader {
+  color: #2c3135;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* ====== COUNTDOWN HEADER (Waiting Room) ====== */
+.countdownHeader {
   text-align: center;
-  font-size: 48px;
+  font-size: 24px;
   font-weight: 800;
   margin: 20px auto;
   padding: 10px;
   color: #2E2E2E;
   line-height: 1.2;
-  position: relative; /* allow absolutely positioned badge */
 }
 
-/* The blinking "Live Soon" badge */
-.liveSoonBadge {
-  display: block;
-  margin: 0 auto 20px auto; /* horizontally center + some bottom space */
-  text-align: center;
-  background: #ff4c4c;
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 700;
-  border-radius: 4px;
-  padding: 4px 8px;
-  animation: liveBlink 1.3s infinite alternate;
-  /* removed ALL absolute positioning so it's a normal, centered element */
+.timerText {
+  color: #0142ac;
+  font-weight: 900;
 }
 
-/* Slight blinking for the badge */
-@keyframes liveBlink {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.65;
-  }
-}
-
-/* The motivational tagline just under the countdown text */
+/* ====== MOTIVATIONAL TAGLINE ====== */
 .motivationalTagline {
   margin-top: 8px;
-  font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
   font-weight: 500;
   color: #555555;
 }
 
-/* This was your original .awhp2024TimerText class */
-.awhp2024TimerText {
-  color: #0142ac;
-  display: inline;
-  font-weight: 900;
+/* ====== TWO-COLUMN LAYOUT ====== */
+.twoColumnLayout {
+  display: flex;
+  gap: 16px;
+  height: 550px;
+  margin-top: 20px;
 }
 
-/* ========================= */
-/* ======  LOADING UI ====== */
-/* ========================= */
+.leftColumn,
+.rightColumn {
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.leftColumn {
+  flex: 0 0 70%;
+}
+
+.rightColumn {
+  flex: 0 0 30%;
+}
+
+/* ====== WEBINAR LOADING & LEARN LIST (LEFT COLUMN) ====== */
 .webinarLoading {
-  font-family: 'Montserrat', sans-serif;
-  color: #0142ac;
-  margin: 0;
-  padding: 0;
-  display: inline-flex; /* Inline layout to avoid extra block space */
+  display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
-  background: transparent; /* Transparent background */
-  width: auto; /* Adjust width to fit content */
-  height: auto; /* Adjust height to fit content */
+  background: transparent;
 }
-
 .loadingContainer {
-  text-align: left; /* changed from center to left for a more "seminar" look */
+  text-align: left;
 }
-
 .loadingText {
   font-size: 24px;
   font-weight: 700;
   color: #0142ac;
   margin-top: 20px;
 }
-
 .loadingSpinner {
-  border: 8px solid rgba(228, 232, 241, 0.5); /* Transparent grey */
-  border-top: 8px solid #0142ac; /* Brand color */
+  border: 8px solid rgba(228, 232, 241, 0.5);
+  border-top: 8px solid #0142ac;
   border-radius: 50%;
   width: 80px;
   height: 80px;
@@ -92,12 +129,6 @@
   margin: 0 auto;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* A tasteful light divider */
 .lightDivider {
   width: 60%;
   margin: 20px auto;
@@ -105,48 +136,35 @@
   border-top: 1px solid #ccc;
 }
 
-/* "You will learn..." styling */
 .bulletsTitle {
-  font-family: 'Montserrat', sans-serif;
   font-size: 18px;
   color: #2E2E2E;
   margin-top: 20px;
   font-weight: 500;
-  text-align: left; /* changed to left alignment */
+  text-align: left;
 }
 .bulletsList {
-  font-family: 'Montserrat', sans-serif;
   list-style-type: disc;
   color: #2E2E2E;
   padding-left: 1.5rem;
   margin-top: 10px;
-  text-align: left; /* ensure the bullets are left-aligned */
+  text-align: left;
 }
 
-/* ========================= */
-/* ======  CHAT BOX  ======= */
-/* ========================= */
+/* ====== CHAT BOX STYLES (RIGHT COLUMN) ====== */
 .chatSection {
   background: #fff;
   display: flex;
   flex-direction: column;
-  /* halved from 750px to 375px: */
   height: 375px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-
-  /* Subtle pulsing glow to give a "live" feel */
   animation: chatGlow 2.5s ease-in-out infinite alternate;
 }
-
 @keyframes chatGlow {
-  0% {
-    box-shadow: 0 0 10px rgba(1,66,172,0.2);
-  }
-  100% {
-    box-shadow: 0 0 24px rgba(1,66,172,0.45);
-  }
+  0% { box-shadow: 0 0 10px rgba(1,66,172,0.2); }
+  100% { box-shadow: 0 0 24px rgba(1,66,172,0.45); }
 }
 
 .chatHeader {
@@ -171,9 +189,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding: 0 15px;
 }
 .toggleSwitch {
   position: relative;
@@ -229,7 +245,6 @@
   overflow-y: auto;
   padding: 15px;
   background: #f8f9fa;
-  min-height: 0;
 }
 .message {
   margin-bottom: 10px;
@@ -281,7 +296,7 @@
 .chatInput input:focus {
   outline: none;
   border-color: #0142AC;
-  box-shadow: 0 0 0 2px rgba(1, 66, 172, 0.1);
+  box-shadow: 0 0 0 2px rgba(1,66,172,0.1);
 }
 .typingIndicator {
   color: #6c757d;
@@ -306,30 +321,56 @@
   background: #a8a8a8;
 }
 
-/* ================================ */
-/* TWO-COLUMN LAYOUT (Spinner Left, Chat Right) */
-.waitingroomWrapper {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  margin: 20px;
-  justify-content: center;
-}
-.waitingroomLeft {
-  flex: 1 1 350px;
-  min-width: 300px;
-}
-.waitingroomRight {
-  flex: 1 1 400px;
-  min-width: 300px;
-}
-
-/* Footer branding at bottom */
+/* ====== FOOTER BRANDING ====== */
 .customFooter {
-  font-family: 'Montserrat', sans-serif;
   text-align: center;
   font-size: 0.9rem;
   font-weight: 400;
   color: rgba(0,0,0,0.5);
   margin-top: 40px;
+}
+
+/* ====== ANIMATIONS ====== */
+@keyframes pulseZoom {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ====== RESPONSIVE ADJUSTMENTS (adapted from sign-up design) ====== */
+@media (max-width: 768px) {
+  .zoomContainer {
+    padding: 12px;
+  }
+  .zoomTopBar {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: none;
+  }
+  .zoomTitle {
+    display: none;
+  }
+  .webinarHeader {
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  .twoColumnLayout {
+    flex-direction: column;
+    height: auto;
+    gap: 12px;
+  }
+  .leftColumn,
+  .rightColumn {
+    padding: 16px;
+    min-height: 400px;
+  }
+  .bulletsList {
+    padding-left: 16px;
+    margin-top: 0;
+  }
 }
