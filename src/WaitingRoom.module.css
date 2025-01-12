@@ -1,14 +1,22 @@
-/***********************************************
-  BASIC PAGE LAYOUT
-***********************************************/
-body, html {
+/* 
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    GLOBAL STYLES / PAGE BACKGROUND
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+html, body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Montserrat', sans-serif;
   background-color: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
 }
 
+/* The outer "zoom-container" box */
 .zoomContainer {
   background: #fff;
   border: 2px solid #dcdcdc;
@@ -21,86 +29,110 @@ body, html {
   position: relative;
 }
 
-/***********************************************
-  ZOOM TOP BAR
-***********************************************/
+/* Top bar with "LIVE SOON" & "PrognosticAI Advanced Training" & "Live Webinar: date" */
 .zoomTopBar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
   border-bottom: 1px solid #eee;
 }
+
+.liveSoonSubtle {
+  color: #ff4c4c;
+  font-weight: 600;
+  font-size: 0.85rem;
+  animation: subtleBlink 1.6s infinite alternate;
+}
+@keyframes subtleBlink {
+  0% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
 .zoomTitle {
   color: #333;
   font-size: 1.1rem;
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: inline-block;
 }
+
+/* The top divider under the bar */
+.topDivider {
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 8px 0 12px 0;
+}
+
+/* Right side heading: "Live Webinar: date" */
 .awh2024Header {
   color: #2c3135;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 500;
   margin-left: auto;
   padding-left: 20px;
 }
-.zoomLiveDot {
-  width: 8px;
-  height: 8px;
-  background: #ff0000;
-  border-radius: 50%;
-  animation: pulseZoom 1.5s infinite;
-}
-@keyframes pulseZoom {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
-}
 
-/***********************************************
-  TWO-COLUMN LAYOUT
-***********************************************/
+/* 
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    TWO COLUMNS 
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 .twoColumnLayout {
   display: flex;
   gap: 16px;
-  height: 550px; /* from snippet */
-}
-.previewColumn {
-  flex: 0 0 70%;
-  padding: 24px;
-  background: #f8f9fa;
-  border-radius: 6px;
-  overflow-y: auto;
-}
-.signupColumn {
-  flex: 0 0 30%;
-  display: flex;
-  flex-direction: column;
-  padding: 0 16px;
+  /* We'll let the content define the height, 
+     so no forced 550px. That way no left scroll. */
 }
 
-/***********************************************
-  SPINNER / LOADING
-***********************************************/
-.webinarLoading {
+/* LEFT COLUMN => bigger portion, no scrolling */
+.leftColumn {
+  flex: 0 0 60%;
   display: flex;
-  align-items: center;
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 16px;
 }
-.loadingContainer {
-  text-align: left;
+
+/* A small "box" to show the countdown more obviously */
+.countdownBox {
+  background-color: #f8f9fa;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  width: 100%;
+}
+.countdownLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 4px;
+}
+.countdownNumber {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0142ac;
+}
+
+/* The spinner area */
+.spinnerArea {
+  background-color: transparent;
+  border: none;
+  display: block;
+}
+.spinnerAndText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .loadingSpinner {
-  border: 8px solid rgba(228, 232, 241, 0.5);
+  border: 8px solid rgba(228,232,241,0.5);
   border-top: 8px solid #0142ac;
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   animation: spin 1s linear infinite;
-  margin: 0 auto;
 }
 @keyframes spin {
   0% { transform: rotate(0deg); }
@@ -108,114 +140,107 @@ body, html {
 }
 .loadingText {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 500;
+  color: #333;
   margin-top: 12px;
 }
 
-/***********************************************
-  CHECKMARK BULLETS / BENEFIT ICON
-***********************************************/
-.benefitItem {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 16px;
+/* A tasteful light divider for left column sections */
+.lightDivider {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid #ccc;
 }
-.benefitIcon {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  background-color: rgba(1, 66, 172, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-.benefitIcon::before {
-  content: '✓';
-  color: #0142ac;
-  font-size: 16px;
+
+/* "You will learn..." bullets */
+.bulletsTitle {
+  font-size: 18px;
+  color: #2E2E2E;
   font-weight: 500;
+  text-align: left;
+  margin-top: 10px;
 }
-.benefitText {
-  font-size: 0.95rem;
-  color: #2c3135;
-  line-height: 1.4;
-}
-
-/***********************************************
-  PRESENTERS
-***********************************************/
-.presentersHeading {
-  margin-top: 24px;
-  margin-bottom: 16px;
-  color: #2c3135;
-  font-size: 1.1rem;
-  font-weight: 600;
-  text-align: left; /* left aligned */
+.bulletsList {
+  list-style-type: disc;
+  color: #2E2E2E;
+  padding-left: 1.5rem;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  text-align: left;
 }
 
-.hostCard {
+/* Presenter "cards" => left-aligned, no scroll */
+.presentersArea {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 16px;
+  flex-direction: column;
+  gap: 12px;
 }
-.hostImage {
-  width: 48px;
-  height: 48px;
+.presenterRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.presenterImage {
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
-  flex-shrink: 0;
 }
-.hostName {
+.presenterInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.presenterName {
   font-weight: 600;
   color: #2c3135;
-  margin-bottom: 4px;
 }
-.hostTitle {
+.presenterTitle {
   font-size: 0.85rem;
   color: #555;
-  margin-bottom: 4px;
 }
-.hostDesc {
+.presenterDesc {
   font-size: 0.85rem;
   line-height: 1.4;
   color: #333;
 }
-.countdownInline {
-  font-weight: 700;
-  color: #0142ac;
-  margin: 0 4px;
+
+/* RIGHT COLUMN => chat box */
+.rightColumn {
+  flex: 0 0 40%;
+  display: flex;
+  flex-direction: column;
 }
 
-/***********************************************
-  CHAT SECTION
-***********************************************/
+/* 
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    CHAT SECTION 
+    (height: 375px as you prefer)
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 .chatSection {
   background: #fff;
   display: flex;
   flex-direction: column;
-  border-radius: 6px;
+  border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  flex: 1;
+  height: 375px;
+
+  /* Subtle pulsing glow */
   animation: chatGlow 2.5s ease-in-out infinite alternate;
 }
 @keyframes chatGlow {
-  0% {
-    box-shadow: 0 0 10px rgba(1,66,172,0.2);
-  }
-  100% {
-    box-shadow: 0 0 24px rgba(1,66,172,0.45);
-  }
+  0%   { box-shadow: 0 0 10px rgba(1,66,172,0.2); }
+  100% { box-shadow: 0 0 24px rgba(1,66,172,0.45); }
 }
 .chatHeader {
   padding: 12px 15px;
   background: #0142AC;
   color: white;
   flex: 0 0 auto;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 .headerTop {
   display: flex;
@@ -232,8 +257,8 @@ body, html {
   align-items: center;
   gap: 8px;
   margin-left: auto;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 .toggleSwitch {
   position: relative;
@@ -243,8 +268,7 @@ body, html {
 }
 .toggleSwitch input {
   opacity: 0;
-  width: 0;
-  height: 0;
+  width: 0; height: 0;
 }
 .toggleSlider {
   position: absolute;
@@ -259,8 +283,7 @@ body, html {
   content: "";
   height: 16px;
   width: 16px;
-  left: 2px;
-  bottom: 2px;
+  left: 2px; bottom: 2px;
   background-color: white;
   transition: .4s;
   border-radius: 50%;
@@ -284,6 +307,7 @@ body, html {
   align-items: center;
   gap: 5px;
 }
+
 .chatMessages {
   flex: 1 1 auto;
   overflow-y: auto;
@@ -293,12 +317,12 @@ body, html {
 .message {
   margin-bottom: 10px;
   line-height: 1.4;
+  animation: fadeIn 0.3s ease;
   font-size: 0.85rem;
   padding: 8px 12px;
   border-radius: 6px;
   max-width: 90%;
   text-align: left;
-  animation: fadeIn 0.3s ease;
 }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
@@ -327,6 +351,8 @@ body, html {
   background: #fff;
   border-top: 1px solid #eee;
   flex: 0 0 auto;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 .chatInput input {
   width: 100%;
@@ -365,22 +391,67 @@ body, html {
   background: #a8a8a8;
 }
 
-/***********************************************
-  FOOTER
-***********************************************/
+/* 
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    The "You will be automatically redirected" row
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+.redirectNoteRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+.noticeIcon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background-color: rgba(1,66,172,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.redirectNoteText {
+  font-size: 0.85rem;
+  color: #333;
+  text-align: left;
+  line-height: 1.4;
+  max-width: 800px;
+}
+
+/* 
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    FOOTER
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 .footerBranding {
+  margin-top: 16px;
   text-align: center;
   font-size: 0.9rem;
   font-weight: 400;
-  color: rgba(0,0,0,0.6);
-  margin-top: 16px;
+  color: rgba(0,0,0,0.5);
 }
 
-/***********************************************
-  MOBILE-ONLY IMESSAGE POPUP
-***********************************************/
+/* 
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    MOBILE-ONLY iMESSAGE BUBBLE
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 .exitOverlay {
-  display: none; /* hidden by default; we'll conditionally show in TSX */
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.25s ease;
+  cursor: pointer;
+}
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 .iphoneMessageBubble {
   position: relative;
@@ -393,16 +464,16 @@ body, html {
   animation: bubblePop 0.35s ease-out;
   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
   cursor: auto;
+  text-align: left; /* left aligned text */
 }
 @keyframes bubblePop {
-  0%   { transform: scale(0.85); opacity: 0; }
-  55%  { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1);     opacity: 1; }
+  0% { transform: scale(0.85); opacity: 0; }
+  55%{ transform: scale(1.05); opacity: 1; }
+  100%{ transform: scale(1); opacity: 1; }
 }
 .exitCloseBtn {
   position: absolute;
-  top: 6px;
-  right: 12px;
+  top: 6px; right: 12px;
   border: none;
   background: transparent;
   font-size: 1.2rem;
@@ -424,67 +495,47 @@ body, html {
 .iphoneMessageBubble::before {
   content: "";
   position: absolute;
-  left: -10px;
-  bottom: 20px;
+  left: -10px; bottom: 20px;
   width: 0; height: 0;
   border: 10px solid transparent;
   border-right-color: #0a84ff;
 }
-.exitOverlay {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
-  z-index: 9999;
-  display: flex; /* We display: flex in TSX conditional, or here? We do it here so it’s consistent */
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 0.25s ease;
-  cursor: pointer;
-}
-@keyframes fadeIn {
-  0%   { opacity: 0; }
-  100% { opacity: 1; }
+
+/*
+  Show overlay if on mobile
+*/
+@media (max-width: 768px) {
+  .exitOverlay {
+    display: flex;
+  }
 }
 
-/***********************************************
-  RESPONSIVE
-***********************************************/
+/* 
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    RESPONSIVE
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 @media (max-width: 768px) {
-  .zoomTitle {
-    display: none;
-  }
   .zoomTopBar {
-    justify-content: center;
-    border-bottom: none;
-    margin-bottom: 16px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-bottom: 12px;
   }
   .awh2024Header {
-    font-size: 0.85rem;
-    margin: 0;
-    padding: 0;
-    text-align: center;
+    margin-left: 0;
+    padding-left: 0;
+    margin-top: 8px;
   }
   .twoColumnLayout {
     flex-direction: column;
-    height: auto;
-    gap: 12px;
   }
-  .previewColumn {
-    padding: 16px;
-    height: auto;
-  }
-  .signupColumn {
-    order: 2;
-    padding: 0;
-    margin: 16px 0;
-    min-height: 500px;
+  .leftColumn,
+  .rightColumn {
+    flex: 1 1 auto;
+    margin-bottom: 20px;
   }
   .chatSection {
-    height: 500px;
-  }
-
-  /* The mobile overlay is visible if we conditionally render in TSX */
-  .exitOverlay {
-    display: flex;
+    height: 375px; /* or reduce to 350 if needed on mobile */
   }
 }
