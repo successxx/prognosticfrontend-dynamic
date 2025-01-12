@@ -4,42 +4,68 @@ import styles from './WaitingRoom.module.css';
 /**
  * WaitingRoom
  * -----------
- * Now wrapped in the same "zoom-container" and "two-column-layout"
- * used by your webinar sign-up page, for a seamless design.
+ * Now with:
+ *  - Transparent "zoomContainer"
+ *  - Additional "HERE’S WHAT YOU SHOULD DO NOW" box
+ *  - Circle images for Kyle & Selina
+ *  - Date/time logic from sign-up page (every 15 min)
  */
+
 const WaitingRoom: React.FC = () => {
   // ====== COUNTDOWN STATES/LOGIC ======
   const [countdownText, setCountdownText] = useState<string>('calculating...');
   const [showBadge, setShowBadge] = useState<boolean>(true);
 
-  /** Returns the Date object for the next quarter-hour (15/30/45/60). */
+  // For displaying the dynamic date/time (just like sign-up page).
+  const [webinarDate, setWebinarDate] = useState<string>('');
+  const [webinarTime, setWebinarTime] = useState<string>('');
+
   function getNextQuarterHour(): Date {
     const now = new Date();
     return new Date(Math.ceil(now.getTime() / (15 * 60 * 1000)) * (15 * 60 * 1000));
   }
 
-  /** Formats time left (ms) into "X minutes and Y seconds" or "Z seconds". */
-  function formatTimeLeft(ms: number) {
-    const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((ms % (1000 * 60)) / 1000);
-    if (minutes > 0) {
-      return `${minutes} minute${minutes !== 1 ? 's' : ''} and ${seconds} second${seconds !== 1 ? 's' : ''}`;
-    } else {
-      return `${seconds} second${seconds !== 1 ? 's' : ''}`;
-    }
+  function formatDate(date: Date) {
+    // e.g. "Wednesday, September 13"
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+    };
+    return date.toLocaleDateString('en-US', options);
   }
 
+  function formatTime(date: Date) {
+    // e.g. "11:00 PM"
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+  }
+
+  // Countdown effect
   useEffect(() => {
-    // Similar logic to your original code
     const updateCountdown = () => {
       const now = new Date();
       const nextTime = getNextQuarterHour();
       const timeLeft = nextTime.getTime() - now.getTime();
+
+      // also update the date/time for display
+      setWebinarDate(formatDate(now)); // "Today is..."
+      setWebinarTime(formatTime(nextTime)); // "Next quarter hour"
+
       if (timeLeft <= 0) {
         setCountdownText('starting now...');
         setShowBadge(false);
       } else {
-        setCountdownText(formatTimeLeft(timeLeft));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        if (minutes > 0) {
+          setCountdownText(`${minutes} minute${minutes !== 1 ? 's' : ''} and ${seconds} second${seconds !== 1 ? 's' : ''}`);
+        } else {
+          setCountdownText(`${seconds} second${seconds !== 1 ? 's' : ''}`);
+        }
       }
     };
     updateCountdown();
@@ -313,7 +339,7 @@ const WaitingRoom: React.FC = () => {
   // ====== RENDER ======
   return (
     <div className={styles.bodyBackground}>
-      {/* Outer container using the sign-up page’s “zoomContainer” */}
+      {/* Outer container using the sign-up page’s “zoomContainer” (transparent now) */}
       <div className={styles.zoomContainer}>
 
         {/* Top bar with the live dot + “Live webinar today” label */}
@@ -322,17 +348,15 @@ const WaitingRoom: React.FC = () => {
             <div className={styles.zoomLiveDot}></div>
             <span>PrognosticAI Advanced Training</span>
           </div>
-          {/* This ID is used by your original script to update text with date */}
           <div className={styles.awh2024Header} id="awh2024-header">
             Live webinar today
           </div>
         </div>
 
-        {/* Two-column layout from the sign-up page design */}
+        {/* Two-column layout */}
         <div className={styles.twoColumnLayout}>
 
-          {/* LEFT side (similar to the “previewColumn”), 
-              holding the countdown, spinner, bullets, etc. */}
+          {/* LEFT side: countdown, spinner, bullets, plus next steps box. */}
           <div className={styles.previewColumn}>
             <div className={styles.awhp2024HeaderWrapper}>
               Your webinar begins in{" "}
@@ -356,6 +380,7 @@ const WaitingRoom: React.FC = () => {
 
             <hr className={styles.lightDivider} />
 
+            {/* "You will learn..." bullets */}
             <p className={styles.bulletsTitle}>
               <strong>You will learn...</strong>
             </p>
@@ -364,10 +389,75 @@ const WaitingRoom: React.FC = () => {
               <li>Tips for advanced retargeting strategies</li>
               <li>Free resources to scale your funnel</li>
             </ul>
+
+            {/* The new "HERE’S WHAT YOU SHOULD DO NOW" box */}
+            <div className={styles.nextStepsBox}>
+              <h3 className={styles.nextStepsHeading}>HERE'S WHAT YOU SHOULD DO NOW:</h3>
+              <ol className={styles.nextStepsList}>
+                <li>
+                  <strong>BLOCK OUT 1.5 HOURS</strong>:  
+                  Add it to your calendar, jot down the time, or click the blue
+                  'Set reminder' link to the right of the video to get a reminder.
+                </li>
+                <li>
+                  <strong>SHOW UP EARLY</strong>:  
+                  There will be no recordings, so make sure that you attend live
+                  and show up at least 5 minutes early. The webinar room will fill up fast.
+                </li>
+                <li>
+                  <strong>USE A DESKTOP COMPUTER (MAC OR WINDOWS)</strong>:  
+                  Watching webinars on a phone sucks, and the software isn’t great on mobile.
+                </li>
+                <li>
+                  <strong>GET THE 3 TOOLS ON THE WEBINAR</strong>:  
+                  The 3 secret AI tools will be given away to all attendees who show up.
+                  If you want them, be there!
+                </li>
+              </ol>
+
+              {/* Dynamically set date/time from the countdown logic */}
+              <div className={styles.webinarDate}>
+                {webinarDate}, {webinarTime}
+              </div>
+              <div className={styles.webinarTimeZone}>
+                Mountain Time (US &amp; Canada) GMT -7
+              </div>
+
+              <a href="#!" className={styles.reminderLink}>Set reminder</a>
+              <p>Your webinar link</p>
+              <p>Link disabled in edit mode</p>
+
+              {/* Presenters row */}
+              <div className={styles.hostsBox}>
+                {/* Kyle */}
+                <div className={styles.hostCard}>
+                  <img
+                    src="https://i.ibb.co/rGNvSw9/78-Klwbhtn4ags-B0k-Lplo1701987382.png"
+                    alt="Kyle Campbell"
+                    className={styles.hostImage}
+                  />
+                  <div>
+                    <div className={styles.hostName}>Kyle Campbell</div>
+                    <div className={styles.hostTitle}>Webinar Host</div>
+                  </div>
+                </div>
+                {/* Selina */}
+                <div className={styles.hostCard}>
+                  <img
+                    src="https://i.ibb.co/NWZQXfV/1-Zi961cr56d-Nrw-Onim8j1701987437.png"
+                    alt="Selina Harris"
+                    className={styles.hostImage}
+                  />
+                  <div>
+                    <div className={styles.hostName}>Selina Harris</div>
+                    <div className={styles.hostTitle}>Webinar Host</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* RIGHT side (similar to the “signupColumn”), 
-              but instead we embed the chat. */}
+          {/* RIGHT side: the Chat */}
           <div className={styles.signupColumn}>
             <div className={styles.chatSection}>
               <div className={styles.chatHeader}>
