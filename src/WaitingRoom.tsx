@@ -7,16 +7,17 @@ const WaitingRoom: React.FC = () => {
   const [showLiveSoon, setShowLiveSoon] = useState<boolean>(true);
   const [todayDate, setTodayDate] = useState<string>('');
 
-  // Next quarter-hour
+  /** Returns a Date object for the next quarter-hour (15/30/45/60) */
   function getNextQuarterHour(): Date {
     const now = new Date();
     return new Date(Math.ceil(now.getTime() / (15 * 60 * 1000)) * (15 * 60 * 1000));
   }
 
-  // Format X minutes and Y seconds
+  /** Formats time left (ms) into "X minutes and Y seconds" or "Z seconds" */
   function formatTimeLeft(ms: number) {
     const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+
     if (minutes > 0) {
       return `${minutes} minute${minutes !== 1 ? 's' : ''} and ${seconds} second${seconds !== 1 ? 's' : ''}`;
     } else {
@@ -24,14 +25,17 @@ const WaitingRoom: React.FC = () => {
     }
   }
 
-  // On mount, set date & start countdown
   useEffect(() => {
-    // Today’s date (e.g. "September 15")
+    // Set today's date (month day)
     const now = new Date();
-    const options: Intl.DateTimeFormatOptions = { month: 'long', day: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = {
+      month: 'long',
+      day: 'numeric',
+    };
     const dateStr = now.toLocaleDateString('en-US', options);
     setTodayDate(dateStr);
 
+    // Countdown logic
     const updateCountdown = () => {
       const current = new Date();
       const nextTime = getNextQuarterHour();
@@ -45,14 +49,16 @@ const WaitingRoom: React.FC = () => {
       }
     };
     updateCountdown();
-    const timer = setInterval(updateCountdown, 1000);
-    return () => clearInterval(timer);
+    const timerId = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(timerId);
   }, []);
 
-  // ====== MOBILE POPUP (iMessage style) ======
+  // ====== MOBILE-ONLY IMESSAGE BUBBLE ======
   const [showMobilePopup, setShowMobilePopup] = useState<boolean>(false);
   useEffect(() => {
-    if (window.innerWidth <= 768) {
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
       setShowMobilePopup(true);
     }
   }, []);
@@ -63,7 +69,7 @@ const WaitingRoom: React.FC = () => {
     }
   };
 
-  // ====== CHAT LOGIC (unchanged so AI still replies) ======
+  // ====== CHATBOX LOGIC (original working code) ======
   const chatMessagesRef = useRef<HTMLDivElement | null>(null);
   const messageInputRef = useRef<HTMLInputElement | null>(null);
   const typingIndicatorRef = useRef<HTMLDivElement | null>(null);
@@ -74,6 +80,7 @@ const WaitingRoom: React.FC = () => {
     const threshold = 50;
     return (element.scrollHeight - element.clientHeight - element.scrollTop) <= threshold;
   }
+
   function scrollToBottom(element: HTMLDivElement) {
     element.scrollTop = element.scrollHeight;
   }
@@ -85,78 +92,45 @@ const WaitingRoom: React.FC = () => {
     const toggleEl = participantToggleRef.current;
 
     if (!chatEl || !inputEl || !typingEl || !toggleEl) {
-      console.error('WaitingRoom: Missing chat or input/toggle elements.');
+      console.error("WaitingRoom: Missing chat or input/toggle elements.");
       return;
     }
 
     let isUserScrolling = false;
+
     function handleScroll() {
       if (!chatEl) return;
       isUserScrolling = !isNearBottom(chatEl);
     }
     chatEl.addEventListener('scroll', handleScroll);
 
-    // Some user messages
+    // Some random user messages & names
     const names = [
       "Emma", "Liam", "Olivia", "Noah", "Ava", "Ethan", "Sophia", "Mason",
       "Isabella", "William", "Mia", "James", "Charlotte", "Benjamin", "Amelia",
       "Lucas", "Harper", "Henry", "Evelyn", "Alexander"
     ];
+
     let attendeeMessages = [
       "Cant wait for this to start!",
       "First time here... excited!!",
       "Anyone else waiting?",
-      "question: Has anyone integrated this with Zapier for complex funnels?",
+      "Advanced question: Has anyone integrated this with Zapier for complex funnels?",
       "Setting up multi-step retargeting is my priority right now",
       "Im interested in the analytics side of things",
       "Hello from the waiting room!",
       "What about affiliate tracking with UTMs and multi-touch attribution?",
       "So ready for advanced marketing hacks",
-      "Hope we get real actionable tips today",
-      "So ready for advanced marketing hacks",
-      "Just wanted to see if we can import data from our CRM?",
-      "We focus heavily on remarketing campaigns, so I'm curious about that",
-      "Looking forward to the Q&A on conversion funnels",
-      "We use advanced tracking pixels, does your platform handle that?",
-      "Hope we get some real actionable tips here",
-      "Is the audio working for everyone?",
-      "Anyone else from the marketing dept?",
-      "We want to build a segmentation funnel, any best practices?",
-      "Cant wait to compare notes after the webinar!",
-      "Hello from the social media team!"
+      "Hope we get real actionable tips today"
     ];
+
     const preloadedQuestions = [
-      { time: 30, text: "hey everyone! excited for this", user: "Emma" },
-      { time: 45, text: "same here! first time in one of these", user: "Michael" },
-      { time: 60, text: "do we need to have our cameras on?", user: "Sarah" },
-      { time: 90, text: "dont think so, pretty sure its just a webinar", user: "James" },
-      { time: 120, text: "what time does this start exactly?", user: "David" },
-      { time: 150, text: "should be in about 15 mins i think", user: "Rachel" },
-      { time: 180, text: "perfect timing to grab a coffee then!", user: "Thomas" },
-      { time: 210, text: "anyone else having audio issues? cant hear anything", user: "Lisa" },
-      { time: 240, text: "i think it hasnt started yet thats why", user: "Alex" },
-      { time: 270, text: "oh that makes sense lol", user: "Lisa" },
-      { time: 300, text: "anyone here used their product before?", user: "Jennifer" },
-      { time: 330, text: "not yet but heard good things", user: "Daniel" },
-      { time: 360, text: "same, my colleague recommended it", user: "Sophie" },
-      { time: 390, text: "will there be a replay available?", user: "Ryan" },
-      { time: 420, text: "usually is for these types of webinars", user: "Maria" },
-      { time: 450, text: "anyone taking notes? im ready with my notebook", user: "William" },
-      { time: 480, text: "got my notepad open too!", user: "Emma" },
-      { time: 510, text: "hope theres a q&a section at the end", user: "Noah" },
-      { time: 540, text: "same, got lots of questions prepared", user: "Olivia" },
-      { time: 570, text: "anyone else from marketing dept here?", user: "Liam" },
-      { time: 600, text: "yep! social media manager here", user: "Ava" },
-      { time: 630, text: "content marketing team checking in", user: "Ethan" },
-      { time: 660, text: "excited to see the analytics features", user: "Sophia" },
-      { time: 690, text: "hope they show the dashboard demo", user: "Mason" },
-      { time: 720, text: "getting some coffee, brb!", user: "Isabella" },
-      { time: 750, text: "good idea, might do the same", user: "Benjamin" },
-      { time: 780, text: "anyone know how long the webinar is?", user: "Charlotte" },
-      { time: 810, text: "think its an hour with q&a after", user: "Henry" },
-      { time: 840, text: "perfect length imo", user: "Amelia" },
-      { time: 870, text: "cant wait to see whats new", user: "Lucas" },
-      { time: 900, text: "almost time to start!", user: "Harper" }
+      { time: 30, text: "hey everyone excited for this", user: "Emma" },
+      { time: 60, text: "are we required to turn cameras on", user: "Sarah" },
+      { time: 90, text: "dont think so its just a webinar i guess", user: "James" },
+      { time: 150, text: "should start in 15 minutes i think", user: "Rachel" },
+      { time: 180, text: "perfect timing for coffee brb", user: "Thomas" },
+      { time: 300, text: "anyone used PrognosticAI b4", user: "Jennifer" }
     ];
 
     function addMessage(
@@ -166,10 +140,11 @@ const WaitingRoom: React.FC = () => {
       isAutoGenerated = true
     ) {
       if (!chatEl || !toggleEl || !typingEl) return;
+
       const msgDiv = document.createElement('div');
       msgDiv.className = `${styles.message} ${type}`;
 
-      // old CSS classes
+      // old css classes
       if (type === 'user') {
         msgDiv.classList.add('user');
       } else if (type === 'host') {
@@ -180,7 +155,7 @@ const WaitingRoom: React.FC = () => {
 
       msgDiv.textContent = user ? `${user}: ${text}` : text;
 
-      // If real host message => "Selina is typing..."
+      // If real host message => show "Selina is typing..."
       if (type === 'host' && !isAutoGenerated) {
         typingEl.textContent = 'Selina is typing...';
         setTimeout(() => {
@@ -188,7 +163,7 @@ const WaitingRoom: React.FC = () => {
         }, 2000);
       }
 
-      // Hide from participants if toggle is off
+      // If user message from others => hide if toggle is off
       if (type === 'user' && user !== 'You') {
         msgDiv.setAttribute('data-participant', 'true');
         msgDiv.setAttribute('data-auto-generated', 'true');
@@ -197,7 +172,7 @@ const WaitingRoom: React.FC = () => {
 
       chatEl.appendChild(msgDiv);
 
-      // autoscroll if near bottom or user typed
+      // autoscroll if near bottom
       if (!isUserScrolling || user === 'You') {
         scrollToBottom(chatEl);
       }
@@ -216,7 +191,7 @@ const WaitingRoom: React.FC = () => {
     }
     toggleEl.addEventListener('change', handleToggleChange);
 
-    // WebSocket
+    // Connect WebSocket
     const newSocket = new WebSocket('wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com');
     socketRef.current = newSocket;
 
@@ -227,6 +202,7 @@ const WaitingRoom: React.FC = () => {
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.type === 'message') {
+        // Add incoming message from others
         addMessage(data.text, data.messageType as 'user' | 'host' | 'system', data.user, true);
       }
     };
@@ -234,7 +210,7 @@ const WaitingRoom: React.FC = () => {
       console.error('WebSocket error:', error);
     };
 
-    // random lines
+    // schedule some random lines
     function scheduleLocationMessages() {
       const numMessages = Math.min(attendeeMessages.length, Math.floor(Math.random() * 5) + 5);
       const available = [...attendeeMessages];
@@ -252,17 +228,18 @@ const WaitingRoom: React.FC = () => {
       }
     }
 
-    // Preloaded
+    // Preloaded messages
     preloadedQuestions.forEach(q => {
       setTimeout(() => {
         addMessage(q.text, 'user', q.user, true);
       }, q.time * 1000);
     });
 
-    // AI/host response
+    // AI/Host response for user messages
     async function handleHostResponse(userMsg: string, isAutomated = false) {
       if (isAutomated) return;
       if (!typingEl) return;
+
       try {
         const randomDelay = Math.random() * 2000;
         await new Promise(resolve => setTimeout(resolve, randomDelay));
@@ -271,7 +248,10 @@ const WaitingRoom: React.FC = () => {
         const resp = await fetch('https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: userMsg, type: 'user' })
+          body: JSON.stringify({
+            message: userMsg,
+            type: 'user'
+          })
         });
         if (!resp.ok) throw new Error('API call failed');
         const data = await resp.json();
@@ -287,7 +267,7 @@ const WaitingRoom: React.FC = () => {
       }
     }
 
-    // viewer count
+    // Random viewer count
     let currentViewers = 41;
     const viewerInterval = setInterval(() => {
       const change = Math.random() < 0.5 ? -1 : 1;
@@ -298,14 +278,14 @@ const WaitingRoom: React.FC = () => {
       }
     }, 5000);
 
-    // Initial msg => schedule random lines
+    // Initial message => schedule random lines
     setTimeout(() => {
-      addMessage("getting everything prepared. Kyle will be here soon", 'host', 'Selina', true);
+      addMessage("we'll get started here in just one minute", 'host', 'Selina', true);
       scheduleLocationMessages();
       scrollToBottom(chatEl);
     }, 4000);
 
-    // Enter => AI
+    // user pressing Enter => triggers AI
     function handleKeypress(e: KeyboardEvent) {
       if (!inputEl) return;
       if (e.key === 'Enter' && inputEl.value.trim()) {
@@ -317,7 +297,7 @@ const WaitingRoom: React.FC = () => {
     }
     inputEl.addEventListener('keypress', handleKeypress);
 
-    // Cleanup
+    // cleanup
     return () => {
       chatEl.removeEventListener('scroll', handleScroll);
       toggleEl.removeEventListener('change', handleToggleChange);
@@ -352,7 +332,7 @@ const WaitingRoom: React.FC = () => {
       <div className={styles.zoomContainer}>
         {/* TOP BAR */}
         <div className={styles.zoomTopBar}>
-          {/* Left side: subtle blinking "LIVE SOON" + Title */}
+          {/* Left side: LIVE SOON (blinking) + Title */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {showLiveSoon && (
               <span className={styles.liveSoonSubtle}>LIVE SOON</span>
@@ -360,7 +340,7 @@ const WaitingRoom: React.FC = () => {
             <span className={styles.zoomTitle}>PrognosticAI Advanced Training</span>
           </div>
 
-          {/* Right side => "Live Webinar: {todayDate}" */}
+          {/* Right side: "Live Webinar: {todayDate}" */}
           <div className={styles.awh2024Header}>
             Live Webinar: {todayDate}
           </div>
@@ -371,17 +351,14 @@ const WaitingRoom: React.FC = () => {
 
         {/* TWO COLUMNS */}
         <div className={styles.twoColumnLayout}>
-          {/* LEFT => Countdown, spinner, bullets, presenters, no scroll */}
+          {/* LEFT => Big spinner, minimal countdown, etc.  */}
           <div className={styles.leftColumn}>
-            {/* Minimalist countdown box */}
             <div className={styles.countdownBox}>
               <div className={styles.countdownLabel}>Time Remaining</div>
-              <div className={styles.countdownNumber}>
-                {countdownText}
-              </div>
+              <div className={styles.countdownNumber}>{countdownText}</div>
             </div>
 
-            {/* Spinner & text */}
+            {/* Spinner & text (no scroll) */}
             <div className={styles.spinnerArea}>
               <div className={styles.spinnerAndText}>
                 <div className={styles.loadingSpinner}></div>
@@ -391,6 +368,7 @@ const WaitingRoom: React.FC = () => {
               </div>
             </div>
 
+            {/* Next steps or bullet info */}
             <hr className={styles.lightDivider} />
 
             <p className={styles.bulletsTitle}><strong>You will learn...</strong></p>
@@ -400,7 +378,7 @@ const WaitingRoom: React.FC = () => {
               <li>Free resources to scale your funnel</li>
             </ul>
 
-            {/* Presenters => left aligned; countdown plain text in Kyle's desc */}
+            {/* Presenter Cards => left-aligned */}
             <div className={styles.presentersArea}>
               <div className={styles.presenterRow}>
                 <img
@@ -412,8 +390,7 @@ const WaitingRoom: React.FC = () => {
                   <div className={styles.presenterName}>Kyle Campbell</div>
                   <div className={styles.presenterTitle}>Webinar Host</div>
                   <div className={styles.presenterDesc}>
-                    Stop losing sales—in {countdownText} Kyle will begin revealing the secret new AI 
-                    that took him from rock bottom to $1M+ in 44 weeks.
+                    Stop losing sales— in {countdownText}, Kyle will begin revealing the secret new AI that took him from rock bottom to $1M+ in 44 weeks.
                   </div>
                 </div>
               </div>
@@ -435,7 +412,7 @@ const WaitingRoom: React.FC = () => {
             </div>
           </div>
 
-          {/* RIGHT => Chat box (375px) */}
+          {/* RIGHT => Chat */}
           <div className={styles.rightColumn}>
             <div className={styles.chatSection}>
               <div className={styles.chatHeader}>
@@ -472,7 +449,7 @@ const WaitingRoom: React.FC = () => {
           </div>
         </div>
 
-        {/* Note at bottom => bigger mail icon, smaller text */}
+        {/* Additional small row at bottom => "You will be automatically redirected... bigger mail icon" */}
         <div className={styles.redirectNoteRow}>
           <div className={styles.noticeIcon}>
             <span style={{ fontSize: '20px' }}>✉</span>
@@ -483,7 +460,7 @@ const WaitingRoom: React.FC = () => {
         </div>
       </div>
 
-      {/* Footer outside box */}
+      {/* FOOTER outside the box */}
       <div className={styles.footerBranding}>© 2025 PrognosticAI</div>
     </>
   );
