@@ -86,61 +86,62 @@ const WaitingRoom: React.FC = () => {
     ];
 
     let attendeeMessages = [
-      "Cant wait for this to start!",
-      "First time here... excited!!",
-      "Anyone else waiting?",
-      "question: Has anyone integrated this with Zapier for complex funnels?",
-      "Setting up multi-step retargeting is my priority right now",
-      "Im interested in the analytics side of things",
-      "Hello from the waiting room!",
-      "What about affiliate tracking with UTMs and multi-touch attribution?",
-      "So ready for advanced marketing hacks",
-      "Hope we get real actionable tips today",
-      "So ready for advanced marketing hacks",
-      "Just wanted to see if we can import data from our CRM?",
-      "We focus heavily on remarketing campaigns, so I'm curious about that",
-      "Looking forward to the Q&A on conversion funnels",
-      "We use advanced tracking pixels, does your platform handle that?",
-      "Hope we get some real actionable tips here",
-      "Is the audio working for everyone?",
-      "Anyone else from the marketing dept?",
-      "We want to build a segmentation funnel, any best practices?",
-      "Cant wait to compare notes after the webinar!",
-      "Hello from the social media team!"
-    ];
-    const preloadedQuestions = [
-      { time: 30, text: "hey everyone! excited for this", user: "Emma" },
-      { time: 45, text: "same here! first time in one of these", user: "Michael" },
-      { time: 60, text: "do we need to have our cameras on?", user: "Sarah" },
-      { time: 90, text: "dont think so, pretty sure its just a webinar", user: "James" },
-      { time: 120, text: "what time does this start exactly?", user: "David" },
-      { time: 150, text: "should be in about 15 mins i think", user: "Rachel" },
-      { time: 180, text: "perfect timing to grab a coffee then!", user: "Thomas" },
-      { time: 210, text: "anyone else having audio issues? cant hear anything", user: "Lisa" },
-      { time: 240, text: "i think it hasnt started yet thats why", user: "Alex" },
-      { time: 270, text: "oh that makes sense lol", user: "Lisa" },
-      { time: 300, text: "anyone here used their product before?", user: "Jennifer" },
-      { time: 330, text: "not yet but heard good things", user: "Daniel" },
-      { time: 360, text: "same, my colleague recommended it", user: "Sophie" },
-      { time: 390, text: "will there be a replay available?", user: "Ryan" },
-      { time: 420, text: "usually is for these types of webinars", user: "Maria" },
-      { time: 450, text: "anyone taking notes? im ready with my notebook", user: "William" },
-      { time: 480, text: "got my notepad open too!", user: "Emma" },
-      { time: 510, text: "hope theres a q&a section at the end", user: "Noah" },
-      { time: 540, text: "same, got lots of questions prepared", user: "Olivia" },
-      { time: 570, text: "anyone else from marketing dept here?", user: "Liam" },
-      { time: 600, text: "yep! social media manager here", user: "Ava" },
-      { time: 630, text: "content marketing team checking in", user: "Ethan" },
-      { time: 660, text: "excited to see the analytics features", user: "Sophia" },
-      { time: 690, text: "hope they show the dashboard demo", user: "Mason" },
-      { time: 720, text: "getting some coffee, brb!", user: "Isabella" },
-      { time: 750, text: "good idea, might do the same", user: "Benjamin" },
-      { time: 780, text: "anyone know how long the webinar is?", user: "Charlotte" },
-      { time: 810, text: "think its an hour with q&a after", user: "Henry" },
-      { time: 840, text: "perfect length imo", user: "Amelia" },
-      { time: 870, text: "cant wait to see whats new", user: "Lucas" },
-      { time: 900, text: "almost time to start!", user: "Harper" }
-    ];
+  "can't wait for this to start!",
+  "First time here... so excited!!",
+  "anyone else waiting?",
+  "Question: has anyone integrated this w/ Zapier for complex funnels?",
+  "setting up multi-step retargeting is my top priority rn",
+  "im interested in the analytics side of things",
+  "Hello from the waiting room :)",
+  "what about affiliate tracking with UTMs & multi-touch attribution?",
+  "so ready for advanced marketing hacks!",
+  "hope we get some real actionable tips today",
+  "excited but nervous for this webinar...",
+  "just wondering if we can import data from our CRM?",
+  "we focus heavily on remarketing campaigns, curious how others do it",
+  "looking forward to the Q&A on conversion funnels",
+  "we use advanced tracking pixels; does your platform handle that?",
+  "really hoping for some good insights here",
+  "is the audio working for everyone?",
+  "anyone else from the marketing dept?",
+  "we want to build a segmentation funnel, any best practices?",
+  "can't wait to compare notes after the webinar!",
+  "hi from the social media team!"
+];
+
+const preloadedQuestions = [
+  { time: 15, text: "hey everyone, excited to join!", user: "Emma" },
+  { time: 45, text: "same here! first time in one of these.", user: "Michael" },
+  { time: 75, text: "do we need to have our cameras on?", user: "Sarah" },
+  { time: 105, text: "dont think so, pretty sure its just a webinar.", user: "James" },
+  { time: 135, text: "what time does this start exactly?", user: "David" },
+  { time: 165, text: "should be in about 15 mins i think", user: "Rachel" },
+  { time: 195, text: "perfect timing to grab a coffee then!", user: "Thomas" },
+  { time: 225, text: "anyone else having audio issues? can't hear a thing", user: "Lisa" },
+  { time: 255, text: "i think it hasn't started yet, that's why", user: "Alex" },
+  { time: 285, text: "oh that makes sense lol", user: "Lisa" },
+  { time: 315, text: "anyone here used their product before?", user: "Jennifer" },
+  { time: 345, text: "not yet but heard good things", user: "Daniel" },
+  { time: 375, text: "same, my colleague recommended it", user: "Sophie" },
+  { time: 405, text: "will there be a replay available?", user: "Ryan" },
+  { time: 435, text: "usually is for these types of webinars", user: "Maria" },
+  { time: 465, text: "anyone taking notes? i'm ready with my notebook", user: "William" },
+  { time: 495, text: "got my notepad open too!", user: "Emma" },
+  { time: 525, text: "hope there's a q&a section at the end", user: "Noah" },
+  { time: 555, text: "same, got lots of questions prepared", user: "Olivia" },
+  { time: 585, text: "what are you all working on lately?", user: "Liam" },
+  { time: 615, text: "yep! social media manager here", user: "Ava" },
+  { time: 645, text: "content marketing team checking in", user: "Ethan" },
+  { time: 675, text: "excited to see the analytics features", user: "Sophia" },
+  { time: 705, text: "hope they show the dashboard demo", user: "Mason" },
+  { time: 735, text: "getting some coffee, brb!", user: "Isabella" },
+  { time: 765, text: "good idea, might do the same", user: "Benjamin" },
+  { time: 795, text: "anyone know how long the webinar is?", user: "Charlotte" },
+  { time: 825, text: "think it's an hour with q&a after", user: "Henry" },
+  { time: 855, text: "perfect length imo", user: "Amelia" },
+  { time: 885, text: "can't wait to see what's new", user: "Lucas" },
+  { time: 915, text: "almost time to start!", user: "Harper" }
+];
 
     // Add new message to chat
     function addMessage(
@@ -435,7 +436,7 @@ const WaitingRoom: React.FC = () => {
                 <div className={styles.hostTitle}>Webinar Host</div>
                 {/* ADDED new text for Selina */}
                 <div className={styles.hostSubtitle}>
-                  Assisting Kyle today will be his team leader, Selina, PhD graduate student from Harvard
+                  Assisting Kyle today will be his team leader, Selina, PhD graduate student at Harvard
                 </div>
               </div>
             </div>
