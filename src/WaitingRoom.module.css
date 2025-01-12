@@ -9,7 +9,6 @@ body, html {
   background-color: #f8f9fa;
 }
 
-/* The main container from the snippet: "zoom-container" => .zoomContainer */
 .zoomContainer {
   background: #fff;
   border: 2px solid #dcdcdc;
@@ -23,7 +22,7 @@ body, html {
 }
 
 /***********************************************
-  ZOOM TOP BAR (from snippet)
+  ZOOM TOP BAR
 ***********************************************/
 .zoomTopBar {
   display: flex;
@@ -33,7 +32,6 @@ body, html {
   padding-bottom: 12px;
   border-bottom: 1px solid #eee;
 }
-
 .zoomTitle {
   color: #333;
   font-size: 1.1rem;
@@ -42,7 +40,6 @@ body, html {
   align-items: center;
   gap: 8px;
 }
-
 .awh2024Header {
   color: #2c3135;
   font-size: 0.85rem;
@@ -50,8 +47,6 @@ body, html {
   margin-left: auto;
   padding-left: 20px;
 }
-
-/* The small red dot */
 .zoomLiveDot {
   width: 8px;
   height: 8px;
@@ -59,7 +54,6 @@ body, html {
   border-radius: 50%;
   animation: pulseZoom 1.5s infinite;
 }
-
 @keyframes pulseZoom {
   0% { opacity: 1; }
   50% { opacity: 0.4; }
@@ -67,24 +61,20 @@ body, html {
 }
 
 /***********************************************
-  TWO-COLUMN LAYOUT (from snippet)
+  TWO-COLUMN LAYOUT
 ***********************************************/
 .twoColumnLayout {
   display: flex;
   gap: 16px;
   height: 550px; /* from snippet */
 }
-
-/* Left (70%) */
 .previewColumn {
   flex: 0 0 70%;
   padding: 24px;
   background: #f8f9fa;
   border-radius: 6px;
-  overflow-y: auto; /* if content grows */
+  overflow-y: auto;
 }
-
-/* Right (30%) */
 .signupColumn {
   flex: 0 0 30%;
   display: flex;
@@ -119,7 +109,6 @@ body, html {
 .loadingText {
   font-size: 16px;
   font-weight: 700;
-  color: #0142ac;
   margin-top: 12px;
 }
 
@@ -132,7 +121,6 @@ body, html {
   gap: 12px;
   margin-bottom: 16px;
 }
-
 .benefitIcon {
   width: 32px;
   height: 32px;
@@ -144,15 +132,12 @@ body, html {
   justify-content: center;
   position: relative;
 }
-
-/* The checkmark inside the icon */
 .benefitIcon::before {
   content: '✓';
-  color: #0142ac; /* or var(--primary-color) if defined */
+  color: #0142ac;
   font-size: 16px;
   font-weight: 500;
 }
-
 .benefitText {
   font-size: 0.95rem;
   color: #2c3135;
@@ -168,19 +153,21 @@ body, html {
   color: #2c3135;
   font-size: 1.1rem;
   font-weight: 600;
+  text-align: left; /* left aligned */
 }
 
 .hostCard {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 .hostImage {
   width: 48px;
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
 }
 .hostName {
   font-weight: 600;
@@ -190,10 +177,21 @@ body, html {
 .hostTitle {
   font-size: 0.85rem;
   color: #555;
+  margin-bottom: 4px;
+}
+.hostDesc {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #333;
+}
+.countdownInline {
+  font-weight: 700;
+  color: #0142ac;
+  margin: 0 4px;
 }
 
 /***********************************************
-  CHAT SECTION (right column)
+  CHAT SECTION
 ***********************************************/
 .chatSection {
   background: #fff;
@@ -202,13 +200,7 @@ body, html {
   border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-
-  /* Doubling the chat height can conflict with snippet's 550px total?
-     Let's keep it flexible: we rely on .twoColumnLayout height. 
-     We'll let it fill the space. */
   flex: 1;
-  
-  /* Subtle pulsing glow for "live" feel */
   animation: chatGlow 2.5s ease-in-out infinite alternate;
 }
 @keyframes chatGlow {
@@ -219,7 +211,6 @@ body, html {
     box-shadow: 0 0 24px rgba(1,66,172,0.45);
   }
 }
-
 .chatHeader {
   padding: 12px 15px;
   background: #0142AC;
@@ -236,7 +227,6 @@ body, html {
   font-weight: 600;
   letter-spacing: -0.02em;
 }
-
 .toggleContainer {
   display: flex;
   align-items: center;
@@ -285,7 +275,6 @@ body, html {
   color: white;
   font-size: 0.45rem;
 }
-
 .viewerCount {
   font-size: 0.55rem;
   background: rgba(255,255,255,0.1);
@@ -295,14 +284,12 @@ body, html {
   align-items: center;
   gap: 5px;
 }
-
 .chatMessages {
   flex: 1 1 auto;
   overflow-y: auto;
   padding: 15px;
   background: #f8f9fa;
 }
-
 .message {
   margin-bottom: 10px;
   line-height: 1.4;
@@ -335,7 +322,6 @@ body, html {
   margin: 15px 0;
   font-size: 0.85rem;
 }
-
 .chatInput {
   padding: 15px;
   background: #fff;
@@ -364,8 +350,6 @@ body, html {
   height: 20px;
   padding-left: 2px;
 }
-
-/* Scrollbar styling */
 .chatMessages::-webkit-scrollbar {
   width: 8px;
 }
@@ -393,45 +377,114 @@ body, html {
 }
 
 /***********************************************
+  MOBILE-ONLY IMESSAGE POPUP
+***********************************************/
+.exitOverlay {
+  display: none; /* hidden by default; we'll conditionally show in TSX */
+}
+.iphoneMessageBubble {
+  position: relative;
+  max-width: 80%;
+  width: 320px;
+  background: #0a84ff;
+  color: #fff;
+  border-radius: 18px;
+  padding: 14px 20px;
+  animation: bubblePop 0.35s ease-out;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  cursor: auto;
+}
+@keyframes bubblePop {
+  0%   { transform: scale(0.85); opacity: 0; }
+  55%  { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1);     opacity: 1; }
+}
+.exitCloseBtn {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #fff;
+  opacity: 0.9;
+}
+.iphoneSender {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.iphoneMessageText {
+  font-size: 1rem;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+.iphoneMessageBubble::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  bottom: 20px;
+  width: 0; height: 0;
+  border: 10px solid transparent;
+  border-right-color: #0a84ff;
+}
+.exitOverlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+  display: flex; /* We display: flex in TSX conditional, or here? We do it here so it’s consistent */
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.25s ease;
+  cursor: pointer;
+}
+@keyframes fadeIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/***********************************************
   RESPONSIVE
 ***********************************************/
 @media (max-width: 768px) {
   .zoomTitle {
     display: none;
   }
-
   .zoomTopBar {
     justify-content: center;
     border-bottom: none;
     margin-bottom: 16px;
   }
-
   .awh2024Header {
     font-size: 0.85rem;
     margin: 0;
     padding: 0;
     text-align: center;
   }
-
   .twoColumnLayout {
     flex-direction: column;
     height: auto;
     gap: 12px;
   }
-
   .previewColumn {
     padding: 16px;
     height: auto;
   }
-
   .signupColumn {
     order: 2;
     padding: 0;
     margin: 16px 0;
     min-height: 500px;
   }
-
   .chatSection {
     height: 500px;
+  }
+
+  /* The mobile overlay is visible if we conditionally render in TSX */
+  .exitOverlay {
+    display: flex;
   }
 }
