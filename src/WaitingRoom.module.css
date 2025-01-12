@@ -1,9 +1,23 @@
-/******************************************/
-/**  PAGE BACKGROUND & ZOOM-LIKE WRAPPER **/
-/******************************************/
-.pageBackground {
+/***********************************************
+    GLOBAL RESETS + BODY
+***********************************************/
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: #EAEFF3; /* Light background behind the white box */
   font-family: 'Montserrat', sans-serif;
-  background-color: #f8f9fa;
+}
+
+/* Outer container for easy centering */
+.bodyBackground {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -11,8 +25,11 @@
   padding: 40px 20px;
 }
 
+/***********************************************
+    ZOOM-LIKE WHITE BOX
+***********************************************/
 .zoomContainer {
-  background: #fff;
+  background: #fff; /* White background for the box */
   border: 2px solid #dcdcdc;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -21,206 +38,163 @@
   max-width: 1280px;
   margin: 0 auto;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
 }
 
-/******************************************/
-/**  TOP BAR (HEADER) WITH BLINKING DOT  **/
-/******************************************/
+/***********************************************
+    TOP BAR
+***********************************************/
 .zoomTopBar {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
+  margin-bottom: 16px;
   border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
 }
 
-.zoomLeftHeader {
+/* Blinking “LIVE SOON” on left */
+.zoomLiveSoonText {
+  color: #ff4c4c;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-right: 14px;
+  animation: liveSoonBlink 1.5s infinite alternate;
+}
+@keyframes liveSoonBlink {
+  0% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+/* Middle title */
+.zoomTitle {
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.zoomLiveDot {
-  width: 10px;
-  height: 10px;
-  background: #ff0000;
-  border-radius: 50%;
-  animation: pulseZoom 1.3s infinite;
-  margin-right: 4px;
-}
-
-@keyframes pulseZoom {
-  0%   { opacity: 1; }
-  50%  { opacity: 0.4; }
-  100% { opacity: 1; }
-}
-
-.zoomTitle {
-  color: #333;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.zoomRightHeader {
+/* Right date label */
+.awh2024Header {
+  margin-left: auto;
+  color: #2c3135;
   font-size: 0.85rem;
-  color: #555;
   font-weight: 500;
+  padding-left: 20px;
 }
 
-/******************************************/
-/**   COUNTDOWN SECTION + SPINNER (LEFT) **/
-/******************************************/
-.twoColumnWrapper {
+/***********************************************
+    TWO COLUMNS
+***********************************************/
+.twoColumnLayout {
   display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
 }
 
-.leftColumn {
-  flex: 1 1 58%;
-  min-width: 300px;
+/* Left column = 60% */
+.previewColumn {
+  flex: 0 0 60%;
+  padding: 16px;
+}
+
+/* Right column = 40% */
+.signupColumn {
+  flex: 0 0 40%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  padding: 16px;
+}
+
+/***********************************************
+    COUNTDOWN & SPINNER
+***********************************************/
+.countdownWrapper {
+  text-align: left;
+  margin-bottom: 16px;
+}
+.countdownLine {
+  font-size: 20px;
+  font-weight: 500;
+  color: #2E2E2E;
+  margin-bottom: 6px;
+}
+.timerHighlight {
+  color: #0142ac;
+  font-weight: 800;
+}
+.motivationalTagline {
+  font-size: 16px;
+  font-weight: 500;
+  color: #555555;
 }
 
 .webinarLoading {
-  font-family: 'Montserrat', sans-serif;
   color: #0142ac;
-  margin: 0;
-  padding: 0;
-  display: inline-flex; 
-  justify-content: center;
+  margin-top: 16px;
+  display: flex;
   align-items: center;
-  position: relative;
-  background: transparent;
-  width: auto;
-  height: auto;
 }
-
 .loadingContainer {
   text-align: left;
 }
-
+.loadingText {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0142ac;
+  margin-top: 12px;
+}
 .loadingSpinner {
   border: 8px solid rgba(228, 232, 241, 0.5);
   border-top: 8px solid #0142ac;
   border-radius: 50%;
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
   animation: spin 1s linear infinite;
   margin: 0 auto;
 }
-
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-.loadingText {
-  font-size: 20px;
-  font-weight: 700;
-  color: #0142ac;
-  margin-top: 12px;
-  max-width: 360px;
-}
-
-.lightDivider {
-  width: 100%;
-  margin: 20px 0;
-  border: 0;
-  border-top: 1px solid #ccc;
-}
-
-/* The big countdown text + subtext below it */
-.countdownText {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #333;
-}
-.countdownTime {
-  color: #0142ac;
-  font-weight: 900;
-}
-
-.motivationalTagline {
-  margin-top: 5px;
-  font-size: 0.92rem;
-  color: #555;
-  font-weight: 500;
-}
-
-/******************************************/
-/**             "YOU WILL LEARN"         **/
-/******************************************/
+/***********************************************
+    "YOU WILL LEARN..." LIST
+***********************************************/
 .bulletsTitle {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1rem;
+  font-size: 16px;
   color: #2E2E2E;
   font-weight: 500;
-  text-align: left; 
-  margin: 0 0 5px 0;
-}
-.bulletsList {
-  list-style-type: none;
-  color: #2E2E2E;
-  padding-left: 0;
-  margin: 10px 0;
-}
-.bulletsList li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  margin-top: 24px;
   margin-bottom: 8px;
 }
-.benefit-icon {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  background-color: rgba(1, 66, 172, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-.benefit-icon::before {
-  content: '✓';
-  color: #0142ac;
-  font-size: 16px;
-  font-weight: 500;
+.bulletsList {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  color: #2E2E2E;
+  margin-bottom: 24px;
 }
 
-/******************************************/
-/**             CHAT SECTION (RIGHT)     **/
-/******************************************/
-.rightColumn {
-  flex: 1 1 38%;
-  min-width: 320px;
-  display: flex;
-  flex-direction: column;
-}
-
+/***********************************************
+    CHAT SECTION
+***********************************************/
 .chatSection {
   background: #fff;
   display: flex;
   flex-direction: column;
   border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  height: 375px; /* fixed height so it doesn't keep growing */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  animation: chatGlow 2.5s ease-in-out infinite alternate;
 }
-
+@keyframes chatGlow {
+  0% { box-shadow: 0 0 10px rgba(1,66,172,0.1); }
+  100% { box-shadow: 0 0 18px rgba(1,66,172,0.3); }
+}
 .chatHeader {
   padding: 12px 15px;
   background: #0142AC;
   color: white;
-  flex: 0 0 auto;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 }
@@ -239,8 +213,8 @@
   align-items: center;
   gap: 8px;
   margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 .toggleSwitch {
   position: relative;
@@ -257,7 +231,7 @@
   position: absolute;
   cursor: pointer;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(255,255,255,0.2);
+  background-color: rgba(255,255,255,0.3);
   transition: .4s;
   border-radius: 20px;
 }
@@ -292,12 +266,14 @@
   gap: 5px;
 }
 
+/* Chat messages area with fixed max-height */
 .chatMessages {
   flex: 1 1 auto;
   overflow-y: auto;
   padding: 15px;
   background: #f8f9fa;
-  min-height: 0;
+  min-height: 200px;
+  max-height: 500px; /* Limit the height so it wont extend forever */
 }
 .message {
   margin-bottom: 10px;
@@ -324,13 +300,30 @@
   font-weight: 500;
 }
 .message.system {
-  background: #fff3cd;
+  background: #fff3cd; /* light yellowish for system note */
   color: #856404;
   text-align: center;
   max-width: 100%;
   margin: 15px 0;
   font-size: 0.85rem;
 }
+
+/* The “YOU ARE REGISTERED” pastel bubble. */
+.registeredNotice {
+  background: rgba(1, 66, 172, 0.1);
+  color: #0142ac;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+  max-width: 80%;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Chat input row */
 .chatInput {
   padding: 15px;
   background: #fff;
@@ -349,7 +342,7 @@
 .chatInput input:focus {
   outline: none;
   border-color: #0142AC;
-  box-shadow: 0 0 0 2px rgba(1, 66, 172, 0.1);
+  box-shadow: 0 0 0 2px rgba(1,66,172,0.1);
 }
 .typingIndicator {
   color: #6c757d;
@@ -359,7 +352,6 @@
   height: 20px;
   padding-left: 2px;
 }
-
 .chatMessages::-webkit-scrollbar {
   width: 8px;
 }
@@ -375,115 +367,243 @@
   background: #a8a8a8;
 }
 
-/******************************************/
-/**    "HERE'S WHAT YOU SHOULD DO NOW"   **/
-/******************************************/
-.nextStepsWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 10px;
+/***********************************************
+    NEXT STEPS BOX (FULL WIDTH BELOW COLUMNS)
+***********************************************/
+.nextStepsBox {
+  background: #fdfdfd;
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.nextStepsHeading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  color: #2c3135;
 }
 
-.nextStepsBox {
-  background: #fafafa;
-  border: 1px solid #ebebeb;
+/* Checkmark bullet items (using .benefit-icon) */
+.benefitItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.benefitIcon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
   border-radius: 8px;
-  padding: 20px;
+  background-color: rgba(1, 66, 172, 0.08); /* Light blue background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.benefitIcon::before {
+  content: '✓'; /* The checkmark */
+  color: #0142AC;
+  font-size: 16px;
+  font-weight: 500;
+}
+.benefitText {
   font-size: 0.95rem;
-  line-height: 1.5;
+  line-height: 1.4;
   color: #333;
 }
 
-/******************************************/
-/**      HOSTS SECTION (2 COLUMNS)       **/
-/******************************************/
-.hostsContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
+/* Date & time styling */
+.webinarDateTime {
+  margin-top: 20px;
+  font-weight: 600;
+}
+.timezoneNote {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* "Set reminder" button */
+.reminderLink {
+  display: inline-block;
+  color: #fff;
+  background-color: #0142ac;
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
   margin-top: 10px;
 }
-.hostCol {
-  flex: 1 1 50%;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 12px;
+.reminderLink:hover {
+  background-color: #012f7a;
 }
-.hostImg {
-  width: 60px;
-  height: 60px;
+
+/* Row for the notice icon and text */
+.linkNoticeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+.noticeIcon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background-color: rgba(1, 66, 172, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-size: 18px;
+  color: #0142AC;
+}
+
+/***********************************************
+    HOSTS ROW
+***********************************************/
+.hostsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-top: 24px;
+}
+.hostCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hostImage {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   object-fit: cover;
 }
-.hostInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
 .hostName {
-  font-size: 1rem;
   font-weight: 600;
-  color: #0142ac;
+  color: #2c3135;
+  margin-bottom: 4px;
 }
 .hostTitle {
   font-size: 0.85rem;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 6px;
-}
-.hostBio {
-  font-size: 0.8rem;
-  color: #666;
+  color: #555;
 }
 
-/******************************************/
-/**  AUTO REDIRECT MESSAGE + ICON        **/
-/******************************************/
-.redirectRow {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.mailIcon {
-  font-size: 1.4rem;
-  color: #0142ac;
-  flex-shrink: 0;
-}
-
-.redirectMsg {
-  font-size: 0.78rem;
-  color: #444;
-  line-height: 1.35;
-}
-
-/******************************************/
-/**   FOOTER COPYRIGHT (OUTSIDE BOX)     **/
-/******************************************/
-.footerContainer {
-  margin-top: 16px;
+/***********************************************
+    FOOTER
+***********************************************/
+.customFooter {
   text-align: center;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 400;
   color: rgba(0,0,0,0.5);
+  margin-top: 24px;
 }
 
-/******************************************/
-/**       SET REMINDER LINK STYLES       **/
-/******************************************/
-.reminderLink {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: #0142ac;
-  color: #fff;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-decoration: none;
+/***********************************************
+    MOBILE-ONLY "IMESSAGE" BUBBLE OVERLAY
+***********************************************/
+.exitOverlay {
+  display: none; /* hidden by default */
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
-.reminderLink:hover {
-  background: #013289;
+.iphoneMessageBubble {
+  position: relative;
+  max-width: 80%;
+  width: 320px;
+  background: #0a84ff;
+  color: #fff;
+  border-radius: 18px;
+  padding: 14px 20px;
+  animation: bubblePop 0.35s ease-out;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  cursor: auto;
+}
+@keyframes bubblePop {
+  0%   { transform: scale(0.85); opacity: 0; }
+  50%  { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1);     opacity: 1; }
+}
+.exitCloseBtn {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #fff;
+  opacity: 0.9;
+}
+.iphoneSender {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.iphoneMessageText {
+  font-size: 1rem;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+.iphoneMessageBubble::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  bottom: 20px;
+  width: 0; height: 0;
+  border: 10px solid transparent;
+  border-right-color: #0a84ff;
+}
+/* On mobile, show overlay. */
+@media (max-width: 768px) {
+  .exitOverlay {
+    display: flex;
+  }
+}
+
+/***********************************************
+    RESPONSIVE ADJUSTMENTS
+***********************************************/
+@media (max-width: 768px) {
+  .zoomTopBar {
+    flex-wrap: wrap;
+    padding-bottom: 8px;
+  }
+  .awh2024Header {
+    font-size: 0.75rem;
+    margin-left: 0;
+    padding-left: 0;
+    text-align: center;
+    width: 100%;
+    margin-top: 6px;
+  }
+  .twoColumnLayout {
+    flex-direction: column;
+  }
+  .previewColumn,
+  .signupColumn {
+    flex: 1 1 auto;
+    padding: 10px;
+    margin: 0;
+  }
+  .chatMessages {
+    max-height: 300px;
+  }
+  .nextStepsBox {
+    margin-top: 16px;
+    padding: 16px;
+  }
+  .hostsRow {
+    flex-direction: column;
+  }
 }
