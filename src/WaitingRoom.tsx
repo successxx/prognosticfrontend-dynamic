@@ -316,7 +316,7 @@ const WaitingRoom: React.FC = () => {
 
     // Initial message => schedule random lines
     setTimeout(() => {
-      addMessage("we'll get started here in just one minute", 'host', 'Selina', true);
+      addMessage("getting everything prepared. Kyle will be here soon", 'host', 'Selina', true);
       scheduleLocationMessages();
       scrollToBottom(chatEl);
     }, 4000);
