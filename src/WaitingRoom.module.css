@@ -1,7 +1,7 @@
 /*
-  -----------------------------------------------------------------------------------
-  Global / Root-level resets & basic body styling
-  -----------------------------------------------------------------------------------
+  =============================================================================
+  Basic page layout: pale background, center the container, Montserrat font
+  =============================================================================
 */
 *,
 *::before,
@@ -14,74 +14,78 @@
 html, body {
   width: 100%;
   height: 100%;
-  background-color: #EAEFF3; /* The soft background behind the transparent container */
-  margin: 0;
-  padding: 0;
+  background-color: #f8f9fa;
   font-family: 'Montserrat', sans-serif;
 }
 
-.bodyBackground {
-  /* We removed any extra white box behind; it’s now just a centered container. */
+.pageWrapper {
   min-height: 100vh;
   display: flex;
+  flex-direction: column; /* let the container + footer stack */
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
 }
 
 /*
-  -----------------------------------------------------------------------------------
-  The main "zoom-like" container, now transparent except for border/box-shadow
-  -----------------------------------------------------------------------------------
+  =============================================================================
+  The main "zoom-like" white container with border, shadow, etc.
+  =============================================================================
 */
 .zoomContainer {
-  background: transparent; /* No white box behind it. */
+  background: #fff; /* White interior, no extra box behind it */
   border: 2px solid #dcdcdc;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   padding: 16px;
   width: 100%;
   max-width: 1280px;
-  margin: 0 auto;
   position: relative;
 }
 
 /*
-  -----------------------------------------------------------------------------------
-  Top bar with "LIVE SOON" + Title + date label
-  -----------------------------------------------------------------------------------
+  Top bar with a small blinking "LIVE SOON" dot on left,
+  Title in center or left, date text on far right
 */
 .zoomTopBar {
   display: flex;
-  justify-content: flex-start;
   align-items: center;
   margin-bottom: 12px;
   padding-bottom: 12px;
   border-bottom: 1px solid #eee;
 }
 
-/* The blinking "LIVE SOON" text at the top left. */
-.zoomLiveSoonText {
-  color: #ff4c4c;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-right: 12px;
-  animation: liveSoonBlink 1.6s infinite alternate;
+/* The blinking red dot with small "live soon" text, if you want it. 
+   Or you can keep it purely a dot. (Here we do a dot + "LIVE SOON" as text) */
+.liveSoonContainer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
-@keyframes liveSoonBlink {
+.liveSoonDot {
+  width: 8px;
+  height: 8px;
+  background: #ff0000;
+  border-radius: 50%;
+  animation: pulseZoom 1.5s infinite;
+}
+@keyframes pulseZoom {
   0% { opacity: 1; }
-  100% { opacity: 0.4; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
 }
-
+.liveSoonText {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #ff0000;
+  opacity: 0.85;
+}
 .zoomTitle {
   color: #333;
   font-size: 1.1rem;
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  margin-left: 16px; /* slight spacing from the blinking dot */
 }
-
 .awh2024Header {
   margin-left: auto;
   color: #2c3135;
@@ -91,39 +95,34 @@ html, body {
 }
 
 /*
-  -----------------------------------------------------------------------------------
-  Two-column layout, now 60/40
-  -----------------------------------------------------------------------------------
+  =============================================================================
+  Two columns: left 60%, right 40%. Then single column "HERE’S WHAT YOU SHOULD DO"
+  =============================================================================
 */
-.twoColumnLayout {
+.mainContentWrapper {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   width: 100%;
-  /* We let the content define the height, not forced. */
 }
 
-.previewColumn {
+.leftColumn {
   flex: 0 0 60%;
-  padding: 24px;
-  background: transparent;
-  border-radius: 6px;
-  overflow-y: auto;
-}
-
-.signupColumn {
-  flex: 0 0 40%;
+  max-width: 60%;
   display: flex;
   flex-direction: column;
-  padding: 0 16px;
-  background: transparent;
-  border-radius: 6px;
-  overflow-y: auto;
+  padding: 16px;
+}
+.rightColumn {
+  flex: 0 0 40%;
+  max-width: 40%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
 }
 
 /*
-  -----------------------------------------------------------------------------------
-  Countdown & heading
-  -----------------------------------------------------------------------------------
+  Countdown area at top: big text, spinner, bullet points
 */
 .awhp2024HeaderWrapper {
   text-align: center;
@@ -133,7 +132,6 @@ html, body {
   padding: 10px;
   color: #2E2E2E;
   line-height: 1.2;
-  position: relative;
 }
 .motivationalTagline {
   margin-top: 8px;
@@ -142,24 +140,17 @@ html, body {
   color: #555555;
 }
 .awhp2024TimerText {
-  color: #0142ac;
-  display: inline;
+  color: #2e2e2e; /* slightly subtle highlight, no bright color */
   font-weight: 900;
+  display: inline;
 }
 
-/*
-  -----------------------------------------------------------------------------------
-  Loading UI (spinner)
-  -----------------------------------------------------------------------------------
-*/
+/* Spinner & text block */
 .webinarLoading {
-  color: #0142ac;
-  margin: 0;
-  padding: 0;
+  margin-top: 10px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  position: relative;
   background: transparent;
   width: auto;
   height: auto;
@@ -168,17 +159,17 @@ html, body {
   text-align: left;
 }
 .loadingText {
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 700;
-  color: #0142ac;
+  color: #5e6a72;
   margin-top: 20px;
 }
 .loadingSpinner {
   border: 8px solid rgba(228, 232, 241, 0.5);
-  border-top: 8px solid #0142ac;
+  border-top: 8px solid #5e6a72;
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   animation: spin 1s linear infinite;
   margin: 0 auto;
 }
@@ -186,6 +177,8 @@ html, body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Light divider */
 .lightDivider {
   width: 60%;
   margin: 20px auto;
@@ -193,11 +186,7 @@ html, body {
   border-top: 1px solid #ccc;
 }
 
-/*
-  -----------------------------------------------------------------------------------
-  "You will learn..." bullet styling
-  -----------------------------------------------------------------------------------
-*/
+/* "You will learn..." styling */
 .bulletsTitle {
   font-size: 18px;
   color: #2E2E2E;
@@ -214,130 +203,20 @@ html, body {
 }
 
 /*
-  -----------------------------------------------------------------------------------
-  The new "HERE’S WHAT YOU SHOULD DO NOW" box
-  -----------------------------------------------------------------------------------
-*/
-.nextStepsBox {
-  background: rgba(255,255,255,0.8);
-  border-radius: 8px;
-  padding: 20px;
-  margin-top: 30px;
-  color: #2c3135;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-.nextStepsHeading {
-  font-size: 1.2rem;
-  font-weight: 700;
-  margin-bottom: 16px;
-}
-.nextStepsList {
-  list-style-type: decimal;
-  margin-left: 1.2rem;
-  margin-bottom: 20px;
-  line-height: 1.5;
-}
-.nextStepsList li {
-  margin-bottom: 12px;
-}
-.webinarDate {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-.webinarTimeZone {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 12px;
-}
-
-/*
-  Slightly bigger, branded "Set reminder" button
-  – example uses a universal Google Calendar link
-*/
-.reminderLink {
-  display: inline-block;
-  color: #fff;
-  background-color: #0142ac;
-  padding: 6px 12px;
-  border-radius: 4px;
-  text-decoration: none;
-  font-weight: 500;
-  margin-bottom: 10px;
-  margin-right: 10px;
-}
-.reminderLink:hover {
-  background-color: #012f7a;
-}
-
-/* The small row for the link text + icon in place of "Link disabled" text */
-.linkNoticeRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-/* The circle icon style for the email + computer icon, inspired by your "benefit-icon" snippet */
-.noticeIcon {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  background-color: rgba(1, 66, 172, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  font-size: 18px;
-  color: #0142AC;
-}
-
-/*
-  -----------------------------------------------------------------------------------
-  Hosts row
-  -----------------------------------------------------------------------------------
-*/
-.hostsBox {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-top: 20px;
-}
-.hostCard {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.hostImage {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-.hostName {
-  font-weight: 600;
-  color: #2c3135;
-  margin-bottom: 2px;
-}
-.hostTitle {
-  font-size: 0.85rem;
-  color: #555;
-}
-
-/*
-  -----------------------------------------------------------------------------------
-  Chat box
-  -----------------------------------------------------------------------------------
+  =============================================================================
+  The Chat Box (height ~375px, from old code)
+  =============================================================================
 */
 .chatSection {
   background: #fff;
   display: flex;
   flex-direction: column;
-  border-radius: 12px;
+  height: 375px; /* fixed height */
+  border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 
-  /* Subtle pulsing glow for a "live" feel */
+  /* Subtle pulsing glow for "live" feel */
   animation: chatGlow 2.5s ease-in-out infinite alternate;
 }
 @keyframes chatGlow {
@@ -352,9 +231,9 @@ html, body {
   padding: 12px 15px;
   background: #0142AC;
   color: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   flex: 0 0 auto;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
 }
 .headerTop {
   display: flex;
@@ -424,14 +303,11 @@ html, body {
   gap: 5px;
 }
 
-/* We fix a comfortable height on the chat, so it doesn't keep extending. */
 .chatMessages {
   flex: 1 1 auto;
   overflow-y: auto;
   padding: 15px;
   background: #f8f9fa;
-  min-height: 200px;
-  max-height: 500px; /* So it doesn’t stretch the container indefinitely */
 }
 .message {
   margin-bottom: 10px;
@@ -442,7 +318,6 @@ html, body {
   border-radius: 6px;
   max-width: 90%;
   text-align: left;
-  position: relative; /* for system styling below */
 }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
@@ -459,29 +334,13 @@ html, body {
   font-weight: 500;
 }
 .message.system {
-  background: #fff3cd; /* light yellowish tone */
+  background: #fff3cd;
   color: #856404;
   text-align: center;
   max-width: 100%;
   margin: 15px 0;
   font-size: 0.85rem;
 }
-
-/* The special “YOU’RE REGISTERED!” pastel bubble. */
-.registeredNotice {
-  background: rgba(1, 66, 172, 0.1);
-  color: #0142ac;
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 10px;
-  margin-bottom: 10px;
-  max-width: 80%;
-  text-align: center;
-  font-size: 0.9rem;
-  margin-left: auto; /* so it appears on the right side, or we can center it */
-  margin-right: auto;
-}
-
 .chatInput {
   padding: 15px;
   background: #fff;
@@ -494,8 +353,8 @@ html, body {
   border: 1px solid #dfe3e8;
   border-radius: 6px;
   font-size: 0.9rem;
-  transition: all 0.3s ease;
   color: #2c3135;
+  transition: all 0.3s ease;
 }
 .chatInput input:focus {
   outline: none;
@@ -526,136 +385,154 @@ html, body {
 }
 
 /*
-  -----------------------------------------------------------------------------------
-  Footer branding
-  -----------------------------------------------------------------------------------
+  =============================================================================
+  The single-column "HERE’S WHAT YOU SHOULD DO NOW" plus bullet checks
+  Then the 2 columns for host images
+  =============================================================================
+*/
+.nextStepsWrapper {
+  width: 100%;
+  margin-top: 24px;
+  padding: 8px 16px;
+}
+
+.nextStepsTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #2c3135;
+  text-align: left;
+}
+
+.nextStepsItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.benefitIcon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background-color: rgba(1, 66, 172, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.benefitIcon::before {
+  content: '✓';
+  color: #0142ac;
+  font-size: 16px;
+  font-weight: 600;
+}
+.nextStepsText {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: #333;
+}
+
+/* The line for smaller text about redirection & bigger mail icon */
+.redirectRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 12px;
+}
+.mailIconContainer {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: rgba(1,66,172,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0142ac;
+  font-size: 22px;
+}
+.redirectText {
+  font-size: 0.75rem;
+  color: #5e6a72;
+  line-height: 1.4;
+  text-align: left;
+}
+
+/* The two hosts side by side */
+.hostsRow {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.hostColumn {
+  flex: 1 1 300px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hostImage {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.hostName {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #2c3135;
+  margin-bottom: 2px;
+}
+.hostTitle {
+  font-size: 0.8rem;
+  color: #555;
+}
+
+/*
+  =============================================================================
+  FOOTER outside the container
+  =============================================================================
 */
 .customFooter {
-  text-align: center;
   font-size: 0.9rem;
-  font-weight: 400;
   color: rgba(0,0,0,0.5);
-  margin-top: 40px;
+  font-weight: 400;
+  margin-top: 16px;
+  text-align: center;
 }
 
 /*
-  -----------------------------------------------------------------------------------
-  Mobile-only "iMessage bubble" overlay
-  -----------------------------------------------------------------------------------
-*/
-.exitOverlay {
-  display: none; /* Hidden by default; only show if on mobile. */
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
-  z-index: 9999;
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 0.25s ease;
-  cursor: pointer;
-}
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-.iphoneMessageBubble {
-  position: relative;
-  max-width: 80%;
-  width: 320px;
-  background: #0a84ff;
-  color: #fff;
-  border-radius: 18px;
-  padding: 14px 20px;
-  animation: bubblePop 0.35s ease-out;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  cursor: auto;
-}
-@keyframes bubblePop {
-  0%   { transform: scale(0.85); opacity: 0; }
-  55%  { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-.exitCloseBtn {
-  position: absolute;
-  top: 6px;
-  right: 12px;
-  border: none;
-  background: transparent;
-  font-size: 1.2rem;
-  line-height: 1;
-  cursor: pointer;
-  color: #fff;
-  opacity: 0.9;
-}
-.iphoneSender {
-  font-weight: 600;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-}
-.iphoneMessageText {
-  font-size: 1rem;
-  line-height: 1.4;
-  white-space: pre-line;
-}
-.iphoneMessageBubble::before {
-  content: "";
-  position: absolute;
-  left: -10px;
-  bottom: 20px;
-  width: 0; height: 0;
-  border: 10px solid transparent;
-  border-right-color: #0a84ff;
-}
-
-/* 
-  Only show the iMessage bubble overlay if viewport <= 768 (basic check).
-  We'll handle the JS detection, but also safe to hide by default on bigger screens. 
-*/
-@media (max-width: 768px) {
-  .exitOverlay {
-    display: flex;
-  }
-}
-
-/*
-  -----------------------------------------------------------------------------------
-  Media Queries for general layout tweaks
-  -----------------------------------------------------------------------------------
+  =============================================================================
+  Media Queries
+  =============================================================================
 */
 @media (max-width: 768px) {
   .zoomTopBar {
+    flex-direction: column;
+    align-items: center;
     border-bottom: none;
     margin-bottom: 16px;
   }
+  .liveSoonContainer {
+    margin-bottom: 8px;
+  }
+  .zoomTitle {
+    margin-left: 0;
+    margin-bottom: 8px;
+  }
   .awh2024Header {
-    font-size: 0.85rem;
+    margin: 0;
+    padding: 0;
     text-align: center;
-    padding: 0;
   }
-  .twoColumnLayout {
+  .mainContentWrapper {
     flex-direction: column;
-    gap: 12px;
   }
-  .previewColumn {
-    padding: 16px;
-    flex: 1 1 auto;
+  .leftColumn, .rightColumn {
+    flex: 1 1 100%;
+    max-width: 100%;
   }
-  .signupColumn {
-    padding: 0;
-    margin: 16px 0;
-    flex: 1 1 auto;
-    min-height: 400px;
-  }
-  .awhp2024HeaderWrapper {
-    font-size: 24px;
-  }
-  .loadingText {
-    font-size: 16px;
-  }
-  .nextStepsBox {
-    padding: 16px;
-  }
-  .chatMessages {
-    max-height: 400px; /* reduce the max on mobile */
+  .chatSection {
+    height: 300px;
   }
 }
