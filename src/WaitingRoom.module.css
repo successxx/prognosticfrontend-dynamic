@@ -1,239 +1,228 @@
-/*
-  =============================================================================
-  Basic page layout: pale background, center the container, Montserrat font
-  =============================================================================
-*/
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  width: 100%;
-  height: 100%;
-  background-color: #f8f9fa;
+/******************************************/
+/**  PAGE BACKGROUND & ZOOM-LIKE WRAPPER **/
+/******************************************/
+.pageBackground {
   font-family: 'Montserrat', sans-serif;
-}
-
-.pageWrapper {
+  background-color: #f8f9fa;
   min-height: 100vh;
   display: flex;
-  flex-direction: column; /* let the container + footer stack */
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
 }
 
-/*
-  =============================================================================
-  The main "zoom-like" white container with border, shadow, etc.
-  =============================================================================
-*/
 .zoomContainer {
-  background: #fff; /* White interior, no extra box behind it */
+  background: #fff;
   border: 2px solid #dcdcdc;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   padding: 16px;
   width: 100%;
   max-width: 1280px;
+  margin: 0 auto;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-/*
-  Top bar with a small blinking "LIVE SOON" dot on left,
-  Title in center or left, date text on far right
-*/
+/******************************************/
+/**  TOP BAR (HEADER) WITH BLINKING DOT  **/
+/******************************************/
 .zoomTopBar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
   padding-bottom: 12px;
   border-bottom: 1px solid #eee;
 }
 
-/* The blinking red dot with small "live soon" text, if you want it. 
-   Or you can keep it purely a dot. (Here we do a dot + "LIVE SOON" as text) */
-.liveSoonContainer {
+.zoomLeftHeader {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
-.liveSoonDot {
-  width: 8px;
-  height: 8px;
+
+.zoomLiveDot {
+  width: 10px;
+  height: 10px;
   background: #ff0000;
   border-radius: 50%;
-  animation: pulseZoom 1.5s infinite;
+  animation: pulseZoom 1.3s infinite;
+  margin-right: 4px;
 }
+
 @keyframes pulseZoom {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%   { opacity: 1; }
+  50%  { opacity: 0.4; }
   100% { opacity: 1; }
 }
-.liveSoonText {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #ff0000;
-  opacity: 0.85;
-}
+
 .zoomTitle {
   color: #333;
   font-size: 1.1rem;
   font-weight: 600;
-  margin-left: 16px; /* slight spacing from the blinking dot */
-}
-.awh2024Header {
-  margin-left: auto;
-  color: #2c3135;
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding-left: 20px;
 }
 
-/*
-  =============================================================================
-  Two columns: left 60%, right 40%. Then single column "HERE’S WHAT YOU SHOULD DO"
-  =============================================================================
-*/
-.mainContentWrapper {
+.zoomRightHeader {
+  font-size: 0.85rem;
+  color: #555;
+  font-weight: 500;
+}
+
+/******************************************/
+/**   COUNTDOWN SECTION + SPINNER (LEFT) **/
+/******************************************/
+.twoColumnWrapper {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  width: 100%;
+  gap: 30px;
+  justify-content: space-between;
 }
 
 .leftColumn {
-  flex: 0 0 60%;
-  max-width: 60%;
+  flex: 1 1 58%;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
-  padding: 16px;
-}
-.rightColumn {
-  flex: 0 0 40%;
-  max-width: 40%;
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
+  gap: 20px;
 }
 
-/*
-  Countdown area at top: big text, spinner, bullet points
-*/
-.awhp2024HeaderWrapper {
-  text-align: center;
-  font-size: 32px;
-  font-weight: 800;
-  margin: 20px auto;
-  padding: 10px;
-  color: #2E2E2E;
-  line-height: 1.2;
-}
-.motivationalTagline {
-  margin-top: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #555555;
-}
-.awhp2024TimerText {
-  color: #2e2e2e; /* slightly subtle highlight, no bright color */
-  font-weight: 900;
-  display: inline;
-}
-
-/* Spinner & text block */
 .webinarLoading {
-  margin-top: 10px;
-  display: inline-flex;
+  font-family: 'Montserrat', sans-serif;
+  color: #0142ac;
+  margin: 0;
+  padding: 0;
+  display: inline-flex; 
   justify-content: center;
   align-items: center;
+  position: relative;
   background: transparent;
   width: auto;
   height: auto;
 }
+
 .loadingContainer {
   text-align: left;
 }
-.loadingText {
-  font-size: 24px;
-  font-weight: 700;
-  color: #5e6a72;
-  margin-top: 20px;
-}
+
 .loadingSpinner {
   border: 8px solid rgba(228, 232, 241, 0.5);
-  border-top: 8px solid #5e6a72;
+  border-top: 8px solid #0142ac;
   border-radius: 50%;
   width: 80px;
   height: 80px;
   animation: spin 1s linear infinite;
   margin: 0 auto;
 }
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-/* Light divider */
+.loadingText {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0142ac;
+  margin-top: 12px;
+  max-width: 360px;
+}
+
 .lightDivider {
-  width: 60%;
-  margin: 20px auto;
+  width: 100%;
+  margin: 20px 0;
   border: 0;
   border-top: 1px solid #ccc;
 }
 
-/* "You will learn..." styling */
-.bulletsTitle {
-  font-size: 18px;
-  color: #2E2E2E;
-  margin-top: 20px;
-  font-weight: 500;
-  text-align: left;
+/* The big countdown text + subtext below it */
+.countdownText {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
 }
-.bulletsList {
-  list-style-type: disc;
-  color: #2E2E2E;
-  padding-left: 1.5rem;
-  margin-top: 10px;
-  text-align: left;
+.countdownTime {
+  color: #0142ac;
+  font-weight: 900;
 }
 
-/*
-  =============================================================================
-  The Chat Box (height ~375px, from old code)
-  =============================================================================
-*/
+.motivationalTagline {
+  margin-top: 5px;
+  font-size: 0.92rem;
+  color: #555;
+  font-weight: 500;
+}
+
+/******************************************/
+/**             "YOU WILL LEARN"         **/
+/******************************************/
+.bulletsTitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  color: #2E2E2E;
+  font-weight: 500;
+  text-align: left; 
+  margin: 0 0 5px 0;
+}
+.bulletsList {
+  list-style-type: none;
+  color: #2E2E2E;
+  padding-left: 0;
+  margin: 10px 0;
+}
+.bulletsList li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.benefit-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background-color: rgba(1, 66, 172, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.benefit-icon::before {
+  content: '✓';
+  color: #0142ac;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/******************************************/
+/**             CHAT SECTION (RIGHT)     **/
+/******************************************/
+.rightColumn {
+  flex: 1 1 38%;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
 .chatSection {
   background: #fff;
   display: flex;
   flex-direction: column;
-  height: 375px; /* fixed height */
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  height: 375px; /* fixed height so it doesn't keep growing */
+}
 
-  /* Subtle pulsing glow for "live" feel */
-  animation: chatGlow 2.5s ease-in-out infinite alternate;
-}
-@keyframes chatGlow {
-  0% {
-    box-shadow: 0 0 10px rgba(1,66,172,0.2);
-  }
-  100% {
-    box-shadow: 0 0 24px rgba(1,66,172,0.45);
-  }
-}
 .chatHeader {
   padding: 12px 15px;
   background: #0142AC;
   color: white;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
   flex: 0 0 auto;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 .headerTop {
   display: flex;
@@ -308,6 +297,7 @@ html, body {
   overflow-y: auto;
   padding: 15px;
   background: #f8f9fa;
+  min-height: 0;
 }
 .message {
   margin-bottom: 10px;
@@ -353,8 +343,8 @@ html, body {
   border: 1px solid #dfe3e8;
   border-radius: 6px;
   font-size: 0.9rem;
-  color: #2c3135;
   transition: all 0.3s ease;
+  color: #2c3135;
 }
 .chatInput input:focus {
   outline: none;
@@ -369,6 +359,7 @@ html, body {
   height: 20px;
   padding-left: 2px;
 }
+
 .chatMessages::-webkit-scrollbar {
   width: 8px;
 }
@@ -384,155 +375,115 @@ html, body {
   background: #a8a8a8;
 }
 
-/*
-  =============================================================================
-  The single-column "HERE’S WHAT YOU SHOULD DO NOW" plus bullet checks
-  Then the 2 columns for host images
-  =============================================================================
-*/
+/******************************************/
+/**    "HERE'S WHAT YOU SHOULD DO NOW"   **/
+/******************************************/
 .nextStepsWrapper {
-  width: 100%;
-  margin-top: 24px;
-  padding: 8px 16px;
-}
-
-.nextStepsTitle {
-  font-size: 1.2rem;
-  font-weight: 700;
-  margin-bottom: 16px;
-  color: #2c3135;
-  text-align: left;
-}
-
-.nextStepsItem {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 14px;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
 }
-.benefitIcon {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
+
+.nextStepsBox {
+  background: #fafafa;
+  border: 1px solid #ebebeb;
   border-radius: 8px;
-  background-color: rgba(1, 66, 172, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-.benefitIcon::before {
-  content: '✓';
-  color: #0142ac;
-  font-size: 16px;
-  font-weight: 600;
-}
-.nextStepsText {
+  padding: 20px;
   font-size: 0.95rem;
-  line-height: 1.4;
+  line-height: 1.5;
   color: #333;
 }
 
-/* The line for smaller text about redirection & bigger mail icon */
+/******************************************/
+/**      HOSTS SECTION (2 COLUMNS)       **/
+/******************************************/
+.hostsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 10px;
+}
+.hostCol {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+}
+.hostImg {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.hostInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hostName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0142ac;
+}
+.hostTitle {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 6px;
+}
+.hostBio {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/******************************************/
+/**  AUTO REDIRECT MESSAGE + ICON        **/
+/******************************************/
 .redirectRow {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  margin-top: 12px;
+  margin-top: 20px;
 }
-.mailIconContainer {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background-color: rgba(1,66,172,0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+.mailIcon {
+  font-size: 1.4rem;
   color: #0142ac;
-  font-size: 22px;
-}
-.redirectText {
-  font-size: 0.75rem;
-  color: #5e6a72;
-  line-height: 1.4;
-  text-align: left;
+  flex-shrink: 0;
 }
 
-/* The two hosts side by side */
-.hostsRow {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-top: 24px;
-}
-.hostColumn {
-  flex: 1 1 300px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.hostImage {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-.hostName {
-  font-weight: 600;
-  font-size: 1rem;
-  color: #2c3135;
-  margin-bottom: 2px;
-}
-.hostTitle {
-  font-size: 0.8rem;
-  color: #555;
+.redirectMsg {
+  font-size: 0.78rem;
+  color: #444;
+  line-height: 1.35;
 }
 
-/*
-  =============================================================================
-  FOOTER outside the container
-  =============================================================================
-*/
-.customFooter {
-  font-size: 0.9rem;
-  color: rgba(0,0,0,0.5);
-  font-weight: 400;
+/******************************************/
+/**   FOOTER COPYRIGHT (OUTSIDE BOX)     **/
+/******************************************/
+.footerContainer {
   margin-top: 16px;
   text-align: center;
+  font-size: 0.85rem;
+  color: rgba(0,0,0,0.5);
 }
 
-/*
-  =============================================================================
-  Media Queries
-  =============================================================================
-*/
-@media (max-width: 768px) {
-  .zoomTopBar {
-    flex-direction: column;
-    align-items: center;
-    border-bottom: none;
-    margin-bottom: 16px;
-  }
-  .liveSoonContainer {
-    margin-bottom: 8px;
-  }
-  .zoomTitle {
-    margin-left: 0;
-    margin-bottom: 8px;
-  }
-  .awh2024Header {
-    margin: 0;
-    padding: 0;
-    text-align: center;
-  }
-  .mainContentWrapper {
-    flex-direction: column;
-  }
-  .leftColumn, .rightColumn {
-    flex: 1 1 100%;
-    max-width: 100%;
-  }
-  .chatSection {
-    height: 300px;
-  }
+/******************************************/
+/**       SET REMINDER LINK STYLES       **/
+/******************************************/
+.reminderLink {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #0142ac;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.reminderLink:hover {
+  background: #013289;
 }
