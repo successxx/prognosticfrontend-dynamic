@@ -111,26 +111,62 @@ const WaitingRoom: React.FC = () => {
       "Lucas", "Harper", "Henry", "Evelyn", "Alexander"
     ];
 
+    // (there was a stray bracket originally removed)
     let attendeeMessages = [
       "Cant wait for this to start!",
       "First time here... excited!!",
       "Anyone else waiting?",
-      "Advanced question: Has anyone integrated this with Zapier for complex funnels?",
+      "question: Has anyone integrated this with Zapier for complex funnels?",
       "Setting up multi-step retargeting is my priority right now",
       "Im interested in the analytics side of things",
       "Hello from the waiting room!",
       "What about affiliate tracking with UTMs and multi-touch attribution?",
       "So ready for advanced marketing hacks",
-      "Hope we get real actionable tips today"
+      "Hope we get real actionable tips today",
+      "So ready for advanced marketing hacks",
+      "Just wanted to see if we can import data from our CRM?",
+      "We focus heavily on remarketing campaigns, so I'm curious about that",
+      "Looking forward to the Q&A on conversion funnels",
+      "We use advanced tracking pixels, does your platform handle that?",
+      "Hope we get some real actionable tips here",
+      "Is the audio working for everyone?",
+      "Anyone else from the marketing dept?",
+      "We want to build a segmentation funnel, any best practices?",
+      "Cant wait to compare notes after the webinar!",
+      "Hello from the social media team!"
     ];
-
     const preloadedQuestions = [
-      { time: 30, text: "hey everyone excited for this", user: "Emma" },
-      { time: 60, text: "are we required to turn cameras on", user: "Sarah" },
-      { time: 90, text: "dont think so its just a webinar i guess", user: "James" },
-      { time: 150, text: "should start in 15 minutes i think", user: "Rachel" },
-      { time: 180, text: "perfect timing for coffee brb", user: "Thomas" },
-      { time: 300, text: "anyone used PrognosticAI b4", user: "Jennifer" }
+      { time: 30, text: "hey everyone! excited for this", user: "Emma" },
+      { time: 45, text: "same here! first time in one of these", user: "Michael" },
+      { time: 60, text: "do we need to have our cameras on?", user: "Sarah" },
+      { time: 90, text: "dont think so, pretty sure its just a webinar", user: "James" },
+      { time: 120, text: "what time does this start exactly?", user: "David" },
+      { time: 150, text: "should be in about 15 mins i think", user: "Rachel" },
+      { time: 180, text: "perfect timing to grab a coffee then!", user: "Thomas" },
+      { time: 210, text: "anyone else having audio issues? cant hear anything", user: "Lisa" },
+      { time: 240, text: "i think it hasnt started yet thats why", user: "Alex" },
+      { time: 270, text: "oh that makes sense lol", user: "Lisa" },
+      { time: 300, text: "anyone here used their product before?", user: "Jennifer" },
+      { time: 330, text: "not yet but heard good things", user: "Daniel" },
+      { time: 360, text: "same, my colleague recommended it", user: "Sophie" },
+      { time: 390, text: "will there be a replay available?", user: "Ryan" },
+      { time: 420, text: "usually is for these types of webinars", user: "Maria" },
+      { time: 450, text: "anyone taking notes? im ready with my notebook", user: "William" },
+      { time: 480, text: "got my notepad open too!", user: "Emma" },
+      { time: 510, text: "hope theres a q&a section at the end", user: "Noah" },
+      { time: 540, text: "same, got lots of questions prepared", user: "Olivia" },
+      { time: 570, text: "anyone else from marketing dept here?", user: "Liam" },
+      { time: 600, text: "yep! social media manager here", user: "Ava" },
+      { time: 630, text: "content marketing team checking in", user: "Ethan" },
+      { time: 660, text: "excited to see the analytics features", user: "Sophia" },
+      { time: 690, text: "hope they show the dashboard demo", user: "Mason" },
+      { time: 720, text: "getting some coffee, brb!", user: "Isabella" },
+      { time: 750, text: "good idea, might do the same", user: "Benjamin" },
+      { time: 780, text: "anyone know how long the webinar is?", user: "Charlotte" },
+      { time: 810, text: "think its an hour with q&a after", user: "Henry" },
+      { time: 840, text: "perfect length imo", user: "Amelia" },
+      { time: 870, text: "cant wait to see whats new", user: "Lucas" },
+      { time: 900, text: "almost time to start!", user: "Harper" }
     ];
 
     function addMessage(
@@ -151,6 +187,11 @@ const WaitingRoom: React.FC = () => {
         msgDiv.classList.add('host');
       } else if (type === 'system') {
         msgDiv.classList.add('system');
+      }
+
+      // === CHANGE "SYSTEM" TO "SELINA" FOR MOBILE & ANY OTHER "SYSTEM" ===
+      if (type === 'system') {
+        user = 'Selina';  // <<--- ADDED
       }
 
       msgDiv.textContent = user ? `${user}: ${text}` : text;
@@ -319,7 +360,9 @@ const WaitingRoom: React.FC = () => {
             <button className={styles.exitCloseBtn} onClick={handleClosePopup}>
               &times;
             </button>
-            <div className={styles.iphoneSender} style={{ textAlign: 'left' }}>Selina</div>
+            <div className={styles.iphoneSender} style={{ textAlign: 'left' }}>
+              Selina
+            </div>
             <div className={styles.iphoneMessageText} style={{ textAlign: 'left' }}>
               We recommend joining from a computer for the best experience.
               Please check your email for the link and open it on desktop!
@@ -332,7 +375,7 @@ const WaitingRoom: React.FC = () => {
       <div className={styles.zoomContainer}>
         {/* TOP BAR */}
         <div className={styles.zoomTopBar}>
-          {/* Left side: LIVE SOON (blinking) + Title */}
+          {/* Left side: subtle blinking "LIVE SOON" + Title */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {showLiveSoon && (
               <span className={styles.liveSoonSubtle}>LIVE SOON</span>
@@ -351,24 +394,32 @@ const WaitingRoom: React.FC = () => {
 
         {/* TWO COLUMNS */}
         <div className={styles.twoColumnLayout}>
-          {/* LEFT => Big spinner, minimal countdown, etc.  */}
+          {/* LEFT => Big spinner, minimal countdown, etc. */}
           <div className={styles.leftColumn}>
             <div className={styles.countdownBox}>
               <div className={styles.countdownLabel}>Time Remaining</div>
               <div className={styles.countdownNumber}>{countdownText}</div>
             </div>
 
-            {/* Spinner & text (no scroll) */}
+            {/* Spinner & text */}
             <div className={styles.spinnerArea}>
               <div className={styles.spinnerAndText}>
                 <div className={styles.loadingSpinner}></div>
                 <p className={styles.loadingText}>
                   We are preparing the webinar... grab a notepad & pen while you wait!
                 </p>
+                {/* ADD A MORE OBVIOUS COUNTDOWN INSIDE THE SPINNER AREA (MINIMAL) */}
+                <p style={{ 
+                  marginTop: '8px',
+                  fontSize: '1.2rem',
+                  fontWeight: 600,
+                  color: '#0142ac'
+                }}>
+                  {countdownText}
+                </p>
               </div>
             </div>
 
-            {/* Next steps or bullet info */}
             <hr className={styles.lightDivider} />
 
             <p className={styles.bulletsTitle}><strong>You will learn...</strong></p>
@@ -390,7 +441,8 @@ const WaitingRoom: React.FC = () => {
                   <div className={styles.presenterName}>Kyle Campbell</div>
                   <div className={styles.presenterTitle}>Webinar Host</div>
                   <div className={styles.presenterDesc}>
-                    Stop losing sales— in {countdownText}, Kyle will begin revealing the secret new AI that took him from rock bottom to $1M+ in 44 weeks.
+                    {/* MAKE THE COUNTDOWN TEXT NOT BOLD/COLORED */}
+                    Stop losing sales— in <span style={{ fontWeight: 'normal', color: 'inherit' }}>{countdownText}</span>, Kyle will begin revealing the secret new AI that took him from rock bottom to $1M+ in 44 weeks.
                   </div>
                 </div>
               </div>
@@ -449,7 +501,7 @@ const WaitingRoom: React.FC = () => {
           </div>
         </div>
 
-        {/* Additional small row at bottom => "You will be automatically redirected... bigger mail icon" */}
+        {/* Additional small row at bottom => "You will be automatically redirected..." */}
         <div className={styles.redirectNoteRow}>
           <div className={styles.noticeIcon}>
             <span style={{ fontSize: '20px' }}>✉</span>
