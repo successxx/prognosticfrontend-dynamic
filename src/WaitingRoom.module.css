@@ -1,22 +1,15 @@
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GLOBAL STYLES / PAGE BACKGROUND
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-html, body {
+/***********************************************
+  BASIC PAGE LAYOUT
+***********************************************/
+body, html {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Montserrat', sans-serif;
   background-color: #f8f9fa;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
 }
 
-/* The outer "zoom-container" box */
+/* The main container from the snippet: "zoom-container" => .zoomContainer */
 .zoomContainer {
   background: #fff;
   border: 2px solid #dcdcdc;
@@ -29,218 +22,231 @@ html, body {
   position: relative;
 }
 
-/* Top bar with "LIVE SOON" & "PrognosticAI Advanced Training" & "Live Webinar: date" */
+/***********************************************
+  ZOOM TOP BAR (from snippet)
+***********************************************/
 .zoomTopBar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
-  padding-bottom: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
   border-bottom: 1px solid #eee;
-}
-
-.liveSoonSubtle {
-  color: #ff4c4c;
-  font-weight: 600;
-  font-size: 0.85rem;
-  animation: subtleBlink 1.6s infinite alternate;
-}
-@keyframes subtleBlink {
-  0% { opacity: 1; }
-  100% { opacity: 0.5; }
 }
 
 .zoomTitle {
   color: #333;
   font-size: 1.1rem;
   font-weight: 600;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* ADDED to ensure we can handle "LIVE SOON" text nicely */
+  position: relative;
 }
 
-/* The top divider under the bar */
-.topDivider {
-  border: 0;
-  border-top: 1px solid #ccc;
-  margin: 8px 0 12px 0;
-}
-
-/* Right side heading: "Live Webinar: date" */
 .awh2024Header {
   color: #2c3135;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
   margin-left: auto;
   padding-left: 20px;
 }
 
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    TWO COLUMNS 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+/* The subtle "LIVE SOON" text replacing the red dot */
+.zoomLiveDot {
+  /* CHANGED so it's tasteful blinking text, not a red circle */
+  color: #ff0000;
+  font-weight: bold;
+  animation: pulseZoom 1.5s infinite;
+  font-size: 0.8rem;
+  /* remove old width/height, etc. */
+  /* width: 8px; height: 8px; background: #ff0000; border-radius: 50%; */
+  /* We’ll just show the text "LIVE SOON" via ::before */
+  position: relative;
+}
+.zoomLiveDot::before {
+  content: "LIVE SOON";
+}
+
+@keyframes pulseZoom {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/***********************************************
+  TWO-COLUMN LAYOUT (from snippet)
+***********************************************/
 .twoColumnLayout {
   display: flex;
   gap: 16px;
-  /* We'll let content define height so no left scroll. */
+  height: 550px; /* from snippet */
 }
 
-/* LEFT COLUMN => bigger portion, no scrolling */
-.leftColumn {
-  flex: 0 0 60%;
+/* Left (70%) */
+.previewColumn {
+  flex: 0 0 70%;
+  padding: 24px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  /* CHANGED to remove internal scrollbar so content fits or expands. */
+  overflow-y: visible; 
+}
+
+/* Right (30%) */
+.signupColumn {
+  flex: 0 0 30%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  padding: 0 16px;
 }
 
-/* A small "box" to show the countdown more obviously */
-.countdownBox {
-  background-color: #f8f9fa;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  padding: 12px;
-  text-align: center;
-  width: 100%;
-}
-.countdownLabel {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #555;
-  margin-bottom: 4px;
-}
-.countdownNumber {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: #0142ac;
-}
-
-/* The spinner area */
-.spinnerArea {
-  background-color: transparent;
-  border: none;
-  display: block;
-}
-.spinnerAndText {
+/***********************************************
+  SPINNER / LOADING
+***********************************************/
+.webinarLoading {
+  /* CHANGED to center the spinner & text in left column */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.loadingContainer {
+  text-align: center; /* make sure text is centered */
 }
 .loadingSpinner {
-  border: 8px solid rgba(228,232,241,0.5);
+  border: 8px solid rgba(228, 232, 241, 0.5);
   border-top: 8px solid #0142ac;
   border-radius: 50%;
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   animation: spin 1s linear infinite;
+  margin: 0 auto;
 }
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+/* CHANGED to dark grey instead of blue */
 .loadingText {
   font-size: 16px;
-  font-weight: 500;
-  color: #333;
+  font-weight: 700;
+  color: #2c3135; /* was #0142ac */
   margin-top: 12px;
 }
 
-/* A tasteful light divider for left column sections */
-.lightDivider {
-  width: 100%;
-  border: 0;
-  border-top: 1px solid #ccc;
-}
-
-/* "You will learn..." bullets */
-.bulletsTitle {
-  font-size: 18px;
-  color: #2E2E2E;
-  font-weight: 500;
-  text-align: left;
-  margin-top: 10px;
-}
-.bulletsList {
-  list-style-type: disc;
-  color: #2E2E2E;
-  padding-left: 1.5rem;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  text-align: left;
-}
-
-/* Presenter "cards" => left-aligned, no scroll */
-.presentersArea {
+/***********************************************
+  CHECKMARK BULLETS / BENEFIT ICON
+***********************************************/
+.benefitItem {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.presenterRow {
-  display: flex;
-  gap: 12px;
   align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
 }
-.presenterImage {
-  width: 50px;
-  height: 50px;
+
+.benefitIcon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background-color: rgba(1, 66, 172, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* The checkmark inside the icon */
+.benefitIcon::before {
+  content: '✓';
+  color: #0142ac; /* or var(--primary-color) if defined */
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.benefitText {
+  font-size: 0.95rem;
+  color: #2c3135;
+  line-height: 1.4;
+}
+
+/***********************************************
+  PRESENTERS
+***********************************************/
+.presentersHeading {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  color: #2c3135;
+  font-size: 1.1rem;
+  font-weight: 600;
+  /* CHANGED so it's aligned left */
+  text-align: left;
+}
+
+.hostCard {
+  display: flex;
+  align-items: flex-start; /* ensure text is top-aligned next to image */
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.hostImage {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   object-fit: cover;
 }
-.presenterInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.presenterName {
+.hostName {
   font-weight: 600;
   color: #2c3135;
+  margin-bottom: 4px;
 }
-.presenterTitle {
+.hostTitle {
   font-size: 0.85rem;
   color: #555;
 }
-.presenterDesc {
-  font-size: 0.85rem;
-  line-height: 1.4;
-  color: #333;
+/* ADDED so any extra text under hostTitle is left-aligned and normal weight */
+.hostSubtitle {
+  font-size: 0.8rem;
+  color: #2c3135;
+  margin-top: 2px;
+  font-weight: 400;
 }
 
-/* RIGHT COLUMN => chat box */
-.rightColumn {
-  flex: 0 0 40%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    CHAT SECTION 
-    (ADJUST HEIGHT SO LEFT COLUMN FITS W/O SCROLL)
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+/***********************************************
+  CHAT SECTION (right column)
+***********************************************/
 .chatSection {
   background: #fff;
   display: flex;
   flex-direction: column;
-  border-radius: 12px;
+  border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  /* CHANGED FROM 375px TO 420px TO FIT SELINA INFO */
-  height: 420px;  /* <--- UPDATED */
+  /* Doubling the chat height can conflict with snippet's 550px total?
+     Let's keep it flexible: we rely on .twoColumnLayout height. 
+     We'll let it fill the space. */
+  flex: 1;
   
-  /* Subtle pulsing glow */
+  /* Subtle pulsing glow for "live" feel */
   animation: chatGlow 2.5s ease-in-out infinite alternate;
 }
 @keyframes chatGlow {
-  0%   { box-shadow: 0 0 10px rgba(1,66,172,0.2); }
-  100% { box-shadow: 0 0 24px rgba(1,66,172,0.45); }
+  0% {
+    box-shadow: 0 0 10px rgba(1,66,172,0.2);
+  }
+  100% {
+    box-shadow: 0 0 24px rgba(1,66,172,0.45);
+  }
 }
+
 .chatHeader {
   padding: 12px 15px;
   background: #0142AC;
   color: white;
   flex: 0 0 auto;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
 }
 .headerTop {
   display: flex;
@@ -252,13 +258,14 @@ html, body {
   font-weight: 600;
   letter-spacing: -0.02em;
 }
+
 .toggleContainer {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 .toggleSwitch {
   position: relative;
@@ -268,7 +275,8 @@ html, body {
 }
 .toggleSwitch input {
   opacity: 0;
-  width: 0; height: 0;
+  width: 0;
+  height: 0;
 }
 .toggleSlider {
   position: absolute;
@@ -283,7 +291,8 @@ html, body {
   content: "";
   height: 16px;
   width: 16px;
-  left: 2px; bottom: 2px;
+  left: 2px;
+  bottom: 2px;
   background-color: white;
   transition: .4s;
   border-radius: 50%;
@@ -298,6 +307,7 @@ html, body {
   color: white;
   font-size: 0.45rem;
 }
+
 .viewerCount {
   font-size: 0.55rem;
   background: rgba(255,255,255,0.1);
@@ -314,15 +324,16 @@ html, body {
   padding: 15px;
   background: #f8f9fa;
 }
+
 .message {
   margin-bottom: 10px;
   line-height: 1.4;
-  animation: fadeIn 0.3s ease;
   font-size: 0.85rem;
   padding: 8px 12px;
   border-radius: 6px;
   max-width: 90%;
-  text-align: left; 
+  text-align: left;
+  animation: fadeIn 0.3s ease;
 }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
@@ -338,22 +349,20 @@ html, body {
   color: #0142AC;
   font-weight: 500;
 }
-/* REMOVE CENTER ALIGN FOR SYSTEM MESSAGES */
 .message.system {
   background: #fff3cd;
   color: #856404;
-  /* text-align: center;  <-- REMOVED */
+  text-align: center;
   max-width: 100%;
   margin: 15px 0;
   font-size: 0.85rem;
 }
+
 .chatInput {
   padding: 15px;
   background: #fff;
   border-top: 1px solid #eee;
   flex: 0 0 auto;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
 }
 .chatInput input {
   width: 100%;
@@ -377,6 +386,8 @@ html, body {
   height: 20px;
   padding-left: 2px;
 }
+
+/* Scrollbar styling */
 .chatMessages::-webkit-scrollbar {
   width: 8px;
 }
@@ -392,68 +403,83 @@ html, body {
   background: #a8a8a8;
 }
 
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    The "You will be automatically redirected" row
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-.redirectNoteRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 16px;
-}
-.noticeIcon {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  background-color: rgba(1,66,172,0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.redirectNoteText {
-  font-size: 0.85rem;
-  color: #333;
-  text-align: left;
-  line-height: 1.4;
-  max-width: 800px;
-}
-
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    FOOTER
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+/***********************************************
+  FOOTER
+***********************************************/
 .footerBranding {
-  margin-top: 16px;
   text-align: center;
   font-size: 0.9rem;
   font-weight: 400;
-  color: rgba(0,0,0,0.5);
+  color: rgba(0,0,0,0.6);
+  margin-top: 16px;
 }
 
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    MOBILE-ONLY iMESSAGE BUBBLE
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+/***********************************************
+  RESPONSIVE
+***********************************************/
+@media (max-width: 768px) {
+  .zoomTitle {
+    display: none;
+  }
+
+  .zoomTopBar {
+    justify-content: center;
+    border-bottom: none;
+    margin-bottom: 16px;
+  }
+
+  .awh2024Header {
+    font-size: 0.85rem;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+
+  .twoColumnLayout {
+    flex-direction: column;
+    height: auto;
+    gap: 12px;
+  }
+
+  .previewColumn {
+    padding: 16px;
+    height: auto;
+  }
+
+  .signupColumn {
+    order: 2;
+    padding: 0;
+    margin: 16px 0;
+    min-height: 500px;
+  }
+
+  .chatSection {
+    height: 500px;
+  }
+}
+
+/***********************************************
+  ADDED FOR iMessage-style MOBILE POPUP
+***********************************************/
 .exitOverlay {
-  display: none;
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(0,0,0,0.6);
   z-index: 9999;
+  display: flex;
   justify-content: center;
   align-items: center;
   animation: fadeIn 0.25s ease;
   cursor: pointer;
+  /* hidden by default; we’ll show it via React state */
+  display: none;
 }
+
 @keyframes fadeIn {
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
+
 .iphoneMessageBubble {
   position: relative;
   max-width: 80%;
@@ -465,16 +491,18 @@ html, body {
   animation: bubblePop 0.35s ease-out;
   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
   cursor: auto;
-  text-align: left; /* left aligned text */
 }
+
 @keyframes bubblePop {
-  0% { transform: scale(0.85); opacity: 0; }
-  55%{ transform: scale(1.05); opacity: 1; }
-  100%{ transform: scale(1); opacity: 1; }
+  0%   { transform: scale(0.85); opacity: 0; }
+  55%  { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
 }
+
 .exitCloseBtn {
   position: absolute;
-  top: 6px; right: 12px;
+  top: 6px;
+  right: 12px;
   border: none;
   background: transparent;
   font-size: 1.2rem;
@@ -483,60 +511,26 @@ html, body {
   color: #fff;
   opacity: 0.9;
 }
+
 .iphoneSender {
   font-weight: 600;
   margin-bottom: 8px;
   font-size: 0.9rem;
+  text-align: left; /* left alignment like a real iMessage */
 }
+
 .iphoneMessageText {
   font-size: 1rem;
   line-height: 1.4;
   white-space: pre-line;
 }
+
 .iphoneMessageBubble::before {
   content: "";
   position: absolute;
-  left: -10px; bottom: 20px;
+  left: -10px;
+  bottom: 20px;
   width: 0; height: 0;
   border: 10px solid transparent;
   border-right-color: #0a84ff;
-}
-
-/*
-  Show overlay if on mobile
-*/
-@media (max-width: 768px) {
-  .exitOverlay {
-    display: flex;
-  }
-}
-
-/* 
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    RESPONSIVE
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-@media (max-width: 768px) {
-  .zoomTopBar {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding-bottom: 12px;
-  }
-  .awh2024Header {
-    margin-left: 0;
-    padding-left: 0;
-    margin-top: 8px;
-  }
-  .twoColumnLayout {
-    flex-direction: column;
-  }
-  .leftColumn,
-  .rightColumn {
-    flex: 1 1 auto;
-    margin-bottom: 20px;
-  }
-  .chatSection {
-    height: 375px; /* or reduce to 350 if needed on mobile */
-  }
 }
