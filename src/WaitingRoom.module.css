@@ -81,7 +81,7 @@ body, html {
 .twoColumnLayout {
   display: flex;
   gap: 16px;
-  height: 600px; /* was 550px => +50px to fit Selina's text */
+  height: 620px; /* was 550px => +50px to fit Selina's text */
 }
 
 /* Left (70%) */
