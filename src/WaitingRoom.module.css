@@ -1,10 +1,10 @@
-/* 
-  -----------------------------------
-  Borrowed from the "zoom-container" 
-  styling you provided for the sign-up 
-  page, with minimal edits.
-  -----------------------------------
+/*
+  ------------------------------------------------------------------------------
+  We are removing the white background from the .zoomContainer, .previewColumn,
+  and .signupColumn to give a transparent feel. 
+  ------------------------------------------------------------------------------
 */
+
 *,
 *::before,
 *::after {
@@ -13,10 +13,9 @@
   box-sizing: border-box;
 }
 
-/* The overall background matches your sign-up page */
 .bodyBackground {
   font-family: 'Montserrat', sans-serif;
-  background-color: #f8f9fa;
+  background-color: #f8f9fa; /* If you want a non-white page background, keep this. */
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -24,9 +23,9 @@
   padding: 40px 20px;
 }
 
-/* The main "zoom-style" container */
+/* The main "zoom-style" container - now transparent. */
 .zoomContainer {
-  background: #fff;
+  background: transparent; /* was #fff */
   border: 2px solid #dcdcdc;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -74,37 +73,32 @@
   padding-left: 20px;
 }
 
-/* The two-column layout from sign-up page (we re-use these). */
+/* Two-column layout (borrowed from sign-up page). */
 .twoColumnLayout {
   display: flex;
   gap: 16px;
-  /* from sign-up page, sets fixed height; 
-     but you can remove or adjust as you see fit. */
-  height: 550px;
+  height: 100%; /* changed from a fixed height so it can grow with new content */
 }
 
-/* The left side (mirroring "preview-column" from sign-up). */
+/* Left side (was .preview-column). Now transparent. */
 .previewColumn {
   flex: 0 0 70%;
   padding: 24px;
-  background: #f8f9fa;
+  background: transparent; /* was #f8f9fa */
   border-radius: 6px;
   overflow-y: auto;
 }
 
-/* The right side (mirroring "signup-column" from sign-up). */
+/* Right side (was .signup-column). Now transparent. */
 .signupColumn {
   flex: 0 0 30%;
   display: flex;
   flex-direction: column;
   padding: 0 16px;
+  background: transparent;
+  border-radius: 6px;
   overflow-y: auto;
 }
-
-/* 
-   Now the actual waiting-room pieces, transplanted inside that new layout.
-   We keep them basically the same, but rename a few classes if needed.
-*/
 
 /* ============================ */
 /* ======  TOP COUNTDOWN ====== */
@@ -112,7 +106,7 @@
 .awhp2024HeaderWrapper {
   font-family: 'Montserrat', sans-serif;
   text-align: center;
-  font-size: 32px; /* reduced to fit in the new container more gracefully */
+  font-size: 32px;
   font-weight: 800;
   margin: 20px auto;
   padding: 10px;
@@ -147,12 +141,8 @@
   animation: liveBlink 1.3s infinite alternate;
 }
 @keyframes liveBlink {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.65;
-  }
+  0% { opacity: 1; }
+  100% { opacity: 0.65; }
 }
 
 /* ========================= */
@@ -218,6 +208,77 @@
   text-align: left;
 }
 
+/* ================================ */
+/* "Next Steps" + Date/Time + Hosts */
+.nextStepsBox {
+  background: rgba(255,255,255,0.8);
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 30px;
+  color: #2c3135;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.nextStepsHeading {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.nextStepsList {
+  list-style-type: decimal;
+  margin-left: 1.2rem;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+.webinarDate {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.webinarTimeZone {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 12px;
+}
+.reminderLink {
+  display: inline-block;
+  color: #fff;
+  background-color: #0142ac;
+  padding: 6px 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+.reminderLink:hover {
+  background-color: #012f7a;
+}
+.hostsBox {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+.hostCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hostImage {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.hostName {
+  font-weight: 600;
+  color: #2c3135;
+  margin-bottom: 2px;
+}
+.hostTitle {
+  font-size: 0.85rem;
+  color: #555;
+}
+
 /* ========================= */
 /* ======  CHAT BOX  ======= */
 /* ========================= */
@@ -230,7 +291,7 @@
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 
-  /* Subtle pulsing glow to give a "live" feel */
+  /* Subtle pulsing glow for a "live" feel */
   animation: chatGlow 2.5s ease-in-out infinite alternate;
 }
 @keyframes chatGlow {
@@ -408,12 +469,6 @@
   margin-top: 40px;
 }
 
-/* 
-  ==============
-  MEDIA QUERIES 
-  ==============
-  Adapted from sign-up page for responsiveness
-*/
 @media (max-width: 768px) {
   .bodyBackground {
     padding: 20px;
@@ -454,12 +509,13 @@
   .chatInput {
     min-height: auto;
   }
-
-  /* We can hide some big text or shrink it down */
   .awhp2024HeaderWrapper {
     font-size: 24px;
   }
   .loadingText {
     font-size: 16px;
+  }
+  .nextStepsBox {
+    padding: 16px;
   }
 }
