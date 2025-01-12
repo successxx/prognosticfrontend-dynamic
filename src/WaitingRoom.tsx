@@ -2,83 +2,72 @@ import React, { useEffect, useRef, useState } from 'react';
 import styles from './WaitingRoom.module.css';
 
 /**
- * This WaitingRoom merges:
- *   - The original waiting-room functionality (countdown, spinner, chat w/ AI, etc.)
- *   - The "zoom-like" white-box design from the sign-up page
- *   - The “Set a Reminder” link for Google Calendar (with next quarter-hour as the start time)
- *   - Additional instructions: hosts section, next steps, auto-redirect text, etc.
+ * WaitingRoom
+ * -----------
+ * - Single “zoom-like” white box centered on page
+ * - Top bar: "LIVE SOON" (blinking), Title, and "Live webinar [date]"
+ * - Two columns:
+ *   (Left 60%: The countdown, spinner, “You will learn” bullets)
+ *   (Right 40%: Chat box)
+ * - Single full-width section below columns: “HERE IS WHAT YOU SHOULD DO NOW” + Next steps
+ * - Under that: two columns for the hosts Kyle & Selina
+ * - No "live soon" text at bottom. Chat has fixed max-height.
+ * - Shorter/frequent “fake live chat” messages, randomizing capital letters & removing apostrophes
  */
+
 const WaitingRoom: React.FC = () => {
-  // ========== COUNTDOWN STATES/LOGIC ==========
+  // ====== COUNTDOWN STATE & LOGIC ======
   const [countdownText, setCountdownText] = useState<string>('calculating...');
   const [showBadge, setShowBadge] = useState<boolean>(true);
 
-  // For the Google Calendar reminder link
-  const [reminderLink, setReminderLink] = useState<string>('');
+  // Display dynamic date/time
+  const [webinarDate, setWebinarDate] = useState<string>('');
+  const [webinarTime, setWebinarTime] = useState<string>('');
 
-  /** Returns a Date object for the next quarter-hour (15/30/45/60) */
   function getNextQuarterHour(): Date {
     const now = new Date();
+    // Rounds up to the next 15-minute block
     return new Date(Math.ceil(now.getTime() / (15 * 60 * 1000)) * (15 * 60 * 1000));
   }
 
-  /** Formats time left (ms) into "X minutes and Y seconds" or "Z seconds" */
-  function formatTimeLeft(ms: number) {
-    const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((ms % (1000 * 60)) / 1000);
-
-    if (minutes > 0) {
-      return `${minutes} minute${minutes !== 1 ? 's' : ''} and ${seconds} second${seconds !== 1 ? 's' : ''}`;
-    } else {
-      return `${seconds} second${seconds !== 1 ? 's' : ''}`;
-    }
+  function formatDate(date: Date) {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+    };
+    return date.toLocaleDateString('en-US', options);
   }
 
-  // Generate a Google Calendar link with the next quarter hour as start time
-  function generateCalendarLink() {
-    const start = getNextQuarterHour();
-    // We'll assume a 1-hour event for demonstration
-    const end = new Date(start.getTime() + 60 * 60 * 1000);
-
-    // Format as YYYYMMDDTHHMMSS in UTC. For real usage, local time or etc. might be needed
-    const toCalString = (date: Date) => {
-      const yyyy = date.getUTCFullYear();
-      const mm = String(date.getUTCMonth() + 1).padStart(2, '0');
-      const dd = String(date.getUTCDate()).padStart(2, '0');
-      const hh = String(date.getUTCHours()).padStart(2, '0');
-      const min = String(date.getUTCMinutes()).padStart(2, '0');
-      const ss = '00';
-      return `${yyyy}${mm}${dd}T${hh}${min}${ss}Z`;
-    };
-    const startStr = toCalString(start);
-    const endStr = toCalString(end);
-
-    // "Your Webinar Link Is https://training.prognositc.ai"
-    // For brevity, we'll do a simple Google Calendar link
-    const base = 'https://calendar.google.com/calendar/render';
-    const params = new URLSearchParams({
-      action: 'TEMPLATE',
-      text: 'Your PrognosticAI Webinar',
-      details: 'Your Webinar Link Is https://training.prognositc.ai',
-      dates: `${startStr}/${endStr}`
+  function formatTime(date: Date) {
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
     });
-    return `${base}?${params.toString()}`;
   }
 
   useEffect(() => {
-    // On mount, create the reminder link
-    setReminderLink(generateCalendarLink());
-
-    // Replicating old script logic for countdown
     const updateCountdown = () => {
       const now = new Date();
       const nextTime = getNextQuarterHour();
       const timeLeft = nextTime.getTime() - now.getTime();
+
+      // Also update date/time for display
+      setWebinarDate(formatDate(now));
+      setWebinarTime(formatTime(nextTime));
+
       if (timeLeft <= 0) {
         setCountdownText('starting now...');
         setShowBadge(false);
       } else {
-        setCountdownText(formatTimeLeft(timeLeft));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        if (minutes > 0) {
+          setCountdownText(`${minutes} minute${minutes !== 1 ? 's' : ''} and ${seconds} second${seconds !== 1 ? 's' : ''}`);
+        } else {
+          setCountdownText(`${seconds} second${seconds !== 1 ? 's' : ''}`);
+        }
       }
     };
 
@@ -87,14 +76,13 @@ const WaitingRoom: React.FC = () => {
     return () => clearInterval(timerId);
   }, []);
 
-  // ========== CHATBOX LOGIC ==========
+  // ====== CHATBOX LOGIC ======
   const chatMessagesRef = useRef<HTMLDivElement | null>(null);
   const messageInputRef = useRef<HTMLInputElement | null>(null);
   const typingIndicatorRef = useRef<HTMLDivElement | null>(null);
   const participantToggleRef = useRef<HTMLInputElement | null>(null);
   const socketRef = useRef<WebSocket | null>(null);
 
-  /** Helper to auto-scroll if near bottom. */
   function isNearBottom(element: HTMLDivElement): boolean {
     const threshold = 50;
     return (element.scrollHeight - element.clientHeight - element.scrollTop) <= threshold;
@@ -104,6 +92,40 @@ const WaitingRoom: React.FC = () => {
     element.scrollTop = element.scrollHeight;
   }
 
+  // Shorter, more casual chat messages (marketing/funnels/entrepreneurship)
+  // No apostrophes, random capital letters, some typos, occasionally referencing each other
+  // Example variations, showing random grammar/spelling, some short Q&A style:
+  const scheduledMessages = [
+    "anyone used fB retargeting for ebooks??",
+    "im new to funnels but excited to learn!",
+    "just scaled my store to 50 orders day. so pumped",
+    "Lol my cpc is up. any tip on optimizing??",
+    "heyy does building an email list still matter these days or do we just do ads",
+    "TryING to figure out google analytics still.. help pls??",
+    "Kai: hey brandon, i found a new funnel builder better than clickF, super cheap",
+    "Saw a big boost when i used influencer promos on tikTok. any1 else?",
+    "my new funnel is converting at 4 PERCENT so stoked",
+    "eva: oh nice c4 percent is big. mind sharing niche?",
+    "ya im in coaching niche. retargeting boosted my roi x3!",
+    "someone recommended implementing a countdown timer. do you guys do that??",
+    "Brandon: i do, it works well for me",
+    "Kara: best way to handle unsubscribes without hurting domain??",
+    "just discovered PrognosticAI, it personalizes funnels.. so cool",
+    "Umar: trying to get local leads for HVAC. is direct mail still a thing??",
+    "eva: i do direct mail for real estate still works sometimes",
+    "any new hack for building LLA audiences on FB??",
+    "thinking about testing pinned posts on lInkedIn for b2b leads",
+    "my funnel cart abandons are high. do i add more trust badges??",
+    "Kai: yes that helps, plus re-engage them by email or SMS",
+    "karas question re unsubscribes: i use a self-hosted solution",
+    "LOL i spelled unsubscribes wrong earlier. oh well. this chat is moving fast",
+    "Kai: using ai for copywriting soared my CTR up",
+    "Sasha: i started a funnel for digital planners.. got 10 sales so far!",
+    "morning guys. i see 40 ppl here. hi all!",
+    "so is anyone using PrognosticAI or just me??"
+  ];
+
+  // ----- MOUNT / UNMOUNT -----
   useEffect(() => {
     const chatEl = chatMessagesRef.current;
     const inputEl = messageInputRef.current;
@@ -111,7 +133,7 @@ const WaitingRoom: React.FC = () => {
     const toggleEl = participantToggleRef.current;
 
     if (!chatEl || !inputEl || !typingEl || !toggleEl) {
-      console.error("WaitingRoom: Missing chat or input or toggle elements.");
+      console.error("WaitingRoom: Missing chat or input/toggle elements.");
       return;
     }
 
@@ -123,205 +145,100 @@ const WaitingRoom: React.FC = () => {
     }
     chatEl.addEventListener('scroll', handleScroll);
 
-    /********** PRE-SET MESSAGES **********/
-    const names = [
-      "Emma", "Liam", "Olivia", "Noah", "Ava", "Ethan", "Sophia", "Mason",
-      "Isabella", "William", "Mia", "James", "Charlotte", "Benjamin", "Amelia",
-      "Lucas", "Harper", "Henry", "Evelyn", "Alexander"
-    ];
-
-    // Combined from old + new instructions, random funnels/marketing lines, no apostrophes
-    let combinedMessages = [
-      "hey guys any funnel examples someone can share i wana see real results",
-      "lol i keep hearing about retargeting but do i need an email list first",
-      "does anyone use text messaging for follow ups i read it works well",
-      "hi i just want 1 sale on my new course any quick tips plz",
-      "omg i forgot to bring coffee brb",
-      "my ads are not converting well maybe my audience is off",
-      "im brand new is this funnel advanced or can newbies do it too",
-      "someone asked about b2b earlier i think the key is a good linkedin presence imo",
-      "did i read the event is an hour plus qna afterwards yeah",
-      "i tried a webinar once but only 3 ppl showed up haha it was tough",
-      "has anyone integrated with google analytics to track detailed funnel steps",
-      "im testing a new upsell but not sure if i should do 50 discount or 20 discount",
-      "my buddy uses retargeting with fb messenger bots says it performs big",
-      "any tips for super low ad budget like 50 total haha",
-      "interested in ai tools for marketing does that require code knowledge",
-      "someone tried chatgpt for writing copy i keep hearing about it",
-      "i guess ill focus on capturing leads then email them with value content",
-      "just typed in an attempt to see if the chat is working hi all",
-      "lol i am so curious about advanced funnel strategies but i still havent done the basics",
-      "anybody seeing success with tiktok ads or is it wasted budget",
-      "someone earlier asked about text message funnels i wonder if that is easy to set up",
-      "hey noah i saw your question about text marketing twilio is an option i guess",
-      "im focusing more on leads than sales right now is that normal haha",
-      "my friend used a big discount code to get first 10 sales might do the same",
-      "someone want to share how they handle email unsubscribes i keep losing folks haha",
-      "i saw somewhere that b2b has longer funnel but better ltv is that right",
-      "my retargeting cpc is high but i still get decent conversions",
-      "dang i typed a question but it didnt show maybe i needed to refresh",
-      "did yall see the new ai features in analytics 4 kinda neat right",
-      "cant wait for this to start",
-      "first time here excited",
-      "anyone else waiting",
-      "advanced question has anyone integrated with zapier for funnels",
-      "we want multi step retargeting right now",
-      "looking forward to q and a on conversion funnels",
-      "anybody from the marketing dept here hi guys"
-    ];
-
-    // We schedule a certain number randomly
-    function scheduleLocationMessages() {
-      const numMessages = Math.min(combinedMessages.length, Math.floor(Math.random() * 6) + 18);
-      const available = [...combinedMessages];
-      let delay = 500;
-      for (let i = 0; i < numMessages; i++) {
-        const index = Math.floor(Math.random() * available.length);
-        const message = available[index];
-        available.splice(index, 1); 
-        const name = names[Math.floor(Math.random() * names.length)];
-        setTimeout(() => {
-          addMessage(message, 'user', name, true);
-        }, delay);
-        delay += Math.random() * 1000 + 500;
-      }
-    }
-
-    // Some preloaded messages on timed intervals
-    const preloadedQuestions = [
-      { time: 30, text: "hey everyone excited for this", user: "Emma" },
-      { time: 45, text: "same here first time in one of these", user: "Michael" },
-      { time: 60, text: "do we need to have cameras on", user: "Sarah" },
-      { time: 90, text: "dont think so pretty sure its just a webinar", user: "James" },
-      { time: 120, text: "what time does this start exactly", user: "David" },
-      { time: 150, text: "should be in about 15 mins i think", user: "Rachel" },
-      { time: 180, text: "perfect time to grab a coffee brb", user: "Thomas" },
-      { time: 210, text: "anyone else having audio issues i cant hear anything", user: "Lisa" },
-      { time: 240, text: "i think it hasnt started yet so no sound", user: "Alex" },
-      { time: 300, text: "anyone here used their product before", user: "Jennifer" },
-      { time: 330, text: "not yet but heard good things", user: "Daniel" },
-      { time: 390, text: "will there be a replay available", user: "Ryan" },
-      { time: 420, text: "usually is for these types of events", user: "Maria" },
-      { time: 480, text: "hope we get a q and a later", user: "Noah" },
-      { time: 510, text: "i have some advanced funnel questions", user: "Olivia" },
-      { time: 540, text: "anyone from the marketing dept", user: "Liam" },
-      { time: 600, text: "yep social media manager here", user: "Ava" },
-      { time: 660, text: "excited to see the analytics features", user: "Sophia" },
-      { time: 720, text: "getting some coffee, brb", user: "Isabella" },
-      { time: 840, text: "almost time to start", user: "Harper" }
-    ];
-    // We'll schedule them
-    preloadedQuestions.forEach(q => {
-      setTimeout(() => {
-        addMessage(q.text, 'user', q.user, true);
-      }, q.time * 1000);
-    });
-
-    // The function that physically adds a message
-    function addMessage(
-      text: string,
-      type: 'user' | 'host' | 'system',
-      user = '',
-      isAutoGenerated = true
-    ) {
-      if (!chatEl) return;
-      if (!toggleEl) return;
-      if (!typingEl) return;
-
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `${styles.message} ${type}`;
-
-      // also add raw classes for user/host/system if needed
-      if (type === 'user') {
-        messageDiv.classList.add('user');
-      } else if (type === 'host') {
-        messageDiv.classList.add('host');
-      } else if (type === 'system') {
-        messageDiv.classList.add('system');
-      }
-
-      messageDiv.textContent = user ? `${user}: ${text}` : text;
-
-      // show "Selina is typing" for real host messages
-      if (type === 'host' && !isAutoGenerated) {
-        typingEl.textContent = 'Selina is typing...';
-        setTimeout(() => {
-          if (typingEl) typingEl.textContent = '';
-        }, 2000);
-      }
-
-      // Tag user messages from others for toggling
-      if (type === 'user' && user !== 'You') {
-        messageDiv.setAttribute('data-participant', 'true');
-        messageDiv.setAttribute('data-auto-generated', 'true');
-        messageDiv.style.display = toggleEl.checked ? 'block' : 'none';
-      }
-
-      chatEl.appendChild(messageDiv);
-
-      if (!isUserScrolling || user === 'You') {
-        scrollToBottom(chatEl);
-      }
-    }
-
-    // Toggle show/hide
-    function handleToggleChange() {
-      if (!chatEl) return;
-      const participantMessages = chatEl.querySelectorAll('[data-participant="true"]');
-      participantMessages.forEach(msg => {
-        (msg as HTMLElement).style.display = toggleEl.checked ? 'block' : 'none';
-      });
-      if (toggleEl.checked && !isUserScrolling) {
-        scrollToBottom(chatEl);
-      }
-    }
-    toggleEl.addEventListener('change', handleToggleChange);
-
-    // Connect WebSocket for real-time
+    // ====== WEBSOCKET (AI Chat) ======
     const newSocket = new WebSocket('wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com');
     socketRef.current = newSocket;
 
     newSocket.onopen = () => {
       console.log('Connected to chat server');
-      if (chatEl) {
-        scrollToBottom(chatEl);
-      }
+      scrollToBottom(chatEl);
     };
+
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.type === 'message') {
         addMessage(data.text, data.messageType as 'user' | 'host' | 'system', data.user, true);
       }
     };
+
     newSocket.onerror = (error) => {
       console.error('WebSocket error:', error);
     };
 
-    // AI/Host response logic for real user messages
+    // Toggle "Show Others" => Hide/Show participant messages
+    function handleToggleChange(e: Event) {
+      const participantMessages = chatEl.querySelectorAll('[data-participant="true"]');
+      const target = e.currentTarget as HTMLInputElement;
+      participantMessages.forEach(msg => {
+        (msg as HTMLElement).style.display = target.checked ? 'block' : 'none';
+      });
+      if (target.checked && !isUserScrolling) {
+        scrollToBottom(chatEl);
+      }
+    }
+    toggleEl.addEventListener('change', handleToggleChange);
+
+    // Reusable function to add new messages to chat
+    function addMessage(
+      text: string,
+      type: 'user' | 'host' | 'system',
+      user = '',
+      isAutoGenerated = true
+    ) {
+      if (!chatEl || !toggleEl || !typingEl) return;
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `${styles.message} ${type}`;
+
+      const userLabel = user ? `${user}: ` : '';
+      messageDiv.textContent = userLabel + text;
+
+      if (type === 'host' && !isAutoGenerated) {
+        typingEl.textContent = 'Selina is typing...';
+        setTimeout(() => {
+          typingEl.textContent = '';
+        }, 2000);
+      }
+
+      // Tag participant messages (so toggling "Show Others" can hide them)
+      if (type === 'user' && user !== 'You') {
+        messageDiv.setAttribute('data-participant', 'true');
+        messageDiv.setAttribute('data-auto-generated', 'true');
+        // Hide them if Show Others is unchecked
+        messageDiv.style.display = toggleEl.checked ? 'block' : 'none';
+      }
+
+      chatEl.appendChild(messageDiv);
+
+      // auto-scroll if near bottom or if the user wrote the message
+      if (!isUserScrolling || user === 'You') {
+        scrollToBottom(chatEl);
+      }
+    }
+
+    // Insert “YOU ARE REGISTERED!” system bubble right away:
+    const registeredBubble = document.createElement('div');
+    registeredBubble.className = styles.registeredNotice;
+    registeredBubble.textContent = "YOU ARE REGISTERED";
+    chatEl.appendChild(registeredBubble);
+
+    // Host response to real user messages
     async function handleHostResponse(userMessage: string, isAutomated = false) {
       if (isAutomated) return;
       if (!typingEl) return;
+
       try {
         const randomDelay = Math.random() * 2000;
         await new Promise(resolve => setTimeout(resolve, randomDelay));
-
         typingEl.textContent = 'Selina is typing...';
 
         const response = await fetch('https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            message: userMessage,
-            type: 'user'
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userMessage, type: 'user' })
         });
 
-        if (!response.ok) {
-          throw new Error('API call failed');
-        }
-
+        if (!response.ok) throw new Error('API call failed');
         const data = await response.json();
         typingEl.textContent = '';
 
@@ -331,48 +248,50 @@ const WaitingRoom: React.FC = () => {
       } catch (error) {
         console.error('Error:', error);
         typingEl.textContent = '';
-        addMessage("Apologies, im having trouble connecting please try again!", 'host', 'Selina', false);
+        addMessage("Sorry having trouble connecting. try again!", 'host', 'Selina', false);
       }
     }
 
-    // random viewer count for fun
-    let currentViewers = 41;
-    const viewerInterval = setInterval(() => {
-      const change = Math.random() < 0.5 ? -1 : 1;
-      currentViewers = Math.max(40, Math.min(50, currentViewers + change));
-      const viewerCountEl = document.getElementById('viewerCount');
-      if (viewerCountEl) {
-        viewerCountEl.textContent = `${currentViewers} waiting`;
-      }
-    }, 5000);
-
-    // Kick off some random user lines
-    setTimeout(() => {
-      addMessage("well get started in about a minute", 'host', 'Selina', true);
-      scheduleLocationMessages();
-      scrollToBottom(chatEl);
-    }, 4000);
-
-    // On user pressing Enter
+    // Listen for user pressing Enter => new user message
     function handleKeypress(e: KeyboardEvent) {
       if (!inputEl) return;
       if (e.key === 'Enter' && inputEl.value.trim()) {
         const userMessage = inputEl.value.trim();
         inputEl.value = '';
-
         addMessage(userMessage, 'user', 'You', false);
         handleHostResponse(userMessage, false);
       }
     }
     inputEl.addEventListener('keypress', handleKeypress);
 
-    // Cleanup
+    // ====== RANDOM AUTO MESSAGES ======
+    let totalDelay = 3000; // start after 3s
+    scheduledMessages.forEach((msg) => {
+      const randomInterval = 5000 + Math.random() * 10000; // 5-15 sec
+      totalDelay += randomInterval;
+      // If totalDelay < 900000 ms (15 min), schedule it
+      if (totalDelay < 900000) {
+        setTimeout(() => {
+          addMessage(msg, 'user', randomName(), true);
+        }, totalDelay);
+      }
+    });
+
+    function randomName() {
+      const possibleNames = [
+        "Alice", "Brandon", "Carol", "Derek", "Eva", "Felix", "Georgia", "Harold",
+        "Ivy", "Jamal", "Kara", "Leo", "Mona", "Nate", "Olga", "Priya", "Quinn",
+        "Ronan", "Sasha", "Tina", "Umar", "Vivian", "Wes", "Xander", "Yvonne", "Zack",
+        "Kai", "Zara"
+      ];
+      return possibleNames[Math.floor(Math.random() * possibleNames.length)];
+    }
+
+    // Cleanup on unmount
     return () => {
       chatEl.removeEventListener('scroll', handleScroll);
       toggleEl.removeEventListener('change', handleToggleChange);
       inputEl.removeEventListener('keypress', handleKeypress);
-
-      clearInterval(viewerInterval);
       if (socketRef.current) {
         socketRef.current.close();
         socketRef.current = null;
@@ -380,191 +299,247 @@ const WaitingRoom: React.FC = () => {
     };
   }, []);
 
-  // ========== RENDER ==========
+  // ====== MOBILE-ONLY POPUP LOGIC ======
+  useEffect(() => {
+    // Quick check for mobile device
+    const isMobile = window.innerWidth <= 768;
+    const popupOverlay = document.getElementById('popupOverlay');
+
+    if (popupOverlay && isMobile) {
+      // Show the overlay
+      popupOverlay.style.display = 'flex';
+    }
+  }, []);
+
+  // ====== RENDER ======
   return (
-    <div className={styles.pageBackground}>
-      {/* The zoom-like container */}
-      <div className={styles.zoomContainer}>
-        {/* Top Bar */}
-        <div className={styles.zoomTopBar}>
-          {/* Left side: dot + title */}
-          <div className={styles.zoomLeftHeader}>
-            <div className={styles.zoomLiveDot}></div>
-            <div className={styles.zoomTitle}>PrognosticAI Advanced Training</div>
-          </div>
-          {/* Right side: "Live webinar [date]" or "Your webinar begins in..." 
-              We will do: "Your webinar begins in X" here for now */}
-          <div className={styles.zoomRightHeader}>
-            Live webinar today 
+    <>
+      {/* The iMessage-like overlay for mobile users */}
+      <div className={styles.exitOverlay} id="popupOverlay">
+        <div className={styles.iphoneMessageBubble}>
+          <button className={styles.exitCloseBtn} id="closeBtn">&times;</button>
+          <div className={styles.iphoneSender}>System</div>
+          <div className={styles.iphoneMessageText}>
+            We recommend joining from a computer for the best experience.
+            Please check your email for the link and open it on a desktop.
           </div>
         </div>
-
-        {/* MAIN 2-COLUMN LAYOUT */}
-        <div className={styles.twoColumnWrapper}>
-
-          {/* LEFT: spinner, countdown, bullets */}
-          <div className={styles.leftColumn}>
-
-            {/* Countdown / big text */}
-            <div>
-              <div className={styles.countdownText}>
-                Your webinar begins in{' '}
-                <span className={styles.countdownTime}>{countdownText}</span>
-              </div>
-              <div className={styles.motivationalTagline}>
-                Get ready to transform your marketing strategy!
-              </div>
-            </div>
-
-            {/* Spinner + "We are preparing..." */}
-            <div className={styles.webinarLoading}>
-              <div className={styles.loadingContainer}>
-                <div className={styles.loadingSpinner}></div>
-                <p className={styles.loadingText}>
-                  We are preparing the webinar... grab a notepad and pen while you wait!
-                </p>
-              </div>
-            </div>
-
-            <hr className={styles.lightDivider} />
-
-            {/* "You will learn..." */}
-            <p className={styles.bulletsTitle}><strong>You will learn...</strong></p>
-            <ul className={styles.bulletsList}>
-              <li>
-                <div className={styles.benefit-icon}></div>
-                <span>How PrognosticAI personalizes your marketing funnels</span>
-              </li>
-              <li>
-                <div className={styles.benefit-icon}></div>
-                <span>Tips for advanced retargeting strategies</span>
-              </li>
-              <li>
-                <div className={styles.benefit-icon}></div>
-                <span>Free resources to scale your funnel</span>
-              </li>
-            </ul>
-
-            {/* "Set a reminder" button */}
-            {reminderLink && (
-              <a
-                href={reminderLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.reminderLink}
-              >
-                Set a Reminder (Add to Google Calendar)
-              </a>
-            )}
-          </div>
-
-          {/* RIGHT: chat */}
-          <div className={styles.rightColumn}>
-            <div className={styles.chatSection}>
-              <div className={styles.chatHeader}>
-                <div className={styles.headerTop}>
-                  <span className={styles.chatTitle}>Live Chat</span>
-                  <div className={styles.toggleContainer}>
-                    <label className={styles.toggleSwitch}>
-                      <input
-                        ref={participantToggleRef}
-                        type="checkbox"
-                        id="participantToggle"
-                      />
-                      <span className={styles.toggleSlider}></span>
-                    </label>
-                    <span className={styles.toggleLabel}>Show Others</span>
-                  </div>
-                  <span className={styles.viewerCount}>
-                    <i>👥</i>
-                    <span id="viewerCount">41 waiting</span>
-                  </span>
-                </div>
-              </div>
-              <div
-                className={styles.chatMessages}
-                id="chatMessages"
-                ref={chatMessagesRef}
-              ></div>
-              <div className={styles.chatInput}>
-                <input
-                  type="text"
-                  placeholder="Type your message here..."
-                  id="messageInput"
-                  ref={messageInputRef}
-                />
-                <div
-                  className={styles.typingIndicator}
-                  id="typingIndicator"
-                  ref={typingIndicatorRef}
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* SINGLE COLUMN UNDERNEATH */}
-        <div className={styles.nextStepsWrapper}>
-          {/* Here's what you should do now box */}
-          <div className={styles.nextStepsBox}>
-            <strong>Heres what you should do now:</strong>
-            <br/>
-            1. Be sure to take notes and ask questions in the chat  
-            <br/>
-            2. Keep an open mind for how these strategies can scale your funnel  
-            <br/>
-            3. Engage with fellow entrepreneurs here in the chat  
-          </div>
-
-          {/* Two Host columns */}
-          <div className={styles.hostsContainer}>
-            {/* Host 1: Kyle Campbell */}
-            <div className={styles.hostCol}>
-              <img
-                src="https://via.placeholder.com/60?text=Kyle"
-                alt="Kyle"
-                className={styles.hostImg}
-              />
-              <div className={styles.hostInfo}>
-                <div className={styles.hostName}>Kyle Campbell</div>
-                <div className={styles.hostTitle}>Co-Founder & Marketing Expert</div>
-                <div className={styles.hostBio}>
-                  Kyle helps scale businesses with AI-driven funnels. He brings experience from top tech brands and loves seeing new entrepreneurs win big.
-                </div>
-              </div>
-            </div>
-
-            {/* Host 2: Selina Harris */}
-            <div className={styles.hostCol}>
-              <img
-                src="https://via.placeholder.com/60?text=Selina"
-                alt="Selina"
-                className={styles.hostImg}
-              />
-              <div className={styles.hostInfo}>
-                <div className={styles.hostName}>Selina Harris</div>
-                <div className={styles.hostTitle}>Head of AI Development</div>
-                <div className={styles.hostBio}>
-                  Selina leads PrognosticAI's advanced R&D. She merges data science with marketing psychology to help you supercharge your conversions.
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Auto-redirect message */}
-          <div className={styles.redirectRow}>
-            <div className={styles.mailIcon}>✉️</div>
-            <div className={styles.redirectMsg}>
-              You will be automatically redirected. If you are on a mobile device, please check your email from a computer to ensure access.
-            </div>
-          </div>
-        </div>
-
       </div>
 
-      {/* FOOTER - outside the box */}
-      <div className={styles.footerContainer}>© 2025 PrognosticAI</div>
-    </div>
+      <div className={styles.bodyBackground}>
+        {/* The main Zoom-like White Box */}
+        <div className={styles.zoomContainer}>
+
+          {/* Top bar */}
+          <div className={styles.zoomTopBar}>
+            <span className={styles.zoomLiveSoonText}>LIVE SOON</span>
+            <div className={styles.zoomTitle}>PrognosticAI Advanced Training</div>
+            <div className={styles.awh2024Header}>
+              Live webinar {webinarDate}
+            </div>
+          </div>
+
+          {/* Two Columns */}
+          <div className={styles.twoColumnLayout}>
+            
+            {/* LEFT COLUMN (60%) */}
+            <div className={styles.previewColumn}>
+              <div className={styles.countdownWrapper}>
+                <p className={styles.countdownLine}>
+                  Your webinar begins in <strong className={styles.timerHighlight}>{countdownText}</strong>
+                </p>
+                <div className={styles.motivationalTagline}>
+                  Get ready to transform your marketing strategy!
+                </div>
+              </div>
+
+              <div className={styles.webinarLoading}>
+                <div className={styles.loadingContainer}>
+                  <div className={styles.loadingSpinner}></div>
+                  <p className={styles.loadingText}>
+                    We are preparing the webinar...
+                    grab a notepad and pen while you wait!
+                  </p>
+                </div>
+              </div>
+
+              <p className={styles.bulletsTitle}>
+                <strong>You will learn...</strong>
+              </p>
+              <ul className={styles.bulletsList}>
+                <li>How PrognosticAI personalizes your marketing funnels</li>
+                <li>Tips for advanced retargeting strategies</li>
+                <li>Free resources to scale your funnel</li>
+              </ul>
+            </div>
+
+            {/* RIGHT COLUMN (40%) - Chat box */}
+            <div className={styles.signupColumn}>
+              <div className={styles.chatSection}>
+                <div className={styles.chatHeader}>
+                  <div className={styles.headerTop}>
+                    <span className={styles.chatTitle}>Live Chat</span>
+                    <div className={styles.toggleContainer}>
+                      <label className={styles.toggleSwitch}>
+                        <input
+                          ref={participantToggleRef}
+                          type="checkbox"
+                          id="participantToggle"
+                        />
+                        <span className={styles.toggleSlider}></span>
+                      </label>
+                      <span className={styles.toggleLabel}>Show Others</span>
+                    </div>
+                    <span className={styles.viewerCount}>
+                      <i>👥</i>
+                      <span>41 waiting</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Actual chat messages area */}
+                <div
+                  className={styles.chatMessages}
+                  id="chatMessages"
+                  ref={chatMessagesRef}
+                ></div>
+
+                {/* Input box & typing indicator */}
+                <div className={styles.chatInput}>
+                  <input
+                    type="text"
+                    placeholder="Type your message here..."
+                    id="messageInput"
+                    ref={messageInputRef}
+                  />
+                  <div
+                    className={styles.typingIndicator}
+                    id="typingIndicator"
+                    ref={typingIndicatorRef}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Single-column area BELOW the two columns */}
+          <div className={styles.nextStepsBox}>
+            <h3 className={styles.nextStepsHeading}>HERE IS WHAT YOU SHOULD DO NOW</h3>
+
+            {/* Example of checkmark bullets using .benefit-icon, as requested */}
+            <div className={styles.benefitItem}>
+              <div className={styles.benefitIcon}></div>
+              <div className={styles.benefitText}>
+                Block out 1.5 hours. Add it to your calendar or set a reminder. 
+              </div>
+            </div>
+            <div className={styles.benefitItem}>
+              <div className={styles.benefitIcon}></div>
+              <div className={styles.benefitText}>
+                Show up early and attend live. No recordings. Arrive at least 5 min early.
+              </div>
+            </div>
+            <div className={styles.benefitItem}>
+              <div className={styles.benefitIcon}></div>
+              <div className={styles.benefitText}>
+                Use a desktop computer (Mac or Windows). Mobile can be glitchy.
+              </div>
+            </div>
+            <div className={styles.benefitItem}>
+              <div className={styles.benefitIcon}></div>
+              <div className={styles.benefitText}>
+                Get the 3 secret AI tools we are giving away. Show up live to grab them!
+              </div>
+            </div>
+
+            <div className={styles.webinarDateTime}>
+              {webinarDate}, {webinarTime}
+              <div className={styles.timezoneNote}>
+                Mountain Time (US &amp; Canada) GMT -7
+              </div>
+            </div>
+
+            {/* "Set reminder" button */}
+            <a
+              className={styles.reminderLink}
+              href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=PrognosticAI+Webinar&dates=20250112T230000Z/20250112T000000Z&details=Join+PrognosticAI+webinar`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Set reminder
+            </a>
+
+            <div className={styles.linkNoticeRow}>
+              <div className={styles.noticeIcon}>
+                <span>✉</span>
+              </div>
+              <p style={{ margin: 0 }}>
+                You will be automatically redirected at start time. If you are on mobile, 
+                please also check your email from a desktop.
+              </p>
+            </div>
+          </div>
+
+          {/* Under that: two columns for Kyle & Selina */}
+          <div className={styles.hostsRow}>
+            <div className={styles.hostCard}>
+              <img
+                src="https://i.ibb.co/rGNvSw9/78-Klwbhtn4ags-B0k-Lplo1701987382.png"
+                alt="Kyle Campbell"
+                className={styles.hostImage}
+              />
+              <div>
+                <div className={styles.hostName}>Kyle Campbell</div>
+                <div className={styles.hostTitle}>Webinar Host</div>
+              </div>
+            </div>
+            <div className={styles.hostCard}>
+              <img
+                src="https://i.ibb.co/NWZQXfV/1-Zi961cr56d-Nrw-Onim8j1701987437.png"
+                alt="Selina Harris"
+                className={styles.hostImage}
+              />
+              <div>
+                <div className={styles.hostName}>Selina Harris</div>
+                <div className={styles.hostTitle}>Webinar Host</div>
+              </div>
+            </div>
+          </div>
+
+          {showBadge && (
+            <span className={styles.liveSoonBadge}>
+              {/* We are removing the bottom "LIVE SOON" per instructions, 
+                  so we only render this if you need a badge somewhere else. */}
+            </span>
+          )}
+
+          <div className={styles.customFooter}>
+            © 2025 PrognosticAI
+          </div>
+        </div>
+      </div>
+
+      {/* Minimal inline script to close mobile pop-up */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function(){
+              const popupOverlay = document.getElementById('popupOverlay');
+              const closeBtn = document.getElementById('closeBtn');
+              if(!popupOverlay || !closeBtn) return;
+              closeBtn.addEventListener('click', () => {
+                popupOverlay.style.display = 'none';
+              });
+              popupOverlay.addEventListener('click', (e) => {
+                if(e.target === popupOverlay) {
+                  popupOverlay.style.display = 'none';
+                }
+              });
+            })();
+          `
+        }}
+      />
+    </>
   );
 };
 
