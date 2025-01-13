@@ -1,19 +1,21 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import styles from "./WebinarView.module.css";
+import "./WebinarView.module.css";
 // import { clearInterval } from "timers";
 
 // For the chat logic
-interface ChatMessage {
-  text: string;
-  type: "user" | "host" | "system";
-  userName?: string;
-}
+// interface ChatMessage {
+//   text: string;
+//   type: "user" | "host" | "system";
+//   userName?: string;
+// }
 
 const WebinarView: React.FC = () => {
   // ------------------ Refs ------------------
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRefTwo = useRef<HTMLAudioElement | null>(null);
   const messageToneRef = useRef<HTMLAudioElement | null>(null);
 
   // ------------------ States ------------------
@@ -80,6 +82,10 @@ const WebinarView: React.FC = () => {
           if (audioRef.current && data.audio_link) {
             audioRef.current.src = data.audio_link;
           }
+
+          if (audioRefTwo.current && data.audio_link_two) {
+            audioRefTwo.current.src = data.audio_link_two;
+          }
           // exit message
           if (data.exit_message) {
             setExitMessage(data.exit_message);
@@ -107,7 +113,7 @@ const WebinarView: React.FC = () => {
       clearTimeout(connectTimer);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [safePlayAudio]);
+  }, [safePlayAudio, connecting]);
 
   // =====================================================
   // 2) "Live for X minutes" label
@@ -123,21 +129,33 @@ const WebinarView: React.FC = () => {
   }, [connecting]);
 
   // =====================================================
-  // 3) Audio playback at 3s of the video
+  // 3) Audio playback at 3s and 5s of the video
   // =====================================================
   useEffect(() => {
     const vid = videoRef.current;
-    if (!vid || !audioRef.current) return;
+    if (!vid || !audioRef.current || !audioRefTwo.current) return;
 
     function handleTimeUpdate() {
-      if (vid.currentTime >= 3) {
+      if (vid && vid.currentTime >= 3) {
         safePlayAudio(audioRef.current);
         vid?.removeEventListener("timeupdate", handleTimeUpdate);
       }
     }
+
+    function handleSecondAudio() {
+      const secondAudioTime = 5; // Change this value to adjust when second audio plays (in seconds)
+      if (vid && vid.currentTime >= secondAudioTime) {
+        safePlayAudio(audioRefTwo.current);
+        vid?.removeEventListener("timeupdate", handleSecondAudio);
+      }
+    }
     vid.addEventListener("timeupdate", handleTimeUpdate);
-    return () => vid.removeEventListener("timeupdate", handleTimeUpdate);
-  }, [safePlayAudio]);
+    vid.addEventListener("timeupdate", handleSecondAudio);
+    return () => {
+      vid.removeEventListener("timeupdate", handleTimeUpdate);
+      vid.removeEventListener("timeupdate", handleSecondAudio);
+    };
+  }, [safePlayAudio, connecting]);
 
   // =====================================================
   // 4) Exit-intent
@@ -174,6 +192,7 @@ const WebinarView: React.FC = () => {
   // =====================================================
   // 6) Clock widget (drag in at 10s, out ~20s)
   // =====================================================
+
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
@@ -204,8 +223,11 @@ const WebinarView: React.FC = () => {
     }
 
     function handleTimeUpdate() {
-      if (vid.currentTime >= 10 && !showClockWidget && !clockRemoved) {
+      if (vid && vid.currentTime >= 10 && !showClockWidget && !clockRemoved) {
         setShowClockWidget(true);
+        startClockUpdates();
+      }
+      if (showClockWidget && !clockRemoved) {
         startClockUpdates();
       }
     }
@@ -215,7 +237,7 @@ const WebinarView: React.FC = () => {
       vid.removeEventListener("timeupdate", handleTimeUpdate);
       stopClockUpdates();
     };
-  }, [showClockWidget, clockRemoved]);
+  }, [showClockWidget, clockRemoved, connecting]);
 
   useEffect(() => {
     // Once the dragIn completes, wait 10s, then dragOut
@@ -255,7 +277,7 @@ const WebinarView: React.FC = () => {
   }
 
   return (
-    <div className={styles.container}>
+    <div className="d-flex flex-column w-100 ">
       {/* Hidden audios */}
       <audio
         ref={messageToneRef}
@@ -263,6 +285,7 @@ const WebinarView: React.FC = () => {
         style={{ display: "none" }}
       />
       <audio ref={audioRef} style={{ display: "none" }} />
+      <audio ref={audioRefTwo} style={{ display: "none" }} />
 
       {/* Exit Overlay */}
       {showExitOverlay &&
@@ -317,7 +340,7 @@ const WebinarView: React.FC = () => {
                 muted={!hasInteracted}
                 playsInline
                 controls={false}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                className={styles.videoPlayer}
               >
                 <source
                   src="https://paivid.s3.us-east-2.amazonaws.com/homepage222.mp4"
@@ -341,6 +364,16 @@ const WebinarView: React.FC = () => {
                   <div className={styles.soundText}>Click to Enable Sound</div>
                 </div>
               )}
+              {/* Clock widget floating */}
+              {showClockWidget && (
+                <ClockWidget
+                  currentTime={currentTimeString}
+                  currentDate={currentDateObj}
+                  dragInComplete={clockDragInComplete}
+                  setDragInComplete={setClockDragInComplete}
+                  clockRemoved={clockRemoved}
+                />
+              )}
             </div>
           </div>
 
@@ -350,17 +383,6 @@ const WebinarView: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Clock widget floating */}
-      {showClockWidget && (
-        <ClockWidget
-          currentTime={currentTimeString}
-          currentDate={currentDateObj}
-          dragInComplete={clockDragInComplete}
-          setDragInComplete={setClockDragInComplete}
-          clockRemoved={clockRemoved}
-        />
-      )}
 
       {/* Subtle copyright at bottom */}
       <footer className={styles.footer}>
@@ -445,47 +467,48 @@ const ClockWidget: React.FC<{
   //   useState<NodeJS.Timeout | null>(null);
 
   // The random "human" wobble
-  const addNaturalMovement = useCallback(() => {
-    if (!widgetRef.current) return 0 as unknown as NodeJS.Timer;
-    let baseX = 0;
-    let baseY = 0;
-    let velocityX = 0;
-    let velocityY = 0;
-    let lastTime = Date.now();
+  // const addNaturalMovement = useCallback(() => {
+  //   console.log("add natural movement", widgetRef.current);
+  //   if (!widgetRef.current) return 0 as unknown as NodeJS.Timer;
+  //   let baseX = 0;
+  //   let baseY = 0;
+  //   let velocityX = 0;
+  //   let velocityY = 0;
+  //   let lastTime = Date.now();
 
-    return setInterval(() => {
-      const currentTimeMs = Date.now();
-      const deltaTime = (currentTimeMs - lastTime) / 1000;
-      lastTime = currentTimeMs;
+  //   return setInterval(() => {
+  //     const currentTimeMs = Date.now();
+  //     const deltaTime = (currentTimeMs - lastTime) / 1000;
+  //     lastTime = currentTimeMs;
 
-      // random accel
-      const accX = (Math.random() - 0.5) * 1.5;
-      const accY = (Math.random() - 0.5) * 1.5;
+  //     // random accel
+  //     const accX = (Math.random() - 0.5) * 1.5;
+  //     const accY = (Math.random() - 0.5) * 1.5;
 
-      velocityX = velocityX * 0.95 + accX * deltaTime;
-      velocityY = velocityY * 0.95 + accY * deltaTime;
+  //     velocityX = velocityX * 0.95 + accX * deltaTime;
+  //     velocityY = velocityY * 0.95 + accY * deltaTime;
 
-      baseX += velocityX;
-      baseY += velocityY;
+  //     baseX += velocityX;
+  //     baseY += velocityY;
 
-      // subtle sinusoidal
-      const wobbleX = Math.sin(currentTimeMs * 0.002) * 0.3;
-      const wobbleY = Math.cos(currentTimeMs * 0.002) * 0.3;
+  //     // subtle sinusoidal
+  //     const wobbleX = Math.sin(currentTimeMs * 0.002) * 0.3;
+  //     const wobbleY = Math.cos(currentTimeMs * 0.002) * 0.3;
 
-      widgetRef.current!.style.transform = `translate(${baseX + wobbleX}px, ${
-        baseY + wobbleY
-      }px)`;
-    }, 16);
-  }, []);
+  //     widgetRef.current!.style.transform = `translate(${baseX + wobbleX}px, ${
+  //       baseY + wobbleY
+  //     }px)`;
+  //   }, 16);
+  // }, []);
 
   const handleAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
-    if (e.animationName === styles.dragInKeyframeName) {
+    if (e.animationName.includes("dragIn")) {
       setDragInComplete(true);
 
       // Start "human wobble"
-      const intId = addNaturalMovement();
-      setMovementIntervalId(intId);
-    } else if (e.animationName === styles.dragOutKeyframeName) {
+      // const intId = addNaturalMovement();
+      // setMovementIntervalId(intId);
+    } else if (e.animationName.includes("dragOut")) {
       // No specific logic needed after the final fade out
     }
   };
@@ -556,7 +579,7 @@ const WebinarChatBox: React.FC = () => {
 
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   // Show Others defaults OFF
-  const [showParticipants, setShowParticipants] = useState(false);
+  // const [showParticipants, setShowParticipants] = useState(false);
 
   useEffect(() => {
     const chatEl = chatMessagesRef.current;
@@ -583,12 +606,14 @@ const WebinarChatBox: React.FC = () => {
     // Scroll helpers
     function isNearBottom() {
       const threshold = 50;
+      if (!chatEl) return false;
       return (
         chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop <=
         threshold
       );
     }
     function scrollToBottom() {
+      if (!chatEl) return;
       chatEl.scrollTop = chatEl.scrollHeight;
     }
     function handleScroll() {
@@ -598,14 +623,14 @@ const WebinarChatBox: React.FC = () => {
 
     // Toggle show/hide
     function handleToggle() {
-      setShowParticipants(toggleEl.checked);
-      const participantMsgs = chatEl.querySelectorAll(
+      // setShowParticipants(toggleEl.checked);
+      const participantMsgs = chatEl?.querySelectorAll(
         '[data-participant="true"]'
       );
-      participantMsgs.forEach((m) => {
-        (m as HTMLElement).style.display = toggleEl.checked ? "block" : "none";
+      participantMsgs?.forEach((m) => {
+        (m as HTMLElement).style.display = toggleEl?.checked ? "block" : "none";
       });
-      if (toggleEl.checked && !isUserScrolling) {
+      if (toggleEl?.checked && !isUserScrolling) {
         scrollToBottom();
       }
     }
@@ -635,12 +660,12 @@ const WebinarChatBox: React.FC = () => {
       if (msgType === "user" && userName && userName !== "You") {
         div.setAttribute("data-participant", "true");
         // hide if toggle is off
-        if (!toggleEl.checked) {
+        if (!toggleEl?.checked) {
           div.style.display = "none";
         }
       }
 
-      chatEl.appendChild(div);
+      chatEl?.appendChild(div);
 
       if (autoScroll || userName === "You") {
         if (!isUserScrolling) {
@@ -848,7 +873,7 @@ const WebinarChatBox: React.FC = () => {
     }, 5000);
 
     // Special offer after 60s
-    setTimeout(() => {
+    const specialOfferTimeout = setTimeout(() => {
       specialOfferEl.style.display = "block";
       addMessage(
         "🚨 Special Offer Alert! For the next 10 minutes only, secure your spot in PrognosticAI for just $999. Don't miss out! 🚀",
@@ -879,7 +904,7 @@ const WebinarChatBox: React.FC = () => {
       try {
         const randomDelay = Math.random() * 4000;
         await new Promise((res) => setTimeout(res, randomDelay));
-        typingEl.textContent = "Selina is typing...";
+        if (typingEl) typingEl.textContent = "Selina is typing...";
 
         const resp = await fetch(
           "https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message",
@@ -891,13 +916,13 @@ const WebinarChatBox: React.FC = () => {
         );
         if (!resp.ok) throw new Error("API call failed");
         const data = await resp.json();
-        typingEl.textContent = "";
+        if (typingEl) typingEl.textContent = "";
         if (data.response) {
           addMessage(data.response, "host", "Selina (Host)", true);
         }
       } catch (err) {
         console.error("Error:", err);
-        typingEl.textContent = "";
+        if (typingEl) typingEl.textContent = "";
         addMessage(
           "Apologies, I'm having trouble connecting. Please try again!",
           "host",
@@ -909,7 +934,7 @@ const WebinarChatBox: React.FC = () => {
 
     // On user pressing Enter
     function handleKeyPress(e: KeyboardEvent) {
-      if (e.key === "Enter" && inputEl.value.trim()) {
+      if (e.key === "Enter" && inputEl?.value.trim()) {
         const userMsg = inputEl.value.trim();
         inputEl.value = "";
         addMessage(userMsg, "user", "You", false);
@@ -926,6 +951,7 @@ const WebinarChatBox: React.FC = () => {
       if (socketRef.current) {
         socketRef.current.close();
       }
+      clearTimeout(specialOfferTimeout);
       clearInterval(investInterval);
       clearInterval(viewerInterval);
     };
