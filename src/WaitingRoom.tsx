@@ -430,7 +430,7 @@ const preloadedQuestions = [
                 <div className={styles.hostTitle}>Webinar Host</div>
                 {/* ADDED new text for Kyle, not bold or colored differently */}
                 <div className={styles.hostSubtitle}>
-                  Stop losing sales—In {countdownText} Kyle will begin revealing the secret new AI
+                  In {countdownText}, Kyle will reveal the secret new AI
                   that took him from rock bottom to $1M+ in 44 weeks.
                 </div>
               </div>
