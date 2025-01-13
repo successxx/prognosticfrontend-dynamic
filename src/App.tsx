@@ -65,7 +65,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="wrapper pt-4">
+    <div className="wrapper py-4">
       <Header />
       <hr id="divider02" className="hr-custom" />
 
@@ -89,18 +89,21 @@ const App: React.FC = () => {
                 <WaitingRoom />
               ) : (
                 // 4) Otherwise, show the actual webinar code
-                <div
-                  className={`d-flex w-100 justify-content-center fade-in ${
-                    isContentVisible ? "visible" : ""
-                  }`}
-                >
-                  <WebinarView />
-                  <div className="row justify-content-center mt-4">
+                <div className="d-flex flex-column w-100 justify-content-center">
+                  <div
+                    className={`d-flex w-100 justify-content-center fade-in ${
+                      isContentVisible ? "visible" : ""
+                    }`}
+                  >
+                    <WebinarView />
+
+                    <Fireworks />
+                  </div>
+                  <div className="streak-container row justify-content-center mt-5">
                     <div className="col-12 col-sm-6 text-center">
                       <StreakCounter streak={streak} />
                     </div>
                   </div>
-                  <Fireworks />
                 </div>
               )}
             </>

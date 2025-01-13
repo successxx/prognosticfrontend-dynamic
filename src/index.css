@@ -1,8 +1,9 @@
 body {
   font-family: "Montserrat", sans-serif;
   background-image: linear-gradient(to bottom right, #f0f4f8, #e6ebf0);
+
   margin: 0;
-  padding: 40px 0;
+  padding: 0 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -12,6 +13,7 @@ body {
 
 .root {
   width: 80%;
+  min-height: 100vh;
 }
 
 #wrapper {
@@ -279,6 +281,10 @@ body {
   display: none;
 }
 
+.streak-container {
+  position: relative;
+}
+
 .streak-counter {
   font-size: 20px;
   font-weight: 600;
@@ -291,7 +297,7 @@ body {
   transition: all 0.5s ease-in-out;
   z-index: 2;
   position: absolute;
-  bottom: -60px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -709,7 +715,7 @@ strong {
   transition: all 0.5s ease-in-out;
   z-index: 2;
   position: absolute;
-  bottom: -60px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
 }

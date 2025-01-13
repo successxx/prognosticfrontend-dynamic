@@ -284,8 +284,16 @@ const WebinarView: React.FC = () => {
         src="https://cdn.freesound.org/previews/613/613258_5674468-lq.mp3"
         style={{ display: "none" }}
       />
-      <audio ref={audioRef} style={{ display: "none" }} />
-      <audio ref={audioRefTwo} style={{ display: "none" }} />
+      <audio
+        ref={audioRef}
+        muted={!hasInteracted}
+        style={{ display: "none" }}
+      />
+      <audio
+        ref={audioRefTwo}
+        muted={!hasInteracted}
+        style={{ display: "none" }}
+      />
 
       {/* Exit Overlay */}
       {showExitOverlay &&
@@ -348,6 +356,16 @@ const WebinarView: React.FC = () => {
                 />
                 Your browser does not support HTML5 video.
               </video>
+              {/* Clock widget floating */}
+              {showClockWidget && (
+                <ClockWidget
+                  currentTime={currentTimeString}
+                  currentDate={currentDateObj}
+                  dragInComplete={clockDragInComplete}
+                  setDragInComplete={setClockDragInComplete}
+                  clockRemoved={clockRemoved}
+                />
+              )}
 
               {!hasInteracted && (
                 <div
@@ -363,16 +381,6 @@ const WebinarView: React.FC = () => {
                   <div className={styles.soundIcon}>🔊</div>
                   <div className={styles.soundText}>Click to Enable Sound</div>
                 </div>
-              )}
-              {/* Clock widget floating */}
-              {showClockWidget && (
-                <ClockWidget
-                  currentTime={currentTimeString}
-                  currentDate={currentDateObj}
-                  dragInComplete={clockDragInComplete}
-                  setDragInComplete={setClockDragInComplete}
-                  clockRemoved={clockRemoved}
-                />
               )}
             </div>
           </div>
