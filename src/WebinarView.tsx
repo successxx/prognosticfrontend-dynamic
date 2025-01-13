@@ -286,7 +286,7 @@ const WebinarView: React.FC = () => {
       />
       <audio
         ref={audioRef}
-        muted={!hasInteracted}
+        // muted={!hasInteracted} // enable this when you want the audio to be muted until video is muted
         style={{ display: "none" }}
       />
       <audio
@@ -375,6 +375,9 @@ const WebinarView: React.FC = () => {
                     if (videoRef.current) {
                       videoRef.current.muted = false;
                       videoRef.current.play().catch(() => {});
+                    }
+                    if (audioRefTwo.current) {
+                      audioRefTwo.current.muted = false;
                     }
                   }}
                 >
