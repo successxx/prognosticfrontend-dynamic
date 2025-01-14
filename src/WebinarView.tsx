@@ -157,8 +157,7 @@ const WebinarView: React.FC = () => {
     }
     function handleSecondAudio() {
       // At 5s
-      const secondAudioTime = 5;
-      if (vid.currentTime >= secondAudioTime) {
+      if (vid.currentTime >= 5) {
         safePlayAudio(audioRefTwo.current);
         vid.removeEventListener("timeupdate", handleSecondAudio);
       }
@@ -206,7 +205,7 @@ const WebinarView: React.FC = () => {
   }, []);
 
   // =====================================================
-  // 6) Clock widget (drag in at 10s, out ~20s) EXACT
+  // 6) Clock widget (drag in at 10s, out ~20s)
   // =====================================================
   useEffect(() => {
     const vid = videoRef.current;
@@ -224,12 +223,10 @@ const WebinarView: React.FC = () => {
         })
       );
     }
-
     function startClockUpdates() {
       updateClock();
       clockIntervalRef.current = setInterval(updateClock, 1000);
     }
-
     function stopClockUpdates() {
       if (clockIntervalRef.current) {
         clearInterval(clockIntervalRef.current as unknown as number);
@@ -283,7 +280,7 @@ const WebinarView: React.FC = () => {
     // Start the offer at 45 min => 2700000 ms
     const specialOfferTimeout = setTimeout(() => {
       setOfferActive(true);
-    }, 2700000); // 45 minutes
+    }, 2700000);
 
     // Start invests at 46 min => 2760000 ms
     const investsStartTimeout = setTimeout(() => {
@@ -313,7 +310,7 @@ const WebinarView: React.FC = () => {
       }, timeMs);
     });
 
-    // periodically check investsQueue for grouping in chat
+    // periodically check investsQueue for grouping
     setInterval(() => {
       processInvestsQueue();
     }, Math.floor(Math.random() * 4 + 6) * 60 * 1000);
@@ -417,7 +414,7 @@ const WebinarView: React.FC = () => {
     return names[Math.floor(Math.random() * names.length)];
   }
 
-  // Show invests as Jony Ive style (tasteful exclamation, no emojis)
+  // Show invests (Jony Ive style, no emojis)
   function showInvestNotif(userName: string) {
     const container = document.createElement("div");
     container.className = styles.investNotification;
@@ -797,8 +794,7 @@ const ClockWidget: React.FC<{
 };
 
 // ------------------------------------------------------------------
-// Chat Box with pinned poll, offers, invests, etc.
-// WebSocket chat exactly as old snippet, plus poll features
+// Chat Box w/ poll, invests, random attendees, preloaded Qs, etc.
 // ------------------------------------------------------------------
 interface ChatBoxProps {
   pollVisible: boolean;
@@ -829,7 +825,7 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
   const socketRef = useRef<WebSocket | null>(null);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
 
-  // Chat logic from old snippet, ensuring we have no collisions
+  // =========== Original Chat Snippet: random messages, invests, Qs
   useEffect(() => {
     const chatEl = chatMessagesRef.current;
     const inputEl = messageInputRef.current;
@@ -853,7 +849,6 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
     }
     chatEl.addEventListener("scroll", handleScroll);
 
-    // Toggle participants
     function handleToggle() {
       const participantMsgs = chatEl.querySelectorAll('[data-participant="true"]');
       participantMsgs.forEach((m) => {
@@ -879,40 +874,158 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
       }
     };
 
-    // Minimal placeholder for typed Q
-    async function handleUserMessage(msg: string) {
-      if (!typingEl) return;
-      typingEl.textContent = "Selina is typing...";
-      try {
-        await wait(Math.random() * 4000 + 1000);
-        typingEl.textContent = "";
-        // Just a placeholder AI response
-        addMessage(
-          "Thanks for the question! We'll cover that in the Q&A later on.",
-          "host",
-          "Selina (Host)"
-        );
-      } catch (err) {
-        console.error(err);
-        typingEl.textContent = "";
+    // Original random messages
+    const names = [
+      "Emma",
+      "Liam",
+      "Olivia",
+      "Noah",
+      "Ava",
+      "Ethan",
+      "Sophia",
+      "Mason",
+      "Isabella",
+      "William",
+      "Mia",
+      "James",
+      "Charlotte",
+      "Benjamin",
+      "Amelia",
+      "Lucas",
+      "Harper",
+      "Henry",
+      "Evelyn",
+      "Alexander",
+    ];
+    const attendeeMessages = [
+      "hows everyone doing today??",
+      "Hi from Seattle! super excited 2 be here",
+      "first time in one of these... hope im not late!",
+      "cant wait to learn more bout this AI stuff 🤓",
+      "hello everyone....joining from australia",
+      "Any1 else here run advanced funnels for clients??",
+      "This looks amazing, can't wait to see more advanced strategies!",
+      "who else uses multi-step funnels with email marketing?",
+      "omg the potential of this is INSANE for scaling funnels",
+      "quick q - will this wrk with shopify or high-level??",
+      "joining late...did i miss anything important???",
+      "im blown away by the capabilities tbh",
+      "this will save me so much time in my funnels",
+      "anyone else do big product launches? this is a game changer",
+      "thx for putting this together!! 🙌",
+      "just got here...hope i didnt miss too much",
+      "can someone explain the pricing again??",
+      "this is exactly what ive been looking for!!1!",
+      "sry if this was covered already but will there b updates?",
+      "im big in affiliate marketing, and this is wild!",
+    ];
+    const preloadedQuestions = [
+      {
+        time: 180,
+        text: "How does this integrate with existing business systems?",
+        user: "Michael",
+      },
+      {
+        time: 300,
+        text: "Can you explain more about the AI capabilities?",
+        user: "Sarah",
+      },
+      { time: 450, text: "Does this work with Zapier?", user: "David" },
+      { time: 600, text: "What kind of ROI can we expect?", user: "Rachel" },
+      {
+        time: 750,
+        text: "How long does implementation typically take?",
+        user: "James",
+      },
+      {
+        time: 900,
+        text: "This is incredible! Can't believe the accuracy levels 🔥",
+        user: "Emma",
+      },
+      {
+        time: 1200,
+        text: "Do you offer enterprise solutions?",
+        user: "Thomas",
+      },
+      { time: 1500, text: "Just amazing how far AI has come!", user: "Lisa" },
+      { time: 1800, text: "What about data security?", user: "Alex" },
+      {
+        time: 2100,
+        text: "Can small businesses benefit from this?",
+        user: "Jennifer",
+      },
+      {
+        time: 2400,
+        text: "The predictive analytics are mind-blowing!",
+        user: "Daniel",
+      },
+      { time: 2700, text: "How often do you release updates?", user: "Sophie" },
+      {
+        time: 3000,
+        text: "Wow, the demo exceeded my expectations!",
+        user: "Ryan",
+      },
+      {
+        time: 3300,
+        text: "What makes PrognosticAI different from competitors?",
+        user: "Maria",
+      },
+    ];
+
+    // Greet
+    setTimeout(() => {
+      addMessage(
+        "Welcome to the PrognosticAI Advanced Training! 👋 Let us know where you're joining from!",
+        "host",
+        "Selina (Host)"
+      );
+      scheduleAttendeeMessages();
+    }, 2000);
+
+    function scheduleAttendeeMessages() {
+      const num = Math.floor(Math.random() * 6) + 15;
+      let delay = 500;
+      for (let i = 0; i < num; i++) {
+        const name = names[Math.floor(Math.random() * names.length)];
+        const msg =
+          attendeeMessages[Math.floor(Math.random() * attendeeMessages.length)];
+        setTimeout(() => {
+          addMessage(msg, "user", name, true);
+        }, delay);
+        delay += Math.random() * 1000 + 500;
       }
     }
 
-    // On user pressing Enter
-    function handleKeyPress(e: KeyboardEvent) {
-      if (e.key === "Enter" && inputEl.value.trim()) {
-        const userMsg = inputEl.value.trim();
-        inputEl.value = "";
-        addMessage(userMsg, "user", "You");
-        handleUserMessage(userMsg);
-      }
-    }
-    inputEl.addEventListener("keypress", handleKeyPress);
+    // Preloaded Q's
+    preloadedQuestions.forEach((q) => {
+      setTimeout(() => {
+        addMessage(q.text, "user", q.user);
+        setTimeout(() => {
+          typingEl.textContent = "Selina is typing...";
+          const randomDelay = Math.random() * 10000 + 10000;
+          setTimeout(() => {
+            typingEl.textContent = "";
+          }, randomDelay);
+        }, 1000);
+      }, q.time * 1000);
+    });
 
+    // Viewer count
+    let currentViewers = 41;
+    const viewerInterval = setInterval(() => {
+      const change = Math.random() < 0.5 ? -1 : 1;
+      currentViewers = Math.max(40, Math.min(50, currentViewers + change));
+      const vCount = document.getElementById("viewerCount");
+      if (vCount) {
+        vCount.textContent = `${currentViewers} watching`;
+      }
+    }, 5000);
+
+    // Cleanup
     return () => {
       chatEl.removeEventListener("scroll", handleScroll);
       toggleEl.removeEventListener("change", handleToggle);
-      inputEl.removeEventListener("keypress", handleKeyPress);
+      clearInterval(viewerInterval);
       if (socketRef.current) {
         socketRef.current.close();
       }
@@ -920,10 +1033,12 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
     // eslint-disable-next-line
   }, []);
 
+  // Reusable function to add message to chat
   function addMessage(
     text: string,
     msgType: "user" | "host" | "system",
-    userName?: string
+    userName?: string,
+    autoScroll = true
   ) {
     if (!chatMessagesRef.current) return;
     const chatEl = chatMessagesRef.current;
@@ -941,14 +1056,46 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
       div.classList.add(styles.system);
     }
 
-    if (userName) {
+    if (userName && userName.trim()) {
       div.textContent = `${userName}: ${text}`;
     } else {
       div.textContent = text;
     }
 
     chatEl.appendChild(div);
-    chatEl.scrollTop = chatEl.scrollHeight;
+
+    // auto-scroll if user typed
+    if (autoScroll || userName === "You") {
+      chatEl.scrollTop = chatEl.scrollHeight;
+    }
+  }
+
+  // Minimal “AI logic” for user messages
+  async function handleUserMessage(msg: string) {
+    if (!typingIndicatorRef.current) return;
+    typingIndicatorRef.current.textContent = "Selina is typing...";
+    try {
+      await wait(Math.random() * 4000 + 1000);
+      typingIndicatorRef.current.textContent = "";
+      addMessage(
+        "Thanks for the question! We'll cover that in the Q&A later on.",
+        "host",
+        "Selina (Host)"
+      );
+    } catch (err) {
+      console.error(err);
+      typingIndicatorRef.current.textContent = "";
+    }
+  }
+
+  // On user pressing enter
+  function onKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter" && e.currentTarget.value.trim()) {
+      const userMsg = e.currentTarget.value.trim();
+      e.currentTarget.value = "";
+      addMessage(userMsg, "user", "You");
+      handleUserMessage(userMsg);
+    }
   }
 
   // Format leftover time for the offer
@@ -1045,6 +1192,7 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
           type="text"
           placeholder="Type your message here..."
           ref={messageInputRef}
+          onKeyPress={onKeyPress}
         />
         <div className={styles.typingIndicator} ref={typingIndicatorRef}></div>
       </div>
