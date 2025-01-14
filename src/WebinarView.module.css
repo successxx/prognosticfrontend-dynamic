@@ -1,12 +1,14 @@
 /* 
    WebinarView.module.css
-   EXACT existing styling retained,
-   with only:
-     - Fullscreen button (bottom-right fade-in)
-     - Poll pinned at top (white, no top corners)
-     - Invest notifications in Jony Ive style
-     - Offer at 45 min (spots, countdown)
-     - Keep clock widget animations EXACT
+
+   This merges:
+   - Your original chat styling with socket
+   - Poll pinned at 20s, invests at 46m, offer at 45m
+   - Jony Ive invests styling
+   - EXACT clock widget animations
+   - Full screen button on hover
+   - Exit-intent bubble & replay overlay
+   - Voice injection kept the same
 */
 
 /**************************************/
@@ -558,7 +560,7 @@
   gap: 5px;
 }
 
-/* Poll container pinned top, white, no top corner radius */
+/* Poll pinned at top (20s in) */
 .pollContainer {
   background: #fff;
   border: 1px solid #ddd;
