@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
-import styles from "./WebinarView.module.css";
-import "./WebinarView.module.css";
+import styles from "./WebinarView.module.css"; 
+// ***** REMOVED the second import "./WebinarView.module.css"; *****
+
 // import { clearInterval } from "timers";
 
 // For the chat logic
@@ -326,7 +327,7 @@ const WebinarView: React.FC = () => {
       />
       <audio
         ref={audioRef}
-        // muted={!hasInteracted} // enable this when you want the audio to be muted until video is muted
+        // muted={!hasInteracted} // enable this if you only want audio after user click
         style={{ display: "none" }}
       />
       <audio
@@ -407,7 +408,7 @@ const WebinarView: React.FC = () => {
                 />
               )}
 
-              {/* 
+              {/*
                 ------------------------------------------
                 ADDED FOR HEADLINE: absolutely positioned text on right half
                 ------------------------------------------
@@ -425,7 +426,7 @@ const WebinarView: React.FC = () => {
                     color: "#2E2E2E",
                     textAlign: "center",
                     maxWidth: "30%",
-                    zIndex: 9999
+                    zIndex: 9999,
                   }}
                 >
                   {headline}
@@ -704,9 +705,7 @@ const WebinarChatBox: React.FC = () => {
     }
 
     // Connect socket
-    const ws = new WebSocket(
-      "wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com"
-    );
+    const ws = new WebSocket("wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com");
     socketRef.current = ws;
     ws.onopen = () => console.log("Connected to chat server");
     ws.onmessage = (evt) => {
