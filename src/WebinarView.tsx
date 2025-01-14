@@ -3,14 +3,7 @@ import { createPortal } from "react-dom";
 import styles from "./WebinarView.module.css";
 import "./WebinarView.module.css";
 
-// For the chat logic
-// interface ChatMessage {
-//   text: string;
-//   type: "user" | "host" | "system";
-//   userName?: string;
-// }
-
-// -------------- UTILITY: Wait --------------
+// Utility for a small wait
 function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -22,7 +15,7 @@ const WebinarView: React.FC = () => {
   const audioRefTwo = useRef<HTMLAudioElement | null>(null);
   const messageToneRef = useRef<HTMLAudioElement | null>(null);
 
-  // Full screen container ref
+  // We'll reference the video container to request fullscreen
   const videoWrapperRef = useRef<HTMLDivElement | null>(null);
 
   // ------------------ States ------------------
@@ -34,7 +27,6 @@ const WebinarView: React.FC = () => {
   const [showExitOverlay, setShowExitOverlay] = useState(false);
   const [hasShownOverlay, setHasShownOverlay] = useState(false);
   const [exitMessage, setExitMessage] = useState("");
-
   const [showReplayOverlay, setShowReplayOverlay] = useState(false);
 
   // Clock
@@ -49,24 +41,24 @@ const WebinarView: React.FC = () => {
   const startTimeRef = useRef<number>(Date.now());
 
   // Spots / invests
-  const [spotsRemaining, setSpotsRemaining] = useState<number>(19); // starts at 19
+  const [spotsRemaining, setSpotsRemaining] = useState<number>(19);
   const [offerActive, setOfferActive] = useState(false);
-
-  // Array to store invests so we can group them for Selina’s chat
   const investsQueueRef = useRef<{ name: string; time: number }[]>([]);
 
+  // ------------------ NEW: Poll at 20s ------------------
+  const [pollVisible, setPollVisible] = useState(false);
+  const [pollAnswered, setPollAnswered] = useState<boolean>(false);
+  const [pollResultsShown, setPollResultsShown] = useState<boolean>(false);
+
   // Safe audio playback
-  const safePlayAudio = useCallback(
-    async (element: HTMLAudioElement | null) => {
-      if (!element) return;
-      try {
-        await element.play();
-      } catch (err) {
-        console.warn("Audio playback prevented:", err);
-      }
-    },
-    []
-  );
+  const safePlayAudio = useCallback(async (element: HTMLAudioElement | null) => {
+    if (!element) return;
+    try {
+      await element.play();
+    } catch (err) {
+      console.warn("Audio playback prevented:", err);
+    }
+  }, []);
 
   // =====================================================
   // 1) On Mount: fetch audio + exit message, show "Connecting"
@@ -157,7 +149,7 @@ const WebinarView: React.FC = () => {
     }
 
     function handleSecondAudio() {
-      const secondAudioTime = 5; // second audio at 5s
+      const secondAudioTime = 5;
       if (vid && vid.currentTime >= secondAudioTime) {
         safePlayAudio(audioRefTwo.current);
         vid.removeEventListener("timeupdate", handleSecondAudio);
@@ -253,7 +245,6 @@ const WebinarView: React.FC = () => {
   }, [showClockWidget, clockRemoved, connecting]);
 
   useEffect(() => {
-    // Once the dragIn completes, wait 10s, then dragOut
     if (clockDragInComplete) {
       const timer = setTimeout(() => {
         setClockRemoved(true);
@@ -263,7 +254,6 @@ const WebinarView: React.FC = () => {
   }, [clockDragInComplete]);
 
   useEffect(() => {
-    // Once removed is true, hide fully after 1s
     if (clockRemoved) {
       if (clockIntervalRef.current) {
         clearInterval(clockIntervalRef.current as unknown as number);
@@ -277,22 +267,18 @@ const WebinarView: React.FC = () => {
 
   // =====================================================
   // 7) “Special Offer” & invests logic
-  //    - Offer shows at 45min; runs 40min
-  //    - Invest popups start at 46min
-  //    - Spots from 19 -> 2, each invest reduces 1
-  //    - Selina lumps invests & congratulates in chat
+  //    - Offer shows at 45min; invests start at 46min
+  //    - 17 invests => spots 19->2
+  //    - Selina lumps invests in chat
   // =====================================================
   useEffect(() => {
-    // 45 min => 2700s => 2700000ms
     const specialOfferTimeout = setTimeout(() => {
       setOfferActive(true);
-    }, 2700000); // 45 minutes
+    }, 2700000); // 45 min
 
-    // The invests popups start after 46 minutes
-    // We create an interval only AFTER 46 min, then random invests
     const investsStartTimeout = setTimeout(() => {
       startInvestPopups();
-    }, 2760000); // 46 minutes
+    }, 2760000); // 46 min
 
     return () => {
       clearTimeout(specialOfferTimeout);
@@ -300,69 +286,46 @@ const WebinarView: React.FC = () => {
     };
   }, []);
 
-  // This function starts an interval that triggers invests
-  // spaced out so 17 invests happen over 40 minutes => from 19 -> 2
   function startInvestPopups() {
-    const investsNeeded = 17; // from 19 -> 2 spots
+    const investsNeeded = 17;
     const totalDurationMs = 40 * 60 * 1000; // 40 min
-    // We'll schedule invests randomly across these 40 minutes.
-    // Each invests -> spotsRemaining - 1, show popup
-    // We'll spread invests over the 40 minutes somewhat randomly,
-    // but so all happen by the end.
-
     const investsTimes: number[] = [];
     for (let i = 0; i < investsNeeded; i++) {
-      // pick a random time in [0..2400) seconds
-      // but not all near the start. We'll do a uniform distribution
-      // or slightly random.
-      const r = Math.random(); // [0..1)
+      const r = Math.random();
       investsTimes.push(r * totalDurationMs);
     }
     investsTimes.sort((a, b) => a - b);
 
-    investsTimes.forEach((timeMs, index) => {
+    investsTimes.forEach((timeMs) => {
       setTimeout(() => {
         triggerSingleInvest();
       }, timeMs);
     });
 
-    // Also start a separate loop that every ~6–10 min checks investsQueue for grouping
+    // Check investsQueue for grouping every 6-10 min
     setInterval(() => {
       processInvestsQueue();
-    }, Math.floor(Math.random() * 4 + 6) * 60 * 1000); // every 6-10 min
+    }, Math.floor(Math.random() * 4 + 6) * 60 * 1000);
   }
 
-  // Trigger a single invest event => show popup, reduce spots, add to investsQueue
   function triggerSingleInvest() {
-    if (spotsRemaining <= 2) return; // if we're already at 2, don't go further
-    // pick random from chat participants
+    if (spotsRemaining <= 2) return;
     const name = pickRandomChatUser();
     if (!name) return;
-
-    // Show popup
     showInvestNotif(name);
-    // reduce spots
     setSpotsRemaining((prev) => Math.max(2, prev - 1));
-
-    // add to investsQueue
     investsQueueRef.current.push({ name, time: Date.now() });
   }
 
-  // Periodically checks investsQueue for groups and posts a single Selina chat
-  async function processInvestsQueue() {
-    // If we have 2 or more invests that haven’t been congratulated
+  function processInvestsQueue() {
     if (investsQueueRef.current.length >= 2) {
-      // Let's gather 2–3 invests
       const investsToCongrat = investsQueueRef.current.splice(
         0,
         Math.floor(Math.random() * 2) + 2
       );
-      // create a single chat message
       let names = investsToCongrat.map((i) => i.name);
-      // quick shuffle if you want
       names = names.sort(() => 0.5 - Math.random());
 
-      // Slightly "imperfect" grammar + short text
       const variant = Math.floor(Math.random() * 3);
       let message = "";
       switch (variant) {
@@ -382,7 +345,6 @@ const WebinarView: React.FC = () => {
           )}! appreciate you trusting PrognosticAI... can't wait to see what you do.`;
           break;
       }
-      // Insert system or host message
       const chatEl = document.querySelector(`.${styles.chatMessages}`);
       if (chatEl) {
         const div = document.createElement("div");
@@ -390,24 +352,21 @@ const WebinarView: React.FC = () => {
         div.textContent = message;
         chatEl.appendChild(div);
 
-        // If user isn't actively scrolling, scroll to bottom
-        if (!isUserScrollingNearBottom(chatEl)) {
-          chatEl.scrollTop = chatEl.scrollHeight;
+        // scroll if not near bottom
+        if (!isUserScrollingNearBottom(chatEl as HTMLElement)) {
+          (chatEl as HTMLElement).scrollTop = (chatEl as HTMLElement).scrollHeight;
         }
       }
     }
   }
 
-  function isUserScrollingNearBottom(chatEl: Element) {
+  function isUserScrollingNearBottom(chatEl: HTMLElement) {
     const threshold = 60;
     return (
-      chatEl.scrollHeight - (chatEl as HTMLElement).clientHeight -
-        (chatEl as HTMLElement).scrollTop >
-      threshold
+      chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop > threshold
     );
   }
 
-  // Minimal approach to pick from the chat's known “names”:
   const names = [
     "Emma",
     "Liam",
@@ -446,7 +405,6 @@ const WebinarView: React.FC = () => {
     return names[Math.floor(Math.random() * names.length)];
   }
 
-  // Show “invest” popup
   function showInvestNotif(userName: string) {
     const container = document.createElement("div");
     container.className = styles.investNotification;
@@ -462,13 +420,48 @@ const WebinarView: React.FC = () => {
     container.appendChild(textDiv);
     document.body.appendChild(container);
 
-    // remove after ~6s (fadeOut starts at 5.6s)
     setTimeout(() => {
-      if (container && container.parentNode) {
+      if (container.parentNode) {
         container.parentNode.removeChild(container);
       }
     }, 6000);
   }
+
+  // =====================================================
+  // 8) Poll logic: appear at 20s -> if no click by 50s => show results -> hide at 80s
+  // =====================================================
+  useEffect(() => {
+    // Show poll at 20s
+    const pollAppearTimer = setTimeout(() => {
+      setPollVisible(true);
+    }, 20000);
+
+    // If not answered by 50s total, show results
+    const pollForceResultsTimer = setTimeout(() => {
+      if (!pollAnswered) {
+        setPollResultsShown(true);
+      }
+    }, 50000);
+
+    // Hide poll at 80s total
+    const pollHideTimer = setTimeout(() => {
+      setPollVisible(false);
+    }, 80000);
+
+    return () => {
+      clearTimeout(pollAppearTimer);
+      clearTimeout(pollForceResultsTimer);
+      clearTimeout(pollHideTimer);
+    };
+  }, [pollAnswered]);
+
+  const handlePollAnswer = (choice: string) => {
+    setPollAnswered(true);
+    // short smooth delay to mimic "voting" effect
+    setTimeout(() => {
+      setPollResultsShown(true);
+    }, 800); // slight delay for transition effect
+  };
 
   // =====================================================
   // FULL SCREEN Toggle
@@ -531,7 +524,6 @@ const WebinarView: React.FC = () => {
               vid.currentTime = 0;
               vid.play().catch(() => {});
             }
-            // Reset clock states
             setShowClockWidget(false);
             setClockDragInComplete(false);
             setClockRemoved(false);
@@ -539,23 +531,18 @@ const WebinarView: React.FC = () => {
         />
       )}
 
-      {/* Double-sized Zoom container so video + chat match heights */}
       <div className={styles.zoomContainer}>
         <div className={styles.zoomTopBar}>
-          {/* Left side: LIVE + Title */}
           <div className={styles.zoomTitle}>
             <div className={styles.zoomLiveDot}></div>
             PrognosticAI Advanced Training
           </div>
-          {/* Right side: smaller "Live for X minutes" */}
           <div className={styles.zoomLiveMinutes}>
             Live for {liveMinutes} minute{liveMinutes === 1 ? "" : "s"}
           </div>
         </div>
 
-        {/* 70/30 layout */}
         <div className={styles.twoColumnLayout}>
-          {/* Video side */}
           <div className={styles.videoColumn}>
             <div className={styles.videoWrapper} ref={videoWrapperRef}>
               <video
@@ -573,21 +560,10 @@ const WebinarView: React.FC = () => {
                 Your browser does not support HTML5 video.
               </video>
 
-              {/* Fullscreen button (top-right corner or similar) */}
+              {/* Full screen button (smooth fade-in on hover) */}
               <button
                 onClick={handleToggleFullScreen}
-                style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                  background: "rgba(255,255,255,0.85)",
-                  border: "none",
-                  borderRadius: "4px",
-                  padding: "6px 10px",
-                  fontSize: "0.85rem",
-                  cursor: "pointer",
-                  fontFamily: "Montserrat, sans-serif",
-                }}
+                className={styles.fullscreenButton}
               >
                 Full Screen
               </button>
@@ -624,17 +600,18 @@ const WebinarView: React.FC = () => {
             </div>
           </div>
 
-          {/* Chat side */}
           <div className={styles.chatColumn}>
-            <WebinarChatBox />
+            {/* Pass poll states/logic to Chat */}
+            <WebinarChatBox
+              offerActive={offerActive}
+              pollVisible={pollVisible}
+              pollResultsShown={pollResultsShown}
+              onPollAnswer={handlePollAnswer}
+            />
           </div>
         </div>
-
-        {/* If offerActive, show the red offer bar in Chat + start the countdown */}
-        {/* The chat snippet handles .specialOffer etc. */}
       </div>
 
-      {/* Subtle copyright at bottom */}
       <footer className={styles.footer}>
         © {new Date().getFullYear()} PrognosticAI
       </footer>
@@ -701,13 +678,7 @@ const ClockWidget: React.FC<{
   dragInComplete: boolean;
   setDragInComplete: React.Dispatch<React.SetStateAction<boolean>>;
   clockRemoved: boolean;
-}> = ({
-  currentTime,
-  currentDate,
-  dragInComplete,
-  setDragInComplete,
-  clockRemoved,
-}) => {
+}> = ({ currentTime, currentDate, dragInComplete, setDragInComplete, clockRemoved }) => {
   const widgetRef = useRef<HTMLDivElement | null>(null);
 
   const handleAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
@@ -757,12 +728,20 @@ const ClockWidget: React.FC<{
 };
 
 // ------------------------------------------------------------------
-// The Chat Box
-//  - The special offer & countdown start showing at 45 min (via parent state).
-//  - We adapt here to handle a 40-min countdown, from 10:00 -> 0:00
-//  - At the same time, we can display "Remaining spots: X" that goes from 19->2
+// Chat Box with Offer & Poll
 // ------------------------------------------------------------------
-const WebinarChatBox: React.FC = () => {
+interface ChatBoxProps {
+  offerActive: boolean;
+  pollVisible: boolean;
+  pollResultsShown: boolean;
+  onPollAnswer: (choice: string) => void;
+}
+const WebinarChatBox: React.FC<ChatBoxProps> = ({
+  offerActive,
+  pollVisible,
+  pollResultsShown,
+  onPollAnswer,
+}) => {
   const chatMessagesRef = useRef<HTMLDivElement | null>(null);
   const messageInputRef = useRef<HTMLInputElement | null>(null);
   const typingIndicatorRef = useRef<HTMLDivElement | null>(null);
@@ -770,14 +749,13 @@ const WebinarChatBox: React.FC = () => {
   const specialOfferEl = useRef<HTMLDivElement | null>(null);
   const countdownElRef = useRef<HTMLDivElement | null>(null);
   const investBtn = useRef<HTMLButtonElement | null>(null);
-  const [offerVisible, setOfferVisible] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(40 * 60); // 40 min => 2400s
 
-  // So that we only start the 40-min countdown once
+  // 40-min countdown
+  const [offerVisible, setOfferVisible] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(40 * 60);
   const countdownStartedRef = useRef(false);
 
   useEffect(() => {
-    // Scroll / toggle refs
     const chatEl = chatMessagesRef.current;
     const inputEl = messageInputRef.current;
     const typingEl = typingIndicatorRef.current;
@@ -791,35 +769,21 @@ const WebinarChatBox: React.FC = () => {
       return;
     }
 
-    // Chat scrolling
-    function isNearBottom() {
-      const threshold = 50;
-      return (
-        chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop <= threshold
-      );
-    }
-    function scrollToBottom() {
-      chatEl.scrollTop = chatEl.scrollHeight;
-    }
     function handleScroll() {
       // no-op
     }
     chatEl.addEventListener("scroll", handleScroll);
 
-    // Toggle show/hide participants
+    // Toggle participants
     function handleToggle() {
       const participantMsgs = chatEl.querySelectorAll('[data-participant="true"]');
       participantMsgs.forEach((m) => {
         (m as HTMLElement).style.display = toggleEl.checked ? "block" : "none";
       });
-      if (toggleEl.checked && isNearBottom()) {
-        scrollToBottom();
-      }
     }
     toggleEl.checked = false;
     toggleEl.addEventListener("change", handleToggle);
 
-    // Send user message on Enter
     function handleKeyPress(e: KeyboardEvent) {
       if (e.key === "Enter" && inputEl.value.trim()) {
         const userMsg = inputEl.value.trim();
@@ -830,44 +794,31 @@ const WebinarChatBox: React.FC = () => {
     }
     inputEl.addEventListener("keypress", handleKeyPress);
 
-    // "Invest" button
     inBtn?.addEventListener("click", () => {
       window.open("https://yes.prognostic.ai", "_blank");
     });
 
-    // Start checking for the parent’s 45-min mark
+    // Check for special offer activation
     const checkOfferInterval = setInterval(() => {
-      const diffMin = (Date.now() - (window as any).webinarStartTime) / 60000;
-      // We do a simpler approach: rely on the parent’s side effect.
-      // In reality, we can do a direct approach:
-      // Because we already set the parent so that at 45 min it sets 'offerActive=true'
-      // But let's keep it simple here -> We'll watch the DOM, see if .specialOffer is used.
-
-      // Instead, we'll just see if the parent set "offerActive" by checking the style or some event.
-      // To keep it minimal, let's watch if it's been placed in the DOM.
-      // We'll do a simpler approach:
-      if (!offerVisible && spOfferEl.style.display === "block") {
+      if (offerActive && !offerVisible) {
+        // show the offer + start countdown if not started
+        spOfferEl.style.display = "block";
         setOfferVisible(true);
-        // start our 40-min countdown
+
         if (!countdownStartedRef.current) {
           countdownStartedRef.current = true;
-          startCountdown();
+          const cd = setInterval(() => {
+            setTimeLeft((prev) => {
+              if (prev <= 1) {
+                clearInterval(cd);
+                spOfferEl.style.display = "none";
+              }
+              return Math.max(0, prev - 1);
+            });
+          }, 1000);
         }
       }
     }, 1000);
-
-    function startCountdown() {
-      spOfferEl.style.display = "block"; // show the offer
-      const cd = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(cd);
-            spOfferEl.style.display = "none";
-          }
-          return Math.max(0, prev - 1);
-        });
-      }, 1000);
-    }
 
     return () => {
       chatEl.removeEventListener("scroll", handleScroll);
@@ -875,10 +826,8 @@ const WebinarChatBox: React.FC = () => {
       inputEl.removeEventListener("keypress", handleKeyPress);
       clearInterval(checkOfferInterval);
     };
-    // eslint-disable-next-line
-  }, []);
+  }, [offerActive, offerVisible]);
 
-  // Update the countdown display
   useEffect(() => {
     if (countdownElRef.current) {
       const minutes = Math.floor(timeLeft / 60);
@@ -889,16 +838,12 @@ const WebinarChatBox: React.FC = () => {
     }
   }, [timeLeft]);
 
-  // The user’s chat messages => calls the AI
+  // Minimal “Selina is typing” simulation
   async function handleUserMessage(msg: string) {
-    // Simulate “Selina is typing...”
     if (!typingIndicatorRef.current) return;
     typingIndicatorRef.current.textContent = "Selina is typing...";
-
-    // Minimal artificial delay
     await wait(Math.random() * 4000 + 2000);
     typingIndicatorRef.current.textContent = "";
-    // Just a dummy response
     addMessage(
       "Thanks for the question! We'll cover that in the Q&A later on.",
       "host",
@@ -906,7 +851,6 @@ const WebinarChatBox: React.FC = () => {
     );
   }
 
-  // Add a chat message
   function addMessage(
     text: string,
     msgType: "user" | "host" | "system",
@@ -933,11 +877,11 @@ const WebinarChatBox: React.FC = () => {
     }
 
     chatEl.appendChild(div);
-
-    // Scroll
     chatEl.scrollTop = chatEl.scrollHeight;
   }
 
+  // Poll UI pinned at top
+  // Appear/disappear with transitions
   return (
     <div className={styles.chatSection}>
       <div className={styles.chatHeader}>
@@ -959,6 +903,47 @@ const WebinarChatBox: React.FC = () => {
         </div>
       </div>
 
+      {/* Poll Container */}
+      <div
+        className={
+          pollVisible ? `${styles.pollContainer} ${styles.pollContainerActive}` : styles.pollContainer
+        }
+        style={{ maxHeight: pollVisible ? "500px" : "0px", opacity: pollVisible ? 1 : 0 }}
+      >
+        {!pollResultsShown ? (
+          <>
+            <div className={styles.pollQuestion}>Which works better?</div>
+            <div className={styles.pollOptions}>
+              <button
+                className={styles.pollOptionButton}
+                onClick={() => onPollAnswer("Generic")}
+              >
+                Generic
+              </button>
+              <button
+                className={styles.pollOptionButton}
+                onClick={() => onPollAnswer("Personalized")}
+              >
+                Personalized
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className={styles.pollQuestion}>Which works better?</div>
+            {/* Show final results (always 5% vs 95%) */}
+            <div className={styles.pollResults}>
+              <div>Generic: 5%</div>
+              <div>Personalized: 95%</div>
+              <div className={styles.pollResultsBar}>
+                <div className={styles.pollResultsBarSegment1}></div>
+                <div className={styles.pollResultsBarSegment2}></div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+
       <div
         className={styles.specialOffer}
         ref={specialOfferEl}
@@ -967,7 +952,6 @@ const WebinarChatBox: React.FC = () => {
         <div className={styles.countdown} ref={countdownElRef}>
           Special Offer Ends In: 40:00
         </div>
-        {/* Spots remaining - elegantly displayed under the countdown */}
         <div className={styles.spotsRemaining} id="spotsRemaining">
           Remaining Spots: 19
         </div>
