@@ -173,7 +173,7 @@ const WebinarView: React.FC = () => {
   }, [safePlayAudio, connecting]);
 
   // =====================================================
-  // ADDED FOR HEADLINE: show at 5s, hide at 9s
+  // ADDED FOR HEADLINE: show at 5s, hide at 20s
   // =====================================================
   useEffect(() => {
     const vid = videoRef.current;
@@ -184,7 +184,7 @@ const WebinarView: React.FC = () => {
       if (!showHeadline && vid.currentTime >= 5 && vid.currentTime < 20) {
         setShowHeadline(true);
       }
-      // Disappear at 9s:
+      // Disappear at 20s:
       else if (showHeadline && vid.currentTime >= 20) {
         setShowHeadline(false);
       }
