@@ -181,11 +181,11 @@ const WebinarView: React.FC = () => {
 
     function handleHeadlineTiming() {
       // Appear at 5s:
-      if (!showHeadline && vid.currentTime >= 5 && vid.currentTime < 9) {
+      if (!showHeadline && vid.currentTime >= 5 && vid.currentTime < 20) {
         setShowHeadline(true);
       }
       // Disappear at 9s:
-      else if (showHeadline && vid.currentTime >= 9) {
+      else if (showHeadline && vid.currentTime >= 20) {
         setShowHeadline(false);
       }
     }
@@ -425,6 +425,7 @@ const WebinarView: React.FC = () => {
                     color: "#2E2E2E",
                     textAlign: "center",
                     maxWidth: "30%",
+                    zIndex: 9999
                   }}
                 >
                   {headline}
