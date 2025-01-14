@@ -41,6 +41,13 @@ const WebinarView: React.FC = () => {
   // "Live for X minutes"
   const startTimeRef = useRef<number>(Date.now());
 
+  // ------------------------------------------
+  // ADDED FOR HEADLINE: new state to store text + toggle its visibility
+  // ------------------------------------------
+  const [headline, setHeadline] = useState("");
+  const [showHeadline, setShowHeadline] = useState(false);
+  // ------------------------------------------
+
   // Safe audio playback
   const safePlayAudio = useCallback(
     async (element: HTMLAudioElement | null) => {
@@ -90,6 +97,14 @@ const WebinarView: React.FC = () => {
           if (data.exit_message) {
             setExitMessage(data.exit_message);
           }
+
+          // ------------------------------------------
+          // ADDED FOR HEADLINE: store the personalized headline
+          // ------------------------------------------
+          if (data.headline) {
+            setHeadline(data.headline);
+          }
+          // ------------------------------------------
         } catch (err) {
           console.error("Error loading user data:", err);
         }
@@ -156,6 +171,31 @@ const WebinarView: React.FC = () => {
       vid.removeEventListener("timeupdate", handleSecondAudio);
     };
   }, [safePlayAudio, connecting]);
+
+  // =====================================================
+  // ADDED FOR HEADLINE: show at 5s, hide at 9s
+  // =====================================================
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    function handleHeadlineTiming() {
+      // Appear at 5s:
+      if (!showHeadline && vid.currentTime >= 5 && vid.currentTime < 9) {
+        setShowHeadline(true);
+      }
+      // Disappear at 9s:
+      else if (showHeadline && vid.currentTime >= 9) {
+        setShowHeadline(false);
+      }
+    }
+
+    vid.addEventListener("timeupdate", handleHeadlineTiming);
+    return () => {
+      vid.removeEventListener("timeupdate", handleHeadlineTiming);
+    };
+  }, [showHeadline]);
+  // =====================================================
 
   // =====================================================
   // 4) Exit-intent
@@ -367,6 +407,31 @@ const WebinarView: React.FC = () => {
                 />
               )}
 
+              {/* 
+                ------------------------------------------
+                ADDED FOR HEADLINE: absolutely positioned text on right half
+                ------------------------------------------
+              */}
+              {showHeadline && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    right: "25%",
+                    transform: "translateY(-50%)",
+                    fontFamily: "Montserrat, sans-serif",
+                    fontWeight: 400,
+                    fontSize: "35px",
+                    color: "#2E2E2E",
+                    textAlign: "center",
+                    maxWidth: "30%",
+                  }}
+                >
+                  {headline}
+                </div>
+              )}
+              {/* ---------------------------------------- */}
+
               {!hasInteracted && (
                 <div
                   className={styles.soundOverlay}
@@ -474,58 +539,13 @@ const ClockWidget: React.FC<{
   const [movementIntervalId, setMovementIntervalId] =
     useState<NodeJS.Timer | null>(null);
 
-  // const [movementIntervalId, setMovementIntervalId] =
-  //   useState<NodeJS.Timeout | null>(null);
-
-  // The random "human" wobble
-  // const addNaturalMovement = useCallback(() => {
-  //   console.log("add natural movement", widgetRef.current);
-  //   if (!widgetRef.current) return 0 as unknown as NodeJS.Timer;
-  //   let baseX = 0;
-  //   let baseY = 0;
-  //   let velocityX = 0;
-  //   let velocityY = 0;
-  //   let lastTime = Date.now();
-
-  //   return setInterval(() => {
-  //     const currentTimeMs = Date.now();
-  //     const deltaTime = (currentTimeMs - lastTime) / 1000;
-  //     lastTime = currentTimeMs;
-
-  //     // random accel
-  //     const accX = (Math.random() - 0.5) * 1.5;
-  //     const accY = (Math.random() - 0.5) * 1.5;
-
-  //     velocityX = velocityX * 0.95 + accX * deltaTime;
-  //     velocityY = velocityY * 0.95 + accY * deltaTime;
-
-  //     baseX += velocityX;
-  //     baseY += velocityY;
-
-  //     // subtle sinusoidal
-  //     const wobbleX = Math.sin(currentTimeMs * 0.002) * 0.3;
-  //     const wobbleY = Math.cos(currentTimeMs * 0.002) * 0.3;
-
-  //     widgetRef.current!.style.transform = `translate(${baseX + wobbleX}px, ${
-  //       baseY + wobbleY
-  //     }px)`;
-  //   }, 16);
-  // }, []);
-
   const handleAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
     if (e.animationName.includes("dragIn")) {
       setDragInComplete(true);
-
-      // Start "human wobble"
-      // const intId = addNaturalMovement();
-      // setMovementIntervalId(intId);
     } else if (e.animationName.includes("dragOut")) {
       // No specific logic needed after the final fade out
     }
   };
-
-  // If we forcibly remove
-  // ...
 
   useEffect(() => {
     if (clockRemoved && movementIntervalId) {
@@ -589,8 +609,6 @@ const WebinarChatBox: React.FC = () => {
   const socketRef = useRef<WebSocket | null>(null);
 
   const [isUserScrolling, setIsUserScrolling] = useState(false);
-  // Show Others defaults OFF
-  // const [showParticipants, setShowParticipants] = useState(false);
 
   useEffect(() => {
     const chatEl = chatMessagesRef.current;
@@ -634,7 +652,6 @@ const WebinarChatBox: React.FC = () => {
 
     // Toggle show/hide
     function handleToggle() {
-      // setShowParticipants(toggleEl.checked);
       const participantMsgs = chatEl?.querySelectorAll(
         '[data-participant="true"]'
       );
