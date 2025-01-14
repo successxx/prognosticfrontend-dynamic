@@ -54,6 +54,35 @@ const WebinarView: React.FC = () => {
     []
   );
 
+  // ---------------------------------------------------------------------------
+  // ADDED FOR FULLSCREEN
+  // ---------------------------------------------------------------------------
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const videoWrapperRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
+  const handleFullscreen = () => {
+    if (!document.fullscreenElement && videoWrapperRef.current) {
+      videoWrapperRef.current.requestFullscreen().catch((err) => {
+        console.error("Error attempting to enter fullscreen:", err);
+      });
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+  // ---------------------------------------------------------------------------
+
   // =====================================================
   // 1) On Mount: fetch audio + exit message, show "Connecting"
   // =====================================================
@@ -341,7 +370,7 @@ const WebinarView: React.FC = () => {
         <div className={styles.twoColumnLayout}>
           {/* Video side */}
           <div className={styles.videoColumn}>
-            <div className={styles.videoWrapper}>
+            <div className={styles.videoWrapper} ref={videoWrapperRef}>
               <video
                 ref={videoRef}
                 autoPlay
@@ -356,6 +385,35 @@ const WebinarView: React.FC = () => {
                 />
                 Your browser does not support HTML5 video.
               </video>
+
+              {/* ----------------------------------------------------------------- */}
+              {/* ADDED FOR FULLSCREEN BUTTON */}
+              {/* ----------------------------------------------------------------- */}
+              <button
+                onClick={handleFullscreen}
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  zIndex: 10,
+                  background: "rgba(0, 0, 0, 0.4)",
+                  border: "none",
+                  color: "#fff",
+                  padding: "8px 14px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "0.85rem",
+                  fontFamily: "inherit",
+                  backdropFilter: "blur(4px)",
+                }}
+                aria-label={
+                  isFullscreen ? "Exit Fullscreen Mode" : "Enter Fullscreen Mode"
+                }
+              >
+                {isFullscreen ? "Exit Full Screen" : "Full Screen"}
+              </button>
+              {/* ----------------------------------------------------------------- */}
+
               {/* Clock widget floating */}
               {showClockWidget && (
                 <ClockWidget
@@ -474,58 +532,13 @@ const ClockWidget: React.FC<{
   const [movementIntervalId, setMovementIntervalId] =
     useState<NodeJS.Timer | null>(null);
 
-  // const [movementIntervalId, setMovementIntervalId] =
-  //   useState<NodeJS.Timeout | null>(null);
-
-  // The random "human" wobble
-  // const addNaturalMovement = useCallback(() => {
-  //   console.log("add natural movement", widgetRef.current);
-  //   if (!widgetRef.current) return 0 as unknown as NodeJS.Timer;
-  //   let baseX = 0;
-  //   let baseY = 0;
-  //   let velocityX = 0;
-  //   let velocityY = 0;
-  //   let lastTime = Date.now();
-
-  //   return setInterval(() => {
-  //     const currentTimeMs = Date.now();
-  //     const deltaTime = (currentTimeMs - lastTime) / 1000;
-  //     lastTime = currentTimeMs;
-
-  //     // random accel
-  //     const accX = (Math.random() - 0.5) * 1.5;
-  //     const accY = (Math.random() - 0.5) * 1.5;
-
-  //     velocityX = velocityX * 0.95 + accX * deltaTime;
-  //     velocityY = velocityY * 0.95 + accY * deltaTime;
-
-  //     baseX += velocityX;
-  //     baseY += velocityY;
-
-  //     // subtle sinusoidal
-  //     const wobbleX = Math.sin(currentTimeMs * 0.002) * 0.3;
-  //     const wobbleY = Math.cos(currentTimeMs * 0.002) * 0.3;
-
-  //     widgetRef.current!.style.transform = `translate(${baseX + wobbleX}px, ${
-  //       baseY + wobbleY
-  //     }px)`;
-  //   }, 16);
-  // }, []);
-
   const handleAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
     if (e.animationName.includes("dragIn")) {
       setDragInComplete(true);
-
-      // Start "human wobble"
-      // const intId = addNaturalMovement();
-      // setMovementIntervalId(intId);
     } else if (e.animationName.includes("dragOut")) {
       // No specific logic needed after the final fade out
     }
   };
-
-  // If we forcibly remove
-  // ...
 
   useEffect(() => {
     if (clockRemoved && movementIntervalId) {
@@ -589,8 +602,6 @@ const WebinarChatBox: React.FC = () => {
   const socketRef = useRef<WebSocket | null>(null);
 
   const [isUserScrolling, setIsUserScrolling] = useState(false);
-  // Show Others defaults OFF
-  // const [showParticipants, setShowParticipants] = useState(false);
 
   useEffect(() => {
     const chatEl = chatMessagesRef.current;
@@ -619,8 +630,7 @@ const WebinarChatBox: React.FC = () => {
       const threshold = 50;
       if (!chatEl) return false;
       return (
-        chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop <=
-        threshold
+        chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop <= threshold
       );
     }
     function scrollToBottom() {
@@ -634,7 +644,6 @@ const WebinarChatBox: React.FC = () => {
 
     // Toggle show/hide
     function handleToggle() {
-      // setShowParticipants(toggleEl.checked);
       const participantMsgs = chatEl?.querySelectorAll(
         '[data-participant="true"]'
       );
