@@ -91,6 +91,7 @@ const WebinarView: React.FC = () => {
           );
           if (!resp.ok) throw new Error("Error fetching user data");
           const data = await resp.json();
+
           // audio_link -> audioRef
           if (audioRef.current && data.audio_link) {
             audioRef.current.src = data.audio_link;
@@ -113,7 +114,7 @@ const WebinarView: React.FC = () => {
       setConnecting(false);
       startTimeRef.current = Date.now();
 
-      // Try autoplay
+      // Attempt autoplay
       if (videoRef.current) {
         videoRef.current.play().catch((err) => {
           console.warn("Video autoplay blocked:", err);
@@ -147,24 +148,27 @@ const WebinarView: React.FC = () => {
     const vid = videoRef.current;
     if (!vid || !audioRef.current || !audioRefTwo.current) return;
 
-    function handleTimeUpdate() {
+    function handleFirstAudio() {
+      // At 3s
       if (vid.currentTime >= 3) {
         safePlayAudio(audioRef.current);
-        vid.removeEventListener("timeupdate", handleTimeUpdate);
+        vid.removeEventListener("timeupdate", handleFirstAudio);
       }
     }
-
     function handleSecondAudio() {
+      // At 5s
       const secondAudioTime = 5;
       if (vid.currentTime >= secondAudioTime) {
         safePlayAudio(audioRefTwo.current);
         vid.removeEventListener("timeupdate", handleSecondAudio);
       }
     }
-    vid.addEventListener("timeupdate", handleTimeUpdate);
+
+    vid.addEventListener("timeupdate", handleFirstAudio);
     vid.addEventListener("timeupdate", handleSecondAudio);
+
     return () => {
-      vid.removeEventListener("timeupdate", handleTimeUpdate);
+      vid.removeEventListener("timeupdate", handleFirstAudio);
       vid.removeEventListener("timeupdate", handleSecondAudio);
     };
   }, [safePlayAudio, connecting]);
@@ -174,6 +178,7 @@ const WebinarView: React.FC = () => {
   // =====================================================
   useEffect(() => {
     if (hasShownOverlay) return;
+
     function handleMouseMove(e: MouseEvent) {
       const threshold = window.innerHeight * 0.1;
       if (e.clientY < threshold) {
@@ -192,6 +197,7 @@ const WebinarView: React.FC = () => {
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
+
     function handleEnded() {
       setShowReplayOverlay(true);
     }
@@ -218,10 +224,12 @@ const WebinarView: React.FC = () => {
         })
       );
     }
+
     function startClockUpdates() {
       updateClock();
       clockIntervalRef.current = setInterval(updateClock, 1000);
     }
+
     function stopClockUpdates() {
       if (clockIntervalRef.current) {
         clearInterval(clockIntervalRef.current as unknown as number);
@@ -238,6 +246,7 @@ const WebinarView: React.FC = () => {
         startClockUpdates();
       }
     }
+
     vid.addEventListener("timeupdate", handleTimeUpdate);
 
     return () => {
@@ -268,7 +277,7 @@ const WebinarView: React.FC = () => {
   }, [clockRemoved]);
 
   // =====================================================
-  // 7) Special Offer at 45 min + invests at 46 min
+  // 7) Special Offer at 45 min; invests at 46 min
   // =====================================================
   useEffect(() => {
     // Start the offer at 45 min => 2700000 ms
@@ -276,10 +285,10 @@ const WebinarView: React.FC = () => {
       setOfferActive(true);
     }, 2700000); // 45 minutes
 
-    // Start invests at 46 min
+    // Start invests at 46 min => 2760000 ms
     const investsStartTimeout = setTimeout(() => {
       startInvestPopups();
-    }, 2760000); // 46 minutes
+    }, 2760000);
 
     return () => {
       clearTimeout(specialOfferTimeout);
@@ -289,7 +298,7 @@ const WebinarView: React.FC = () => {
   }, []);
 
   function startInvestPopups() {
-    const investsNeeded = 17; // 19 -> 2
+    const investsNeeded = 17; // from 19 -> 2
     const totalDurationMs = 40 * 60 * 1000; // 40 min
     const investsTimes: number[] = [];
     for (let i = 0; i < investsNeeded; i++) {
@@ -304,7 +313,7 @@ const WebinarView: React.FC = () => {
       }, timeMs);
     });
 
-    // Periodically check invests queue for grouping in chat
+    // periodically check investsQueue for grouping in chat
     setInterval(() => {
       processInvestsQueue();
     }, Math.floor(Math.random() * 4 + 6) * 60 * 1000);
@@ -319,8 +328,8 @@ const WebinarView: React.FC = () => {
     investsQueueRef.current.push({ name, time: Date.now() });
   }
 
-  //  Group invests in chat after a few minutes
   function processInvestsQueue() {
+    // lumps invests in chat in groups of 2-3
     if (investsQueueRef.current.length >= 2) {
       const investsToCongrat = investsQueueRef.current.splice(
         0,
@@ -328,6 +337,7 @@ const WebinarView: React.FC = () => {
       );
       let names = investsToCongrat.map((i) => i.name);
       names = names.sort(() => 0.5 - Math.random());
+
       const variant = Math.floor(Math.random() * 3);
       let message = "";
       switch (variant) {
@@ -353,7 +363,8 @@ const WebinarView: React.FC = () => {
         div.classList.add(styles.message, styles.host);
         div.textContent = message;
         chatEl.appendChild(div);
-        // scroll if not near bottom
+
+        // auto-scroll if near bottom
         if (!isUserScrollingNearBottom(chatEl as HTMLElement)) {
           (chatEl as HTMLElement).scrollTop = (chatEl as HTMLElement).scrollHeight;
         }
@@ -406,7 +417,7 @@ const WebinarView: React.FC = () => {
     return names[Math.floor(Math.random() * names.length)];
   }
 
-  // Jony Ive invests: no emoji, tasteful exclamation
+  // Show invests as Jony Ive style (tasteful exclamation, no emojis)
   function showInvestNotif(userName: string) {
     const container = document.createElement("div");
     container.className = styles.investNotification;
@@ -430,28 +441,28 @@ const WebinarView: React.FC = () => {
   }
 
   // =====================================================
-  // 8) Poll logic: appear at 20s of video -> results at 50s -> hide at 80s
+  // 8) Poll logic: pinned at top, 20s => show, 50s => forced results, 80s => hide
   // =====================================================
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
 
     function handleTimeUpdate() {
-      // Show poll at 20s of video
+      // show poll at 20s
       if (vid.currentTime >= 20 && !pollVisible && !pollResultsShown) {
         setPollVisible(true);
       }
-      // If not answered by 50s => show results
+      // forced results at 50s
       if (vid.currentTime >= 50 && pollVisible && !pollAnswered) {
         setPollResultsShown(true);
       }
-      // Hide poll at 80s total
+      // hide poll at 80s
       if (vid.currentTime >= 80 && pollVisible) {
         setPollVisible(false);
       }
     }
-    vid.addEventListener("timeupdate", handleTimeUpdate);
 
+    vid.addEventListener("timeupdate", handleTimeUpdate);
     return () => {
       vid.removeEventListener("timeupdate", handleTimeUpdate);
     };
@@ -461,7 +472,7 @@ const WebinarView: React.FC = () => {
     setPollAnswered(true);
     setTimeout(() => {
       setPollResultsShown(true);
-    }, 700); // short delay to show results
+    }, 700); // quick delay for transition
   };
 
   // =====================================================
@@ -478,7 +489,8 @@ const WebinarView: React.FC = () => {
           if (prev <= 1) {
             clearInterval(cd);
             setOfferVisible(false);
-            // Hide the offer
+
+            // Post "offer ended" in chat
             const chatEl = document.querySelector(`.${styles.chatMessages}`);
             if (chatEl) {
               const div = document.createElement("div");
@@ -506,7 +518,7 @@ const WebinarView: React.FC = () => {
   }, [timeLeft]);
 
   // =====================================================
-  // FULL SCREEN Toggle
+  // FULL SCREEN Toggle (Jony Ive style, bottom-right)
   // =====================================================
   const handleToggleFullScreen = () => {
     if (!videoWrapperRef.current) return;
@@ -546,7 +558,7 @@ const WebinarView: React.FC = () => {
       <audio ref={audioRef} style={{ display: "none" }} muted={!hasInteracted} />
       <audio ref={audioRefTwo} style={{ display: "none" }} muted={!hasInteracted} />
 
-      {/* Exit Overlay */}
+      {/* Exit-intent overlay */}
       {showExitOverlay &&
         createPortal(
           <ExitOverlay
@@ -556,7 +568,7 @@ const WebinarView: React.FC = () => {
           document.body
         )}
 
-      {/* Replay Overlay */}
+      {/* Replay overlay */}
       {showReplayOverlay && (
         <ReplayOverlay
           onReplay={() => {
@@ -566,15 +578,15 @@ const WebinarView: React.FC = () => {
               vid.currentTime = 0;
               vid.play().catch(() => {});
             }
-            // Reset clock
+            // reset clock
             setShowClockWidget(false);
             setClockDragInComplete(false);
             setClockRemoved(false);
-            // Reset poll
+            // reset poll
             setPollVisible(false);
             setPollAnswered(false);
             setPollResultsShown(false);
-            // Reset offer
+            // reset offer
             setOfferActive(false);
             setOfferVisible(false);
             setSpotsRemaining(19);
@@ -596,7 +608,7 @@ const WebinarView: React.FC = () => {
         </div>
 
         <div className={styles.twoColumnLayout}>
-          {/* VIDEO COLUMN */}
+          {/* VIDEO SIDE */}
           <div className={styles.videoColumn}>
             <div className={styles.videoWrapper} ref={videoWrapperRef}>
               <video
@@ -614,7 +626,6 @@ const WebinarView: React.FC = () => {
                 Your browser does not support HTML5 video.
               </video>
 
-              {/* Full screen button (bottom-right, show on hover) */}
               <button
                 onClick={handleToggleFullScreen}
                 className={styles.fullscreenButton}
@@ -654,7 +665,7 @@ const WebinarView: React.FC = () => {
             </div>
           </div>
 
-          {/* CHAT COLUMN */}
+          {/* CHAT SIDE */}
           <div className={styles.chatColumn}>
             <WebinarChatBox
               pollVisible={pollVisible}
@@ -728,7 +739,7 @@ const ReplayOverlay: React.FC<{
 };
 
 // ------------------------------------------------------------------
-// Clock Widget EXACT (with original dragIn, dragOut, wobble approach)
+// Clock Widget EXACT as old snippet
 // ------------------------------------------------------------------
 const ClockWidget: React.FC<{
   currentTime: string;
@@ -786,10 +797,8 @@ const ClockWidget: React.FC<{
 };
 
 // ------------------------------------------------------------------
-// Chat Box
-//   - Poll pinned at top
-//   - Offer if active
-//   - Chat working w/ WebSocket, invests, special Q’s
+// Chat Box with pinned poll, offers, invests, etc.
+// WebSocket chat exactly as old snippet, plus poll features
 // ------------------------------------------------------------------
 interface ChatBoxProps {
   pollVisible: boolean;
@@ -820,6 +829,7 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
   const socketRef = useRef<WebSocket | null>(null);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
 
+  // Chat logic from old snippet, ensuring we have no collisions
   useEffect(() => {
     const chatEl = chatMessagesRef.current;
     const inputEl = messageInputRef.current;
@@ -853,7 +863,7 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
     toggleEl.checked = false;
     toggleEl.addEventListener("change", handleToggle);
 
-    // WebSocket
+    // Connect WebSocket
     const ws = new WebSocket("wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com");
     socketRef.current = ws;
     ws.onopen = () => console.log("Connected to chat server");
@@ -869,14 +879,14 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
       }
     };
 
-    // Minimal AI logic if user asks Q
+    // Minimal placeholder for typed Q
     async function handleUserMessage(msg: string) {
+      if (!typingEl) return;
       typingEl.textContent = "Selina is typing...";
       try {
         await wait(Math.random() * 4000 + 1000);
         typingEl.textContent = "";
-
-        // The snippet doesn't do real AI logic, so we do a placeholder
+        // Just a placeholder AI response
         addMessage(
           "Thanks for the question! We'll cover that in the Q&A later on.",
           "host",
@@ -941,10 +951,10 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
     chatEl.scrollTop = chatEl.scrollHeight;
   }
 
-  // Format the remaining time (just for UI reference in the offer)
+  // Format leftover time for the offer
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
-  const formatted = `${minutes}:${String(seconds).padStart(2, "0")}`;
+  const formattedTime = `${minutes}:${String(seconds).padStart(2, "0")}`;
 
   return (
     <div className={styles.chatSection}>
@@ -1014,7 +1024,7 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
             id="offerCountdownTimer"
             style={{ marginBottom: "8px" }}
           >
-            Special Offer Ends In: {formatted}
+            Special Offer Ends In: {formattedTime}
           </div>
           <div className={styles.spotsRemaining}>
             Remaining Spots: {spotsRemaining}
