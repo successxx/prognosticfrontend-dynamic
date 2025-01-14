@@ -1,14 +1,6 @@
 /* 
    WebinarView.module.css
-
-   This merges:
-   - Your original chat styling with socket
-   - Poll pinned at 20s, invests at 46m, offer at 45m
-   - Jony Ive invests styling
-   - EXACT clock widget animations
-   - Full screen button on hover
-   - Exit-intent bubble & replay overlay
-   - Voice injection kept the same
+   (Merged carefully with all original chat logic + new poll & invests & design)
 */
 
 /**************************************/
@@ -560,7 +552,7 @@
   gap: 5px;
 }
 
-/* Poll pinned at top (20s in) */
+/* Poll pinned top, same minimal style */
 .pollContainer {
   background: #fff;
   border: 1px solid #ddd;
