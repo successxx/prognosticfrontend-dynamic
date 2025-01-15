@@ -183,12 +183,12 @@ const WebinarView: React.FC = () => {
     if (!vid) return;
 
     function handleHeadlineTiming() {
-      if (vid.currentTime >= 5 && vid.currentTime < 20) {
-        setShowHeadline(true);
-      } else if (vid.currentTime >= 20) {
-        setShowHeadline(false);
-      }
-    }
+  if (vid.currentTime >= 5 && vid.currentTime < 20) {
+    setShowHeadline(true);
+  } else {
+    setShowHeadline(false);  // Hide headline for any time outside 5-20 seconds
+  }
+}
 
     vid.addEventListener("timeupdate", handleHeadlineTiming);
     return () => {
