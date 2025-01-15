@@ -363,6 +363,11 @@ const WebinarView: React.FC = () => {
           }}
         />
       )}
+      {showHeadline && (
+  <div className={styles.headlineText}>
+    {headline}
+  </div>
+)}
 
       {/* Double-sized Zoom container so video + chat match heights */}
       <div className={styles.zoomContainer}>
