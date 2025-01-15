@@ -178,24 +178,42 @@ const WebinarView: React.FC = () => {
   // =====================================================
   // ADDED FOR HEADLINE: show at 5s, hide at 20s
   // =====================================================
-  useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
-
-    function handleHeadlineTiming() {
-  if (vid.currentTime >= 5 && vid.currentTime < 20) {
-    setShowHeadline(true);
-  } else {
-    setShowHeadline(false);  // Hide headline for any time outside 5-20 seconds
-  }
-}
-
-    vid.addEventListener("timeupdate", handleHeadlineTiming);
-    return () => {
-      vid.removeEventListener("timeupdate", handleHeadlineTiming);
-    };
-  }, []);
   // =====================================================
+  // ADDED FOR HEADLINE: show at 5s, hide at 20s
+  // =====================================================
+  useEffect(() => {
+  const vid = videoRef.current;
+  if (!vid) return;
+
+  // First set initial state based on current time
+  if (connecting) {
+    setShowHeadline(false);
+    return;
+  }
+
+  function handleHeadlineTiming() {
+    const time = vid.currentTime;
+    console.log('Video time:', time); // Add logging to debug
+    
+    if (time >= 5 && time < 20) {
+      setShowHeadline(true);
+    } else {
+      setShowHeadline(false);
+    }
+  }
+
+  // Call immediately to set initial state
+  handleHeadlineTiming();
+  
+  // Add both timeupdate and seeking events
+  vid.addEventListener("timeupdate", handleHeadlineTiming);
+  vid.addEventListener("seeking", handleHeadlineTiming);
+
+  return () => {
+    vid.removeEventListener("timeupdate", handleHeadlineTiming);
+    vid.removeEventListener("seeking", handleHeadlineTiming);
+  };
+}, [connecting, hasInteracted]);  // Keep hasInteracted dependency
 
   // =====================================================
   // 4) Exit-intent
@@ -1325,10 +1343,11 @@ export default WebinarView;
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
   font-size: 24px;
+  line-height: 1.2;  /* Added to reduce line spacing */
   color: #2E2E2E;
   text-align: center;
   max-width: 30%;
-  z-index: 9999;
+  z-index: 3;
 }
 
 /**************************************/
