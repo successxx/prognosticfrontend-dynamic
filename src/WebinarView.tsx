@@ -183,12 +183,9 @@ const WebinarView: React.FC = () => {
     if (!vid) return;
 
     function handleHeadlineTiming() {
-      // Appear at 5s:
-      if (!showHeadline && vid.currentTime >= 5 && vid.currentTime < 20) {
+      if (vid.currentTime >= 5 && vid.currentTime < 20) {
         setShowHeadline(true);
-      }
-      // Disappear at 20s:
-      else if (showHeadline && vid.currentTime >= 20) {
+      } else if (vid.currentTime >= 20) {
         setShowHeadline(false);
       }
     }
@@ -197,7 +194,7 @@ const WebinarView: React.FC = () => {
     return () => {
       vid.removeEventListener("timeupdate", handleHeadlineTiming);
     };
-  }, [showHeadline]);
+  }, []);
   // =====================================================
 
   // =====================================================
