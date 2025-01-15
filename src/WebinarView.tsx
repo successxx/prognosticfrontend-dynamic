@@ -1042,22 +1042,6 @@ export default WebinarView;
    - Clock widget with original "human wobble"
 */
 
-/**************************************/
-/* 1) Outer container, subtle background*/
-/**************************************/
-.container {
-  display: flex;
-  flex-direction: column;
-  font-family: "Montserrat", sans-serif;
-  box-sizing: border-box;
-  padding: 20px;
-  width: 80%;
-  /* min-height: 100vh; */
-  background: #eaeff3;
-  gap: 20px;
-  position: relative;
-}
-
 .connectingOverlay {
   position: fixed;
   top: 0;
