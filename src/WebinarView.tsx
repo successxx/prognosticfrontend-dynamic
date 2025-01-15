@@ -47,6 +47,7 @@ const WebinarView: React.FC = () => {
   // ------------------------------------------
   const [headline, setHeadline] = useState("");
   const [showHeadline, setShowHeadline] = useState(false);
+  const [hasShownHeadline, setHasShownHeadline] = useState(false);
   // ------------------------------------------
 
   // Safe audio playback
@@ -175,37 +176,25 @@ const WebinarView: React.FC = () => {
     };
   }, [safePlayAudio, connecting]);
 
-  // =====================================================
-  // ADDED FOR HEADLINE: show at 5s, hide at 20s
-  // =====================================================
-  // =====================================================
-  // ADDED FOR HEADLINE: show at 5s, hide at 20s
-  // =====================================================
   useEffect(() => {
   const vid = videoRef.current;
   if (!vid) return;
 
-  // First set initial state based on current time
-  if (connecting) {
-    setShowHeadline(false);
-    return;
-  }
-
   function handleHeadlineTiming() {
     const time = vid.currentTime;
-    console.log('Video time:', time); // Add logging to debug
+    console.log('Video time:', time);  // Keep for debugging
     
     if (time >= 5 && time < 20) {
       setShowHeadline(true);
+      if (!hasShownHeadline) {
+        setHasShownHeadline(true);
+      }
     } else {
       setShowHeadline(false);
     }
   }
 
-  // Call immediately to set initial state
   handleHeadlineTiming();
-  
-  // Add both timeupdate and seeking events
   vid.addEventListener("timeupdate", handleHeadlineTiming);
   vid.addEventListener("seeking", handleHeadlineTiming);
 
@@ -213,7 +202,7 @@ const WebinarView: React.FC = () => {
     vid.removeEventListener("timeupdate", handleHeadlineTiming);
     vid.removeEventListener("seeking", handleHeadlineTiming);
   };
-}, [connecting, hasInteracted]);  // Keep hasInteracted dependency
+}, [connecting, hasInteracted, hasShownHeadline]);
 
   // =====================================================
   // 4) Exit-intent
@@ -1346,7 +1335,7 @@ export default WebinarView;
   line-height: 1.2;  /* Added to reduce line spacing */
   color: #2E2E2E;
   text-align: center;
-  max-width: 30%;
+  max-width: 35%;
   z-index: 3;
 }
 
