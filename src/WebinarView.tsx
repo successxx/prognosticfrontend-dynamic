@@ -104,6 +104,7 @@ const WebinarView: React.FC = () => {
           // ------------------------------------------
           if (data.headline) {
             setHeadline(data.headline);
+            setShowHeadline(true);
           }
           // ------------------------------------------
         } catch (err) {
