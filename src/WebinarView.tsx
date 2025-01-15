@@ -363,11 +363,6 @@ const WebinarView: React.FC = () => {
           }}
         />
       )}
-      {showHeadline && (
-  <div className={styles.headlineText}>
-    {headline}
-  </div>
-)}
 
       {/* Double-sized Zoom container so video + chat match heights */}
       <div className={styles.zoomContainer}>
@@ -419,24 +414,10 @@ const WebinarView: React.FC = () => {
                 ------------------------------------------
               */}
               {showHeadline && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    right: "25%",
-                    transform: "translateY(-50%)",
-                    fontFamily: "Montserrat, sans-serif",
-                    fontWeight: 400,
-                    fontSize: "35px",
-                    color: "#2E2E2E",
-                    textAlign: "center",
-                    maxWidth: "30%",
-                    zIndex: 9999,
-                  }}
-                >
-                  {headline}
-                </div>
-              )}
+    <div className={styles.headlineText}>
+      {headline}
+    </div>
+  )}
               {/* ---------------------------------------- */}
 
               {!hasInteracted && (
