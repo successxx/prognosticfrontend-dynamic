@@ -1090,10 +1090,10 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({ videoTime = 0 }) => {
                 <div className={styles.chatPollResultsBar}>
                   <div
                     className={styles.chatPollResultsFill}
-                    style={{ width: "5%" }}
+                    style={{ width: "2.8%" }}
                   />
                 </div>
-                <span className={styles.chatPollResultsPercent}>5%</span>
+                <span className={styles.chatPollResultsPercent}>2.8%</span>
               </div>
               <div className={styles.chatPollResultsBarContainer}>
                 <div className={styles.chatPollResultsLabel}>Personalized</div>
