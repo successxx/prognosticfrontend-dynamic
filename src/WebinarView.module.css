@@ -782,3 +782,26 @@
     aspect-ratio: 16/9;
   }
 }
+
+/**************************************/
+/* 13) Fullscreen Button              */
+/**************************************/
+.fullscreenButton {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.videoWrapper:hover .fullscreenButton {
+  opacity: 1;
+}
