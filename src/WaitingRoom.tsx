@@ -190,7 +190,7 @@ const preloadedQuestions = [
       if (type === 'user' && user !== 'You') {
         messageDiv.setAttribute('data-participant', 'true');
         messageDiv.setAttribute('data-auto-generated', 'true');
-        messageDiv.style.display = 'block';
+        messageDiv.style.display = toggleEl.checked ? 'block' : 'none';
       }
 
       chatEl.appendChild(messageDiv);
@@ -212,6 +212,7 @@ const preloadedQuestions = [
       }
     }
     toggleEl.addEventListener('change', handleToggleChange);
+    toggleEl.checked = true; // Set initial state to checked
 
     // Connect WebSocket
     const newSocket = new WebSocket('wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com');
