@@ -1,6 +1,16 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import styles from "./WebinarView.module.css"; 
+// ***** REMOVED the second import "./WebinarView.module.css"; *****
+
+// import { clearInterval } from "timers";
+
+// For the chat logic
+// interface ChatMessage {
+//   text: string;
+//   type: "user" | "host" | "system";
+//   userName?: string;
+// }
 
 const WebinarView: React.FC = () => {
   // ------------------ Refs ------------------
@@ -8,9 +18,6 @@ const WebinarView: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioRefTwo = useRef<HTMLAudioElement | null>(null);
   const messageToneRef = useRef<HTMLAudioElement | null>(null);
-
-  // >>> For Fullscreen
-  const videoWrapperRef = useRef<HTMLDivElement | null>(null);
 
   // ------------------ States ------------------
   const [connecting, setConnecting] = useState(true);
@@ -36,27 +43,25 @@ const WebinarView: React.FC = () => {
   const startTimeRef = useRef<number>(Date.now());
 
   // ------------------------------------------
-  // HEADLINE STATES
+  // ADDED FOR HEADLINE: new state to store text + toggle its visibility
   // ------------------------------------------
   const [headline, setHeadline] = useState("");
   const [showHeadline, setShowHeadline] = useState(false);
   const [hasShownHeadline, setHasShownHeadline] = useState(false);
-
-  // >>> For Poll
-  const [pollOpen, setPollOpen] = useState(false);
-  const [pollShowResults, setPollShowResults] = useState(false);
-  const [pollStarted, setPollStarted] = useState(false);
-  const [pollStartTime, setPollStartTime] = useState<number | null>(null);
+  // ------------------------------------------
 
   // Safe audio playback
-  const safePlayAudio = useCallback(async (element: HTMLAudioElement | null) => {
-    if (!element) return;
-    try {
-      await element.play();
-    } catch (err) {
-      console.warn("Audio playback prevented:", err);
-    }
-  }, []);
+  const safePlayAudio = useCallback(
+    async (element: HTMLAudioElement | null) => {
+      if (!element) return;
+      try {
+        await element.play();
+      } catch (err) {
+        console.warn("Audio playback prevented:", err);
+      }
+    },
+    []
+  );
 
   // =====================================================
   // 1) On Mount: fetch audio + exit message, show "Connecting"
@@ -82,22 +87,28 @@ const WebinarView: React.FC = () => {
           );
           if (!resp.ok) throw new Error("Error fetching user data");
           const data = await resp.json();
-
+          // audio_link -> audioRef
           if (audioRef.current && data.audio_link) {
             audioRef.current.src = data.audio_link;
           }
+
           if (audioRefTwo.current && data.audio_link_two) {
             audioRefTwo.current.src = data.audio_link_two;
           }
+          // exit message
           if (data.exit_message) {
             setExitMessage(data.exit_message);
           }
 
-          // HEADLINE
+          // ------------------------------------------
+          // ADDED FOR HEADLINE: store the personalized headline
+          // NOTE: Remove the immediate `setShowHeadline(true)`
+          // ------------------------------------------
           if (data.headline) {
             setHeadline(data.headline);
-            // We do NOT setShowHeadline(true) immediately; it toggles on video time
+            // Removed the line: setShowHeadline(true);
           }
+          // ------------------------------------------
         } catch (err) {
           console.error("Error loading user data:", err);
         }
@@ -121,7 +132,7 @@ const WebinarView: React.FC = () => {
       clearTimeout(connectTimer);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [safePlayAudio]);
+  }, [safePlayAudio, connecting]);
 
   // =====================================================
   // 2) "Live for X minutes" label
@@ -146,17 +157,17 @@ const WebinarView: React.FC = () => {
     function handleTimeUpdate() {
       if (vid && vid.currentTime >= 3) {
         safePlayAudio(audioRef.current);
-        vid.removeEventListener("timeupdate", handleTimeUpdate);
-      }
-    }
-    function handleSecondAudio() {
-      const secondAudioTime = 5;
-      if (vid && vid.currentTime >= secondAudioTime) {
-        safePlayAudio(audioRefTwo.current);
-        vid.removeEventListener("timeupdate", handleSecondAudio);
+        vid?.removeEventListener("timeupdate", handleTimeUpdate);
       }
     }
 
+    function handleSecondAudio() {
+      const secondAudioTime = 5; // Change this value to adjust when second audio plays (in seconds)
+      if (vid && vid.currentTime >= secondAudioTime) {
+        safePlayAudio(audioRefTwo.current);
+        vid?.removeEventListener("timeupdate", handleSecondAudio);
+      }
+    }
     vid.addEventListener("timeupdate", handleTimeUpdate);
     vid.addEventListener("timeupdate", handleSecondAudio);
     return () => {
@@ -165,67 +176,33 @@ const WebinarView: React.FC = () => {
     };
   }, [safePlayAudio, connecting]);
 
-  // =====================================================
-  // 3.5) Headline + Poll timings
-  // =====================================================
   useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
+  const vid = videoRef.current;
+  if (!vid) return;
 
-    function handleHeadlineTiming() {
-      const time = vid.currentTime;
-      // console.log("Video time:", time);
-
-      if (time >= 5 && time < 20) {
-        setShowHeadline(true);
-        if (!hasShownHeadline) {
-          setHasShownHeadline(true);
-        }
-      } else {
-        setShowHeadline(false);
+  function handleHeadlineTiming() {
+    const time = vid.currentTime;
+    console.log('Video time:', time);  // Keep for debugging
+    
+    if (time >= 5 && time < 20) {
+      setShowHeadline(true);
+      if (!hasShownHeadline) {
+        setHasShownHeadline(true);
       }
+    } else {
+      setShowHeadline(false);
     }
+  }
 
-    function handlePollTiming() {
-      // If not started, show poll at 20s
-      if (!pollStarted && vid.currentTime >= 20) {
-        setPollStarted(true);
-        setPollOpen(true);
-        setPollStartTime(Date.now());
-      }
-      // Show results automatically at 50s if poll is open and not yet shown
-      if (pollOpen && !pollShowResults && vid.currentTime >= 50) {
-        setPollShowResults(true);
-      }
-      // Disappear after 60s from poll start
-      if (pollOpen && pollStartTime && Date.now() - pollStartTime >= 60000) {
-        setPollOpen(false);
-        setPollShowResults(false);
-      }
-    }
+  handleHeadlineTiming();
+  vid.addEventListener("timeupdate", handleHeadlineTiming);
+  vid.addEventListener("seeking", handleHeadlineTiming);
 
-    function handleAllTimings() {
-      handleHeadlineTiming();
-      handlePollTiming();
-    }
-
-    vid.addEventListener("timeupdate", handleAllTimings);
-    vid.addEventListener("seeking", handleAllTimings);
-
-    return () => {
-      vid.removeEventListener("timeupdate", handleAllTimings);
-      vid.removeEventListener("seeking", handleAllTimings);
-    };
-  }, [
-    connecting,
-    hasInteracted,
-    hasShownHeadline,
-    pollOpen,
-    pollShowResults,
-    pollStarted,
-    pollStartTime,
-    safePlayAudio,
-  ]);
+  return () => {
+    vid.removeEventListener("timeupdate", handleHeadlineTiming);
+    vid.removeEventListener("seeking", handleHeadlineTiming);
+  };
+}, [connecting, hasInteracted, hasShownHeadline]);
 
   // =====================================================
   // 4) Exit-intent
@@ -242,12 +219,11 @@ const WebinarView: React.FC = () => {
       }
     }
     window.addEventListener("mousemove", handleMouseMove);
-
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [hasShownOverlay, safePlayAudio]);
 
   // =====================================================
-  // 5) Replay overlay on video end
+  // 5) Replay overlay when video ends
   // =====================================================
   useEffect(() => {
     const vid = videoRef.current;
@@ -261,8 +237,9 @@ const WebinarView: React.FC = () => {
   }, []);
 
   // =====================================================
-  // 6) Clock widget
+  // 6) Clock widget (drag in at 10s, out ~20s)
   // =====================================================
+
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
@@ -287,7 +264,7 @@ const WebinarView: React.FC = () => {
 
     function stopClockUpdates() {
       if (clockIntervalRef.current) {
-        clearInterval(clockIntervalRef.current);
+        clearInterval(+clockIntervalRef.current);
         clockIntervalRef.current = null;
       }
     }
@@ -301,7 +278,6 @@ const WebinarView: React.FC = () => {
         startClockUpdates();
       }
     }
-
     vid.addEventListener("timeupdate", handleTimeUpdate);
 
     return () => {
@@ -333,20 +309,6 @@ const WebinarView: React.FC = () => {
     }
   }, [clockRemoved]);
 
-  // >>> Fullscreen
-  const handleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      videoWrapperRef.current?.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
-  };
-
-  // >>> For Poll
-  const handlePollVote = () => {
-    setPollShowResults(true);
-  };
-
   // =====================================================
   // RENDER
   // =====================================================
@@ -369,8 +331,16 @@ const WebinarView: React.FC = () => {
         src="https://cdn.freesound.org/previews/613/613258_5674468-lq.mp3"
         style={{ display: "none" }}
       />
-      <audio ref={audioRef} style={{ display: "none" }} />
-      <audio ref={audioRefTwo} muted={!hasInteracted} style={{ display: "none" }} />
+      <audio
+        ref={audioRef}
+        // muted={!hasInteracted} // enable this if you only want audio after user click
+        style={{ display: "none" }}
+      />
+      <audio
+        ref={audioRefTwo}
+        muted={!hasInteracted}
+        style={{ display: "none" }}
+      />
 
       {/* Exit Overlay */}
       {showExitOverlay &&
@@ -400,21 +370,25 @@ const WebinarView: React.FC = () => {
         />
       )}
 
+      {/* Double-sized Zoom container so video + chat match heights */}
       <div className={styles.zoomContainer}>
         <div className={styles.zoomTopBar}>
+          {/* Left side: LIVE + Title */}
           <div className={styles.zoomTitle}>
             <div className={styles.zoomLiveDot}></div>
             PrognosticAI Advanced Training
           </div>
+          {/* Right side: smaller "Live for X minutes" */}
           <div className={styles.zoomLiveMinutes}>
             Live for {liveMinutes} minute{liveMinutes === 1 ? "" : "s"}
           </div>
         </div>
 
+        {/* 70/30 layout, but container is quite large */}
         <div className={styles.twoColumnLayout}>
           {/* Video side */}
           <div className={styles.videoColumn}>
-            <div className={styles.videoWrapper} ref={videoWrapperRef}>
+            <div className={styles.videoWrapper}>
               <video
                 ref={videoRef}
                 autoPlay
@@ -429,7 +403,6 @@ const WebinarView: React.FC = () => {
                 />
                 Your browser does not support HTML5 video.
               </video>
-
               {/* Clock widget floating */}
               {showClockWidget && (
                 <ClockWidget
@@ -441,10 +414,15 @@ const WebinarView: React.FC = () => {
                 />
               )}
 
-              {/* HEADLINE TEXT */}
+              {/*
+                ------------------------------------------
+                ADDED FOR HEADLINE: absolutely positioned text
+                ------------------------------------------
+              */}
               {showHeadline && (
                 <div className={styles.headlineText}>{headline}</div>
               )}
+              {/* ---------------------------------------- */}
 
               {!hasInteracted && (
                 <div
@@ -464,25 +442,17 @@ const WebinarView: React.FC = () => {
                   <div className={styles.soundText}>Click to Enable Sound</div>
                 </div>
               )}
-
-              {/* Fullscreen button */}
-              <button className={styles.fullscreenButton} onClick={handleFullscreen}>
-                Full Screen
-              </button>
             </div>
           </div>
 
-          {/* Chat side */}
+          {/* Chat side - same height as video */}
           <div className={styles.chatColumn}>
-            <WebinarChatBox
-              pollOpen={pollOpen}
-              pollShowResults={pollShowResults}
-              onPollVote={handlePollVote}
-            />
+            <WebinarChatBox />
           </div>
         </div>
       </div>
 
+      {/* Subtle copyright at bottom */}
       <footer className={styles.footer}>
         © {new Date().getFullYear()} PrognosticAI
       </footer>
@@ -529,6 +499,7 @@ const ReplayOverlay: React.FC<{
       <button className={styles.replayButton} onClick={onReplay}>
         Watch Instant Replay
       </button>
+      {/* CTA in new tab */}
       <button
         className={styles.investButton}
         onClick={() => window.open("https://yes.prognostic.ai", "_blank")}
@@ -541,7 +512,7 @@ const ReplayOverlay: React.FC<{
 };
 
 // ------------------------------------------------------------------
-// Clock Widget
+// Clock Widget with same "human random wobble" from old snippet
 // ------------------------------------------------------------------
 const ClockWidget: React.FC<{
   currentTime: string;
@@ -557,15 +528,15 @@ const ClockWidget: React.FC<{
   clockRemoved,
 }) => {
   const widgetRef = useRef<HTMLDivElement | null>(null);
-  const [movementIntervalId, setMovementIntervalId] = useState<NodeJS.Timer | null>(
-    null
-  );
+  const [movementIntervalId, setMovementIntervalId] =
+    useState<NodeJS.Timer | null>(null);
 
   const handleAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
     if (e.animationName.includes("dragIn")) {
       setDragInComplete(true);
+    } else if (e.animationName.includes("dragOut")) {
+      // No specific logic needed after the final fade out
     }
-    // No special logic after dragOut
   };
 
   useEffect(() => {
@@ -586,13 +557,19 @@ const ClockWidget: React.FC<{
 
   let widgetClass = styles.clockWidget;
   if (!clockRemoved) {
-    widgetClass += dragInComplete ? ` ${styles.wobble}` : ` ${styles.animateIn}`;
+    widgetClass += dragInComplete
+      ? ` ${styles.wobble}`
+      : ` ${styles.animateIn}`;
   } else {
     widgetClass += ` ${styles.animateOut}`;
   }
 
   return (
-    <div className={widgetClass} onAnimationEnd={handleAnimationEnd} ref={widgetRef}>
+    <div
+      className={widgetClass}
+      onAnimationEnd={handleAnimationEnd}
+      ref={widgetRef}
+    >
       <div className={styles.widgetHeader}>
         <div className={styles.windowControls}>
           <div className={`${styles.windowButton} ${styles.closeButton}`} />
@@ -610,19 +587,9 @@ const ClockWidget: React.FC<{
 };
 
 // ------------------------------------------------------------------
-// WebinarChatBox
+// The Chat Box: identical to your old snippet so AI works again
 // ------------------------------------------------------------------
-interface ChatBoxProps {
-  pollOpen: boolean;
-  pollShowResults: boolean;
-  onPollVote: () => void;
-}
-
-const WebinarChatBox: React.FC<ChatBoxProps> = ({
-  pollOpen,
-  pollShowResults,
-  onPollVote,
-}) => {
+const WebinarChatBox: React.FC = () => {
   const chatMessagesRef = useRef<HTMLDivElement | null>(null);
   const messageInputRef = useRef<HTMLInputElement | null>(null);
   const typingIndicatorRef = useRef<HTMLDivElement | null>(null);
@@ -632,6 +599,7 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
   const investButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const socketRef = useRef<WebSocket | null>(null);
+
   const [isUserScrolling, setIsUserScrolling] = useState(false);
 
   useEffect(() => {
@@ -659,11 +627,14 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
     // Scroll helpers
     function isNearBottom() {
       const threshold = 50;
+      if (!chatEl) return false;
       return (
-        chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop <= threshold
+        chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop <=
+        threshold
       );
     }
     function scrollToBottom() {
+      if (!chatEl) return;
       chatEl.scrollTop = chatEl.scrollHeight;
     }
     function handleScroll() {
@@ -671,20 +642,22 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
     }
     chatEl.addEventListener("scroll", handleScroll);
 
-    // Toggle
+    // Toggle show/hide
     function handleToggle() {
-      const participantMsgs = chatEl.querySelectorAll('[data-participant="true"]');
-      participantMsgs.forEach((m) => {
-        (m as HTMLElement).style.display = toggleEl.checked ? "block" : "none";
+      const participantMsgs = chatEl?.querySelectorAll(
+        '[data-participant="true"]'
+      );
+      participantMsgs?.forEach((m) => {
+        (m as HTMLElement).style.display = toggleEl?.checked ? "block" : "none";
       });
-      if (toggleEl.checked && !isUserScrolling) {
+      if (toggleEl?.checked && !isUserScrolling) {
         scrollToBottom();
       }
     }
-    toggleEl.checked = false;
+    toggleEl.checked = false; // default OFF
     toggleEl.addEventListener("change", handleToggle);
 
-    // Add message
+    // Add a message
     function addMessage(
       text: string,
       msgType: "user" | "host" | "system",
@@ -703,15 +676,17 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
         div.textContent = text;
       }
 
-      // participant
+      // If from other participants
       if (msgType === "user" && userName && userName !== "You") {
         div.setAttribute("data-participant", "true");
-        if (!toggleEl.checked) {
+        // hide if toggle is off
+        if (!toggleEl?.checked) {
           div.style.display = "none";
         }
       }
 
-      chatEl.appendChild(div);
+      chatEl?.appendChild(div);
+
       if (autoScroll || userName === "You") {
         if (!isUserScrolling) {
           scrollToBottom();
@@ -719,7 +694,7 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
       }
     }
 
-    // WebSocket
+    // Connect socket
     const ws = new WebSocket("wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com");
     socketRef.current = ws;
     ws.onopen = () => console.log("Connected to chat server");
@@ -738,7 +713,7 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
       console.error("WebSocket error:", err);
     };
 
-    // Random data
+    // Original snippet arrays
     const names = [
       "Emma",
       "Liam",
@@ -888,7 +863,9 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
     function showInvestNotif() {
       const name = names[Math.floor(Math.random() * names.length)];
       const line =
-        investmentMessages[Math.floor(Math.random() * investmentMessages.length)];
+        investmentMessages[
+          Math.floor(Math.random() * investmentMessages.length)
+        ];
       const notif = document.createElement("div");
       notif.classList.add(styles.notification);
       notif.innerHTML = `
@@ -934,18 +911,18 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
       }, 1000);
     }, 60000);
 
-    // Invest button
+    // Invest button in new tab
     investBtn.addEventListener("click", () => {
       window.open("https://yes.prognostic.ai", "_blank");
     });
 
-    // AI response
+    // AI response logic
     async function handleUserMessage(msg: string, isAutoQuestion = false) {
-      if (isAutoQuestion) return;
+      if (isAutoQuestion) return; // As in your snippet
       try {
         const randomDelay = Math.random() * 4000;
         await new Promise((res) => setTimeout(res, randomDelay));
-        typingEl.textContent = "Selina is typing...";
+        if (typingEl) typingEl.textContent = "Selina is typing...";
 
         const resp = await fetch(
           "https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message",
@@ -957,13 +934,13 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
         );
         if (!resp.ok) throw new Error("API call failed");
         const data = await resp.json();
-        typingEl.textContent = "";
+        if (typingEl) typingEl.textContent = "";
         if (data.response) {
           addMessage(data.response, "host", "Selina (Host)", true);
         }
       } catch (err) {
         console.error("Error:", err);
-        typingEl.textContent = "";
+        if (typingEl) typingEl.textContent = "";
         addMessage(
           "Apologies, I'm having trouble connecting. Please try again!",
           "host",
@@ -973,8 +950,9 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
       }
     }
 
+    // On user pressing Enter
     function handleKeyPress(e: KeyboardEvent) {
-      if (e.key === "Enter" && inputEl.value.trim()) {
+      if (e.key === "Enter" && inputEl?.value.trim()) {
         const userMsg = inputEl.value.trim();
         inputEl.value = "";
         addMessage(userMsg, "user", "You", false);
@@ -1005,12 +983,18 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
 
           <div className={styles.toggleContainer}>
             <label className={styles.toggleSwitch}>
-              <input type="checkbox" ref={participantToggleRef} defaultChecked={false} />
+              {/* default off */}
+              <input
+                type="checkbox"
+                ref={participantToggleRef}
+                defaultChecked={false}
+              />
               <span className={styles.toggleSlider}></span>
             </label>
             <span className={styles.toggleLabel}>Show Others</span>
           </div>
 
+          {/* spacing between label & watchers -> gap in CSS or margin-left */}
           <span className={styles.viewerCount} style={{ marginLeft: "10px" }}>
             <i>👥</i>
             <span id="viewerCount">41 watching</span>
@@ -1018,9 +1002,11 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
         </div>
       </div>
 
-      {pollOpen && <ChatPoll showResults={pollShowResults} onVote={onPollVote} />}
-
-      <div className={styles.specialOffer} ref={specialOfferRef} style={{ display: "none" }}>
+      <div
+        className={styles.specialOffer}
+        ref={specialOfferRef}
+        style={{ display: "none" }}
+      >
         <div className={styles.countdown} ref={countdownRef}>
           Special Offer Ends In: 10:00
         </div>
@@ -1041,47 +1027,6 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
       </div>
     </div>
   );
-};
-
-const ChatPoll: React.FC<{
-  showResults: boolean;
-  onVote: () => void;
-}> = ({ showResults, onVote }) => {
-  if (!showResults) {
-    return (
-      <div className={styles.chatPollContainer}>
-        <div className={styles.chatPollQuestion}>which works better?</div>
-        <div className={styles.chatPollButtons}>
-          <button onClick={onVote}>Generic</button>
-          <button onClick={onVote}>Personalized</button>
-        </div>
-      </div>
-    );
-  } else {
-    return (
-      <div className={styles.chatPollContainer}>
-        <div className={styles.chatPollResults}>
-          <div className={styles.pollBarRow}>
-            <span>Generic</span>
-            <div className={styles.pollBar}>
-              <div className={styles.pollBarFillGeneric}></div>
-            </div>
-            <span>5%</span>
-          </div>
-          <div className={styles.pollBarRow}>
-            <span>Personalized</span>
-            <div className={styles.pollBar}>
-              <div className={styles.pollBarFillPersonalized}></div>
-            </div>
-            <span>95%</span>
-          </div>
-          <div className={styles.pollResultText}>
-            95% of participants said personalized marketing will perform better
-          </div>
-        </div>
-      </div>
-    );
-  }
 };
 
 export default WebinarView;
