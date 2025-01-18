@@ -1,6 +1,3 @@
-/**************************************/
-/* 1) Outer container, subtle background*/
-/**************************************/
 .container {
   display: flex;
   flex-direction: column;
@@ -893,5 +890,3 @@
   font-weight: 500;
   color: #333;
 }
-
-/* --- END POLL FEATURE ADDED --- */
