@@ -212,7 +212,6 @@ const preloadedQuestions = [
       }
     }
     toggleEl.addEventListener('change', handleToggleChange);
-    toggleEl.checked = true; // Set initial state to checked
 
     // Connect WebSocket
     const newSocket = new WebSocket('wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com');
