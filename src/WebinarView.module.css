@@ -805,3 +805,96 @@
 .videoWrapper:hover .fullscreenButton {
   opacity: 1;
 }
+
+/**************************************/
+/* 14) Chat Poll                      */
+/**************************************/
+.chatPollContainer {
+  background: #fff;
+  /* Remove top corners to mesh with blue header above */
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom: 1px solid #eee;
+  padding: 12px;
+  animation: fadeIn 0.4s ease;
+}
+
+.chatPollQuestion {
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.chatPollButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.chatPollButtons button {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 12px 0;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.chatPollButtons button:hover {
+  background: #e7f0ff;
+}
+
+.chatPollResults {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pollBarRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  color: #333;
+}
+
+.pollBar {
+  flex: 1;
+  height: 8px;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.pollBarFillGeneric {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #ccc;
+  width: 5%;
+  transition: width 1s ease;
+}
+
+.pollBarFillPersonalized {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #0142ac;
+  width: 95%;
+  transition: width 1s ease;
+}
+
+.pollResultText {
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.8rem;
+  color: #555;
+  text-align: center;
+  margin-top: 8px;
+}
