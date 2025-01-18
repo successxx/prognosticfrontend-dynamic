@@ -670,7 +670,13 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
   // -----------------------------------------------------
   async function handleAiReply(userMsg: string) {
     const typingEl = typingIndicatorRef.current;
-    if (typingEl) typingEl.textContent = "Selina is typing...";
+    if (typingEl) {
+  const delay = 1500 + Math.random() * 3500; // delay between 1s and 3s
+  setTimeout(() => {
+    typingEl.textContent = "Selina is typing...";
+  }, delay);
+}
+
 
     try {
       // short random delay
