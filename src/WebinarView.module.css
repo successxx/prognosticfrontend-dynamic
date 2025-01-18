@@ -870,7 +870,87 @@
 .fullScreenButton:hover {
   background: rgba(0, 0, 0, 0.65);
 }
-
 .showFullScreenButton {
   opacity: 1;
+}
+
+/************************************************************/
+/* ADDED FOR OFFER/TIMER + SOCIAL PROOF (45-85 min)          */
+/************************************************************/
+.offerOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.offerContainer {
+  background: #ffffff;
+  padding: 24px 28px;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 360px;
+  width: 90%;
+  font-family: "Montserrat", sans-serif;
+}
+
+.offerTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.offerTimerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 10px;
+}
+
+.offerTimerBox,
+.offerSpotsBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f6f6f6;
+  border-radius: 6px;
+  padding: 8px 12px;
+  min-width: 100px;
+}
+
+.offerTimerBox span,
+.offerSpotsBox span {
+  font-size: 0.8rem;
+  color: #666;
+}
+.offerTimerBox strong,
+.offerSpotsBox strong {
+  font-size: 1.2rem;
+  color: #000;
+  margin-top: 4px;
+}
+
+.investNowBtn {
+  width: 100%;
+  background: #0142ac;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.investNowBtn:hover {
+  background: #013289;
 }
