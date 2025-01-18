@@ -87,6 +87,9 @@ const WebinarView: React.FC = () => {
     if (userEmail) {
       (async () => {
         try {
+          // ------------------------------------------
+          // FIXED: Use backticks so it's a valid string:
+          // ------------------------------------------
           const resp = await fetch(
             `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_audio?user_email=${encodeURIComponent(
               userEmail
@@ -189,7 +192,7 @@ const WebinarView: React.FC = () => {
 
     function handleHeadlineTiming() {
       const time = vid.currentTime;
-      console.log('Video time:', time);  // Keep for debugging
+      console.log("Video time:", time);  // Keep for debugging
 
       if (time >= 5 && time < 20) {
         setShowHeadline(true);
