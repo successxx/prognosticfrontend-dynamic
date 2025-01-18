@@ -3,15 +3,6 @@ import { createPortal } from "react-dom";
 import styles from "./WebinarView.module.css"; 
 // ***** REMOVED the second import "./WebinarView.module.css"; *****
 
-// import { clearInterval } from "timers";
-
-// For the chat logic
-// interface ChatMessage {
-//   text: string;
-//   type: "user" | "host" | "system";
-//   userName?: string;
-// }
-
 const WebinarView: React.FC = () => {
   // ------------------ Refs ------------------
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -217,11 +208,7 @@ const WebinarView: React.FC = () => {
         setPollShowResults(true);
       }
       // Disappear after 60s from poll start
-      if (
-        pollOpen &&
-        pollStartTime &&
-        Date.now() - pollStartTime >= 60000
-      ) {
+      if (pollOpen && pollStartTime && Date.now() - pollStartTime >= 60000) {
         setPollOpen(false);
         setPollShowResults(false);
       }
@@ -242,7 +229,16 @@ const WebinarView: React.FC = () => {
       vid.removeEventListener("timeupdate", handleAllTimings);
       vid.removeEventListener("seeking", handleAllTimings);
     };
-  }, [connecting, hasInteracted, hasShownHeadline, pollOpen, pollShowResults, pollStarted, pollStartTime, safePlayAudio]);
+  }, [
+    connecting,
+    hasInteracted,
+    hasShownHeadline,
+    pollOpen,
+    pollShowResults,
+    pollStarted,
+    pollStartTime,
+    safePlayAudio,
+  ]);
 
   // =====================================================
   // 4) Exit-intent
@@ -441,10 +437,7 @@ const WebinarView: React.FC = () => {
         <div className={styles.twoColumnLayout}>
           {/* Video side */}
           <div className={styles.videoColumn}>
-            <div
-              className={styles.videoWrapper}
-              ref={videoWrapperRef}
-            >
+            <div className={styles.videoWrapper} ref={videoWrapperRef}>
               <video
                 ref={videoRef}
                 autoPlay
@@ -472,7 +465,8 @@ const WebinarView: React.FC = () => {
 
               {/*
                 ------------------------------------------
-                ADDED FOR HEADLINE: absolutely positioned text
+                HEADLINE: absolutely positioned text 
+                (now locked to a single line + auto-scale)
                 ------------------------------------------
               */}
               {showHeadline && (
@@ -499,19 +493,18 @@ const WebinarView: React.FC = () => {
                 </div>
               )}
 
-              {/* >>> FULLSCREEN BUTTON */}
+              {/* >>> FULLSCREEN BUTTON (now says "Full Screen") */}
               <button
                 className={styles.fullscreenButton}
                 onClick={handleFullscreen}
               >
-                ⛶
+                Full Screen
               </button>
             </div>
           </div>
 
           {/* Chat side - same height as video */}
           <div className={styles.chatColumn}>
-            {/* >>> PASS NEW PROPS FOR POLL */}
             <WebinarChatBox
               pollOpen={pollOpen}
               pollShowResults={pollShowResults}
@@ -581,7 +574,7 @@ const ReplayOverlay: React.FC<{
 };
 
 // ------------------------------------------------------------------
-// Clock Widget with same "human random wobble" from old snippet
+// Clock Widget with same "human random wobble"
 // ------------------------------------------------------------------
 const ClockWidget: React.FC<{
   currentTime: string;
@@ -656,8 +649,7 @@ const ClockWidget: React.FC<{
 };
 
 // ------------------------------------------------------------------
-// The Chat Box: identical to your old snippet so AI works again
-// but with a small poll pinned at top if pollOpen is true
+// The Chat Box
 // ------------------------------------------------------------------
 interface ChatBoxProps {
   pollOpen: boolean;
@@ -998,7 +990,7 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
 
     // AI response logic
     async function handleUserMessage(msg: string, isAutoQuestion = false) {
-      if (isAutoQuestion) return; // As in your snippet
+      if (isAutoQuestion) return;
       try {
         const randomDelay = Math.random() * 4000;
         await new Promise((res) => setTimeout(res, randomDelay));
@@ -1074,7 +1066,6 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
             <span className={styles.toggleLabel}>Show Others</span>
           </div>
 
-          {/* spacing between label & watchers -> gap in CSS or margin-left */}
           <span className={styles.viewerCount} style={{ marginLeft: "10px" }}>
             <i>👥</i>
             <span id="viewerCount">41 watching</span>
@@ -1084,10 +1075,7 @@ const WebinarChatBox: React.FC<ChatBoxProps> = ({
 
       {/* The poll pinned to top if pollOpen */}
       {pollOpen && (
-        <ChatPoll
-          showResults={pollShowResults}
-          onVote={onPollVote}
-        />
+        <ChatPoll showResults={pollShowResults} onVote={onPollVote} />
       )}
 
       <div
