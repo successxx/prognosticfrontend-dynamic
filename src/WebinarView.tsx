@@ -16,6 +16,9 @@ const WebinarView: React.FC = () => {
   const audioRefTwo = useRef<HTMLAudioElement | null>(null);
   const messageToneRef = useRef<HTMLAudioElement | null>(null);
 
+  // NEW REF for the video wrapper (needed for requestFullscreen).
+  const videoWrapperRef = useRef<HTMLDivElement | null>(null);
+
   // ------------------ States ------------------
   const [connecting, setConnecting] = useState(true);
   const [liveMinutes, setLiveMinutes] = useState(0);
@@ -49,6 +52,55 @@ const WebinarView: React.FC = () => {
   const [pollOpen, setPollOpen] = useState(false);
   const [pollShowResults, setPollShowResults] = useState(false);
   const [pollStartTime, setPollStartTime] = useState<number | null>(null);
+
+  // =======================
+  // NEW: Full screen state
+  // =======================
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [showFullScreenBtn, setShowFullScreenBtn] = useState(false);
+  const hideFullscreenTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Smoothly show/hide the Full Screen button when mouse moves
+  const handleMouseMoveOnVideo = useCallback(() => {
+    setShowFullScreenBtn(true);
+    if (hideFullscreenTimerRef.current) {
+      clearTimeout(hideFullscreenTimerRef.current);
+    }
+    // Hide again after 2 seconds of no mouse movement
+    hideFullscreenTimerRef.current = setTimeout(() => {
+      setShowFullScreenBtn(false);
+    }, 2000);
+  }, []);
+
+  // Toggle full screen
+  const toggleFullScreen = useCallback(() => {
+    if (isFullScreen) {
+      document.exitFullscreen().catch((err) => {
+        console.warn("Error exiting fullscreen:", err);
+      });
+    } else {
+      if (videoWrapperRef.current?.requestFullscreen) {
+        videoWrapperRef.current.requestFullscreen().catch((err) => {
+          console.warn("Error requesting fullscreen:", err);
+        });
+      }
+    }
+  }, [isFullScreen]);
+
+  // Listen to fullscreenchange event to update state
+  useEffect(() => {
+    function onFullScreenChange() {
+      if (document.fullscreenElement === videoWrapperRef.current) {
+        setIsFullScreen(true);
+      } else {
+        setIsFullScreen(false);
+      }
+    }
+    document.addEventListener("fullscreenchange", onFullScreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", onFullScreenChange);
+    };
+  }, []);
 
   // Safe audio playback
   const safePlayAudio = useCallback(
@@ -405,7 +457,12 @@ const WebinarView: React.FC = () => {
         <div className={styles.twoColumnLayout}>
           {/* Video side */}
           <div className={styles.videoColumn}>
-            <div className={styles.videoWrapper}>
+            <div
+              className={styles.videoWrapper}
+              ref={videoWrapperRef}
+              // Only add the onMouseMove to show/hide the full screen button
+              onMouseMove={handleMouseMoveOnVideo}
+            >
               <video
                 ref={videoRef}
                 autoPlay
@@ -420,6 +477,18 @@ const WebinarView: React.FC = () => {
                 />
                 Your browser does not support HTML5 video.
               </video>
+
+              {/* NEW: Full Screen Button */}
+              <button
+                className={`${styles.fullScreenButton} ${
+                  showFullScreenBtn ? styles.showFullScreenButton : ""
+                }`}
+                onClick={toggleFullScreen}
+              >
+                {isFullScreen ? "Exit Full Screen" : "Full Screen"}
+              </button>
+              {/* End Full Screen Button */}
+
               {/* Clock widget */}
               {showClockWidget && (
                 <ClockWidget
@@ -654,7 +723,7 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
       div.setAttribute("data-participant", "true");
       // hide if toggle is off
       if (!toggleEl.checked) {
-        div.style.display = "none";
+        (div as HTMLElement).style.display = "none";
       }
     }
 
@@ -671,12 +740,11 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
   async function handleAiReply(userMsg: string) {
     const typingEl = typingIndicatorRef.current;
     if (typingEl) {
-  const delay = 1500 + Math.random() * 3500; // delay between 1s and 3s
-  setTimeout(() => {
-    typingEl.textContent = "Selina is typing...";
-  }, delay);
-}
-
+      const delay = 1500 + Math.random() * 3500; // delay between 1s and 3s
+      setTimeout(() => {
+        typingEl.textContent = "Selina is typing...";
+      }, delay);
+    }
 
     try {
       // short random delay
