@@ -541,6 +541,13 @@ const WebinarView: React.FC = () => {
       <footer className={styles.footer}>
         © {new Date().getFullYear()} PrognosticAI
       </footer>
+
+      {/* 
+        ===========================================
+        NEW: OFFER/TIMER + SOCIAL PROOF LOGIC BELOW
+        ===========================================
+      */}
+      <OfferTimerAndProof videoRef={videoRef} />
     </div>
   );
 };
@@ -1013,3 +1020,228 @@ const ChatPoll: React.FC<{
 };
 
 export default WebinarView;
+
+//
+// ==================================================================
+// NEW COMPONENT: Offer Timer + Social Proof (added at the very bottom)
+// ==================================================================
+//
+type OfferTimerAndProofProps = {
+  videoRef: React.RefObject<HTMLVideoElement>;
+};
+
+const OfferTimerAndProof: React.FC<OfferTimerAndProofProps> = ({ videoRef }) => {
+  // This overlay appears at 45 minutes (2700s) into the video
+  // Timer runs 40 minutes, from 19 spots -> down to 2
+  // Social proof notifications start at 46 minutes (2760s)
+
+  const [showOffer, setShowOffer] = useState(false);
+  const [offerEndTime, setOfferEndTime] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState(40 * 60); // 40 minutes in seconds
+  const [spotsRemaining, setSpotsRemaining] = useState(19);
+  const spotsIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [investedCount, setInvestedCount] = useState(0); // how many have "bought"
+
+  // Minimal random user names for notifications (reuse from Chat):
+  const userNames = [
+    "Emma", "Liam", "Olivia", "Noah", "Ava", "Ethan", "Sophia", "Mason",
+    "Isabella", "William", "Mia", "James", "Charlotte", "Benjamin", "Amelia",
+    "Lucas", "Harper", "Henry", "Evelyn", "Alexander"
+  ];
+
+  // 1) Watch video time => show offer at 45:00
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    function handleTimeUpdate() {
+      const t = vid.currentTime;
+      // Once we cross 2700s (45 min), show the offer if not shown
+      if (!showOffer && t >= 2700) {
+        setShowOffer(true);
+        setOfferEndTime(Date.now() + 40 * 60 * 1000); // 40 min from now
+      }
+      // At 46:00 => show notifications
+      if (!showNotifications && t >= 2760) {
+        setShowNotifications(true);
+      }
+    }
+    vid.addEventListener("timeupdate", handleTimeUpdate);
+    return () => vid.removeEventListener("timeupdate", handleTimeUpdate);
+  }, [showOffer, showNotifications, videoRef]);
+
+  // 2) Count down the 40 min once offer is shown
+  useEffect(() => {
+    if (!showOffer || !offerEndTime) return;
+
+    const timerId = setInterval(() => {
+      const diff = offerEndTime - Date.now();
+      if (diff <= 0) {
+        setTimeLeft(0);
+        clearInterval(timerId);
+        setSpotsRemaining((prev) => (prev < 2 ? prev : 2)); // end at 2
+      } else {
+        setTimeLeft(Math.ceil(diff / 1000));
+      }
+    }, 1000);
+
+    return () => clearInterval(timerId);
+  }, [showOffer, offerEndTime]);
+
+  // 3) Randomly decrement spots from 19 down to 2 over 40 minutes
+  // each decrement "means" an investor
+  useEffect(() => {
+    if (!showOffer) return;
+    if (spotsRemaining <= 2) return;
+
+    // Decrement once at a random interval (30 - 120s)
+    const interval = Math.floor(Math.random() * 90 + 30) * 1000;
+    spotsIntervalRef.current = setTimeout(() => {
+      setSpotsRemaining((prev) => {
+        if (prev <= 2) return prev;
+        return prev - 1;
+      });
+    }, interval);
+
+    return () => {
+      if (spotsIntervalRef.current) clearTimeout(spotsIntervalRef.current);
+    };
+  }, [showOffer, spotsRemaining]);
+
+  // 4) Track how many have invested => occasionally show host congrats message
+  useEffect(() => {
+    const totalInvested = 19 - spotsRemaining;
+    if (totalInvested > investedCount) {
+      setInvestedCount(totalInvested);
+    }
+  }, [spotsRemaining, investedCount]);
+
+  // 5) When investedCount changes by ~3, post a subtle chat message from Selina
+  useEffect(() => {
+    if (!showNotifications) return;
+    if (investedCount < 1) return;
+
+    // if investedCount is multiple of ~3 => show a "Selina" chat
+    if (investedCount % 3 === 0) {
+      postSelinaCongrats(investedCount);
+    }
+  }, [investedCount, showNotifications]);
+
+  // 6) Also post bottom-right notifications for new invests
+  // triggered each time spotsRemaining changes
+  useEffect(() => {
+    if (!showNotifications) return;
+    if (spotsRemaining >= 19) return; // no invests yet
+
+    // show a quick toast
+    const name = userNames[Math.floor(Math.random() * userNames.length)];
+    const randToastId = `toast_${Date.now()}_${Math.random()}`;
+    createInvestmentToast(name, randToastId);
+  }, [spotsRemaining, showNotifications]);
+
+  // --- HELPER: create bottom-right toast
+  function createInvestmentToast(buyerName: string, toastId: string) {
+    const container = document.createElement("div");
+    container.className = styles.notification;
+    container.id = toastId;
+
+    const icon = document.createElement("div");
+    icon.className = styles.notificationIcon;
+    icon.textContent = "!";
+
+    const content = document.createElement("div");
+    content.innerHTML = `<strong>${buyerName}</strong> just joined!`;
+
+    container.appendChild(icon);
+    container.appendChild(content);
+    document.body.appendChild(container);
+
+    setTimeout(() => {
+      if (document.getElementById(toastId)) {
+        document.body.removeChild(container);
+      }
+    }, 4500); // vanish after ~4.5s
+  }
+
+  // --- HELPER: post a "Selina" chat message with subtle grammar and matter-of-fact tone
+  function postSelinaCongrats(numInvested: number) {
+    // minimal grammar variations
+    const phrases = [
+      `Just a quick shout out to the ${numInvested} new folks that took the leap. So happy to see you here.`,
+      `Wanted to say congrats to the ${numInvested} new people who hopped in. Real excited for you all!`,
+      `We’ve got about ${numInvested} new people in so far, so that’s amazing. Wishing you a huge transformation ahead!`,
+      `Huge welcome to the ${numInvested} new invests that just came in. Grateful you’re taking steps!`
+    ];
+    const m = phrases[Math.floor(Math.random() * phrases.length)];
+
+    // We'll do a quick approach using the same chat method the poll uses:
+    // We'll dispatch a custom event with "Selina" message
+    window.dispatchEvent(
+      new CustomEvent("webinar-selina-chat", {
+        detail: { text: m }
+      })
+    );
+  }
+
+  // Listen for custom event => inject it as a "host" message
+  useEffect(() => {
+    function handleSelinaChat(e: any) {
+      const detail = e.detail;
+      if (!detail?.text) return;
+      // We'll find the chat box and create a "host" message
+      const chatArea = document.querySelector(`.${styles.chatMessages}`);
+      if (!chatArea) return;
+
+      const msgDiv = document.createElement("div");
+      msgDiv.classList.add(styles.message, styles.host);
+      msgDiv.textContent = `Selina: ${detail.text}`;
+      chatArea.appendChild(msgDiv);
+
+      // scroll to bottom
+      (chatArea as HTMLDivElement).scrollTop = chatArea.scrollHeight;
+    }
+    window.addEventListener("webinar-selina-chat", handleSelinaChat as any);
+    return () => {
+      window.removeEventListener("webinar-selina-chat", handleSelinaChat as any);
+    };
+  }, []);
+
+  // Render the Offer Timer if showOffer is true
+  if (!showOffer) return null;
+
+  // Format timeLeft
+  const mm = Math.floor(timeLeft / 60);
+  const ss = timeLeft % 60;
+  const timeString = `${mm.toString().padStart(2, "0")}:${ss
+    .toString()
+    .padStart(2, "0")}`;
+
+  return createPortal(
+    <div className={styles.offerOverlay}>
+      <div className={styles.offerContainer}>
+        <div className={styles.offerTitle}>Special Enrollment!</div>
+        <div className={styles.offerTimerRow}>
+          <div className={styles.offerTimerBox}>
+            <span>Time Left:</span>
+            <strong>{timeString}</strong>
+          </div>
+          <div className={styles.offerSpotsBox}>
+            <span>Spots Remaining:</span>
+            <strong>{spotsRemaining}</strong>
+          </div>
+        </div>
+        <button
+          className={styles.investNowBtn}
+          onClick={() => {
+            window.open("https://yes.prognostic.ai", "_blank");
+          }}
+        >
+          Invest Now
+        </button>
+      </div>
+    </div>,
+    document.body
+  );
+};
