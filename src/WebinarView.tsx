@@ -3,8 +3,6 @@ import { createPortal } from "react-dom";
 import styles from "./WebinarView.module.css"; 
 // ***** REMOVED the second import "./WebinarView.module.css"; *****
 
-// import { clearInterval } from "timers";
-
 // For the chat logic
 // interface ChatMessage {
 //   text: string;
@@ -48,18 +46,16 @@ const WebinarView: React.FC = () => {
   const [headline, setHeadline] = useState("");
   const [showHeadline, setShowHeadline] = useState(false);
   const [hasShownHeadline, setHasShownHeadline] = useState(false);
-  // ------------------------------------------
 
   // ------------------------------------------
-  // ADDED FOR POLL (matching your working snippet)
-  // Trigger at 20s, show results at 50s, hide after 60s from start
+  // POLL logic: triggers at 20s
   // ------------------------------------------
   const [pollStarted, setPollStarted] = useState(false);
   const [pollOpen, setPollOpen] = useState(false);
   const [pollShowResults, setPollShowResults] = useState(false);
   const [pollStartTime, setPollStartTime] = useState<number | null>(null);
-  // ------------------------------------------
 
+  // Safe audio playback
   const safePlayAudio = useCallback(
     async (element: HTMLAudioElement | null) => {
       if (!element) return;
@@ -96,6 +92,7 @@ const WebinarView: React.FC = () => {
           );
           if (!resp.ok) throw new Error("Error fetching user data");
           const data = await resp.json();
+
           // audio_link -> audioRef
           if (audioRef.current && data.audio_link) {
             audioRef.current.src = data.audio_link;
@@ -109,15 +106,10 @@ const WebinarView: React.FC = () => {
             setExitMessage(data.exit_message);
           }
 
-          // ------------------------------------------
-          // ADDED FOR HEADLINE: store the personalized headline
-          // NOTE: Remove the immediate setShowHeadline(true)
-          // ------------------------------------------
+          // HEADLINE
           if (data.headline) {
             setHeadline(data.headline);
-            // Removed the line: setShowHeadline(true);
           }
-          // ------------------------------------------
         } catch (err) {
           console.error("Error loading user data:", err);
         }
@@ -171,12 +163,13 @@ const WebinarView: React.FC = () => {
     }
 
     function handleSecondAudio() {
-      const secondAudioTime = 5; // when second audio plays
+      const secondAudioTime = 5;
       if (vid && vid.currentTime >= secondAudioTime) {
         safePlayAudio(audioRefTwo.current);
         vid.removeEventListener("timeupdate", handleSecondAudio);
       }
     }
+
     vid.addEventListener("timeupdate", handleTimeUpdate);
     vid.addEventListener("timeupdate", handleSecondAudio);
     return () => {
@@ -186,7 +179,7 @@ const WebinarView: React.FC = () => {
   }, [safePlayAudio, connecting]);
 
   // =====================================================
-  // HEADLINE + POLL timing in the main timeupdate
+  // HEADLINE & POLL timing
   // =====================================================
   useEffect(() => {
     const vid = videoRef.current;
@@ -194,8 +187,6 @@ const WebinarView: React.FC = () => {
 
     function handleHeadlineTiming() {
       const time = vid.currentTime;
-
-      // Headline from 5s to 20s
       if (time >= 5 && time < 20) {
         setShowHeadline(true);
         if (!hasShownHeadline) {
@@ -206,20 +197,19 @@ const WebinarView: React.FC = () => {
       }
     }
 
-    // Poll logic: show at 20s, show results at 50s, hide after 60s from start
     function handlePollTiming() {
       const time = vid.currentTime;
-      // If not started, show poll at 20s
+      // poll at 20s
       if (!pollStarted && time >= 20) {
         setPollStarted(true);
         setPollOpen(true);
         setPollStartTime(Date.now());
       }
-      // Show results automatically at 50s if poll is open + not shown
+      // show results at 50s
       if (pollOpen && !pollShowResults && time >= 50) {
         setPollShowResults(true);
       }
-      // Hide poll after 60s from when it opened
+      // hide poll after 60s from open
       if (
         pollOpen &&
         pollStartTime !== null &&
@@ -336,7 +326,7 @@ const WebinarView: React.FC = () => {
   }, [showClockWidget, clockRemoved, connecting]);
 
   useEffect(() => {
-    // Once the dragIn completes, wait 10s, then dragOut
+    // once dragIn completes, wait 10s, then dragOut
     if (clockDragInComplete) {
       const timer = setTimeout(() => {
         setClockRemoved(true);
@@ -346,7 +336,7 @@ const WebinarView: React.FC = () => {
   }, [clockDragInComplete]);
 
   useEffect(() => {
-    // Once removed is true, hide fully after 1s
+    // once removed, hide fully after 1s
     if (clockRemoved) {
       if (clockIntervalRef.current) {
         clearInterval(clockIntervalRef.current as unknown as number);
@@ -358,14 +348,11 @@ const WebinarView: React.FC = () => {
     }
   }, [clockRemoved]);
 
-  // Called from chat poll if user votes
+  // Poll: user voted => show results
   const handlePollVote = () => {
     setPollShowResults(true);
   };
 
-  // =====================================================
-  // RENDER
-  // =====================================================
   if (connecting) {
     return (
       <div className={styles.connectingOverlay}>
@@ -408,7 +395,7 @@ const WebinarView: React.FC = () => {
               vid.currentTime = 0;
               vid.play().catch(() => {});
             }
-            // Reset clock states
+            // reset clock states
             setShowClockWidget(false);
             setClockDragInComplete(false);
             setClockRemoved(false);
@@ -430,7 +417,7 @@ const WebinarView: React.FC = () => {
           </div>
         </div>
 
-        {/* 70/30 layout, but container is quite large */}
+        {/* 70/30 layout, container is large */}
         <div className={styles.twoColumnLayout}>
           {/* Video side */}
           <div className={styles.videoColumn}>
@@ -449,7 +436,8 @@ const WebinarView: React.FC = () => {
                 />
                 Your browser does not support HTML5 video.
               </video>
-              {/* Clock widget floating */}
+
+              {/* Clock widget */}
               {showClockWidget && (
                 <ClockWidget
                   currentTime={currentTimeString}
@@ -460,7 +448,7 @@ const WebinarView: React.FC = () => {
                 />
               )}
 
-              {/* Headline text if needed */}
+              {/* Headline text (absolutely positioned) */}
               {showHeadline && (
                 <div className={styles.headlineText}>{headline}</div>
               )}
@@ -544,7 +532,6 @@ const ReplayOverlay: React.FC<{
       <button className={styles.replayButton} onClick={onReplay}>
         Watch Instant Replay
       </button>
-      {/* CTA in new tab */}
       <button
         className={styles.investButton}
         onClick={() => window.open("https://yes.prognostic.ai", "_blank")}
@@ -557,7 +544,7 @@ const ReplayOverlay: React.FC<{
 };
 
 // ------------------------------------------------------------------
-// Clock Widget with "human random wobble"
+// Clock Widget with same "human random wobble"
 // ------------------------------------------------------------------
 const ClockWidget: React.FC<{
   currentTime: string;
@@ -580,7 +567,6 @@ const ClockWidget: React.FC<{
     if (e.animationName.includes("dragIn")) {
       setDragInComplete(true);
     }
-    // if (e.animationName.includes("dragOut")) { ... }
   };
 
   useEffect(() => {
@@ -631,7 +617,7 @@ const ClockWidget: React.FC<{
 };
 
 // ------------------------------------------------------------------
-// The Chat Box: EXACT same snippet + minimal poll injection
+// Webinar Chat Box: replaced with waiting-room style logic so AI works
 // ------------------------------------------------------------------
 interface WebinarChatBoxProps {
   pollOpen: boolean;
@@ -648,383 +634,165 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
   const messageInputRef = useRef<HTMLInputElement | null>(null);
   const typingIndicatorRef = useRef<HTMLDivElement | null>(null);
   const participantToggleRef = useRef<HTMLInputElement | null>(null);
-  const specialOfferRef = useRef<HTMLDivElement | null>(null);
-  const countdownRef = useRef<HTMLDivElement | null>(null);
-  const investButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const socketRef = useRef<WebSocket | null>(null);
-
   const [isUserScrolling, setIsUserScrolling] = useState(false);
+
+  // Add a message to chat
+  function addMessage(
+    text: string,
+    msgType: "user" | "host" | "system",
+    userName?: string,
+    autoScroll = true
+  ) {
+    const chatEl = chatMessagesRef.current;
+    const toggleEl = participantToggleRef.current;
+    if (!chatEl || !toggleEl) return;
+
+    const div = document.createElement("div");
+    div.classList.add(styles.message);
+
+    if (msgType === "user") div.classList.add(styles.user);
+    if (msgType === "host") div.classList.add(styles.host);
+    if (msgType === "system") div.classList.add(styles.system);
+
+    if (userName && userName.trim()) {
+      div.textContent = `${userName}: ${text}`;
+    } else {
+      div.textContent = text;
+    }
+
+    // If from other participants
+    if (msgType === "user" && userName && userName !== "You") {
+      div.setAttribute("data-participant", "true");
+      if (!toggleEl.checked) {
+        div.style.display = "none";
+      }
+    }
+
+    chatEl.appendChild(div);
+
+    if (autoScroll || userName === "You") {
+      if (!isUserScrolling) {
+        chatEl.scrollTop = chatEl.scrollHeight;
+      }
+    }
+  }
+
+  async function handleAiReply(userMsg: string) {
+    const typingEl = typingIndicatorRef.current;
+    if (typingEl) typingEl.textContent = "Selina is typing...";
+
+    try {
+      // short random delay to simulate "typing"
+      const randomDelay = 2000 + Math.random() * 3000;
+      await new Promise((res) => setTimeout(res, randomDelay));
+
+      const resp = await fetch(
+        "https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userMsg, type: "user" }),
+        }
+      );
+      if (!resp.ok) throw new Error("AI call failed");
+
+      const data = await resp.json();
+      if (typingEl) typingEl.textContent = "";
+
+      if (data.response) {
+        addMessage(data.response, "host", "Selina");
+      }
+    } catch (err) {
+      console.error("AI error:", err);
+      if (typingEl) typingEl.textContent = "";
+      addMessage(
+        "Apologies, I'm having trouble connecting. Please try again!",
+        "host",
+        "Selina"
+      );
+    }
+  }
 
   useEffect(() => {
     const chatEl = chatMessagesRef.current;
     const inputEl = messageInputRef.current;
-    const typingEl = typingIndicatorRef.current;
     const toggleEl = participantToggleRef.current;
-    const specialOfferEl = specialOfferRef.current;
-    const countdownElRef = countdownRef.current;
-    const investBtn = investButtonRef.current;
+    const typingEl = typingIndicatorRef.current;
 
-    if (
-      !chatEl ||
-      !inputEl ||
-      !typingEl ||
-      !toggleEl ||
-      !specialOfferEl ||
-      !countdownElRef ||
-      !investBtn
-    ) {
-      console.warn("Some chat refs missing; chat may not fully work.");
+    if (!chatEl || !inputEl || !toggleEl || !typingEl) {
+      console.warn("Some chat refs missing in WebinarChatBox.");
       return;
     }
 
-    // Scroll helpers
-    function isNearBottom() {
-      const threshold = 50;
-      if (!chatEl) return false;
-      return (
-        chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop <= threshold
-      );
-    }
-    function scrollToBottom() {
-      if (!chatEl) return;
-      chatEl.scrollTop = chatEl.scrollHeight;
-    }
+    // handle scroll
     function handleScroll() {
-      setIsUserScrolling(!isNearBottom());
+      const threshold = 50;
+      setIsUserScrolling(
+        chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop > threshold
+      );
     }
     chatEl.addEventListener("scroll", handleScroll);
 
-    // Toggle show/hide
-    function handleToggle() {
-      const participantMsgs = chatEl?.querySelectorAll(
-        '[data-participant="true"]'
-      );
-      participantMsgs?.forEach((m) => {
-        (m as HTMLElement).style.display = toggleEl?.checked ? "block" : "none";
-      });
-      if (toggleEl?.checked && !isUserScrolling) {
-        scrollToBottom();
-      }
-    }
-    toggleEl.checked = false; // default OFF
-    toggleEl.addEventListener("change", handleToggle);
-
-    // Add a message
-    function addMessage(
-      text: string,
-      msgType: "user" | "host" | "system",
-      userName?: string,
-      autoScroll = true
-    ) {
-      const div = document.createElement("div");
-      div.classList.add(styles.message);
-      if (msgType === "user") div.classList.add(styles.user);
-      if (msgType === "host") div.classList.add(styles.host);
-      if (msgType === "system") div.classList.add(styles.system);
-
-      if (userName && userName.trim()) {
-        div.textContent = `${userName}: ${text}`;
-      } else {
-        div.textContent = text;
-      }
-
-      // If from other participants
-      if (msgType === "user" && userName && userName !== "You") {
-        div.setAttribute("data-participant", "true");
-        // hide if toggle is off
-        if (!toggleEl?.checked) {
-          div.style.display = "none";
-        }
-      }
-
-      chatEl?.appendChild(div);
-
-      if (autoScroll || userName === "You") {
-        if (!isUserScrolling) {
-          scrollToBottom();
-        }
-      }
-    }
-
-    // Connect socket
+    // connect socket
     const ws = new WebSocket("wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com");
     socketRef.current = ws;
-    ws.onopen = () => console.log("Connected to chat server");
+
+    ws.onopen = () => {
+      console.log("Webinar chat: Connected to WS");
+    };
+
     ws.onmessage = (evt) => {
       const data = JSON.parse(evt.data);
       if (data.type === "message") {
         addMessage(
           data.text,
           data.messageType as "user" | "host" | "system",
-          data.user,
-          true
+          data.user
         );
       }
     };
+
     ws.onerror = (err) => {
-      console.error("WebSocket error:", err);
+      console.error("Webinar chat socket error:", err);
     };
 
-    // Original snippet arrays
-    const names = [
-      "Emma",
-      "Liam",
-      "Olivia",
-      "Noah",
-      "Ava",
-      "Ethan",
-      "Sophia",
-      "Mason",
-      "Isabella",
-      "William",
-      "Mia",
-      "James",
-      "Charlotte",
-      "Benjamin",
-      "Amelia",
-      "Lucas",
-      "Harper",
-      "Henry",
-      "Evelyn",
-      "Alexander",
-    ];
-    const attendeeMessages = [
-      "hows everyone doing today??",
-      "Hi from Seattle! super excited 2 be here",
-      "first time in one of these... hope im not late!",
-      "cant wait to learn more bout this AI stuff 🤓",
-      "hello everyone....joining from australia",
-      "Any1 else here run advanced funnels for clients??",
-      "This looks amazing, can't wait to see more advanced strategies!",
-      "who else uses multi-step funnels with email marketing?",
-      "omg the potential of this is INSANE for scaling funnels",
-      "quick q - will this wrk with shopify or high-level??",
-      "joining late...did i miss anything important???",
-      "im blown away by the capabilities tbh",
-      "this will save me so much time in my funnels",
-      "anyone else do big product launches? this is a game changer",
-      "thx for putting this together!! 🙌",
-      "just got here...hope i didnt miss too much",
-      "can someone explain the pricing again??",
-      "this is exactly what ive been looking for!!1!",
-      "sry if this was covered already but will there b updates?",
-      "im big in affiliate marketing, and this is wild!",
-    ];
-    const investmentMessages = [
-      "just invested in PrognosticAI! 🚀",
-      "secured their spot in PrognosticAI! ✨",
-      "joined the PrognosticAI family! 🎉",
-      "made a smart investment! 💡",
-      "is starting their AI journey with us! 🌟",
-      "got early access to PrognosticAI! 🔥",
-      "upgraded to PrognosticAI Pro! 💪",
-      "joined our success story! ⭐",
-    ];
-    const preloadedQuestions = [
-      {
-        time: 180,
-        text: "How does this integrate with existing business systems?",
-        user: "Michael",
-      },
-      {
-        time: 300,
-        text: "Can you explain more about the AI capabilities?",
-        user: "Sarah",
-      },
-      { time: 450, text: "Does this work with Zapier?", user: "David" },
-      { time: 600, text: "What kind of ROI can we expect?", user: "Rachel" },
-      {
-        time: 750,
-        text: "How long does implementation typically take?",
-        user: "James",
-      },
-      {
-        time: 900,
-        text: "This is incredible! Can't believe the accuracy levels 🔥",
-        user: "Emma",
-      },
-      {
-        time: 1200,
-        text: "Do you offer enterprise solutions?",
-        user: "Thomas",
-      },
-      { time: 1500, text: "Just amazing how far AI has come!", user: "Lisa" },
-      { time: 1800, text: "What about data security?", user: "Alex" },
-      {
-        time: 2100,
-        text: "Can small businesses benefit from this?",
-        user: "Jennifer",
-      },
-      {
-        time: 2400,
-        text: "The predictive analytics are mind-blowing!",
-        user: "Daniel",
-      },
-      { time: 2700, text: "How often do you release updates?", user: "Sophie" },
-      {
-        time: 3000,
-        text: "Wow, the demo exceeded my expectations!",
-        user: "Ryan",
-      },
-      {
-        time: 3300,
-        text: "What makes PrognosticAI different from competitors?",
-        user: "Maria",
-      },
-    ];
-
-    // Greet
-    setTimeout(() => {
-      addMessage(
-        "Welcome to the PrognosticAI Advanced Training! 👋 Let us know where you're joining from!",
-        "host",
-        "Selina (Host)"
-      );
-      scheduleAttendeeMessages();
-    }, 2000);
-
-    function scheduleAttendeeMessages() {
-      const num = Math.floor(Math.random() * 6) + 15;
-      let delay = 500;
-      for (let i = 0; i < num; i++) {
-        const name = names[Math.floor(Math.random() * names.length)];
-        const msg =
-          attendeeMessages[Math.floor(Math.random() * attendeeMessages.length)];
-        setTimeout(() => {
-          addMessage(msg, "user", name, true);
-        }, delay);
-        delay += Math.random() * 1000 + 500;
+    // toggle show/hide participants
+    function handleToggle() {
+      const participantMsgs = chatEl.querySelectorAll('[data-participant="true"]');
+      participantMsgs.forEach((m) => {
+        (m as HTMLElement).style.display = toggleEl.checked ? "block" : "none";
+      });
+      if (toggleEl.checked && !isUserScrolling) {
+        chatEl.scrollTop = chatEl.scrollHeight;
       }
     }
+    toggleEl.checked = false;
+    toggleEl.addEventListener("change", handleToggle);
 
-    // Preloaded Q's
-    preloadedQuestions.forEach((q) => {
-      setTimeout(() => {
-        addMessage(q.text, "user", q.user);
-        setTimeout(() => {
-          typingEl.textContent = "Selina is typing...";
-          const randomDelay = Math.random() * 10000 + 10000;
-          setTimeout(() => {
-            typingEl.textContent = "";
-          }, randomDelay);
-        }, 1000);
-      }, q.time * 1000);
-    });
-
-    // Invest notifications
-    function showInvestNotif() {
-      const name = names[Math.floor(Math.random() * names.length)];
-      const line =
-        investmentMessages[
-          Math.floor(Math.random() * investmentMessages.length)
-        ];
-      const notif = document.createElement("div");
-      notif.classList.add(styles.notification);
-      notif.innerHTML = `
-        <div class="${styles.notificationIcon}">🎉</div>
-        <div><strong>${name}</strong> ${line}</div>
-      `;
-      document.body.appendChild(notif);
-      setTimeout(() => notif.remove(), 5000);
-    }
-    const investInterval = setInterval(() => {
-      showInvestNotif();
-    }, Math.random() * 30000 + 30000);
-
-    // Viewer count
-    let currentViewers = 41;
-    const viewerInterval = setInterval(() => {
-      const change = Math.random() < 0.5 ? -1 : 1;
-      currentViewers = Math.max(40, Math.min(50, currentViewers + change));
-      const vCount = document.getElementById("viewerCount");
-      if (vCount) {
-        vCount.textContent = `${currentViewers} watching`;
-      }
-    }, 5000);
-
-    // Special offer after 60s
-    const specialOfferTimeout = setTimeout(() => {
-      specialOfferEl.style.display = "block";
-      addMessage(
-        "🚨 Special Offer Alert! For the next 10 minutes only, secure your spot in PrognosticAI for just $999. Don't miss out! 🚀",
-        "system"
-      );
-      let t = 600;
-      const cdInt = setInterval(() => {
-        t--;
-        countdownElRef.textContent = `Special Offer Ends In: ${Math.floor(
-          t / 60
-        )}:${String(t % 60).padStart(2, "0")}`;
-        if (t <= 0) {
-          clearInterval(cdInt);
-          specialOfferEl.style.display = "none";
-          addMessage("⌛ The special offer has ended.", "system");
-        }
-      }, 1000);
-    }, 60000);
-
-    // Invest button in new tab
-    investBtn.addEventListener("click", () => {
-      window.open("https://yes.prognostic.ai", "_blank");
-    });
-
-    // AI response logic
-    async function handleUserMessage(msg: string, isAutoQuestion = false) {
-      if (isAutoQuestion) return;
-      try {
-        const randomDelay = Math.random() * 4000;
-        await new Promise((res) => setTimeout(res, randomDelay));
-        if (typingEl) typingEl.textContent = "Selina is typing...";
-
-        const resp = await fetch(
-          "https://my-webinar-chat-af28ab3bc4ef.herokuapp.com/api/message",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: msg, type: "user" }),
-          }
-        );
-        if (!resp.ok) throw new Error("API call failed");
-        const data = await resp.json();
-        if (typingEl) typingEl.textContent = "";
-        if (data.response) {
-          addMessage(data.response, "host", "Selina (Host)", true);
-        }
-      } catch (err) {
-        console.error("Error:", err);
-        if (typingEl) typingEl.textContent = "";
-        addMessage(
-          "Apologies, I'm having trouble connecting. Please try again!",
-          "host",
-          "Selina (Host)",
-          true
-        );
-      }
-    }
-
-    // On user pressing Enter
+    // user typed Enter => user message + AI reply
     function handleKeyPress(e: KeyboardEvent) {
-      if (e.key === "Enter" && inputEl?.value.trim()) {
+      if (e.key === "Enter" && inputEl.value.trim()) {
         const userMsg = inputEl.value.trim();
         inputEl.value = "";
+
         addMessage(userMsg, "user", "You", false);
-        handleUserMessage(userMsg);
+        handleAiReply(userMsg);
       }
     }
     inputEl.addEventListener("keypress", handleKeyPress);
 
-    // Cleanup
+    // cleanup
     return () => {
       chatEl.removeEventListener("scroll", handleScroll);
       toggleEl.removeEventListener("change", handleToggle);
       inputEl.removeEventListener("keypress", handleKeyPress);
+
       if (socketRef.current) {
         socketRef.current.close();
+        socketRef.current = null;
       }
-      clearTimeout(specialOfferTimeout);
-      clearInterval(investInterval);
-      clearInterval(viewerInterval);
     };
   }, []);
 
@@ -1033,21 +801,13 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
       <div className={styles.chatHeader}>
         <div className={styles.headerTop}>
           <span className={styles.chatTitle}>Live Chat</span>
-
           <div className={styles.toggleContainer}>
             <label className={styles.toggleSwitch}>
-              {/* default off */}
-              <input
-                type="checkbox"
-                ref={participantToggleRef}
-                defaultChecked={false}
-              />
+              <input type="checkbox" ref={participantToggleRef} defaultChecked={false} />
               <span className={styles.toggleSlider}></span>
             </label>
             <span className={styles.toggleLabel}>Show Others</span>
           </div>
-
-          {/* spacing between label & watchers -> gap in CSS or margin-left */}
           <span className={styles.viewerCount} style={{ marginLeft: "10px" }}>
             <i>👥</i>
             <span id="viewerCount">41 watching</span>
@@ -1055,28 +815,12 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
         </div>
       </div>
 
-      {/* The poll pinned at top, if pollOpen is true */}
+      {/* Poll pinned if open */}
       {pollOpen && (
-        <ChatPoll
-          showResults={pollShowResults}
-          onVote={onPollVote}
-        />
+        <ChatPoll showResults={pollShowResults} onVote={onPollVote} />
       )}
 
-      <div
-        className={styles.specialOffer}
-        ref={specialOfferRef}
-        style={{ display: "none" }}
-      >
-        <div className={styles.countdown} ref={countdownRef}>
-          Special Offer Ends In: 10:00
-        </div>
-        <button className={styles.investButton} ref={investButtonRef}>
-          Invest $999 Now - Limited Time Offer
-        </button>
-      </div>
-
-      <div className={styles.chatMessages} ref={chatMessagesRef}></div>
+      <div className={styles.chatMessages} ref={chatMessagesRef} />
 
       <div className={styles.chatInput}>
         <input
@@ -1091,14 +835,13 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
 };
 
 // ------------------------------------------------------------------
-// Separate poll component pinned at top
+// Poll pinned at top
 // ------------------------------------------------------------------
 const ChatPoll: React.FC<{
   showResults: boolean;
   onVote: () => void;
 }> = ({ showResults, onVote }) => {
   if (!showResults) {
-    // Poll question
     return (
       <div className={styles.chatPollContainer}>
         <div className={styles.chatPollQuestion}>Which works better?</div>
@@ -1109,7 +852,6 @@ const ChatPoll: React.FC<{
       </div>
     );
   } else {
-    // Poll results
     return (
       <div className={styles.chatPollContainer}>
         <div className={styles.chatPollResults}>
