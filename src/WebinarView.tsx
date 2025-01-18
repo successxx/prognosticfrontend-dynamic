@@ -50,12 +50,12 @@ const WebinarView: React.FC = () => {
   const [hasShownHeadline, setHasShownHeadline] = useState(false);
   // ------------------------------------------
 
-  // ------------------------------------------
-  // NEW STATES FOR POLL
-  // ------------------------------------------
+  // --- POLL FEATURE ADDED ---
+  // States for the chat-driven poll
   const [pollVisible, setPollVisible] = useState(false);
-  const [pollResultsVisible, setPollResultsVisible] = useState(false);
-  // ------------------------------------------
+  const [pollIsResults, setPollIsResults] = useState(false);
+  const [pollStartTime, setPollStartTime] = useState<number | null>(null);
+  // --- END POLL FEATURE ADDED ---
 
   // Safe audio playback
   const safePlayAudio = useCallback(
@@ -109,7 +109,7 @@ const WebinarView: React.FC = () => {
 
           // ------------------------------------------
           // ADDED FOR HEADLINE: store the personalized headline
-          // NOTE: Remove the immediate `setShowHeadline(true)`
+          // NOTE: Remove the immediate setShowHeadline(true)
           // ------------------------------------------
           if (data.headline) {
             setHeadline(data.headline);
@@ -189,7 +189,7 @@ const WebinarView: React.FC = () => {
 
     function handleHeadlineTiming() {
       const time = vid.currentTime;
-      console.log("Video time:", time); // Keep for debugging
+      console.log('Video time:', time);  // Keep for debugging
 
       if (time >= 5 && time < 20) {
         setShowHeadline(true);
@@ -316,32 +316,35 @@ const WebinarView: React.FC = () => {
     }
   }, [clockRemoved]);
 
-  // =====================================================
-  // 7) Poll Logic
-  // =====================================================
+  // --- POLL FEATURE ADDED ---
+  // Show poll at 20s, show results at 50s, remove poll 60s after it appears
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
 
-    function checkPollTiming() {
-      const time = vid.currentTime;
-      // show poll at 20s
-      if (!pollVisible && time >= 20) {
+    function handlePollTimes() {
+      if (!pollVisible && vid.currentTime >= 20) {
         setPollVisible(true);
+        setPollStartTime(Date.now());
       }
-      // show results at 50s
-      if (pollVisible && !pollResultsVisible && time >= 50) {
-        setPollResultsVisible(true);
+      if (pollVisible && !pollIsResults && vid.currentTime >= 50) {
+        setPollIsResults(true);
       }
-      // hide poll at 80s
-      if (pollVisible && time >= 80) {
+      if (
+        pollVisible &&
+        pollStartTime !== null &&
+        Date.now() - pollStartTime >= 60000
+      ) {
         setPollVisible(false);
       }
     }
 
-    vid.addEventListener("timeupdate", checkPollTiming);
-    return () => vid.removeEventListener("timeupdate", checkPollTiming);
-  }, [pollVisible, pollResultsVisible]);
+    vid.addEventListener("timeupdate", handlePollTimes);
+    return () => {
+      vid.removeEventListener("timeupdate", handlePollTimes);
+    };
+  }, [pollVisible, pollIsResults, pollStartTime]);
+  // --- END POLL FEATURE ADDED ---
 
   // =====================================================
   // RENDER
@@ -480,12 +483,15 @@ const WebinarView: React.FC = () => {
           </div>
 
           {/* Chat side - same height as video */}
-          <div className={styles.chatColumn}>
-            <WebinarChatBox
-              pollVisible={pollVisible}
-              pollResultsVisible={pollResultsVisible}
-              onPollVote={() => setPollResultsVisible(true)}
-            />
+          {/* --- POLL FEATURE ADDED: 'position: relative' inline style so poll can be pinned. --- */}
+          <div className={styles.chatColumn} style={{ position: "relative" }}>
+            {pollVisible && (
+              <ChatPoll
+                pollIsResults={pollIsResults}
+                onVote={() => setPollIsResults(true)}
+              />
+            )}
+            <WebinarChatBox />
           </div>
         </div>
       </div>
@@ -626,19 +632,8 @@ const ClockWidget: React.FC<{
 
 // ------------------------------------------------------------------
 // The Chat Box: identical to your old snippet so AI works again
-// + poll logic pinned at top
 // ------------------------------------------------------------------
-interface WebinarChatBoxProps {
-  pollVisible?: boolean;
-  pollResultsVisible?: boolean;
-  onPollVote?: () => void;
-}
-
-const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
-  pollVisible = false,
-  pollResultsVisible = false,
-  onPollVote = () => {},
-}) => {
+const WebinarChatBox: React.FC = () => {
   const chatMessagesRef = useRef<HTMLDivElement | null>(null);
   const messageInputRef = useRef<HTMLInputElement | null>(null);
   const typingIndicatorRef = useRef<HTMLDivElement | null>(null);
@@ -1051,15 +1046,6 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
         </div>
       </div>
 
-      {/* -------------------- CHAT POLL INSERTED HERE -------------------- */}
-      {pollVisible && (
-        <ChatPoll
-          showResults={pollResultsVisible}
-          onVote={() => onPollVote()}
-        />
-      )}
-      {/* ----------------------------------------------------------------- */}
-
       <div
         className={styles.specialOffer}
         ref={specialOfferRef}
@@ -1087,85 +1073,62 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
   );
 };
 
-// ------------------------------------------------------------------
-// ChatPoll: pinned to top, with fade in/out, always 97.2% vs 5%, etc.
-// ------------------------------------------------------------------
-const ChatPoll: React.FC<{
-  showResults: boolean;
+// --- POLL FEATURE ADDED ---
+// Subcomponent for the chat poll pinned at top of chat column
+interface ChatPollProps {
+  pollIsResults: boolean;
   onVote: () => void;
-}> = ({ showResults, onVote }) => {
-  const [animClass, setAnimClass] = useState(styles.pollFadeIn);
-
-  // If we needed a fade-out after 60s *within* the chat, we could do it here,
-  // but the parent unmounts this entire poll at the 80s mark, so we rely on that.
-
-  // If showResults flips from false->true, we show results panel with a quick fade.
-  useEffect(() => {
-    if (showResults) {
-      setAnimClass(styles.pollFadeTransition);
-      const t = setTimeout(() => {
-        // after half second, assume it's "fully shown"
-        setAnimClass(styles.pollFadeIn);
-      }, 500);
-      return () => clearTimeout(t);
-    }
-  }, [showResults]);
-
-  return (
-    <div
-      className={`${styles.chatPoll} ${
-        showResults ? styles.pollShowResults : ""
-      } ${animClass}`}
-    >
-      {!showResults && (
-        <>
-          <div className={styles.pollHeader}>which works better?</div>
-          <div className={styles.pollOptions}>
-            <button
-              className={styles.pollButton}
-              onClick={() => onVote()}
-            >
-              Generic
-            </button>
-            <button
-              className={styles.pollButton}
-              onClick={() => onVote()}
-            >
-              Personalized
-            </button>
-          </div>
-        </>
-      )}
-
-      {showResults && (
-        <div className={styles.pollResults}>
-          <div className={styles.pollResultRow}>
-            <div className={styles.pollResultLabel}>Generic</div>
-            <div className={styles.pollResultBarContainer}>
+}
+const ChatPoll: React.FC<ChatPollProps> = ({ pollIsResults, onVote }) => {
+  // If we have results to show
+  if (pollIsResults) {
+    return (
+      <div className={styles.chatPoll}>
+        <div className={styles.pollQuestion}>Poll Results</div>
+        <div className={styles.pollResultsContainer}>
+          <div className={styles.pollResultItem}>
+            <span className={styles.pollResultLabel}>Generic</span>
+            <div className={styles.pollResultBarWrapper}>
               <div
                 className={styles.pollResultBar}
                 style={{ width: "5%" }}
               ></div>
             </div>
-            <span className={styles.pollPercent}>5%</span>
+            <span className={styles.pollResultPercent}>5%</span>
           </div>
-          <div className={styles.pollResultRow}>
-            <div className={styles.pollResultLabel}>Personalized</div>
-            <div className={styles.pollResultBarContainer}>
+          <div className={styles.pollResultItem}>
+            <span className={styles.pollResultLabel}>Personalized</span>
+            <div className={styles.pollResultBarWrapper}>
               <div
                 className={styles.pollResultBar}
                 style={{ width: "97.2%" }}
               ></div>
             </div>
-            <span className={styles.pollPercent}>97.2%</span>
-          </div>
-          <div className={styles.pollSummary}>
-            97.2% of participants said personalized marketing will perform better
+            <span className={styles.pollResultPercent}>97.2%</span>
           </div>
         </div>
-      )}
+        <div className={styles.pollResultSummary}>
+          97.2% of participants said personalized marketing will perform better
+        </div>
+      </div>
+    );
+  }
+
+  // Otherwise, show the poll to vote
+  return (
+    <div className={styles.chatPoll}>
+      <div className={styles.pollQuestion}>which works better?</div>
+      <div className={styles.pollOptions}>
+        <button className={styles.pollOptionButton} onClick={onVote}>
+          Generic
+        </button>
+        <button className={styles.pollOptionButton} onClick={onVote}>
+          Personalized
+        </button>
+      </div>
     </div>
   );
 };
+// --- END POLL FEATURE ADDED ---
 
 export default WebinarView;
