@@ -190,7 +190,7 @@ const preloadedQuestions = [
       if (type === 'user' && user !== 'You') {
         messageDiv.setAttribute('data-participant', 'true');
         messageDiv.setAttribute('data-auto-generated', 'true');
-        messageDiv.style.display = toggleEl.checked ? 'block' : 'none';
+        messageDiv.style.display = 'block';
       }
 
       chatEl.appendChild(messageDiv);
