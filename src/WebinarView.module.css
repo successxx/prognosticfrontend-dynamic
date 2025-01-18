@@ -1,14 +1,3 @@
-/* 
-   WebinarView.module.css
-   Carefully updated to:
-   - Double container size (width & height)
-   - Chat + video share the same height
-   - AI chat from snippet
-   - "Show Others" default off
-   - More spacing between "Show Others" & watchers
-   - Clock widget with original "human wobble"
-*/
-
 /**************************************/
 /* 1) Outer container, subtle background*/
 /**************************************/
@@ -19,7 +8,6 @@
   box-sizing: border-box;
   padding: 20px;
   width: 80%;
-  /* min-height: 100vh; */
   background: #eaeff3;
   gap: 20px;
   position: relative;
@@ -74,14 +62,10 @@
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   padding: 16px;
-  /* Double the typical width, so it's large */
-  /* max-width: 1800px; */
   width: 100%;
-  /* Also let height grow for a bigger layout */
   margin: 0 auto;
 }
 
-/* Top bar for Title & Live for X min */
 .zoomTopBar {
   display: flex;
   justify-content: space-between;
@@ -128,7 +112,6 @@
 /**************************************/
 /* 3) The 70/30 layout, same height   */
 /**************************************/
-
 .videoPlayer {
   position: absolute;
   top: 0;
@@ -142,8 +125,6 @@
   display: flex;
   flex-wrap: nowrap;
   gap: 16px;
-  /* Force a bigger container so video & chat share height. */
-  /* height: 800px; double from smaller ~400px. Adjust as needed. */
   height: 94%;
 }
 .videoColumn {
@@ -162,7 +143,6 @@
   height: 100%;
 }
 
-/* For the video, strictly keep 16:9 within the forced container height */
 .videoWrapper {
   position: relative;
   padding-bottom: 56.25%; /* 16:9 aspect ratio */
@@ -285,20 +265,6 @@
   border: 10px solid transparent;
   border-right-color: #0a84ff;
 }
-.headlineText {
-  position: absolute;
-  top: 50%;
-  right: 75px;  /* Changed from 50% to 75px to move it right */
-  transform: translateY(-50%);
-  font-family: "Montserrat", sans-serif;
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 1.2; /* Added to reduce line spacing */
-  color: #2E2E2E;
-  text-align: center;
-  max-width: 30%;
-  z-index: 3;
-}
 
 /**************************************/
 /* 6) Replay Overlay                  */
@@ -346,6 +312,25 @@
 }
 
 /**************************************/
+/* HEADLINE TEXT: now locked in place */
+/**************************************/
+.headlineText {
+  position: absolute;
+  top: 50%;
+  right: 75px;
+  transform: translateY(-50%);
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  /* Scale font size with container; won't break lines */
+  font-size: clamp(16px, 2vw, 36px);
+  line-height: 1.2;
+  color: #2e2e2e;
+  text-align: center;
+  white-space: nowrap; /* Prevent line breaks */
+  z-index: 3;
+}
+
+/**************************************/
 /* 7) Clock Widget with "human wobble"*/
 /**************************************/
 .clockWidget {
@@ -357,11 +342,9 @@
   border-radius: 10px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   z-index: 3;
-  /* display: none; */
   transform: translate(-120%, -120%);
 }
 
-/* Named keyframes so we can detect them in TS */
 @keyframes dragIn {
   0% {
     transform: translate(-120%, -120%);
@@ -404,27 +387,16 @@
   100% {
     transform: translate(0, 0);
   }
-  /* 50% {
-    transform: translate(3px, -3px);
-  } */
 }
 
 .animateIn {
   animation: dragIn 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  animation-name: dragIn;
 }
 .animateOut {
   animation: dragOut 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  animation-name: dragOut;
 }
 .wobble {
   animation: wobble 2s infinite ease-in-out;
-}
-
-/* For TS detection of name */
-.dragInKeyframeName:empty {
-}
-.dragOutKeyframeName:empty {
 }
 
 .widgetHeader {
@@ -490,7 +462,7 @@
 }
 
 /**************************************/
-/* 8) Chat Section: EXACT snippet     */
+/* 8) Chat Section                    */
 /**************************************/
 .chatSection {
   background: #fff;
@@ -500,7 +472,6 @@
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   flex: 1;
-  /* ensure it fills parent height */
 }
 
 .chatHeader {
@@ -515,7 +486,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 16px; /* ensure spacing between "Show Others" & watchers */
+  gap: 16px;
 }
 .chatTitle {
   font-size: 0.85rem;
@@ -800,9 +771,12 @@
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
+  font-family: "Montserrat", sans-serif;
 }
 
-.videoWrapper:hover .fullscreenButton {
+/* Hover logic for both normal and fullscreen */
+.videoWrapper:hover .fullscreenButton,
+.videoWrapper:fullscreen:hover .fullscreenButton {
   opacity: 1;
 }
 
@@ -811,7 +785,6 @@
 /**************************************/
 .chatPollContainer {
   background: #fff;
-  /* Remove top corners to mesh with blue header above */
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   border-bottom: 1px solid #eee;
