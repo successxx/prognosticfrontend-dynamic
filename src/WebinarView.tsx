@@ -51,10 +51,13 @@ const WebinarView: React.FC = () => {
   // ------------------------------------------
 
   // ------------------------------------------
-  // ADDED (MINIMALLY) FOR POLL TIMING:
-  // We'll track the current video time so the chat can trigger the poll at 20s.
+  // ADDED FOR POLL (matching your working snippet)
+  // Trigger at 20s, show results at 50s, hide after 60s from start
   // ------------------------------------------
-  const [videoTime, setVideoTime] = useState(0);
+  const [pollStarted, setPollStarted] = useState(false);
+  const [pollOpen, setPollOpen] = useState(false);
+  const [pollShowResults, setPollShowResults] = useState(false);
+  const [pollStartTime, setPollStartTime] = useState<number | null>(null);
   // ------------------------------------------
 
   const safePlayAudio = useCallback(
@@ -163,15 +166,15 @@ const WebinarView: React.FC = () => {
     function handleTimeUpdate() {
       if (vid && vid.currentTime >= 3) {
         safePlayAudio(audioRef.current);
-        vid?.removeEventListener("timeupdate", handleTimeUpdate);
+        vid.removeEventListener("timeupdate", handleTimeUpdate);
       }
     }
 
     function handleSecondAudio() {
-      const secondAudioTime = 5; // Change this value to adjust when second audio plays (in seconds)
+      const secondAudioTime = 5; // when second audio plays
       if (vid && vid.currentTime >= secondAudioTime) {
         safePlayAudio(audioRefTwo.current);
-        vid?.removeEventListener("timeupdate", handleSecondAudio);
+        vid.removeEventListener("timeupdate", handleSecondAudio);
       }
     }
     vid.addEventListener("timeupdate", handleTimeUpdate);
@@ -182,33 +185,17 @@ const WebinarView: React.FC = () => {
     };
   }, [safePlayAudio, connecting]);
 
-  // ------------------------------------------
-  // ADDED (MINIMALLY) FOR TRACKING VIDEO TIME
-  // So we can pass it to the chat for the poll logic
-  // ------------------------------------------
-  useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
-
-    function updateVideoTime() {
-      setVideoTime(vid.currentTime);
-    }
-
-    vid.addEventListener("timeupdate", updateVideoTime);
-    return () => {
-      vid.removeEventListener("timeupdate", updateVideoTime);
-    };
-  }, []);
-  // ------------------------------------------
-
+  // =====================================================
+  // HEADLINE + POLL timing in the main timeupdate
+  // =====================================================
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
 
     function handleHeadlineTiming() {
       const time = vid.currentTime;
-      console.log("Video time:", time); // Keep for debugging
 
+      // Headline from 5s to 20s
       if (time >= 5 && time < 20) {
         setShowHeadline(true);
         if (!hasShownHeadline) {
@@ -219,15 +206,52 @@ const WebinarView: React.FC = () => {
       }
     }
 
-    handleHeadlineTiming();
-    vid.addEventListener("timeupdate", handleHeadlineTiming);
-    vid.addEventListener("seeking", handleHeadlineTiming);
+    // Poll logic: show at 20s, show results at 50s, hide after 60s from start
+    function handlePollTiming() {
+      const time = vid.currentTime;
+      // If not started, show poll at 20s
+      if (!pollStarted && time >= 20) {
+        setPollStarted(true);
+        setPollOpen(true);
+        setPollStartTime(Date.now());
+      }
+      // Show results automatically at 50s if poll is open + not shown
+      if (pollOpen && !pollShowResults && time >= 50) {
+        setPollShowResults(true);
+      }
+      // Hide poll after 60s from when it opened
+      if (
+        pollOpen &&
+        pollStartTime !== null &&
+        Date.now() - pollStartTime >= 60000
+      ) {
+        setPollOpen(false);
+        setPollShowResults(false);
+      }
+    }
+
+    function handleAllTimings() {
+      handleHeadlineTiming();
+      handlePollTiming();
+    }
+
+    vid.addEventListener("timeupdate", handleAllTimings);
+    vid.addEventListener("seeking", handleAllTimings);
 
     return () => {
-      vid.removeEventListener("timeupdate", handleHeadlineTiming);
-      vid.removeEventListener("seeking", handleHeadlineTiming);
+      vid.removeEventListener("timeupdate", handleAllTimings);
+      vid.removeEventListener("seeking", handleAllTimings);
     };
-  }, [connecting, hasInteracted, hasShownHeadline]);
+  }, [
+    connecting,
+    hasInteracted,
+    hasShownHeadline,
+    pollOpen,
+    pollShowResults,
+    pollStarted,
+    pollStartTime,
+    safePlayAudio,
+  ]);
 
   // =====================================================
   // 4) Exit-intent
@@ -264,7 +288,6 @@ const WebinarView: React.FC = () => {
   // =====================================================
   // 6) Clock widget (drag in at 10s, out ~20s)
   // =====================================================
-
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
@@ -289,13 +312,13 @@ const WebinarView: React.FC = () => {
 
     function stopClockUpdates() {
       if (clockIntervalRef.current) {
-        clearInterval(+clockIntervalRef.current);
+        clearInterval(clockIntervalRef.current);
         clockIntervalRef.current = null;
       }
     }
 
     function handleTimeUpdate() {
-      if (vid && vid.currentTime >= 10 && !showClockWidget && !clockRemoved) {
+      if (vid.currentTime >= 10 && !showClockWidget && !clockRemoved) {
         setShowClockWidget(true);
         startClockUpdates();
       }
@@ -303,6 +326,7 @@ const WebinarView: React.FC = () => {
         startClockUpdates();
       }
     }
+
     vid.addEventListener("timeupdate", handleTimeUpdate);
 
     return () => {
@@ -334,6 +358,11 @@ const WebinarView: React.FC = () => {
     }
   }, [clockRemoved]);
 
+  // Called from chat poll if user votes
+  const handlePollVote = () => {
+    setPollShowResults(true);
+  };
+
   // =====================================================
   // RENDER
   // =====================================================
@@ -356,16 +385,8 @@ const WebinarView: React.FC = () => {
         src="https://cdn.freesound.org/previews/613/613258_5674468-lq.mp3"
         style={{ display: "none" }}
       />
-      <audio
-        ref={audioRef}
-        // muted={!hasInteracted} // enable this if you only want audio after user click
-        style={{ display: "none" }}
-      />
-      <audio
-        ref={audioRefTwo}
-        muted={!hasInteracted}
-        style={{ display: "none" }}
-      />
+      <audio ref={audioRef} style={{ display: "none" }} />
+      <audio ref={audioRefTwo} muted={!hasInteracted} style={{ display: "none" }} />
 
       {/* Exit Overlay */}
       {showExitOverlay &&
@@ -439,7 +460,7 @@ const WebinarView: React.FC = () => {
                 />
               )}
 
-              {/* Headline absolutely positioned */}
+              {/* Headline text if needed */}
               {showHeadline && (
                 <div className={styles.headlineText}>{headline}</div>
               )}
@@ -467,8 +488,11 @@ const WebinarView: React.FC = () => {
 
           {/* Chat side - same height as video */}
           <div className={styles.chatColumn}>
-            {/* IMPORTANT: passing videoTime so the poll can appear at 20s */}
-            <WebinarChatBox videoTime={videoTime} />
+            <WebinarChatBox
+              pollOpen={pollOpen}
+              pollShowResults={pollShowResults}
+              onPollVote={handlePollVote}
+            />
           </div>
         </div>
       </div>
@@ -533,7 +557,7 @@ const ReplayOverlay: React.FC<{
 };
 
 // ------------------------------------------------------------------
-// Clock Widget
+// Clock Widget with "human random wobble"
 // ------------------------------------------------------------------
 const ClockWidget: React.FC<{
   currentTime: string;
@@ -555,9 +579,8 @@ const ClockWidget: React.FC<{
   const handleAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
     if (e.animationName.includes("dragIn")) {
       setDragInComplete(true);
-    } else if (e.animationName.includes("dragOut")) {
-      // No specific logic needed after the final fade out
     }
+    // if (e.animationName.includes("dragOut")) { ... }
   };
 
   useEffect(() => {
@@ -608,14 +631,19 @@ const ClockWidget: React.FC<{
 };
 
 // ------------------------------------------------------------------
-// The Chat Box: identical to your old snippet so AI & socket work
-// + with minimal additions for the poll
+// The Chat Box: EXACT same snippet + minimal poll injection
 // ------------------------------------------------------------------
 interface WebinarChatBoxProps {
-  videoTime?: number; // added to track time for poll
+  pollOpen: boolean;
+  pollShowResults: boolean;
+  onPollVote: () => void;
 }
 
-const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({ videoTime = 0 }) => {
+const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
+  pollOpen,
+  pollShowResults,
+  onPollVote,
+}) => {
   const chatMessagesRef = useRef<HTMLDivElement | null>(null);
   const messageInputRef = useRef<HTMLInputElement | null>(null);
   const typingIndicatorRef = useRef<HTMLDivElement | null>(null);
@@ -627,32 +655,6 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({ videoTime = 0 }) => {
   const socketRef = useRef<WebSocket | null>(null);
 
   const [isUserScrolling, setIsUserScrolling] = useState(false);
-
-  // --------------------------------------------
-  // ADDED FOR POLL (Jony Ive style)
-  // --------------------------------------------
-  const [pollVisible, setPollVisible] = useState(false);
-  const [pollShowResults, setPollShowResults] = useState(false);
-  const [pollHasVoted, setPollHasVoted] = useState(false);
-
-  // React to videoTime to show/hide poll:
-  useEffect(() => {
-    // Show poll at 20s if not already shown & if < 80s
-    if (!pollVisible && videoTime >= 20 && videoTime < 80) {
-      setPollVisible(true);
-    }
-    // If poll is visible and results not shown yet, show them at 50s or upon vote
-    if (pollVisible && !pollShowResults && (videoTime >= 50 || pollHasVoted)) {
-      setPollShowResults(true);
-    }
-    // Hide poll entirely at 80s
-    if (pollVisible && videoTime >= 80) {
-      setPollVisible(false);
-      setPollShowResults(false);
-      setPollHasVoted(false);
-    }
-  }, [videoTime, pollVisible, pollShowResults, pollHasVoted]);
-  // --------------------------------------------
 
   useEffect(() => {
     const chatEl = chatMessagesRef.current;
@@ -969,7 +971,7 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({ videoTime = 0 }) => {
 
     // AI response logic
     async function handleUserMessage(msg: string, isAutoQuestion = false) {
-      if (isAutoQuestion) return; // As in your snippet
+      if (isAutoQuestion) return;
       try {
         const randomDelay = Math.random() * 4000;
         await new Promise((res) => setTimeout(res, randomDelay));
@@ -1053,67 +1055,13 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({ videoTime = 0 }) => {
         </div>
       </div>
 
-      {/* 
-        --------------------------------------------
-        ADDED: Poll pinned to top (fade in/out),
-        shows results on vote or 50s, then disappears by 80s
-        --------------------------------------------
-      */}
-      {pollVisible && (
-        <div
-          className={`${styles.chatPollContainer} ${
-            pollShowResults ? styles.chatPollShowResults : ""
-          }`}
-        >
-          {!pollShowResults ? (
-            <div className={styles.chatPollQuestion}>
-              <div className={styles.chatPollHeader}>Which works better?</div>
-              <div className={styles.chatPollOptions}>
-                <button
-                  className={styles.chatPollOptionBtn}
-                  onClick={() => setPollHasVoted(true)}
-                >
-                  Generic
-                </button>
-                <button
-                  className={styles.chatPollOptionBtn}
-                  onClick={() => setPollHasVoted(true)}
-                >
-                  Personalized
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className={styles.chatPollResults}>
-              <div className={styles.chatPollResultsBarContainer}>
-                <div className={styles.chatPollResultsLabel}>Generic</div>
-                <div className={styles.chatPollResultsBar}>
-                  <div
-                    className={styles.chatPollResultsFill}
-                    style={{ width: "2.8%" }}
-                  />
-                </div>
-                <span className={styles.chatPollResultsPercent}>2.8%</span>
-              </div>
-              <div className={styles.chatPollResultsBarContainer}>
-                <div className={styles.chatPollResultsLabel}>Personalized</div>
-                <div className={styles.chatPollResultsBar}>
-                  <div
-                    className={styles.chatPollResultsFill}
-                    style={{ width: "97.2%" }}
-                  />
-                </div>
-                <span className={styles.chatPollResultsPercent}>97.2%</span>
-              </div>
-              <div className={styles.chatPollResultsText}>
-                97.2% of participants said personalized marketing will perform
-                better
-              </div>
-            </div>
-          )}
-        </div>
+      {/* The poll pinned at top, if pollOpen is true */}
+      {pollOpen && (
+        <ChatPoll
+          showResults={pollShowResults}
+          onVote={onPollVote}
+        />
       )}
-      {/* -------------------------------------------- */}
 
       <div
         className={styles.specialOffer}
@@ -1140,6 +1088,52 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({ videoTime = 0 }) => {
       </div>
     </div>
   );
+};
+
+// ------------------------------------------------------------------
+// Separate poll component pinned at top
+// ------------------------------------------------------------------
+const ChatPoll: React.FC<{
+  showResults: boolean;
+  onVote: () => void;
+}> = ({ showResults, onVote }) => {
+  if (!showResults) {
+    // Poll question
+    return (
+      <div className={styles.chatPollContainer}>
+        <div className={styles.chatPollQuestion}>Which works better?</div>
+        <div className={styles.chatPollButtons}>
+          <button onClick={onVote}>Generic</button>
+          <button onClick={onVote}>Personalized</button>
+        </div>
+      </div>
+    );
+  } else {
+    // Poll results
+    return (
+      <div className={styles.chatPollContainer}>
+        <div className={styles.chatPollResults}>
+          <div className={styles.pollBarRow}>
+            <span>Generic</span>
+            <div className={styles.pollBar}>
+              <div className={styles.pollBarFillGeneric}></div>
+            </div>
+            <span>2.8%</span>
+          </div>
+          <div className={styles.pollBarRow}>
+            <span>Personalized</span>
+            <div className={styles.pollBar}>
+              <div className={styles.pollBarFillPersonalized}></div>
+            </div>
+            <span>97.2%</span>
+          </div>
+          <div className={styles.pollResultText}>
+            97.2% of participants said personalized marketing will perform better
+          </div>
+        </div>
+      </div>
+    );
+  }
 };
 
 export default WebinarView;
