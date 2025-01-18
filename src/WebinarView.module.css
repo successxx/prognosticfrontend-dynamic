@@ -846,3 +846,31 @@
   font-weight: 500;
   text-align: center;
 }
+
+/************************************************************/
+/* NEW CLASSES FOR THE FULL SCREEN BUTTON (Jony Ive style)  */
+/************************************************************/
+.fullScreenButton {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 5; /* above video but below overlays like .soundOverlay */
+  font-family: "Montserrat", sans-serif;
+  backdrop-filter: blur(10px);
+}
+.fullScreenButton:hover {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.showFullScreenButton {
+  opacity: 1;
+}
