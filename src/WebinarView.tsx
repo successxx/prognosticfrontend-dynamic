@@ -19,6 +19,9 @@ const WebinarView: React.FC = () => {
   const audioRefTwo = useRef<HTMLAudioElement | null>(null);
   const messageToneRef = useRef<HTMLAudioElement | null>(null);
 
+  // >>> ADDED for Fullscreen
+  const videoWrapperRef = useRef<HTMLDivElement | null>(null);
+
   // ------------------ States ------------------
   const [connecting, setConnecting] = useState(true);
   const [liveMinutes, setLiveMinutes] = useState(0);
@@ -177,32 +180,32 @@ const WebinarView: React.FC = () => {
   }, [safePlayAudio, connecting]);
 
   useEffect(() => {
-  const vid = videoRef.current;
-  if (!vid) return;
+    const vid = videoRef.current;
+    if (!vid) return;
 
-  function handleHeadlineTiming() {
-    const time = vid.currentTime;
-    console.log('Video time:', time);  // Keep for debugging
-    
-    if (time >= 5 && time < 20) {
-      setShowHeadline(true);
-      if (!hasShownHeadline) {
-        setHasShownHeadline(true);
+    function handleHeadlineTiming() {
+      const time = vid.currentTime;
+      console.log('Video time:', time);  // Keep for debugging
+      
+      if (time >= 5 && time < 20) {
+        setShowHeadline(true);
+        if (!hasShownHeadline) {
+          setHasShownHeadline(true);
+        }
+      } else {
+        setShowHeadline(false);
       }
-    } else {
-      setShowHeadline(false);
     }
-  }
 
-  handleHeadlineTiming();
-  vid.addEventListener("timeupdate", handleHeadlineTiming);
-  vid.addEventListener("seeking", handleHeadlineTiming);
+    handleHeadlineTiming();
+    vid.addEventListener("timeupdate", handleHeadlineTiming);
+    vid.addEventListener("seeking", handleHeadlineTiming);
 
-  return () => {
-    vid.removeEventListener("timeupdate", handleHeadlineTiming);
-    vid.removeEventListener("seeking", handleHeadlineTiming);
-  };
-}, [connecting, hasInteracted, hasShownHeadline]);
+    return () => {
+      vid.removeEventListener("timeupdate", handleHeadlineTiming);
+      vid.removeEventListener("seeking", handleHeadlineTiming);
+    };
+  }, [connecting, hasInteracted, hasShownHeadline]);
 
   // =====================================================
   // 4) Exit-intent
@@ -309,6 +312,15 @@ const WebinarView: React.FC = () => {
     }
   }, [clockRemoved]);
 
+  // >>> ADDED for Fullscreen
+  const handleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      videoWrapperRef.current?.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
   // =====================================================
   // RENDER
   // =====================================================
@@ -388,7 +400,10 @@ const WebinarView: React.FC = () => {
         <div className={styles.twoColumnLayout}>
           {/* Video side */}
           <div className={styles.videoColumn}>
-            <div className={styles.videoWrapper}>
+            <div
+              className={styles.videoWrapper}
+              ref={videoWrapperRef}
+            >
               <video
                 ref={videoRef}
                 autoPlay
@@ -442,6 +457,14 @@ const WebinarView: React.FC = () => {
                   <div className={styles.soundText}>Click to Enable Sound</div>
                 </div>
               )}
+
+              {/* >>> FULLSCREEN BUTTON */}
+              <button
+                className={styles.fullscreenButton}
+                onClick={handleFullscreen}
+              >
+                ⛶
+              </button>
             </div>
           </div>
 
