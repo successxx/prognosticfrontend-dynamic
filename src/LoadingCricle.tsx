@@ -4,10 +4,9 @@ import styles from './LoadingCircle.module.css';
 const LoadingIndicator: React.FC = () => {
     const loadingMessages = [
         "Thinking...",
-"Analyzing the core elements...",
-"Discovering patterns and connections...",
-"Processing data points...",
-"Identifying key relationships...",
+"Customizing your report...",
+"Maximizing value...",
+"Processing data...",
 "Mapping challenges and opportunities...",
 "Testing multiple hypotheses...",
 "Refining initial findings...",
