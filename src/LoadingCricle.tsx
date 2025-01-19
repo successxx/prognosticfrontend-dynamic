@@ -5,7 +5,7 @@ const LoadingIndicator: React.FC = () => {
     const loadingMessages = [
         "Thinking...",
 "Customizing your report...",
-"Tailoring value to you...",
+"Tailoring your value...",
 "Finding your overlooked wins...",
 "Split-testing in advance...",
 "Refining findings...",
