@@ -3,9 +3,9 @@ import styles from './LoadingCircle.module.css';
 
 const LoadingIndicator: React.FC = () => {
     const loadingMessages = [
-        "Analyzing the essence of your website...",
-        "Finding your digital presence...",
         "Thinking...",
+        "Confirming details...",
+        "Finding your digital presence...",
         "Identifying your ideal target audience...",
         "Noting your opportunities and setbacks...",
         "Running A/B tests to discover your best path...",
