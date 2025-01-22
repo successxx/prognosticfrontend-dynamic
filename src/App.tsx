@@ -168,7 +168,7 @@ const App: React.FC = () => {
                                                     <div className="row justify-content-center">
                                                         <div className="col-12">
                                                             <div className="result-header text-center">
-                                                                <h1>Your PrognosticAI Vision</h1>
+                                                                <h1>Search Completed...</h1>
                                                             </div>
                                                         </div>
                                                     </div>
