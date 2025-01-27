@@ -4,7 +4,7 @@ import React from 'react';
 
 const PrognosticButton: React.FC = () => (
     <a
-        href="https://prognostic.ai"
+        href="https://Clients.ai"
         className="prognostic-button"
         target="_blank"
         rel="noopener noreferrer"
