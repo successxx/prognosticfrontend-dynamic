@@ -8,7 +8,7 @@ const PrognosticButton: React.FC = () => (
         className="Clients.ai-button"
         target="_blank"
         rel="noopener noreferrer"
-        id="prognosticButton"
+        id="Clients.aiButton"
     >
         Clients.ai
     </a>
