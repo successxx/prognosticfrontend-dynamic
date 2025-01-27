@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import Header from './Header';
 import TypedContent from './TypedContent';
 import StreakCounter from './StreakCounter';
-import ClientsButton from './ClientsButton';
+import Clients.aiButton from './Clients.aiButton';
 import Fireworks from './Fireworks';
 import './index.css';
 import LoadingCircle from './LoadingCricle.tsx';
@@ -143,16 +143,16 @@ const App: React.FC = () => {
                                     {loading ? (
                                         <>
                                             <LoadingCircle/>
-                                            <p id="text07" className="style1">© 2024 ClientsAI</p>
+                                            <p id="text07" className="style1">© 2024 Clients.ai</p>
                                         </>
                                     ) : (
                                         <>
                                             <h1 id="text02"
                                                 className={`text-center fade-in ${isContentVisible ? 'visible' : ''}`}>
                                                 <span className="p">
-                                                    Try Clients<mark>AI</mark>
+                                                    Try Clients.<mark>ai</mark>
                                                     {' '}
-                                                    <strong>For Your Company</strong>
+                                                    <strong>To Personalize Your Marketing And Instantly Boost Conversions</strong>
                                                     <br/>
                                                     <a href="https://Clients.ai/#demo" target="_blank"
                                                        rel="noopener noreferrer">
