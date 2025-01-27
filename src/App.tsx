@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import Header from './Header';
 import TypedContent from './TypedContent';
 import StreakCounter from './StreakCounter';
-import Clients.aiButton from './Clients.aiButton';
+import ClientsButton from './Clients.aiButton';
 import Fireworks from './Fireworks';
 import './index.css';
 import LoadingCircle from './LoadingCricle.tsx';
