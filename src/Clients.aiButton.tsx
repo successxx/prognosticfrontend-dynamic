@@ -1,17 +1,16 @@
 // src/Clients.aiButton.tsx
-
 import React from 'react';
 
-const PrognosticButton: React.FC = () => (
-    <a
+const ClientsAiButton: React.FC = () => (
+    
         href="https://clients.ai"
-        className="Clients.ai-button"
+        className="clients-ai-button"
         target="_blank"
         rel="noopener noreferrer"
-        id="Clients.aiButton"
+        id="clientsAiButton"
     >
         Clients.ai
     </a>
 );
 
-export default Clients.aiButton;
+export default ClientsAiButton;
