@@ -22,7 +22,7 @@ const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
                        className={`style2 ${isFooterVisible ? 'footer-fade-in visible' : 'footer-fade-in'}`}>
                     <span className="p">
                         The next time you hear someone talking about AI in marketing,
-                        <strong>think of Prognostic<mark>AI</mark>.</strong><br/>
+                        <strong>think of Clients.<mark>ai</mark>.</strong><br/>
                         <em>Can You Think Of A Friend Who Would Like To Close More Deals?</em><br/>
                         <strong>Spread The Love:</strong>
                     </span>
@@ -42,7 +42,7 @@ const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
                                     d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                             </svg>
                         </a><a
-                            href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fprognostic.ai&amp;quote=Hey,%20check%20out%20this%20new%20marketing%20software.%20it%20recreates%20new%20marketing%20for%20each%20lead%20in%20real%20time,%20and%20I%20thought%20of%20you!%20I%20just%20took%20their%20quiz%20and%20got%20mind-blowing%20personal%20insights.%20Try%20it%20out%20and%20see%20if%20their%20AI%20can%20make%20you%20some%20money!"
+                            href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fclients.ai&amp;quote=Hey,%20check%20out%20this%20new%20marketing%20software.%20it%20recreates%20new%20marketing%20for%20each%20lead%20in%20real%20time,%20and%20I%20thought%20of%20you!%20I%20just%20took%20their%20quiz%20and%20got%20mind-blowing%20personal%20insights.%20Try%20it%20out%20and%20see%20if%20their%20AI%20can%20make%20you%20some%20money!"
                             target="_blank" rel="noopener noreferrer" className="share-button"
                             style={{backgroundColor: '#1877F2'}}
                         >
@@ -52,7 +52,7 @@ const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
                                 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                             </svg>
                         </a><a
-                            href="https://www.linkedin.com/shareArticle?url=https%3A%2F%2Fprognostic.ai&amp;title=PrognosticAI%20-%20Personalized%20Marketing%20Strategy&amp;summary=Hey,%20check%20out%20this%20new%20marketing%20software.%20it%20recreates%20new%20marketing%20for%20each%20lead%20in%20real%20time,%20and%20I%20thought%20of%20you!%20I%20just%20took%20their%20quiz%20and%20got%20mind-blowing%20personal%20insights.%20Try%20it%20out%20and%20see%20if%20their%20AI%20can%20make%20you%20some%20money!"
+                            href="https://www.linkedin.com/shareArticle?url=https%3A%2F%2Fclients.ai&amp;title=Clients.ai%20-%20Personalized%20Marketing%20Strategy&amp;summary=Hey,%20check%20out%20this%20new%20marketing%20software.%20it%20recreates%20new%20marketing%20for%20each%20lead%20in%20real%20time,%20and%20I%20thought%20of%20you!%20I%20just%20took%20their%20quiz%20and%20got%20mind-blowing%20personal%20insights.%20Try%20it%20out%20and%20see%20if%20their%20AI%20can%20make%20you%20some%20money!"
                             target="_blank" rel="noopener noreferrer" className="share-button"
                             style={{backgroundColor: '#0A66C2'}}
                         >
@@ -65,7 +65,7 @@ const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
                                 <circle cx="4" cy="4" r="2"></circle>
                             </svg>
                         </a><a
-                            href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fprognostic.ai&amp;text=Hey,%20check%20out%20this%20new%20marketing%20software.%20it%20recreates%20new%20marketing%20for%20each%20lead%20in%20real%20time,%20and%20I%20thought%20of%20you!%20I%20just%20took%20their%20quiz%20and%20got%20mind-blowing%20personal%20insights.%20Try%20it%20out%20and%20see%20if%20their%20AI%20can%20make%20you%20some%20money!"
+                            href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fclients.ai&amp;text=Hey,%20check%20out%20this%20new%20marketing%20software.%20it%20recreates%20new%20marketing%20for%20each%20lead%20in%20real%20time,%20and%20I%20thought%20of%20you!%20I%20just%20took%20their%20quiz%20and%20got%20mind-blowing%20personal%20insights.%20Try%20it%20out%20and%20see%20if%20their%20AI%20can%20make%20you%20some%20money!"
                             target="_blank" rel="noopener noreferrer" className="share-button"
                             style={{backgroundColor: '#000000'}}
                         >
@@ -81,7 +81,7 @@ const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
                             <img src={headerImage} alt="Header"/>
                         </span>
                     </div>
-                    <p id="text07" className="style1">© 2024 PrognosticAI</p></div>
+                    <p id="text07" className="style1">© 202Clients.ai</p></div>
             </div>
         </div>
     );
