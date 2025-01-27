@@ -36,7 +36,7 @@
   width: 60px;
   height: 60px;
   border: 6px solid #cce0ff;
-  border-top-color: #0142ac;
+  border-top-color: #252525;
   border-radius: 50%;
   animation: spin 1s infinite linear;
 }
@@ -317,7 +317,7 @@
 .replayButton,
 .investButton {
   background: #fff;
-  color: #0142ac;
+  color: #252525;
   padding: 12px 24px;
   border-radius: 6px;
   font-weight: 600;
@@ -327,7 +327,7 @@
   font-size: 0.9rem;
 }
 .investButton {
-  background: #0142ac;
+  background: #252525;
   color: #fff;
 }
 .investButton:hover {
@@ -488,7 +488,7 @@
 
 .chatHeader {
   padding: 12px 15px;
-  background: #0142ac;
+  background: #252525;
   color: #fff;
   flex: 0 0 auto;
   border-top-left-radius: 6px;
@@ -576,7 +576,7 @@
   flex: 0 0 auto;
 }
 .investButton {
-  background: #0142ac;
+  background: #252525;
   color: #fff;
   border: none;
   padding: 12px 20px;
@@ -627,7 +627,7 @@
 }
 .host {
   background: #e7f0ff;
-  color: #0142ac;
+  color: #252525;
   font-weight: 500;
 }
 .system {
@@ -655,7 +655,7 @@
 }
 .chatInput input:focus {
   outline: none;
-  border-color: #0142ac;
+  border-color: #252525;
   box-shadow: 0 0 0 2px rgba(1, 66, 172, 0.1);
 }
 .typingIndicator {
@@ -700,7 +700,7 @@
   }
 }
 .notificationIcon {
-  background: #0142ac;
+  background: #252525;
   color: #fff;
   width: 28px;
   height: 28px;
@@ -834,7 +834,7 @@
   transition: width 0.4s ease;
 }
 .pollBarFillPersonalized {
-  background: #0142ac;
+  background: #252525;
   width: 97.2%;
   height: 100%;
   transition: width 0.4s ease;
@@ -941,7 +941,7 @@
 
 .investNowBtn {
   width: 100%;
-  background: #0142ac;
+  background: #252525;
   color: #fff;
   font-size: 0.9rem;
   font-weight: 600;
