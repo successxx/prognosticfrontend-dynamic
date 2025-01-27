@@ -74,7 +74,7 @@ const App: React.FC = () => {
         <>
           <LoadingCircle />
           <p id="text07" className="style1">
-            © 2024 Clients.ai
+            © 2025 Clients.ai
           </p>
         </>
       ) : (
