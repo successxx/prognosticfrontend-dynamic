@@ -5,7 +5,7 @@ import StreakCounter from './StreakCounter';
 import ClientsButton from './Clients.aiButton';
 import Fireworks from './Fireworks';
 import './index.css';
-import LoadingCircle from './LoadingCricle.tsx';
+import LoadingCircle from './LoadingCircle.tsx';
 import Footer from './Footer.tsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
