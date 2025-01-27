@@ -365,7 +365,7 @@ const preloadedQuestions = [
           <div className={styles.zoomTitle}>
             {/* Instead of red dot, we now have .zoomLiveDot => "LIVE SOON" text */}
             <div className={styles.zoomLiveDot}></div>
-            <span>PrognosticAI Advanced Training</span>
+            <span>Clients.ai Advanced Training</span>
           </div>
           {/* CHANGED top-right text to "Live Webinar: (date)" */}
           <div className={styles.awh2024Header}>
@@ -501,7 +501,7 @@ const preloadedQuestions = [
       </div>
 
       {/* Footer branding outside box */}
-      <div className={styles.footerBranding}>© 2025 PrognosticAI</div>
+      <div className={styles.footerBranding}>© 2025 Clients.ai</div>
 
       {/* ADDED iMessage-style popup (only on mobile) */}
       {showMobilePopup && (
