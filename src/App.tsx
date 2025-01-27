@@ -33,7 +33,7 @@ const App: React.FC = () => {
         setLoading(true);
         timeoutId.current = window.setTimeout(() => {
             stopPolling();
-            setError("We couldn't process your request. Please try again, or contact support@prognostic.ai.");
+            setError("We couldn't process your request. Please try again, or contact support@Clients.ai.");
             setLoading(false);
         }, 95000);
 
@@ -143,18 +143,18 @@ const App: React.FC = () => {
                                     {loading ? (
                                         <>
                                             <LoadingCircle/>
-                                            <p id="text07" className="style1">© 2024 PrognosticAI</p>
+                                            <p id="text07" className="style1">© 2025 Clients.ai</p>
                                         </>
                                     ) : (
                                         <>
                                             <h1 id="text02"
                                                 className={`text-center fade-in ${isContentVisible ? 'visible' : ''}`}>
                                                 <span className="p">
-                                                    Try Prognostic<mark>AI</mark>
+                                                    Try Clients.<mark>ai</mark>
                                                     {' '}
                                                     <strong>For Your Company</strong>
                                                     <br/>
-                                                    <a href="https://prognostic.ai/#demo" target="_blank"
+                                                    <a href="https://Clients.ai/#demo" target="_blank"
                                                        rel="noopener noreferrer">
                                                         Book Your Free Demo Today!
                                                     </a>
@@ -180,7 +180,7 @@ const App: React.FC = () => {
                                                                 <TypedContent
                                                                     content={content}
                                                                     booking_button_name={booking_button_name || 'Book Your Free Demo Now!'}
-                                                                    booking_button_redirection={booking_button_redirection || 'https://prognostic.ai/#demo'}
+                                                                    booking_button_redirection={booking_button_redirection || 'https://Clients.ai/#demo'}
                                                                 />
 
                                                             )}
