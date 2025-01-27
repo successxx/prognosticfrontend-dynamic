@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ClientsAiButton: React.FC = () => {
+function ClientsAiButton() {
   return (
     
       href="https://clients.ai"
@@ -12,6 +12,6 @@ const ClientsAiButton: React.FC = () => {
       Clients.ai
     </a>
   );
-};
+}
 
 export default ClientsAiButton;
