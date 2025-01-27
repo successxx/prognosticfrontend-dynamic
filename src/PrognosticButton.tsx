@@ -5,7 +5,7 @@ import React from 'react';
 const PrognosticButton: React.FC = () => (
     <a
         href="https://clients.ai"
-        className="prognostic-button"
+        className="Clients.ai-button"
         target="_blank"
         rel="noopener noreferrer"
         id="prognosticButton"
@@ -14,4 +14,4 @@ const PrognosticButton: React.FC = () => (
     </a>
 );
 
-export default PrognosticButton;
+export default Clients.aiButton;
