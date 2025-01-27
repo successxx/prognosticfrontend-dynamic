@@ -10,7 +10,7 @@ const PrognosticButton: React.FC = () => (
         rel="noopener noreferrer"
         id="prognosticButton"
     >
-        PrognosticAI Enabled
+        Clients.ai
     </a>
 );
 
