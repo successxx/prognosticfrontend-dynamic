@@ -7,10 +7,8 @@ import "./index.css";
 import LoadingCircle from "./LoadingCircle";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-// Import your new React-based waiting room component
-import WaitingRoom from "./WaitingRoom";
-
-/** Returns how many milliseconds remain until the next quarter hour (15/30/45/60) */
+/** (Optional) If you still want to wait until the next quarter hour to show, keep this. 
+    Otherwise, you can remove the entire function and usage. */
 function getMsUntilNextQuarterHour(): number {
   const now = new Date();
   const nextQ = new Date(
@@ -23,7 +21,6 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [isContentVisible, setIsContentVisible] = useState<boolean>(false);
-  const [showWaitingRoom, setShowWaitingRoom] = useState<boolean>(true); // NEW
   const [streak] = useState<number>(1);
 
   useEffect(() => {
@@ -37,27 +34,20 @@ const App: React.FC = () => {
       return;
     }
 
-    // 2) Compute how many ms remain until next quarter hour
+    // 2) (Optional) If you want to wait until next quarter hour:
     const msLeft = getMsUntilNextQuarterHour();
 
-    // 3) If it’s already past or exactly the quarter hour, we skip WaitingRoom
+    // If it’s already the quarter hour or beyond, show webinar immediately
     if (msLeft <= 0) {
-      // Show immediate webinar
-      setShowWaitingRoom(false);
       setLoading(false);
       setIsContentVisible(true);
-
       return;
     }
 
-    // 4) If next quarter hour not yet reached => show waiting room
-    //    Once time passes, hide waiting room and show webinar
-    setShowWaitingRoom(true);
-    setLoading(false); // We’re done “loading”—the user sees waiting room
+    // Otherwise, show webinar after the timer completes
+    setLoading(false);
 
     const timerId = setTimeout(() => {
-      // Quarter hour arrived => hide waiting room, show webinar
-      setShowWaitingRoom(false);
       setIsContentVisible(true);
     }, msLeft);
 
@@ -69,7 +59,6 @@ const App: React.FC = () => {
       <Header />
       <hr id="divider02" className="hr-custom" />
 
-      {/* 1) If we’re still “loading,” show spinner + maybe brand text */}
       {loading ? (
         <>
           <LoadingCircle />
@@ -79,34 +68,24 @@ const App: React.FC = () => {
         </>
       ) : (
         <>
-          {/* 2) If we have an error, show it */}
           {error ? (
             <p className="content-box text-center">{error}</p>
           ) : (
-            <>
-              {/* 3) If showWaitingRoom is TRUE, show your waiting room */}
-              {showWaitingRoom ? (
-                <WaitingRoom />
-              ) : (
-                // 4) Otherwise, show the actual webinar code
-                <div className="d-flex flex-column w-100 justify-content-center">
-                  <div
-                    className={`d-flex w-100 justify-content-center fade-in ${
-                      isContentVisible ? "visible" : ""
-                    }`}
-                  >
-                    <WebinarView />
-
-                    <Fireworks />
-                  </div>
-                  <div className="streak-container row justify-content-center mt-5">
-                    <div className="col-12 col-sm-6 text-center">
-                      <StreakCounter streak={streak} />
-                    </div>
-                  </div>
+            <div className="d-flex flex-column w-100 justify-content-center">
+              <div
+                className={`d-flex w-100 justify-content-center fade-in ${
+                  isContentVisible ? "visible" : ""
+                }`}
+              >
+                <WebinarView />
+                <Fireworks />
+              </div>
+              <div className="streak-container row justify-content-center mt-5">
+                <div className="col-12 col-sm-6 text-center">
+                  <StreakCounter streak={streak} />
                 </div>
-              )}
-            </>
+              </div>
+            </div>
           )}
         </>
       )}
