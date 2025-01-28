@@ -1,26 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import WebinarView from "./WebinarView";
-import StreakCounter from "./StreakCounter";
-import Fireworks from "./Fireworks";
+import StreakCounter from "./StreakCounter"; // If you still want a simple streak
+import Fireworks from "./Fireworks";         // If you want fireworks, keep it
 import "./index.css";
 import LoadingCircle from "./LoadingCircle";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-/** (Optional) If you still want to wait until the next quarter hour to show, keep this. 
-    Otherwise, you can remove the entire function and usage. */
-function getMsUntilNextQuarterHour(): number {
-  const now = new Date();
-  const nextQ = new Date(
-    Math.ceil(now.getTime() / (15 * 60 * 1000)) * (15 * 60 * 1000)
-  );
-  return nextQ.getTime() - now.getTime();
-}
-
+/** Minimal App with no waiting room. */
 const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [isContentVisible, setIsContentVisible] = useState<boolean>(false);
+
+  // Example streak
   const [streak] = useState<number>(1);
 
   useEffect(() => {
@@ -34,24 +27,9 @@ const App: React.FC = () => {
       return;
     }
 
-    // 2) (Optional) If you want to wait until next quarter hour:
-    const msLeft = getMsUntilNextQuarterHour();
-
-    // If it’s already the quarter hour or beyond, show webinar immediately
-    if (msLeft <= 0) {
-      setLoading(false);
-      setIsContentVisible(true);
-      return;
-    }
-
-    // Otherwise, show webinar after the timer completes
+    // 2) Just show webinar immediately
     setLoading(false);
-
-    const timerId = setTimeout(() => {
-      setIsContentVisible(true);
-    }, msLeft);
-
-    return () => clearTimeout(timerId);
+    setIsContentVisible(true);
   }, []);
 
   return (
@@ -63,7 +41,7 @@ const App: React.FC = () => {
         <>
           <LoadingCircle />
           <p id="text07" className="style1">
-            © 2025 Clients.ai
+            © {new Date().getFullYear()} Clients.ai
           </p>
         </>
       ) : (
@@ -78,6 +56,7 @@ const App: React.FC = () => {
                 }`}
               >
                 <WebinarView />
+                {/* If you want fireworks, keep this: */}
                 <Fireworks />
               </div>
               <div className="streak-container row justify-content-center mt-5">
