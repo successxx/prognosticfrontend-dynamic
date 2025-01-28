@@ -133,7 +133,7 @@ const WebinarView: React.FC = () => {
       (async () => {
         try {
           const resp = await fetch(
-            `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_audio?user_email=${encodeURIComponent(
+            `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/insert_user_two?user_email=${encodeURIComponent(
               userEmail
             )}`
           );
