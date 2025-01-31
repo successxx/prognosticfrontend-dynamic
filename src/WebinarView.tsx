@@ -488,7 +488,7 @@ const WebinarView: React.FC = () => {
           {/* Left side: LIVE + Title */}
           <div className={styles.zoomTitle}>
             <div className={styles.zoomLiveDot}></div>
-            PrognosticAI Advanced Training
+            Clients.ai Advanced Training
           </div>
           {/* Right side: "Live for X minutes" */}
           <div className={styles.zoomLiveMinutes}>
@@ -594,7 +594,7 @@ const WebinarView: React.FC = () => {
 
       {/* Footer */}
       <footer className={styles.footer}>
-        © {new Date().getFullYear()} PrognosticAI
+        © {new Date().getFullYear()} Clients.ai
       </footer>
 
       {/* 
@@ -924,7 +924,7 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
     // greet after 2s
     setTimeout(() => {
       addMessage(
-        "Welcome to the PrognosticAI Advanced Training! Feel free to chat while we get started!",
+        "Welcome to the Clients.ai Advanced Training! Feel free to chat while we get started!",
         "host",
         "Selina"
       );

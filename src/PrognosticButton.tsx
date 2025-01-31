@@ -4,13 +4,13 @@ import React from 'react';
 
 const PrognosticButton: React.FC = () => (
     <a
-        href="https://prognostic.ai"
+        href="https://clients.ai"
         className="prognostic-button"
         target="_blank"
         rel="noopener noreferrer"
         id="prognosticButton"
     >
-        PrognosticAI Enabled
+        Clients.ai
     </a>
 );
 

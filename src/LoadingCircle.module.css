@@ -13,7 +13,7 @@
 }
 
 .pai-dr-header {
-    background-color: #0142AC;
+    background-color: #252525;
     color: white;
     padding: 20px;
     font-size: 24px;
@@ -36,7 +36,7 @@
 
 .pai-dr-spinner {
     border: 8px solid #f3f3f3;
-    border-top: 8px solid #0142AC;
+    border-top: 8px solid #252525;
     border-radius: 50%;
     width: 80px;
     height: 80px;
@@ -78,7 +78,7 @@
 
 .pai-dr-button {
     display: inline-block;
-    background-color: #0142AC;
+    background-color: #252525;
     color: white;
     font-size: 12px;
     padding: 5px 10px;
@@ -90,7 +90,7 @@
 .countdown {
     font-size: 48px;
     font-weight: 700;
-    color: #0142AC;
+    color: #252525;
     margin: 20px 0;
 }
 

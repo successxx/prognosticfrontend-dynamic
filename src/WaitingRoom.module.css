@@ -118,7 +118,7 @@ body, html {
 }
 .loadingSpinner {
   border: 8px solid rgba(228, 232, 241, 0.5);
-  border-top: 8px solid #0142ac;
+  border-top: 8px solid #252525;
   border-radius: 50%;
   width: 60px;
   height: 60px;
@@ -133,7 +133,7 @@ body, html {
 .loadingText {
   font-size: 16px;
   font-weight: 700;
-  color: #2c3135; /* was #0142ac */
+  color: #2c3135; /* was #252525 */
   margin-top: 12px;
 }
 
@@ -162,7 +162,7 @@ body, html {
 /* The checkmark inside the icon */
 .benefitIcon::before {
   content: '✓';
-  color: #0142ac; /* or var(--primary-color) if defined */
+  color: #252525; /* or var(--primary-color) if defined */
   font-size: 16px;
   font-weight: 500;
 }
@@ -245,7 +245,7 @@ body, html {
 
 .chatHeader {
   padding: 12px 15px;
-  background: #0142AC;
+  background: #252525;
   color: white;
   flex: 0 0 auto;
 }
@@ -347,7 +347,7 @@ body, html {
 }
 .message.host {
   background: #e7f0ff;
-  color: #0142AC;
+  color: #252525;
   font-weight: 500;
 }
 .message.system {
@@ -376,7 +376,7 @@ body, html {
 }
 .chatInput input:focus {
   outline: none;
-  border-color: #0142AC;
+  border-color: #252525;
   box-shadow: 0 0 0 2px rgba(1,66,172,0.1);
 }
 .typingIndicator {
