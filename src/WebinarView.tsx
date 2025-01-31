@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import styles from "./WebinarView.module.css";
-import dummyVideo from "../public/demo with ai injection.mp4";
+// use this dummy demo video to see the overly text mapped properly
+// import dummyVideo from "../public/demo with ai injection.mp4";
 import { VideoClock } from "./VideoClock";
 import { VideoOverlay } from "./VideoOverlay";
 // ***** REMOVED the second import "./WebinarView.module.css"; *****
@@ -525,7 +526,10 @@ const WebinarView: React.FC = () => {
                 controls={false}
                 className={styles.videoPlayer}
               >
-                <source src={dummyVideo} type="video/mp4" />
+                <source
+                  src="https://paivid.s3.us-east-2.amazonaws.com/homepage222.mp4"
+                  type="video/mp4"
+                />
                 Your browser does not support HTML5 video.
               </video>
 
