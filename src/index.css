@@ -37,7 +37,7 @@ body {
 
 .result-header {
   width: 100%;
-  background-color: #0142ac;
+  background-color: #252525;
   color: white;
   padding: 20px 15px; /* Adjusted for mobile */
   border-radius: 15px 15px 0 0;
@@ -143,7 +143,7 @@ body {
   position: absolute;
   bottom: -40px;
   right: 20px;
-  background-color: #0142ac;
+  background-color: #252525;
   color: white;
   font-size: 12px;
   padding: 5px 10px;
@@ -206,7 +206,7 @@ body {
   transform: translateX(-50%);
   width: 2px;
   height: 40px;
-  background: linear-gradient(to bottom, #0142ac, transparent);
+  background: linear-gradient(to bottom, #252525, transparent);
 }
 
 .content-box:last-child::after {
@@ -220,7 +220,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   font-size: 24px;
-  color: #0142ac;
+  color: #252525;
   z-index: 1;
 }
 
@@ -292,7 +292,7 @@ body {
 .streak-counter {
   font-size: 20px;
   font-weight: 600;
-  color: #0142ac;
+  color: #252525;
   background-color: rgba(255, 255, 255, 0.95);
   padding: 12px 20px;
   border-radius: 12px;
@@ -381,7 +381,7 @@ body {
 
 .new-demo-button {
   display: inline-block;
-  background-color: #0142ac;
+  background-color: #252525;
   color: white;
   font-size: 18px;
   padding: 12px 24px;
@@ -462,7 +462,7 @@ p span.p {
 
 #text02 mark {
   padding: 0px;
-  color: #0142ac;
+  color: #252525;
   background-color: transparent;
 }
 
@@ -534,7 +534,7 @@ body {
 
 .result-header {
   width: 100%;
-  background-color: #0142ac;
+  background-color: #252525;
   color: white;
   padding: 25px 15px; /* Changed back to original padding */
   border-radius: 15px 15px 0 0;
@@ -649,7 +649,7 @@ strong {
   transform: translateX(-50%);
   width: 2px;
   height: 40px;
-  background: linear-gradient(to bottom, #0142ac, transparent);
+  background: linear-gradient(to bottom, #252525, transparent);
   opacity: 0; /* Initially hidden */
   transition: opacity 0.8s ease-in-out; /* Smooth opacity transition */
 }
@@ -671,7 +671,7 @@ strong {
   left: 50%;
   transform: translateX(-50%);
   font-size: 24px;
-  color: #0142ac;
+  color: #252525;
   z-index: 1;
   opacity: 0; /* Initially hidden */
   transition: opacity 0.8s ease-in-out; /* Smooth opacity transition */
@@ -753,7 +753,7 @@ strong {
 .streak-counter {
   font-size: 20px;
   font-weight: 600;
-  color: #0142ac;
+  color: #252525;
   background-color: rgba(255, 255, 255, 0.95);
   padding: 12px 20px;
   border-radius: 12px;
@@ -1159,7 +1159,7 @@ h2.style2 mark,
 h3.style2 mark,
 p.style2 mark {
   padding: 0px;
-  color: #0142ac;
+  color: #252525;
   background-color: transparent;
 }
 

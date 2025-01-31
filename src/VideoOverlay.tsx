@@ -1,6 +1,6 @@
 import type React from "react";
 import "./index.css";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { IWebinarInjection } from "./WebinarView";
 
 interface OverlayItem {
@@ -326,6 +326,7 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
   videoContainerRef,
   webinarInjectionData,
 }) => {
+    const [currentTime, setCurrentTime] = useState(0);
   const overlayRef = useRef<HTMLDivElement>(null);
 
   const updatedOverlayItems = useMemo(() => {
@@ -339,6 +340,23 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
       };
     });
   }, [webinarInjectionData]);
+
+  
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleTimeUpdate = () => {
+      setCurrentTime(video.currentTime);
+    };
+
+    video.addEventListener('timeupdate', handleTimeUpdate);
+
+    return () => {
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+    };
+  }, []);
 
   useEffect(() => {
     const updateOverlaySize = () => {
@@ -363,6 +381,8 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
     return key === "email_1" || key === "email_2" || key === "salesletter";
   };
 
+
+
   return (
     <div ref={overlayRef} className="video-overlay">
       {updatedOverlayItems.map((item, index) => {
@@ -373,8 +393,8 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
               <div
                 key={index}
                 className={`overlay-item ${
-                  videoRef.current.currentTime >= item.startTime &&
-                  videoRef.current.currentTime <= item.endTime
+                  currentTime >= item.startTime &&
+                  currentTime <= item.endTime
                     ? "visible"
                     : ""
                 }`}
@@ -389,8 +409,8 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
               <div
                 key={index}
                 className={`overlay-item ${
-                  videoRef.current.currentTime >= item.startTime &&
-                  videoRef.current.currentTime <= item.endTime
+                  currentTime >= item.startTime &&
+                  currentTime <= item.endTime
                     ? "visible"
                     : ""
                 }`}
