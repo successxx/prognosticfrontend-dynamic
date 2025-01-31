@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
-import styles from "./WebinarView.module.css"; 
+import styles from "./WebinarView.module.css";
+import dummyVideo from "../public/demo with ai injection.mp4";
+import { VideoClock } from "./VideoClock";
+import { VideoOverlay } from "./VideoOverlay";
 // ***** REMOVED the second import "./WebinarView.module.css"; *****
 
 // interface ChatMessage {
@@ -8,6 +11,35 @@ import styles from "./WebinarView.module.css";
 //   type: "user" | "host" | "system";
 //   userName?: string;
 // }
+
+export interface IWebinarInjection {
+  Business_description: string;
+  Industry: string;
+  Offer_topic: string;
+  Products_services: string;
+  audio_link: string;
+  audio_link_two: string;
+  company_name: string;
+  email_1: string;
+  email_2: string;
+  user_name: string;
+  lead_email: string;
+  exit_message: string;
+  headline: string;
+  offer_description: string;
+  offer_goal: string;
+  offer_name: string;
+  offer_price: string;
+  offer_url: string;
+  pain_points: string;
+  primary_benefits: string;
+  primary_goal: string;
+  salesletter: string;
+  target_audience: string;
+  target_url: string;
+  website_url: string;
+  testimonials: string;
+}
 
 const WebinarView: React.FC = () => {
   // ------------------ Refs ------------------
@@ -46,6 +78,10 @@ const WebinarView: React.FC = () => {
   const [headline, setHeadline] = useState("");
   const [showHeadline, setShowHeadline] = useState(false);
   const [hasShownHeadline, setHasShownHeadline] = useState(false);
+
+  // Webinar Injection data state
+  const [webinarInjectionData, setWebinarInjectionData] =
+    useState<IWebinarInjection>();
 
   // POLL logic: triggers at 20s
   const [pollStarted, setPollStarted] = useState(false);
@@ -133,12 +169,13 @@ const WebinarView: React.FC = () => {
       (async () => {
         try {
           const resp = await fetch(
-            `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_audio?user_email=${encodeURIComponent(
+            `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_audio?lead_email=${encodeURIComponent(
               userEmail
             )}`
           );
           if (!resp.ok) throw new Error("Error fetching user data");
           const data = await resp.json();
+          setWebinarInjectionData(data);
 
           // audio_link -> audioRef
           if (audioRef.current && data.audio_link) {
@@ -410,7 +447,11 @@ const WebinarView: React.FC = () => {
         style={{ display: "none" }}
       />
       <audio ref={audioRef} style={{ display: "none" }} />
-      <audio ref={audioRefTwo} muted={!hasInteracted} style={{ display: "none" }} />
+      <audio
+        ref={audioRefTwo}
+        muted={!hasInteracted}
+        style={{ display: "none" }}
+      />
 
       {/* Exit Overlay */}
       {showExitOverlay &&
@@ -463,6 +504,19 @@ const WebinarView: React.FC = () => {
               // Only add the onMouseMove to show/hide the full screen button
               onMouseMove={handleMouseMoveOnVideo}
             >
+              {videoRef && videoRef.current && (
+                <>
+                  {/* Overlay items */}
+                  <VideoOverlay
+                    videoRef={videoRef}
+                    videoContainerRef={videoWrapperRef}
+                    webinarInjectionData={webinarInjectionData}
+                  />
+
+                  {/* Mac like clock */}
+                  <VideoClock videoContainerRef={videoWrapperRef} />
+                </>
+              )}
               <video
                 ref={videoRef}
                 autoPlay
@@ -471,10 +525,7 @@ const WebinarView: React.FC = () => {
                 controls={false}
                 className={styles.videoPlayer}
               >
-                <source
-                  src="https://paivid.s3.us-east-2.amazonaws.com/homepage222.mp4"
-                  type="video/mp4"
-                />
+                <source src={dummyVideo} type="video/mp4" />
                 Your browser does not support HTML5 video.
               </video>
 
@@ -803,13 +854,16 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
     function handleScroll() {
       const threshold = 50;
       const nearBottom =
-        chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop <= threshold;
+        chatEl.scrollHeight - chatEl.clientHeight - chatEl.scrollTop <=
+        threshold;
       setIsUserScrolling(!nearBottom);
     }
     chatEl.addEventListener("scroll", handleScroll);
 
     // connect socket
-    const ws = new WebSocket("wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com");
+    const ws = new WebSocket(
+      "wss://my-webinar-chat-af28ab3bc4ef.herokuapp.com"
+    );
     socketRef.current = ws;
 
     ws.onopen = () => {
@@ -836,7 +890,9 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
 
     // handle "Show Others" toggle
     function handleToggle() {
-      const participantMsgs = chatEl.querySelectorAll('[data-participant="true"]');
+      const participantMsgs = chatEl.querySelectorAll(
+        '[data-participant="true"]'
+      );
       participantMsgs.forEach((m) => {
         (m as HTMLElement).style.display = toggleEl.checked ? "block" : "none";
       });
@@ -893,9 +949,26 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
   function scheduleAttendeeMessages() {
     // same arrays from waiting page
     const names = [
-      "Emma", "Liam", "Olivia", "Noah", "Ava", "Ethan", "Sophia", "Mason",
-      "Isabella", "William", "Mia", "James", "Charlotte", "Benjamin", "Amelia",
-      "Lucas", "Harper", "Henry", "Evelyn", "Alexander"
+      "Emma",
+      "Liam",
+      "Olivia",
+      "Noah",
+      "Ava",
+      "Ethan",
+      "Sophia",
+      "Mason",
+      "Isabella",
+      "William",
+      "Mia",
+      "James",
+      "Charlotte",
+      "Benjamin",
+      "Amelia",
+      "Lucas",
+      "Harper",
+      "Henry",
+      "Evelyn",
+      "Alexander",
     ];
     const randomMsgs = [
       "hows everyone doing today??",
@@ -917,7 +990,7 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
       "sry if this was covered already but will there b updates?",
       "this will save me so much time in my funnels",
       "who else is excited to learn about funnel analytics??",
-      "my marketing team is watching too!"
+      "my marketing team is watching too!",
     ];
 
     let total = Math.floor(Math.random() * 6) + 15; // random 15-20
@@ -942,7 +1015,11 @@ const WebinarChatBox: React.FC<WebinarChatBoxProps> = ({
           <span className={styles.chatTitle}>Live Chat</span>
           <div className={styles.toggleContainer}>
             <label className={styles.toggleSwitch}>
-              <input type="checkbox" ref={participantToggleRef} defaultChecked={false} />
+              <input
+                type="checkbox"
+                ref={participantToggleRef}
+                defaultChecked={false}
+              />
               <span className={styles.toggleSlider}></span>
             </label>
             <span className={styles.toggleLabel}>Show Others</span>
@@ -1011,7 +1088,8 @@ const ChatPoll: React.FC<{
             <span>97.2%</span>
           </div>
           <div className={styles.pollResultText}>
-            97.2% of participants said personalized marketing will perform better
+            97.2% of participants said personalized marketing will perform
+            better
           </div>
         </div>
       </div>
@@ -1030,7 +1108,9 @@ type OfferTimerAndProofProps = {
   videoRef: React.RefObject<HTMLVideoElement>;
 };
 
-const OfferTimerAndProof: React.FC<OfferTimerAndProofProps> = ({ videoRef }) => {
+const OfferTimerAndProof: React.FC<OfferTimerAndProofProps> = ({
+  videoRef,
+}) => {
   // This overlay appears at 45 minutes (2700s) into the video
   // Timer runs 40 minutes, from 19 spots -> down to 2
   // Social proof notifications start at 46 minutes (2760s)
@@ -1046,9 +1126,26 @@ const OfferTimerAndProof: React.FC<OfferTimerAndProofProps> = ({ videoRef }) => 
 
   // Minimal random user names for notifications (reuse from Chat):
   const userNames = [
-    "Emma", "Liam", "Olivia", "Noah", "Ava", "Ethan", "Sophia", "Mason",
-    "Isabella", "William", "Mia", "James", "Charlotte", "Benjamin", "Amelia",
-    "Lucas", "Harper", "Henry", "Evelyn", "Alexander"
+    "Emma",
+    "Liam",
+    "Olivia",
+    "Noah",
+    "Ava",
+    "Ethan",
+    "Sophia",
+    "Mason",
+    "Isabella",
+    "William",
+    "Mia",
+    "James",
+    "Charlotte",
+    "Benjamin",
+    "Amelia",
+    "Lucas",
+    "Harper",
+    "Henry",
+    "Evelyn",
+    "Alexander",
   ];
 
   // 1) Watch video time => show offer at 45:00
@@ -1172,7 +1269,7 @@ const OfferTimerAndProof: React.FC<OfferTimerAndProofProps> = ({ videoRef }) => 
       `Just a quick shout out to the ${numInvested} new folks that took the leap. So happy to see you here.`,
       `Wanted to say congrats to the ${numInvested} new people who hopped in. Real excited for you all!`,
       `We’ve got about ${numInvested} new people in so far, so that’s amazing. Wishing you a huge transformation ahead!`,
-      `Huge welcome to the ${numInvested} new invests that just came in. Grateful you’re taking steps!`
+      `Huge welcome to the ${numInvested} new invests that just came in. Grateful you’re taking steps!`,
     ];
     const m = phrases[Math.floor(Math.random() * phrases.length)];
 
@@ -1180,7 +1277,7 @@ const OfferTimerAndProof: React.FC<OfferTimerAndProofProps> = ({ videoRef }) => 
     // We'll dispatch a custom event with "Selina" message
     window.dispatchEvent(
       new CustomEvent("webinar-selina-chat", {
-        detail: { text: m }
+        detail: { text: m },
       })
     );
   }
@@ -1204,7 +1301,10 @@ const OfferTimerAndProof: React.FC<OfferTimerAndProofProps> = ({ videoRef }) => 
     }
     window.addEventListener("webinar-selina-chat", handleSelinaChat as any);
     return () => {
-      window.removeEventListener("webinar-selina-chat", handleSelinaChat as any);
+      window.removeEventListener(
+        "webinar-selina-chat",
+        handleSelinaChat as any
+      );
     };
   }, []);
 
