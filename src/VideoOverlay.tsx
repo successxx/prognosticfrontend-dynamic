@@ -1,6 +1,6 @@
 import type React from "react";
 import "./index.css";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { IWebinarInjection } from "./WebinarView";
 
 interface OverlayItem {
@@ -21,39 +21,14 @@ interface VideoOverlayProps {
   webinarInjectionData?: IWebinarInjection;
 }
 
-// const apiResponse = {
-//   Business_description: "Business Description",
-//   Industry: "",
-//   Offer_topic: "Offer Topic",
-//   Products_services: "",
-//   company_name: "Company Name",
-//   email_1: "example@email.com",
-//   email_2: "example@email.com",
-//   exit_message: "test1",
-//   headline: "",
-//   offer_description: "Offer Description",
-//   offer_goal: "Offer Goal",
-//   offer_name: "Offer Name",
-//   offer_price: "5000",
-//   pain_points: "Pain Points",
-//   primary_benefits: "Primary Benefits",
-//   primary_goal: "Primary Goal",
-//   salesletter: "",
-//   target_audience: "Target Audience",
-//   target_url: "",
-//   testimonials: "Testimonials",
-// };
-
-// missing: user_name, user_phone, website_url, last email screen content
-
 const overlayItems: OverlayItem[] = [
   {
     key: "lead_email",
     content: "",
     startTime: 13,
     endTime: 16.08,
-    position: { x: 0.573, y: 0.334 },
-    style: { color: "#0142ac", fontSize: "1em" },
+    position: { x: 0.573, y: 0.338 },
+    style: { color: "#252525", fontSize: "0.7em" },
   },
   {
     key: "user_name",
@@ -61,14 +36,14 @@ const overlayItems: OverlayItem[] = [
     startTime: 17.8,
     endTime: 26.7,
     position: { x: 0.573, y: 0.44 },
-    style: { color: "#0142ac", fontSize: "0.6em" },
+    style: { color: "#252525", fontSize: "0.6em" },
   },
   {
     key: "user_name",
     content: "John Doe",
     startTime: 41.15,
     endTime: 58.57,
-    position: { x: 0.043, y: 0.265 },
+    position: { x: 0.043, y: 0.264 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
@@ -95,7 +70,7 @@ const overlayItems: OverlayItem[] = [
     content: "www.example.com",
     startTime: 69.28,
     endTime: 71.94,
-    position: { x: 0.372, y: 0.61 },
+    position: { x: 0.372, y: 0.608 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
@@ -134,7 +109,7 @@ const overlayItems: OverlayItem[] = [
     key: "primary_goal",
     content: "Primary Goal",
     startTime: 85.36,
-    endTime: 91.84,
+    endTime: 91.72,
     position: { x: 0.372, y: 0.525 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
@@ -142,7 +117,7 @@ const overlayItems: OverlayItem[] = [
     key: "target_audience",
     content: "Target Audience",
     startTime: 85.36,
-    endTime: 91.84,
+    endTime: 91.72,
     position: { x: 0.372, y: 0.58 },
     style: {
       color: "#252525",
@@ -150,13 +125,14 @@ const overlayItems: OverlayItem[] = [
       maxWidth: "41em",
       maxHeight: "4.3em",
       overflow: "hidden",
+      textAlign: "left",
     },
   },
   {
     key: "pain_points",
     content: "Customer Pain Points",
     startTime: 85.36,
-    endTime: 91.84,
+    endTime: 91.72,
     position: { x: 0.372, y: 0.664 },
     style: {
       color: "#252525",
@@ -164,6 +140,7 @@ const overlayItems: OverlayItem[] = [
       maxWidth: "41em",
       maxHeight: "4.3em",
       overflow: "hidden",
+      textAlign: "left",
     },
   },
   {
@@ -250,6 +227,7 @@ const overlayItems: OverlayItem[] = [
       maxWidth: "41em",
       maxHeight: "7em",
       overflow: "hidden",
+      textAlign: "left",
     },
   },
 
@@ -262,9 +240,10 @@ const overlayItems: OverlayItem[] = [
     style: {
       color: "#252525",
       fontSize: "0.9em",
-      maxWidth: "91em",
+      maxWidth: "81em",
       maxHeight: "30em",
       overflow: "hidden",
+      textAlign: "left",
     },
   },
   {
@@ -276,9 +255,10 @@ const overlayItems: OverlayItem[] = [
     style: {
       color: "#252525",
       fontSize: "0.9em",
-      maxWidth: "91em",
+      maxWidth: "81em",
       maxHeight: "20em",
       overflow: "hidden",
+      textAlign: "left",
     },
   },
   {
@@ -293,6 +273,7 @@ const overlayItems: OverlayItem[] = [
       maxWidth: "62em",
       maxHeight: "28em",
       overflow: "hidden",
+      textAlign: "left",
     },
   },
   {
@@ -326,7 +307,9 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
   videoContainerRef,
   webinarInjectionData,
 }) => {
+  const [currentTime, setCurrentTime] = useState(0);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const rafId = useRef<number>();
 
   const updatedOverlayItems = useMemo(() => {
     if (!webinarInjectionData) {
@@ -358,6 +341,23 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
     };
   }, [videoContainerRef]);
 
+  useEffect(() => {
+    const video = videoRef.current;
+
+    if (!video) return;
+
+    const updateTime = () => {
+      setCurrentTime(video.currentTime);
+      rafId.current = requestAnimationFrame(updateTime);
+    };
+
+    rafId.current = requestAnimationFrame(updateTime);
+
+    return () => {
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+    };
+  }, []);
+
   const embeddableInjection = (key: keyof IWebinarInjection) => {
     // Includes the keys those contains the html content
     return key === "email_1" || key === "email_2" || key === "salesletter";
@@ -373,8 +373,7 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
               <div
                 key={index}
                 className={`overlay-item ${
-                  videoRef.current.currentTime >= item.startTime &&
-                  videoRef.current.currentTime <= item.endTime
+                  currentTime >= item.startTime && currentTime <= item.endTime
                     ? "visible"
                     : ""
                 }`}
@@ -389,8 +388,7 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
               <div
                 key={index}
                 className={`overlay-item ${
-                  videoRef.current.currentTime >= item.startTime &&
-                  videoRef.current.currentTime <= item.endTime
+                  currentTime >= item.startTime && currentTime <= item.endTime
                     ? "visible"
                     : ""
                 }`}
