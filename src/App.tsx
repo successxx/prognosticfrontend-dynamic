@@ -143,7 +143,7 @@ const App: React.FC = () => {
                                     {loading ? (
                                         <>
                                             <LoadingCircle/>
-                                            <p id="text07" className="style1">© 2025 Clients.ai</p>
+                                            <p id="text07" className="style1">All rights reserved</p>
                                         </>
                                     ) : (
                                         <>
