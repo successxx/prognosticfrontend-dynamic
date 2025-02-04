@@ -81,7 +81,7 @@ const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
                             <img src={headerImage} alt="Header"/>
                         </span>
                     </div>
-                    <p id="text07" className="style1">© 2024 ClientsAI</p></div>
+                    <p id="text07" className="style1">© 2025 ClientsAI</p></div>
             </div>
         </div>
     );
