@@ -17,7 +17,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const userEmail = params.get("user_email");
+    const userEmail = params.get("lead_email");
 
     // If no user_email in the query string, show an error and skip polling
     if (!userEmail) {
