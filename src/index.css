@@ -1238,13 +1238,13 @@ h1, h2, h3, p {
 }
 
 #image03 .frame {
-    width: 6rem;
+    width: 7rem;
     transition: none;
 }
 
 @media (max-width: 736px) {
     #image03 .frame {
-        width: 15rem;
+        width: 7rem;
     }
 }
 
