@@ -112,7 +112,7 @@ console.log("webinar", videoRef.current?.currentTime);
       {/* 2) The call-to-action button */}
       <div>
         <button
-          onClick={() => window.open("https://try.clients.ai", "_blank")}
+          onClick={() => window.open("https://webinar.clients.ai", "_blank")}
           style={{
             backgroundColor: "#252525",
             color: "#fff",
@@ -124,7 +124,7 @@ console.log("webinar", videoRef.current?.currentTime);
             cursor: "pointer",
           }}
         >
-          Start Your Free 18-Day Trial
+          Join The Next AI Agent Training
         </button>
       </div>
     </div>
