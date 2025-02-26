@@ -959,9 +959,10 @@ strong {
 
 .image {
   text-align: center; /* Centers the image */
-  width: 100%; /* Ensure it takes full width */
   display: flex;
-  justify-content: center; /* Center horizontally */
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .image img {
@@ -1318,6 +1319,20 @@ p {
 #image03 .frame {
   width: 7rem;
   transition: none;
+}
+
+#image03 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#image03 img {
+  display: block;
+  margin: 0 auto;
 }
 
 @media (max-width: 736px) {
