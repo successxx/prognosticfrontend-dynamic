@@ -25,7 +25,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "lead_email",
     content: "",
-    startTime: 13,
+    startTime: 12.19,
     endTime: 16.08,
     position: { x: 0.573, y: 0.338 },
     style: { color: "#252525", fontSize: "0.7em" },
@@ -33,15 +33,15 @@ const overlayItems: OverlayItem[] = [
   {
     key: "user_name",
     content: "John Doe",
-    startTime: 17.8,
-    endTime: 26.7,
+    startTime: 17.14,
+    endTime: 30.06,
     position: { x: 0.573, y: 0.44 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
     key: "user_name",
     content: "John Doe",
-    startTime: 41.15,
+    startTime: 41.65,
     endTime: 58.57,
     position: { x: 0.043, y: 0.264 },
     style: { color: "#252525", fontSize: "0.6em" },
@@ -49,7 +49,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_url",
     content: "123-456-7890",
-    startTime: 43.6,
+    startTime: 44.01,
     endTime: 58.57,
     position: { x: 0.043, y: 0.303 },
     style: {
@@ -60,7 +60,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "lead_email",
     content: "",
-    startTime: 48.5,
+    startTime: 49,
     endTime: 58.57,
     position: { x: 0.043, y: 0.34 },
     style: { color: "#252525", fontSize: "0.6em" },
@@ -68,56 +68,56 @@ const overlayItems: OverlayItem[] = [
   {
     key: "website_url",
     content: "www.example.com",
-    startTime: 69.28,
-    endTime: 71.94,
+    startTime: 69.78,
+    endTime: 72.44,
     position: { x: 0.372, y: 0.608 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
     key: "company_name",
     content: "",
-    startTime: 76.38,
-    endTime: 85.35,
+    startTime: 76.88,
+    endTime: 85.85,
     position: { x: 0.372, y: 0.52 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
     key: "Industry",
     content: "",
-    startTime: 76.38,
-    endTime: 85.35,
+    startTime: 76.88,
+    endTime: 85.85,
     position: { x: 0.508, y: 0.52 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
     key: "Products_services",
     content: "Improve efficiency, Tech companies, Time management",
-    startTime: 76.38,
-    endTime: 85.35,
+    startTime: 76.88,
+    endTime: 85.85,
     position: { x: 0.372, y: 0.585 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
     key: "Business_description",
     content: "AI Assistant, $99/month, 24/7 support, Boost productivity",
-    startTime: 76.38,
-    endTime: 85.35,
+    startTime: 76.88,
+    endTime: 85.85,
     position: { x: 0.372, y: 0.667 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
     key: "primary_goal",
     content: "Primary Goal",
-    startTime: 85.36,
-    endTime: 91.72,
+    startTime: 85.86,
+    endTime: 92.22,
     position: { x: 0.372, y: 0.525 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
     key: "target_audience",
     content: "Target Audience",
-    startTime: 85.36,
-    endTime: 91.72,
+    startTime: 85.86,
+    endTime: 92.22,
     position: { x: 0.372, y: 0.58 },
     style: {
       color: "#252525",
@@ -131,8 +131,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "pain_points",
     content: "Customer Pain Points",
-    startTime: 85.36,
-    endTime: 91.72,
+    startTime: 85.86,
+    endTime: 92.22,
     position: { x: 0.372, y: 0.664 },
     style: {
       color: "#252525",
@@ -146,8 +146,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_name",
     content: "Offer Name",
-    startTime: 91.85,
-    endTime: 95.03,
+    startTime: 92.35,
+    endTime: 95.53,
     position: { x: 0.37, y: 0.477 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
@@ -162,8 +162,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_description",
     content: "john.doe@example.com",
-    startTime: 91.85,
-    endTime: 95.03,
+    startTime: 92.35,
+    endTime: 95.53,
     position: { x: 0.37, y: 0.54 },
     style: {
       color: "#252525",
@@ -177,8 +177,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "primary_benefits",
     content: "Benefits of AI Assistant",
-    startTime: 91.85,
-    endTime: 95.03,
+    startTime: 92.35,
+    endTime: 95.53,
     position: { x: 0.507, y: 0.54 },
     style: {
       color: "#252525",
@@ -192,8 +192,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_goal",
     content: "Offer goal",
-    startTime: 91.85,
-    endTime: 95.03,
+    startTime: 92.35,
+    endTime: 95.53,
     position: { x: 0.37, y: 0.634 },
     style: {
       color: "#252525",
@@ -207,8 +207,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Offer_topic",
     content: "Offer topic",
-    startTime: 91.85,
-    endTime: 95.03,
+    startTime: 92.35,
+    endTime: 95.53,
     position: { x: 0.507, y: 0.634 },
     style: {
       color: "#252525",
@@ -221,8 +221,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "testimonials",
     content: "Testimonials",
-    startTime: 95.04,
-    endTime: 98.3,
+    startTime: 95.54,
+    endTime: 98.8,
     position: { x: 0.38, y: 0.552 },
     style: {
       color: "#252525",
@@ -237,8 +237,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "email_1",
     content: "",
-    startTime: 179.7,
-    endTime: 207.01,
+    startTime: 180.2,
+    endTime: 207.51,
     position: { x: 0.13, y: 0.3 },
     style: {
       color: "#252525",
@@ -252,8 +252,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "email_2",
     content: "",
-    startTime: 207.01,
-    endTime: 215.68,
+    startTime: 207.51,
+    endTime: 216.18,
     position: { x: 0.13, y: 0.3 },
     style: {
       color: "#252525",
@@ -267,8 +267,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "salesletter",
     content: "",
-    startTime: 215.7,
-    endTime: 230,
+    startTime: 216.2,
+    endTime: 230.5,
     position: { x: 0.24, y: 0.25 },
     style: {
       color: "#252525",
@@ -282,24 +282,24 @@ const overlayItems: OverlayItem[] = [
   {
     key: "company_name",
     content: "",
-    startTime: 231.02,
-    endTime: 242.07,
+    startTime: 231.52,
+    endTime: 242.57,
     position: { x: 0.33, y: 0.32 },
     style: { color: "#252525", fontSize: "0.6em", fontWeight: "500" },
   },
   {
     key: "Products_services",
     content: "",
-    startTime: 231.02,
-    endTime: 242.07,
+    startTime: 231.52,
+    endTime: 242.57,
     position: { x: 0.303, y: 0.37 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
     key: "offer_price",
     content: "",
-    startTime: 231.02,
-    endTime: 242.07,
+    startTime: 231.52,
+    endTime: 242.57,
     position: { x: 0.303, y: 0.386 },
     style: { color: "#252525", fontSize: "0.6em", fontWeight: "600" },
   },
