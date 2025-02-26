@@ -53,6 +53,7 @@ const WebinarView: React.FC = () => {
   // =====================================================
   // 1) On Mount: fetch overly data
   // =====================================================
+  // =====================================================
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
@@ -61,10 +62,12 @@ const WebinarView: React.FC = () => {
       (async () => {
         try {
           const resp = await fetch(
-            "https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two",
+            `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two`,
             {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json",
+              },
               body: JSON.stringify({ user_email: userEmail }),
             }
           );
@@ -108,7 +111,7 @@ const WebinarView: React.FC = () => {
       {/* 2) The call-to-action button */}
       <div>
         <button
-          onClick={() => window.open("https://try.clients.ai", "_blank")}
+          onClick={() => window.open("https://webinar.clients.ai", "_blank")}
           style={{
             backgroundColor: "#252525",
             color: "#fff",
@@ -120,7 +123,7 @@ const WebinarView: React.FC = () => {
             cursor: "pointer",
           }}
         >
-          Start Your Free 18-Day Trial
+          Join The Next AI Agent Training
         </button>
       </div>
     </div>
