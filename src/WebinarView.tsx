@@ -3,8 +3,6 @@ import styles from "./WebinarView.module.css";
 import { VideoOverlay } from "./VideoOverlay";
 import { VideoClock } from "./VideoClock";
 
-import demoVideo from "../public/demo with ai injection.mp4";
-
 export interface IWebinarInjection {
   Business_description: string;
   Industry: string;
@@ -37,7 +35,7 @@ export interface IWebinarInjection {
 /**
  * Minimal WebinarView:
  * - Only a video
- * - One button: "Start Your Free 18-Day Trial" -> https://try.clients.ai
+ * - One button: "Join The Next AI Agent Training" -> https://webinar.clients.ai
  * - All other overlays / chat / exit-intent have been removed
  */
 const WebinarView: React.FC = () => {
@@ -48,12 +46,6 @@ const WebinarView: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoWrapperRef = useRef<HTMLDivElement>(null);
 
-  // If you eventually re-add audio or injection logic, you can put them here.
-
-  // =====================================================
-  // 1) On Mount: fetch overly data
-  // =====================================================
-  // =====================================================
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
@@ -103,7 +95,10 @@ const WebinarView: React.FC = () => {
           playsInline
           className={styles.videoPlayer}
         >
-          <source src={demoVideo} type="video/mp4" />
+          <source
+            src="https://progwebinar.blob.core.windows.net/video/clientsaidemo.mp4"
+            type="video/mp4"
+          />
           Your browser does not support HTML5 video.
         </video>
       </div>
