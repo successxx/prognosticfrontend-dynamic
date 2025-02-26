@@ -5,8 +5,6 @@ import { VideoClock } from "./VideoClock";
 
 import demoVideo from "../public/demo with ai injection.mp4";
 
-
-
 export interface IWebinarInjection {
   Business_description: string;
   Industry: string;
@@ -36,8 +34,7 @@ export interface IWebinarInjection {
   testimonials: string;
 }
 
-
-/** 
+/**
  * Minimal WebinarView:
  * - Only a video
  * - One button: "Start Your Free 18-Day Trial" -> https://try.clients.ai
@@ -48,18 +45,15 @@ const WebinarView: React.FC = () => {
   const [webinarInjectionData, setWebinarInjectionData] =
     useState<IWebinarInjection>();
 
-
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const videoWrapperRef = useRef<HTMLDivElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoWrapperRef = useRef<HTMLDivElement>(null);
 
   // If you eventually re-add audio or injection logic, you can put them here.
-
 
   // =====================================================
   // 1) On Mount: fetch overly data
   // =====================================================
   useEffect(() => {
-
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
 
@@ -67,14 +61,13 @@ const WebinarView: React.FC = () => {
       (async () => {
         try {
           const resp = await fetch(
-            `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_audio?lead_email=${encodeURIComponent(
+            `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_audio?user_email=${encodeURIComponent(
               userEmail
             )}`
           );
           if (!resp.ok) throw new Error("Error fetching user data");
           const data = await resp.json();
           setWebinarInjectionData(data);
-
         } catch (err) {
           console.error("Error loading user data:", err);
         }
@@ -82,10 +75,7 @@ const WebinarView: React.FC = () => {
     }
   }, []);
 
-
-  console.log("webinar", videoRef.current?.currentTime)
-
-
+  console.log("webinar", videoRef.current?.currentTime);
 
   return (
     <div className={styles.container} style={{ textAlign: "center" }}>
@@ -107,10 +97,7 @@ const WebinarView: React.FC = () => {
           playsInline
           className={styles.videoPlayer}
         >
-          <source
-            src={demoVideo}
-            type="video/mp4"
-          />
+          <source src={demoVideo} type="video/mp4" />
           Your browser does not support HTML5 video.
         </video>
       </div>
