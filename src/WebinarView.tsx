@@ -39,6 +39,7 @@ export interface IWebinarInjection {
  *  2) Prevent skipping: user can play/pause but can't scrub.
  *  3) Switch video to "clientsa1i.mp4".
  *  4) Keep voice injection at 0.5s and exit-intent bubble.
+ *  5) Single-click overlay => unmute + play, reading "Click to watch your AI agents."
  */
 const WebinarView: React.FC = () => {
   const [webinarInjectionData, setWebinarInjectionData] =
@@ -185,7 +186,6 @@ const WebinarView: React.FC = () => {
           playsInline
           muted={!hasInteracted}
           className={styles.videoPlayer}
-          // Use your new link
         >
           <source
             src="https://progwebinar.blob.core.windows.net/video/clientsa1i.mp4"
@@ -194,7 +194,7 @@ const WebinarView: React.FC = () => {
           Your browser does not support HTML5 video.
         </video>
 
-        {/* If user hasn't interacted, we display an overlay to unmute */}
+        {/* Single overlay => unmute + play with one click */}
         {!hasInteracted && (
           <div
             className={styles.soundOverlay}
@@ -202,13 +202,15 @@ const WebinarView: React.FC = () => {
               setHasInteracted(true);
               if (videoRef.current) {
                 videoRef.current.muted = false;
-                // We do NOT call play() here, because autoplay is off
-                // so user can press the native play button themselves
+                // Start playing immediately
+                videoRef.current.play().catch((err) => {
+                  console.warn("Play blocked by browser:", err);
+                });
               }
             }}
           >
             <div className={styles.soundIcon}>🔊</div>
-            <div className={styles.soundText}>Click to Enable Sound</div>
+            <div className={styles.soundText}>Click to watch your AI agents</div>
           </div>
         )}
       </div>
