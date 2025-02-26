@@ -148,7 +148,7 @@ const overlayItems: OverlayItem[] = [
     content: "Offer Name",
     startTime: 91.85,
     endTime: 95.03,
-    position: { x: 0.372, y: 0.477 },
+    position: { x: 0.37, y: 0.477 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
@@ -164,7 +164,7 @@ const overlayItems: OverlayItem[] = [
     content: "john.doe@example.com",
     startTime: 91.85,
     endTime: 95.03,
-    position: { x: 0.372, y: 0.54 },
+    position: { x: 0.37, y: 0.54 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
@@ -179,7 +179,7 @@ const overlayItems: OverlayItem[] = [
     content: "Benefits of AI Assistant",
     startTime: 91.85,
     endTime: 95.03,
-    position: { x: 0.51, y: 0.54 },
+    position: { x: 0.507, y: 0.54 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
@@ -194,7 +194,7 @@ const overlayItems: OverlayItem[] = [
     content: "Offer goal",
     startTime: 91.85,
     endTime: 95.03,
-    position: { x: 0.372, y: 0.635 },
+    position: { x: 0.37, y: 0.634 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
@@ -209,7 +209,7 @@ const overlayItems: OverlayItem[] = [
     content: "Offer topic",
     startTime: 91.85,
     endTime: 95.03,
-    position: { x: 0.51, y: 0.635 },
+    position: { x: 0.507, y: 0.634 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
