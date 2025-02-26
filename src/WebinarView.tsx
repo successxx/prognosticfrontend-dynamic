@@ -34,35 +34,33 @@ export interface IWebinarInjection {
 }
 
 /**
- * Minimal WebinarView:
- * - Only a video
- * - One button: "Join The Next AI Agent Training" -> https://webinar.clients.ai
- * - Plus TWO new features:
- *    (1) Voice injection at 0.5s
- *    (2) Exit-intent iPhone bubble
- * - Keep everything else exactly as in the original "demo video."
+ * Changes requested:
+ *  1) Autoplay OFF (user must manually press Play).
+ *  2) Prevent skipping: user can play/pause but can't scrub.
+ *  3) Switch video to "clientsa1i.mp4".
+ *  4) Keep voice injection at 0.5s and exit-intent bubble.
  */
 const WebinarView: React.FC = () => {
-  // Existing injection data state
   const [webinarInjectionData, setWebinarInjectionData] =
     useState<IWebinarInjection>();
 
-  // Refs to the video element & wrapper
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoWrapperRef = useRef<HTMLDivElement>(null);
 
-  // =========== 1) Voice Injection States/Refs ===========
-  // Track whether user has clicked to allow audio
+  // Has the user interacted to enable sound?
   const [hasInteracted, setHasInteracted] = useState<boolean>(false);
-  // Audio element reference for first injection
+  // Audio for the 0.5s injection
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // =========== 2) Exit-Intent States ===========
+  // Exit-intent
   const [showExitOverlay, setShowExitOverlay] = useState<boolean>(false);
   const [hasShownOverlay, setHasShownOverlay] = useState<boolean>(false);
   const [exitMessage, setExitMessage] = useState<string>("");
 
-  // Fetch the user's data from the backend (including audio_link & exit_message)
+  // Track last valid playback time to prevent scrubbing:
+  const lastTimeRef = useRef<number>(0);
+
+  // Fetch data (including `audio_link` + `exit_message`)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
@@ -99,12 +97,16 @@ const WebinarView: React.FC = () => {
     }
   }, []);
 
-  // At 0.5s of video playback => play the voice injection
+  // Voice injection at 0.5s
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid || !audioRef.current) return;
 
     function handleTimeUpdate() {
+      // Save current time so we can revert if user tries to scrub
+      lastTimeRef.current = vid.currentTime;
+
+      // If we've passed 0.5s, play the injection
       if (vid.currentTime >= 0.5) {
         audioRef.current
           .play()
@@ -119,7 +121,24 @@ const WebinarView: React.FC = () => {
     return () => vid.removeEventListener("timeupdate", handleTimeUpdate);
   }, []);
 
-  // Exit-Intent detection (mouse near top)
+  // Prevent skipping by reverting any attempt to move the scrubber
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    function handleSeeking() {
+      // If user tries to scrub, jump them back
+      if (Math.abs(vid.currentTime - lastTimeRef.current) > 0.1) {
+        vid.currentTime = lastTimeRef.current;
+      }
+    }
+    vid.addEventListener("seeking", handleSeeking);
+    return () => {
+      vid.removeEventListener("seeking", handleSeeking);
+    };
+  }, []);
+
+  // Exit-intent detection
   useEffect(() => {
     if (hasShownOverlay) return;
 
@@ -130,28 +149,28 @@ const WebinarView: React.FC = () => {
         setHasShownOverlay(true);
       }
     }
-
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [hasShownOverlay]);
 
-  console.log("webinar", videoRef.current?.currentTime);
-
   return (
     <div className={styles.container} style={{ textAlign: "center" }}>
-      {/* Hidden audio element for the voice injection */}
+      {/* Hidden audio for voice injection */}
       <audio ref={audioRef} style={{ display: "none" }} />
 
-      {/* Exit-Intent Overlay */}
+      {/* Exit-intent overlay */}
       {showExitOverlay &&
         ReactDOM.createPortal(
-          <ExitOverlay message={exitMessage} onClose={() => setShowExitOverlay(false)} />,
+          <ExitOverlay
+            message={exitMessage}
+            onClose={() => setShowExitOverlay(false)}
+          />,
           document.body
         )}
 
-      {/* 1) The video */}
+      {/* The video container */}
       <div ref={videoWrapperRef} className={styles.videoWrapper}>
-        {/* Overlay items (unchanged) */}
+        {/* Overlays from your existing code */}
         <VideoOverlay
           videoRef={videoRef}
           videoContainerRef={videoWrapperRef}
@@ -161,20 +180,21 @@ const WebinarView: React.FC = () => {
 
         <video
           ref={videoRef}
-          autoPlay
+          // Autoplay removed so user must press play
           controls
           playsInline
           muted={!hasInteracted}
           className={styles.videoPlayer}
+          // Use your new link
         >
           <source
-            src="https://progwebinar.blob.core.windows.net/video/clientsai.mp4"
+            src="https://progwebinar.blob.core.windows.net/video/clientsa1i.mp4"
             type="video/mp4"
           />
           Your browser does not support HTML5 video.
         </video>
 
-        {/* If user hasn't interacted, show an overlay to unmute */}
+        {/* If user hasn't interacted, we display an overlay to unmute */}
         {!hasInteracted && (
           <div
             className={styles.soundOverlay}
@@ -182,7 +202,8 @@ const WebinarView: React.FC = () => {
               setHasInteracted(true);
               if (videoRef.current) {
                 videoRef.current.muted = false;
-                videoRef.current.play().catch(() => {});
+                // We do NOT call play() here, because autoplay is off
+                // so user can press the native play button themselves
               }
             }}
           >
@@ -192,7 +213,7 @@ const WebinarView: React.FC = () => {
         )}
       </div>
 
-      {/* 2) The call-to-action button */}
+      {/* CTA Button */}
       <div>
         <button
           onClick={() => window.open("https://webinar.clients.ai", "_blank")}
@@ -215,7 +236,7 @@ const WebinarView: React.FC = () => {
 };
 
 /**
- * The simple iPhone-style exit-intent bubble.
+ * Exit-intent bubble
  */
 const ExitOverlay: React.FC<{
   message: string;
