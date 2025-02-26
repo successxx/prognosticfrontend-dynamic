@@ -5,10 +5,10 @@ const LoadingIndicator: React.FC = () => {
     const loadingMessages = [
         "Thinking...",
         "Looking at your site...",
-        "Finding immediate opportunities...",
+        "Launching Your Agents...",
+        "Training...",
         "Thinking...",
-        "Identifying your target audience...",
-        "Split-testing potential setbacks...",
+        "Split-testing...",
         "Analyzing test results...",
         "Refining for immediate impact...",
         "Running new A/B tests based on synthesized results...",
