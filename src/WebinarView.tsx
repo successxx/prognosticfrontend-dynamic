@@ -53,29 +53,36 @@ const WebinarView: React.FC = () => {
   // =====================================================
   // 1) On Mount: fetch overly data
   // =====================================================
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const userEmail = params.get("user_email");
+ // =====================================================
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const userEmail = params.get("user_email");
 
-    if (userEmail) {
-      (async () => {
-        try {
-          const resp = await fetch(
-            `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_audio?user_email=${encodeURIComponent(
-              userEmail
-            )}`
-          );
-          if (!resp.ok) throw new Error("Error fetching user data");
-          const data = await resp.json();
-          setWebinarInjectionData(data);
-        } catch (err) {
-          console.error("Error loading user data:", err);
-        }
-      })();
-    }
-  }, []);
+  if (userEmail) {
+    (async () => {
+      try {
+        const resp = await fetch(
+          `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ user_email: userEmail }),
+          }
+        );
+        if (!resp.ok) throw new Error("Error fetching user data");
+        const data = await resp.json();
+        setWebinarInjectionData(data);
+      } catch (err) {
+        console.error("Error loading user data:", err);
+      }
+    })();
+  }
+}, []);
 
-  console.log("webinar", videoRef.current?.currentTime);
+console.log("webinar", videoRef.current?.currentTime);
+
 
   return (
     <div className={styles.container} style={{ textAlign: "center" }}>
