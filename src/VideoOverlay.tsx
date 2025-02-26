@@ -171,6 +171,7 @@ const overlayItems: OverlayItem[] = [
       maxWidth: "20em",
       maxHeight: "4.3em",
       overflow: "hidden",
+      textAlign: "left",
     },
   },
   {
@@ -185,6 +186,7 @@ const overlayItems: OverlayItem[] = [
       maxWidth: "20em",
       maxHeight: "4.3em",
       overflow: "hidden",
+      textAlign: "left",
     },
   },
   {
@@ -199,6 +201,7 @@ const overlayItems: OverlayItem[] = [
       maxWidth: "20em",
       maxHeight: "4.3em",
       overflow: "hidden",
+      textAlign: "left",
     },
   },
   {

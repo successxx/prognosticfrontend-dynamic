@@ -61,9 +61,12 @@ const WebinarView: React.FC = () => {
       (async () => {
         try {
           const resp = await fetch(
-            `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_audio?user_email=${encodeURIComponent(
-              userEmail
-            )}`
+            "https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ user_email: userEmail }),
+            }
           );
           if (!resp.ok) throw new Error("Error fetching user data");
           const data = await resp.json();

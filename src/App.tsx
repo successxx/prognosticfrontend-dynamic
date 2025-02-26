@@ -32,11 +32,14 @@ const App: React.FC = () => {
     // Poll /get_user_two every 3 seconds to see if data is ready
     const intervalId = setInterval(async () => {
       try {
-        const resp = await fetch("https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_email: userEmail }),
-        });
+        const resp = await fetch(
+          "https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user_email: userEmail }),
+          }
+        );
 
         // If response is 200 and JSON says success: true, we assume data is ready
         if (resp.ok) {
@@ -84,7 +87,11 @@ const App: React.FC = () => {
             <p className="content-box text-center">{error}</p>
           ) : (
             <div className="d-flex flex-column w-100 justify-content-center">
-              <div className={`d-flex w-100 justify-content-center fade-in ${isContentVisible ? "visible" : ""}`}>
+              <div
+                className={`d-flex w-100 justify-content-center fade-in ${
+                  isContentVisible ? "visible" : ""
+                }`}
+              >
                 {/* Show the actual webinar/video once we're done loading */}
                 <WebinarView />
                 <Fireworks />
