@@ -379,6 +379,10 @@ body {
   flex-shrink: 0;
 }
 
+.content-box.generated .new-demo-button {
+  bottom: 0; /* Reset position after generation */
+}
+
 .new-demo-button {
   display: inline-block;
   background-color: #252525;
@@ -400,10 +404,6 @@ body {
   align-self: center;
   position: relative;
   bottom: auto; /* Remove absolute positioning */
-}
-
-.content-box.generated .new-demo-button {
-  bottom: 0; /* Reset position after generation */
 }
 
 .new-demo-button.visible {
@@ -1057,9 +1057,9 @@ p.style1 {
   font-size: 0.875em;
   line-height: 1.25;
   font-weight: 200;
+  text-align: center;
 }
 
-/* Responsive Styles */
 @media (max-width: 600px) {
   footer .share-button {
     width: 40px;
