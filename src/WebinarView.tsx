@@ -62,7 +62,7 @@ useEffect(() => {
     (async () => {
       try {
         const resp = await fetch(
-          `https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two`,
+          `https://prognostic-ai-backend.herokuapp.com/get_user_two`,
           {
             method: "POST",
             headers: {
