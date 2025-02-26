@@ -959,6 +959,9 @@ strong {
 
 .image {
   text-align: center; /* Centers the image */
+  width: 100%; /* Ensure it takes full width */
+  display: flex;
+  justify-content: center; /* Center horizontally */
 }
 
 .image img {
