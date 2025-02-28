@@ -1,6 +1,8 @@
-import type React from "react";
+/*****************************************************/
+/****************** VideoOverlay.tsx *****************/
+/*****************************************************/
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "./index.css";
-import { useEffect, useMemo, useRef, useState } from "react";
 import { IWebinarInjection } from "./WebinarView";
 
 interface OverlayItem {
@@ -9,8 +11,8 @@ interface OverlayItem {
   startTime: number;
   endTime: number;
   position: {
-    x: number; // 0 to 1, representing percentage across width
-    y: number; // 0 to 1, representing percentage down height
+    x: number; // 0 to 1, representing % across width
+    y: number; // 0 to 1, representing % down height
   };
   style?: React.CSSProperties;
 }
@@ -21,7 +23,12 @@ interface VideoOverlayProps {
   webinarInjectionData?: IWebinarInjection;
 }
 
+/**
+ * Overlay items for user_name, offer_url, etc. 
+ * Kept exactly the same as your "demo" usage.
+ */
 const overlayItems: OverlayItem[] = [
+  // same as your current mapping:
   {
     key: "lead_email",
     content: "",
@@ -233,7 +240,6 @@ const overlayItems: OverlayItem[] = [
       textAlign: "left",
     },
   },
-
   {
     key: "email_1",
     content: "",
@@ -285,7 +291,7 @@ const overlayItems: OverlayItem[] = [
     startTime: 231.52,
     endTime: 242.57,
     position: { x: 0.33, y: 0.32 },
-    style: { color: "#252525", fontSize: "0.6em", fontWeight: "500" },
+    style: { color: "#252525", fontSize: "0.6em", fontWeight: 500 },
   },
   {
     key: "Products_services",
@@ -301,7 +307,7 @@ const overlayItems: OverlayItem[] = [
     startTime: 231.52,
     endTime: 242.57,
     position: { x: 0.303, y: 0.386 },
-    style: { color: "#252525", fontSize: "0.6em", fontWeight: "600" },
+    style: { color: "#252525", fontSize: "0.6em", fontWeight: 600 },
   },
 ];
 
@@ -315,13 +321,11 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
   const rafId = useRef<number>();
 
   const updatedOverlayItems = useMemo(() => {
-    if (!webinarInjectionData) {
-      return [];
-    }
+    if (!webinarInjectionData) return [];
     return overlayItems.map((item) => {
       return {
         ...item,
-        content: webinarInjectionData[item.key]?.trim(),
+        content: webinarInjectionData[item.key]?.trim() || item.content,
       };
     });
   }, [webinarInjectionData]);
@@ -330,16 +334,17 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
     const video = videoRef.current;
     if (!video) return;
 
+    // Animate the overlay's time with requestAnimationFrame
     const updateTime = () => {
       setCurrentTime(video.currentTime);
       rafId.current = requestAnimationFrame(updateTime);
     };
-
     rafId.current = requestAnimationFrame(updateTime);
+
     return () => {
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
-  }, []);
+  }, [videoRef]);
 
   useEffect(() => {
     const updateOverlaySize = () => {
@@ -350,59 +355,45 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
         overlayRef.current.style.setProperty("--overlay-height", `${height}px`);
       }
     };
-
     updateOverlaySize();
     window.addEventListener("resize", updateOverlaySize);
-
-    return () => {
-      window.removeEventListener("resize", updateOverlaySize);
-    };
+    return () => window.removeEventListener("resize", updateOverlaySize);
   }, [videoContainerRef]);
-
-  const embeddableInjection = (key: keyof IWebinarInjection) => {
-    // Includes the keys those contains the html content
-    return key === "email_1" || key === "email_2" || key === "salesletter";
-  };
 
   return (
     <div ref={overlayRef} className="video-overlay">
-      {updatedOverlayItems.map((item, index) => {
+      {updatedOverlayItems.map((item, idx) => {
         if (!videoRef.current) return null;
-        return (
-          <>
-            {embeddableInjection(item.key) ? (
-              <div
-                key={index}
-                className={`overlay-item ${
-                  currentTime >= item.startTime && currentTime <= item.endTime
-                    ? "visible"
-                    : ""
-                }`}
-                style={{
-                  ...item.style,
-                  left: `${item.position.x * 100}%`,
-                  top: `${item.position.y * 100}%`,
-                }}
-                dangerouslySetInnerHTML={{ __html: item.content }}
-              />
-            ) : (
-              <div
-                key={index}
-                className={`overlay-item ${
-                  currentTime >= item.startTime && currentTime <= item.endTime
-                    ? "visible"
-                    : ""
-                }`}
-                style={{
-                  ...item.style,
-                  left: `${item.position.x * 100}%`,
-                  top: `${item.position.y * 100}%`,
-                }}
-              >
-                {item.content}
-              </div>
-            )}
-          </>
+        const isVisible =
+          currentTime >= item.startTime && currentTime <= item.endTime;
+
+        // For keys that contain embeddable HTML
+        const isEmbeddable =
+          item.key === "email_1" || item.key === "email_2" || item.key === "salesletter";
+
+        return isEmbeddable ? (
+          <div
+            key={idx}
+            className={`overlay-item ${isVisible ? "visible" : ""}`}
+            style={{
+              ...item.style,
+              left: `${item.position.x * 100}%`,
+              top: `${item.position.y * 100}%`,
+            }}
+            dangerouslySetInnerHTML={{ __html: item.content }}
+          />
+        ) : (
+          <div
+            key={idx}
+            className={`overlay-item ${isVisible ? "visible" : ""}`}
+            style={{
+              ...item.style,
+              left: `${item.position.x * 100}%`,
+              top: `${item.position.y * 100}%`,
+            }}
+          >
+            {item.content}
+          </div>
         );
       })}
     </div>
