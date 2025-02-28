@@ -1,5 +1,4 @@
-/* WEBINARVIEW.TSX (SCRIPT) */
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import styles from "./WebinarView.module.css";
 import { VideoOverlay } from "./VideoOverlay";
@@ -35,43 +34,34 @@ export interface IWebinarInjection {
 }
 
 /**
- * Demo video page, with:
- *  - Clock drag-in at 4s, drag-out at 8s
- *  - Headline injection at 45.04s to 55.04s
- *  - Existing top-right clock from VideoClock.tsx unaffected
- *  - All other features remain unaltered
+ * Changes requested:
+ *  1) Autoplay OFF (user must manually press Play).
+ *  2) Prevent skipping: user can play/pause but can't scrub.
+ *  3) Switch video to "clientsa1i.mp4".
+ *  4) Keep voice injection at 0.5s and exit-intent bubble.
+ *  5) Single-click overlay => unmute + play, reading "Click to watch your AI agents."
  */
 const WebinarView: React.FC = () => {
   const [webinarInjectionData, setWebinarInjectionData] =
     useState<IWebinarInjection>();
-  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
-
-  // We still have the original audioRef for 0.5s injection:
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoWrapperRef = useRef<HTMLDivElement>(null);
+
+  // Has the user interacted to enable sound?
+  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
+  // Audio for the 0.5s injection
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Exit-intent
   const [showExitOverlay, setShowExitOverlay] = useState<boolean>(false);
   const [hasShownOverlay, setHasShownOverlay] = useState<boolean>(false);
   const [exitMessage, setExitMessage] = useState<string>("");
 
-  // Clock widget states (drag-in clock)
-  const [showClockWidget, setShowClockWidget] = useState(false);
-  const [clockDragInComplete, setClockDragInComplete] = useState(false);
-  const [clockRemoved, setClockRemoved] = useState(false);
-  const [currentTimeString, setCurrentTimeString] = useState("");
-  const [currentDateObj, setCurrentDateObj] = useState<Date | null>(null);
-  const clockIntervalRef = useRef<NodeJS.Timer | null>(null);
-
-  // Headline states
-  const [showHeadline, setShowHeadline] = useState(false);
-
-  // Keep track of user's last valid playback time to prevent scrubbing:
+  // Track last valid playback time to prevent scrubbing:
   const lastTimeRef = useRef<number>(0);
 
-  // Fetch data (including audio_link + exit_message)
+  // Fetch data (including `audio_link` + `exit_message`)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
@@ -108,7 +98,7 @@ const WebinarView: React.FC = () => {
     }
   }, []);
 
-  // Voice injection at 0.5s (existing feature)
+  // Voice injection at 0.5s
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid || !audioRef.current) return;
@@ -164,110 +154,6 @@ const WebinarView: React.FC = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [hasShownOverlay]);
 
-  // =======================
-  // 1) HEADLINE Show/Hide
-  // =======================
-  useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
-
-    function checkHeadline() {
-      const t = vid.currentTime;
-      // Show from 45.04s to 55.04s
-      if (t >= 45.04 && t < 55.04) {
-        setShowHeadline(true);
-      } else {
-        setShowHeadline(false);
-      }
-    }
-
-    vid.addEventListener("timeupdate", checkHeadline);
-    vid.addEventListener("seeking", checkHeadline);
-
-    return () => {
-      vid.removeEventListener("timeupdate", checkHeadline);
-      vid.removeEventListener("seeking", checkHeadline);
-    };
-  }, []);
-
-  // =======================
-  // 2) DRAG-IN CLOCK
-  // =======================
-  // Start/stop the actual digital clock updates
-  const startClockInterval = useCallback(() => {
-    function updateClock() {
-      const now = new Date();
-      setCurrentDateObj(now);
-      setCurrentTimeString(
-        now.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        })
-      );
-    }
-    updateClock(); // do an immediate update
-
-    if (!clockIntervalRef.current) {
-      clockIntervalRef.current = setInterval(updateClock, 1000);
-    }
-  }, []);
-
-  const stopClockInterval = useCallback(() => {
-    if (clockIntervalRef.current) {
-      clearInterval(clockIntervalRef.current);
-      clockIntervalRef.current = null;
-    }
-  }, []);
-
-  // Listen for video time => show clock at 4s
-  // We do "drag in" once user crosses 4s, then remove at ~8s.
-  useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
-
-    function handleCheckClock() {
-      const t = vid.currentTime;
-
-      // If we've hit 4s, show the widget if not shown yet
-      if (t >= 4 && !showClockWidget && !clockRemoved) {
-        setShowClockWidget(true);
-        startClockInterval();
-      }
-      // If user is already in that time range, keep updating
-      if (showClockWidget && !clockRemoved) {
-        startClockInterval();
-      }
-    }
-
-    vid.addEventListener("timeupdate", handleCheckClock);
-    return () => {
-      vid.removeEventListener("timeupdate", handleCheckClock);
-    };
-  }, [showClockWidget, clockRemoved, startClockInterval]);
-
-  // Once the dragIn completes, keep the clock visible for 4 seconds (8 - 4 = 4)
-  useEffect(() => {
-    if (clockDragInComplete) {
-      const timer = setTimeout(() => {
-        setClockRemoved(true); // triggers dragOut
-      }, 4000); // show for 4s after dragIn done
-      return () => clearTimeout(timer);
-    }
-  }, [clockDragInComplete]);
-
-  // Once we remove it => hide fully after 1s (the dragOut animation time)
-  useEffect(() => {
-    if (clockRemoved) {
-      stopClockInterval();
-      const hideTimer = setTimeout(() => {
-        setShowClockWidget(false);
-      }, 1000); // let the dragOut animation complete
-      return () => clearTimeout(hideTimer);
-    }
-  }, [clockRemoved, stopClockInterval]);
-
   return (
     <div className={styles.container} style={{ textAlign: "center" }}>
       {/* Hidden audio for voice injection */}
@@ -295,7 +181,7 @@ const WebinarView: React.FC = () => {
 
         <video
           ref={videoRef}
-          // Autoplay is off
+          // Autoplay removed so user must press play
           controls
           playsInline
           muted={!hasInteracted}
@@ -327,36 +213,10 @@ const WebinarView: React.FC = () => {
             <div className={styles.soundText}>Click to watch your AI agents</div>
           </div>
         )}
-
-        {/*  HEADLINE  */}
-        {showHeadline && webinarInjectionData?.headline && (
-          <div
-            className="headlineText" // Note: using global class
-            style={{
-              fontFamily: `"SF Pro Display", sans-serif`,
-              color: "#252525",
-              lineHeight: 1.2, // slightly tighter
-              letterSpacing: "0.02em",
-            }}
-          >
-            {webinarInjectionData.headline}
-          </div>
-        )}
-
-        {/*  CLOCK WIDGET (drag-in)  */}
-        {showClockWidget && (
-          <ClockWidget
-            currentTime={currentTimeString}
-            currentDate={currentDateObj}
-            dragInComplete={clockDragInComplete}
-            setDragInComplete={setClockDragInComplete}
-            clockRemoved={clockRemoved}
-          />
-        )}
       </div>
 
-      {/* CTA Button, same as original code */}
-      <div style={{ marginTop: "1rem" }}>
+      {/* CTA Button */}
+      <div>
         <button
           onClick={() => window.open("https://webinar.clients.ai", "_blank")}
           style={{
@@ -399,67 +259,6 @@ const ExitOverlay: React.FC<{
         <div className={styles.iphoneMessageText}>
           {message && message.trim() ? message : defaultMsg}
         </div>
-      </div>
-    </div>
-  );
-};
-
-/**
- * ClockWidget subcomponent – EXACT same approach as webinar, but times changed:
- * - Appear at 4s, remove at 8s
- * - Animate in via "animateIn", then wobble, then "animateOut"
- */
-interface ClockWidgetProps {
-  currentTime: string;
-  currentDate: Date | null;
-  dragInComplete: boolean;
-  setDragInComplete: React.Dispatch<React.SetStateAction<boolean>>;
-  clockRemoved: boolean;
-}
-const ClockWidget: React.FC<ClockWidgetProps> = ({
-  currentTime,
-  currentDate,
-  dragInComplete,
-  setDragInComplete,
-  clockRemoved,
-}) => {
-  const handleAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
-    if (e.animationName.includes("dragIn")) {
-      setDragInComplete(true);
-    }
-  };
-
-  const dateString = currentDate
-    ? currentDate.toLocaleDateString("en-US", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : "";
-
-  let widgetClass = "clockWidget"; // global class
-  if (!clockRemoved) {
-    // if not removed => animate in or wobble
-    widgetClass += dragInComplete ? " wobble" : " animateIn";
-  } else {
-    // once removing => animate out
-    widgetClass += " animateOut";
-  }
-
-  return (
-    <div className={widgetClass} onAnimationEnd={handleAnimationEnd}>
-      <div className="widgetHeader">
-        <div className="windowControls">
-          <div className="windowButton closeButton" />
-          <div className="windowButton minimizeButton" />
-          <div className="windowButton maximizeButton" />
-        </div>
-        <div className="widgetTitle">Clock Widget</div>
-      </div>
-      <div className="widgetContent">
-        <div className="clockTime">{currentTime}</div>
-        <div className="clockDate">{dateString}</div>
       </div>
     </div>
   );
