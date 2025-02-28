@@ -1,4 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+/*****************************************************/
+/******************* WebinarView.tsx *****************/
+/*****************************************************/
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import ReactDOM from "react-dom";
 import styles from "./WebinarView.module.css";
 import { VideoOverlay } from "./VideoOverlay";
@@ -34,12 +37,13 @@ export interface IWebinarInjection {
 }
 
 /**
- * Changes requested:
- *  1) Autoplay OFF (user must manually press Play).
- *  2) Prevent skipping: user can play/pause but can't scrub.
- *  3) Switch video to "clientsa1i.mp4".
- *  4) Keep voice injection at 0.5s and exit-intent bubble.
- *  5) Single-click overlay => unmute + play, reading "Click to watch your AI agents."
+ * Demo video player with:
+ *  1) Voice injection at 0.5s
+ *  2) Exit-intent bubble
+ *  3) Prevent skipping by reverting scrub attempts
+ *  4) Manual play (autoplay off) + click overlay to unmute
+ *  5) ADDED clock widget from webinar code at 4s → out at 8s
+ *  6) ADDED headline injection from webinar code at 45.04s → 55.04s
  */
 const WebinarView: React.FC = () => {
   const [webinarInjectionData, setWebinarInjectionData] =
@@ -48,20 +52,34 @@ const WebinarView: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoWrapperRef = useRef<HTMLDivElement>(null);
 
-  // Has the user interacted to enable sound?
-  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
   // Audio for the 0.5s injection
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Exit-intent
-  const [showExitOverlay, setShowExitOverlay] = useState<boolean>(false);
-  const [hasShownOverlay, setHasShownOverlay] = useState<boolean>(false);
-  const [exitMessage, setExitMessage] = useState<string>("");
+  // Has the user interacted to enable sound?
+  const [hasInteracted, setHasInteracted] = useState(false);
 
-  // Track last valid playback time to prevent scrubbing:
+  // Exit-intent
+  const [showExitOverlay, setShowExitOverlay] = useState(false);
+  const [hasShownOverlay, setHasShownOverlay] = useState(false);
+  const [exitMessage, setExitMessage] = useState("");
+
+  // Track last valid playback time to prevent scrubbing
   const lastTimeRef = useRef<number>(0);
 
-  // Fetch data (including `audio_link` + `exit_message`)
+  // ----------------------
+  // NEW: Clock states
+  // ----------------------
+  const [showClockWidget, setShowClockWidget] = useState(false);
+  const [clockDragInComplete, setClockDragInComplete] = useState(false);
+  const [clockRemoved, setClockRemoved] = useState(false);
+
+  // ----------------------
+  // NEW: Headline states
+  // ----------------------
+  const [headline, setHeadline] = useState("");
+  const [showHeadline, setShowHeadline] = useState(false);
+
+  // =========== Fetch Data from server =============
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
@@ -91,6 +109,10 @@ const WebinarView: React.FC = () => {
           if (audioRef.current && data.audio_link) {
             audioRef.current.src = data.audio_link;
           }
+          // Headline injection
+          if (data.headline) {
+            setHeadline(data.headline);
+          }
         } catch (err) {
           console.error("Error loading user data:", err);
         }
@@ -98,7 +120,7 @@ const WebinarView: React.FC = () => {
     }
   }, []);
 
-  // Voice injection at 0.5s
+  // =========== Voice Injection at 0.5s ============
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid || !audioRef.current) return;
@@ -122,24 +144,24 @@ const WebinarView: React.FC = () => {
     return () => vid.removeEventListener("timeupdate", handleTimeUpdate);
   }, []);
 
-  // Prevent skipping by reverting any attempt to move the scrubber
+  // =========== Prevent skipping by reverting scrub attempts ============
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
 
     function handleSeeking() {
       // If user tries to scrub, jump them back
-      if (Math.abs(vid.currentTime - lastTimeRef.current) > 0.1) {
+      const diff = Math.abs(vid.currentTime - lastTimeRef.current);
+      if (diff > 0.1) {
         vid.currentTime = lastTimeRef.current;
       }
     }
+
     vid.addEventListener("seeking", handleSeeking);
-    return () => {
-      vid.removeEventListener("seeking", handleSeeking);
-    };
+    return () => vid.removeEventListener("seeking", handleSeeking);
   }, []);
 
-  // Exit-intent detection
+  // =========== Exit-Intent Detection ============
   useEffect(() => {
     if (hasShownOverlay) return;
 
@@ -153,6 +175,64 @@ const WebinarView: React.FC = () => {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [hasShownOverlay]);
+
+  // =========== Clock Drag In/Out at 4s → 8s ============
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    function clockTimeCheck() {
+      if (vid.currentTime >= 4 && !showClockWidget && !clockRemoved) {
+        setShowClockWidget(true);
+      }
+    }
+
+    vid.addEventListener("timeupdate", clockTimeCheck);
+    return () => vid.removeEventListener("timeupdate", clockTimeCheck);
+  }, [showClockWidget, clockRemoved]);
+
+  // After dragIn completes, we wait until total of 4s on screen to animate out
+  useEffect(() => {
+    if (clockDragInComplete) {
+      // We want the clock to vanish around 8s total, meaning it shows up at 4s
+      // so it stays 4s on screen. If we just replicate the webinar logic exactly:
+      const remaining = 4000; // 4 seconds
+      const timer = setTimeout(() => {
+        setClockRemoved(true);
+      }, remaining);
+      return () => clearTimeout(timer);
+    }
+  }, [clockDragInComplete]);
+
+  // Once removed => fully hide after animation
+  useEffect(() => {
+    if (clockRemoved) {
+      const hideTimer = setTimeout(() => {
+        setShowClockWidget(false);
+      }, 1000); // let the dragOut animation finish
+      return () => clearTimeout(hideTimer);
+    }
+  }, [clockRemoved]);
+
+  // =========== Headline at 45.04 → 55.04s ============
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    if (!headline || !headline.trim()) return; // no headline => skip
+
+    function handleHeadlineVisibility() {
+      const t = vid.currentTime;
+      // Show between 45.04s and 55.04s
+      if (t >= 45.04 && t < 55.04) {
+        setShowHeadline(true);
+      } else {
+        setShowHeadline(false);
+      }
+    }
+
+    vid.addEventListener("timeupdate", handleHeadlineVisibility);
+    return () => vid.removeEventListener("timeupdate", handleHeadlineVisibility);
+  }, [headline]);
 
   return (
     <div className={styles.container} style={{ textAlign: "center" }}>
@@ -177,18 +257,32 @@ const WebinarView: React.FC = () => {
           videoContainerRef={videoWrapperRef}
           webinarInjectionData={webinarInjectionData}
         />
-        <VideoClock videoContainerRef={videoWrapperRef} />
+
+        {/* The clock widget */}
+        {showClockWidget && (
+          <VideoClock
+            dragInComplete={clockDragInComplete}
+            setDragInComplete={setClockDragInComplete}
+            clockRemoved={clockRemoved}
+          />
+        )}
+
+        {/* Headline text */}
+        {showHeadline && (
+          <div className={styles.headlineText} style={headlineStyle}>
+            {headline}
+          </div>
+        )}
 
         <video
           ref={videoRef}
-          // Autoplay removed so user must press play
           controls
           playsInline
           muted={!hasInteracted}
           className={styles.videoPlayer}
         >
           <source
-            src="https://progwebinar.blob.core.windows.net/video/clientsa1i.mp4"
+            src="https://progwebinar.blob.core.windows.net/video/clientsdemo2.mp4"
             type="video/mp4"
           />
           Your browser does not support HTML5 video.
@@ -228,6 +322,7 @@ const WebinarView: React.FC = () => {
             fontWeight: 600,
             borderRadius: "6px",
             cursor: "pointer",
+            marginTop: "20px",
           }}
         >
           Join The Next AI Agent Training
@@ -237,9 +332,19 @@ const WebinarView: React.FC = () => {
   );
 };
 
-/**
- * Exit-intent bubble
- */
+/** Minimal inline style for the headline, ensuring we meet your color/spacing specs */
+const headlineStyle: React.CSSProperties = {
+  fontFamily: '"SF Pro Display", sans-serif',
+  color: "#252525",
+  letterSpacing: "0.02em",
+  lineHeight: 1.2,
+  fontSize: "1.5rem",
+  fontWeight: 400,
+  textAlign: "center",
+  maxWidth: "50%",
+  margin: "0 auto",
+};
+
 const ExitOverlay: React.FC<{
   message: string;
   onClose: () => void;
