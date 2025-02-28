@@ -21,7 +21,6 @@ interface VideoOverlayProps {
   webinarInjectionData?: IWebinarInjection;
 }
 
-// All your overlay items, unchanged
 const overlayItems: OverlayItem[] = [
   {
     key: "lead_email",
@@ -234,6 +233,7 @@ const overlayItems: OverlayItem[] = [
       textAlign: "left",
     },
   },
+
   {
     key: "email_1",
     content: "",
@@ -339,7 +339,7 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
     return () => {
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
-  }, [videoRef]);
+  }, []);
 
   useEffect(() => {
     const updateOverlaySize = () => {
@@ -360,7 +360,7 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
   }, [videoContainerRef]);
 
   const embeddableInjection = (key: keyof IWebinarInjection) => {
-    // Keys that might contain HTML content
+    // Includes the keys those contains the html content
     return key === "email_1" || key === "email_2" || key === "salesletter";
   };
 
@@ -368,40 +368,42 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
     <div ref={overlayRef} className="video-overlay">
       {updatedOverlayItems.map((item, index) => {
         if (!videoRef.current) return null;
-
-        const visible =
-          currentTime >= item.startTime && currentTime <= item.endTime;
-
-        if (embeddableInjection(item.key)) {
-          // if content can contain HTML => dangerouslySetInnerHTML
-          return (
-            <div
-              key={index}
-              className={`overlay-item ${visible ? "visible" : ""}`}
-              style={{
-                ...item.style,
-                left: `${item.position.x * 100}%`,
-                top: `${item.position.y * 100}%`,
-              }}
-              dangerouslySetInnerHTML={{ __html: item.content }}
-            />
-          );
-        } else {
-          // plain text content
-          return (
-            <div
-              key={index}
-              className={`overlay-item ${visible ? "visible" : ""}`}
-              style={{
-                ...item.style,
-                left: `${item.position.x * 100}%`,
-                top: `${item.position.y * 100}%`,
-              }}
-            >
-              {item.content}
-            </div>
-          );
-        }
+        return (
+          <>
+            {embeddableInjection(item.key) ? (
+              <div
+                key={index}
+                className={`overlay-item ${
+                  currentTime >= item.startTime && currentTime <= item.endTime
+                    ? "visible"
+                    : ""
+                }`}
+                style={{
+                  ...item.style,
+                  left: `${item.position.x * 100}%`,
+                  top: `${item.position.y * 100}%`,
+                }}
+                dangerouslySetInnerHTML={{ __html: item.content }}
+              />
+            ) : (
+              <div
+                key={index}
+                className={`overlay-item ${
+                  currentTime >= item.startTime && currentTime <= item.endTime
+                    ? "visible"
+                    : ""
+                }`}
+                style={{
+                  ...item.style,
+                  left: `${item.position.x * 100}%`,
+                  top: `${item.position.y * 100}%`,
+                }}
+              >
+                {item.content}
+              </div>
+            )}
+          </>
+        );
       })}
     </div>
   );
