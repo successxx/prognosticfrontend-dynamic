@@ -61,7 +61,7 @@
   background: #fff;
   border: 2px solid #dcdcdc;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   padding: 16px;
   width: 100%;
   margin: 0 auto;
@@ -114,46 +114,27 @@
 /**************************************/
 /* 3) The 70/30 layout, same height   */
 /**************************************/
+.videoWrapper {
+  position: relative;
+  /* 16×9 ratio trick */
+  padding-bottom: 56.25%; 
+  height: 0;
+
+  /* Keep anything else you like */
+  overflow: hidden;
+  background: #000; /* optional background if the video is narrower */
+  border-radius: 6px; /* optional rounding */
+  max-width: 100%;    /* ensures it doesn't overflow your container */
+  margin: 0 auto;     /* center horizontally if you want */
+}
+
 .videoPlayer {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-}
-
-.twoColumnLayout {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 16px;
-}
-.videoColumn {
-  flex: 0 0 70%;
-  max-width: 70%;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  flex: 1;
-}
-.chatColumn {
-  flex: 0 0 30%;
-  max-width: 30%;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-/* For the video, strictly keep 16:9 within the forced container height */
-.videoWrapper {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
-  height: 0;
-  overflow: hidden;
-  background: #000;
-  border-radius: 6px;
-  flex: 1;
-  /* No max-width or margin here by default */
+  object-fit: cover; /* ensures cropping to fill container if needed */
 }
 
 
