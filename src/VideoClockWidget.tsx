@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-/**
- * The fluid clock widget content:
- * We do not define its container's position/animation here,
- * just the internal time/date rendering.
- */
-const VideoClockWidget: React.FC = () => {
+function ClockWidgetContent() {
   const [timeString, setTimeString] = useState("");
   const [dateString, setDateString] = useState("");
 
@@ -30,9 +25,8 @@ const VideoClockWidget: React.FC = () => {
       );
     }
     updateClock();
-    const timerId = setInterval(updateClock, 1000);
-
-    return () => clearInterval(timerId);
+    const timer = setInterval(updateClock, 1000);
+    return () => clearInterval(timer);
   }, []);
 
   return (
@@ -41,6 +35,6 @@ const VideoClockWidget: React.FC = () => {
       <div className="clockDate">{dateString}</div>
     </div>
   );
-};
+}
 
-export default VideoClockWidget;
+export default ClockWidgetContent;
