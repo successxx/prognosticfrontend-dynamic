@@ -3,58 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <title>Clients.ai Results</title>
-
-    <!-- Montserrat + other fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Montserrat:ital,wght@0,200;0,400;0,500;0,700;1,200;1,400;1,500;1,700"
-      rel="stylesheet"
-      type="text/css"
-    />
-
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light only" />
     <meta name="description" content="Predictive AI Super Computing" />
-    <meta property="og:site_name" content="Your Clients.ai Results" />
-    <meta property="og:title" content="Your Clients.ai Results" />
-    <meta property="og:type" content="website" />
-    <meta property="og:description" content="Predictive AI Super Computing" />
-    <meta
-      property="og:image"
-      content="https://see.prognostic.ai/assets/images/card.jpg?v=5453594d"
+
+    <!-- Montserrat font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,400;0,500;0,700;1,200;1,400;1,500;1,700&display=swap"
+      rel="stylesheet"
     />
-    <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:image:width" content="1280" />
-    <meta property="og:image:height" content="800" />
-    <meta property="og:url" content="https://see.prognostic.ai" />
-    <meta property="twitter:card" content="summary_large_image" />
-    <link rel="canonical" href="https://see.clients.ai" />
-    <link rel="icon" type="image/png" href="src/assets/favicon.png" />
-
-    <!-- Main global CSS -->
-    <link rel="stylesheet" href="index.css" />
-
-    <!-- Loading Circle CSS -->
-    <link rel="stylesheet" href="LoadingCircle.module.css" />
-
-    <!-- WebinarView CSS -->
-    <link rel="stylesheet" href="WebinarView.module.css" />
   </head>
-
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-
-    <!-- Root for React app: instructions for usage -->
-    <!-- Make sure in your main.tsx you do: 
-         const rootEl = document.getElementById('root');
-         const root = ReactDOM.createRoot(rootEl);
-         root.render(<App />);
-    -->
-    <div id="root" class="root"></div>
-
-    <!-- Hidden container for Fireworks centering (if used) -->
-    <div id="typed-output" style="display:none"></div>
-
-    <!-- Main React/TypeScript entry point -->
-    <script src="main.tsx" type="module"></script>
+    <div id="root"></div>
+    <!-- IMPORTANT: Make sure the entry point points to the correct file path -->
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
