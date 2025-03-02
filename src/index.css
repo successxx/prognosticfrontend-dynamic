@@ -1,3 +1,963 @@
+/**************************************/
+/* 1) Outer container, subtle background*/
+/**************************************/
+.container {
+  display: flex;
+  flex-direction: column;
+  font-family: "Montserrat", sans-serif;
+  box-sizing: border-box;
+  padding: 20px;
+  width: 80%;
+  /* min-height: 100vh; */
+  background: #eaeff3;
+  gap: 20px;
+  position: relative;
+}
+
+.connectingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(1, 66, 172, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.connectingBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+.connectingSpinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #cce0ff;
+  border-top-color: #252525;
+  border-radius: 50%;
+  animation: spin 1s infinite linear;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.connectingText {
+  font-size: 1.2rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+/**************************************/
+/* 2) Zoom Container (Double Size)    */
+/**************************************/
+.zoomContainer {
+  background: #fff;
+  border: 2px solid #dcdcdc;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  /* Double the typical width, so it's large */
+  /* max-width: 1800px; */
+  width: 100%;
+  /* Also let height grow for a bigger layout */
+  margin: 0 auto;
+}
+
+/* Top bar for Title & Live for X min */
+.zoomTopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.zoomTitle {
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.zoomLiveDot {
+  width: 8px;
+  height: 8px;
+  background: #ff0000;
+  border-radius: 50%;
+  animation: pulseZoom 1.5s infinite;
+  margin-right: 4px;
+}
+@keyframes pulseZoom {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.zoomLiveMinutes {
+  font-size: 0.55rem;
+  color: #666;
+  font-weight: 500;
+  background: #f0f0f0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/**************************************/
+/* 3) The 70/30 layout, same height   */
+/**************************************/
+.videoPlayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.twoColumnLayout {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+  /* Force a bigger container so video & chat share height. */
+  /* height: 800px; double from smaller ~400px. Adjust as needed. */
+  height: 94%;
+}
+.videoColumn {
+  flex: 0 0 70%;
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+}
+.chatColumn {
+  flex: 0 0 30%;
+  max-width: 30%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* For the video, strictly keep 16:9 within the forced container height */
+.videoWrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  overflow: hidden;
+  background: #000;
+  border-radius: 6px;
+  flex: 1;
+}
+
+/**************************************/
+/* 4) Sound overlay to unmute         */
+/**************************************/
+.soundOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  cursor: pointer;
+  z-index: 4;
+}
+.soundIcon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+  opacity: 0.9;
+}
+.soundText {
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+/**************************************/
+/* 5) Exit-intent iPhone bubble       */
+/**************************************/
+.exitOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.25s ease;
+  cursor: pointer;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.iphoneMessageBubble {
+  position: relative;
+  max-width: 80%;
+  width: 320px;
+  background: #0a84ff;
+  color: #fff;
+  border-radius: 18px;
+  padding: 14px 20px;
+  animation: bubblePop 0.35s ease-out;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  cursor: auto;
+}
+@keyframes bubblePop {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.exitCloseBtn {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #fff;
+  opacity: 0.9;
+}
+.iphoneSender {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.iphoneMessageText {
+  font-size: 1rem;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+.iphoneMessageBubble::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  bottom: 20px;
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  border-right-color: #0a84ff;
+}
+
+/**************************************/
+/* HEADLINE text                      */
+/**************************************/
+.headlineText {
+  position: absolute;
+  top: 50%;
+  right: 75px;
+  transform: translateY(-50%);
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.2;
+  color: #2e2e2e;
+  text-align: center;
+  max-width: 30%;
+  z-index: 3;
+}
+
+/**************************************/
+/* 6) Replay Overlay                  */
+/**************************************/
+.replayOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  z-index: 9999;
+}
+.replayTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.replayButton,
+.investButton {
+  background: #fff;
+  color: #252525;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 8px 0;
+  border: none;
+  font-size: 0.9rem;
+}
+.investButton {
+  background: #252525;
+  color: #fff;
+}
+.investButton:hover {
+  background: #013289;
+}
+.replayButton:hover {
+  background: #eee;
+}
+
+/**************************************/
+/* 7) Clock Widget with "human wobble"*/
+/**************************************/
+.clockWidget {
+  position: absolute;
+  top: 40%;
+  left: 45%;
+  width: 320px;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  z-index: 3;
+  transform: translate(-120%, -120%);
+}
+
+@keyframes dragIn {
+  0% {
+    transform: translate(-120%, -120%);
+  }
+  25% {
+    transform: translate(-78%, -65%);
+  }
+  45% {
+    transform: translate(-48%, -35%);
+  }
+  65% {
+    transform: translate(-25%, -15%);
+  }
+  80% {
+    transform: translate(-10%, -5%);
+  }
+  92% {
+    transform: translate(-3%, -1%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+@keyframes dragOut {
+  0% {
+    transform: translate(0, 0);
+  }
+  45% {
+    transform: translate(90%, -5%);
+  }
+  70% {
+    transform: translate(140%, -3%);
+  }
+  100% {
+    transform: translate(200%, 10%);
+  }
+}
+@keyframes wobble {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  /* 50% {
+    transform: translate(3px, -3px);
+  } */
+}
+
+.animateIn {
+  animation: dragIn 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-name: dragIn;
+}
+.animateOut {
+  animation: dragOut 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-name: dragOut;
+}
+.wobble {
+  animation: wobble 2s infinite ease-in-out;
+}
+
+.widgetHeader {
+  background: #f5f5f7;
+  height: 28px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  position: relative;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.windowControls {
+  display: flex;
+  gap: 6px;
+  position: absolute;
+  left: 10px;
+}
+.windowButton {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.closeButton {
+  background: #ff5f57;
+}
+.minimizeButton {
+  background: #febc2e;
+}
+.maximizeButton {
+  background: #28c840;
+}
+.widgetTitle {
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  color: #3f3f3f;
+  font-weight: 500;
+}
+.widgetContent {
+  padding: 20px;
+  background: #fff;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.clockTime {
+  font-size: 2.4rem;
+  font-weight: 500;
+  color: #1d1d1f;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.clockDate {
+  font-size: 0.9rem;
+  color: #86868b;
+  font-weight: 400;
+  text-align: center;
+}
+
+/**************************************/
+/* 8) Chat Section: EXACT snippet     */
+/**************************************/
+.chatSection {
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  flex: 1;
+}
+
+.chatHeader {
+  padding: 12px 15px;
+  background: #252525;
+  color: #fff;
+  flex: 0 0 auto;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+.headerTop {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 16px;
+}
+.chatTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.toggleContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+.toggleSlider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.2);
+  transition: 0.4s;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.toggleSlider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+.toggleSwitch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggleSwitch input:checked + .toggleSlider {
+  background-color: #4caf50;
+}
+.toggleSwitch input:checked + .toggleSlider:before {
+  transform: translateX(20px);
+}
+.toggleLabel {
+  color: #fff;
+  font-size: 0.45rem;
+}
+.viewerCount {
+  font-size: 0.55rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.specialOffer {
+  background: #ff4444;
+  color: #fff;
+  padding: 12px 15px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: -0.02em;
+  display: none;
+  flex: 0 0 auto;
+}
+.investButton {
+  background: #252525;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  letter-spacing: -0.02em;
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 6px;
+}
+.investButton:hover {
+  background: #013289;
+}
+
+.chatMessages {
+  flex: 1 1 auto;
+  height: 200px;
+  overflow-y: auto;
+  padding: 15px;
+  background: #f8f9fa;
+}
+.message {
+  margin-bottom: 10px;
+  line-height: 1.4;
+  animation: fadeIn 0.3s ease;
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  border-radius: 6px;
+  max-width: 90%;
+  text-align: left;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.user {
+  background: #f0f2f5;
+  margin-left: auto;
+  color: #2c3135;
+}
+.host {
+  background: #e7f0ff;
+  color: #252525;
+  font-weight: 500;
+}
+.system {
+  background: #fff3cd;
+  color: #856404;
+  text-align: center;
+  max-width: 100%;
+  margin: 15px 0;
+  font-size: 0.85rem;
+}
+.chatInput {
+  padding: 15px;
+  background: #fff;
+  border-top: 1px solid #eee;
+  flex: 0 0 auto;
+}
+.chatInput input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dfe3e8;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  color: #2c3135;
+}
+.chatInput input:focus {
+  outline: none;
+  border-color: #252525;
+  box-shadow: 0 0 0 2px rgba(1, 66, 172, 0.1);
+}
+.typingIndicator {
+  color: #6c757d;
+  font-size: 0.85rem;
+  margin-top: 8px;
+  font-style: italic;
+  height: 20px;
+  padding-left: 2px;
+}
+
+/**************************************/
+/* 9) Notification for invests        */
+/**************************************/
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #fff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideIn 0.5s ease, fadeOut 0.5s ease 4.5s forwards;
+  z-index: 100;
+  font-size: 0.9rem;
+  max-width: 300px;
+}
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+.notificationIcon {
+  background: #252525;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+/**************************************/
+/* 10) Footer                         */
+/**************************************/
+.footer {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #999;
+  margin-top: 25px;
+  font-family: "Montserrat", sans-serif;
+}
+
+/**************************************/
+/* 11) Custom Scrollbar for chat      */
+/**************************************/
+.chatMessages::-webkit-scrollbar {
+  width: 8px;
+}
+.chatMessages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+.chatMessages::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+.chatMessages::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/**************************************/
+/* 12) Responsive Adjustments         */
+/**************************************/
+@media (max-width: 1200px) {
+  .zoomContainer {
+    max-width: 90vw;
+  }
+  .twoColumnLayout {
+    height: auto;
+    flex-direction: column;
+  }
+  .videoColumn,
+  .chatColumn {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+  .videoWrapper {
+    width: 100%;
+    flex: none;
+    aspect-ratio: 16/9;
+  }
+}
+
+/******************************************/
+/* ADDED FOR POLL pinned at top of chat   */
+/******************************************/
+.chatPollContainer {
+  background: #fff;
+  border-bottom: 1px solid #ccc;
+  padding: 12px;
+  text-align: center;
+  /* No top-border-radius so it aligns with chatHeader */
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.chatPollQuestion {
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.chatPollButtons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+.chatPollButtons button {
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  transition: background 0.3s;
+  font-family: "Montserrat", sans-serif;
+}
+.chatPollButtons button:hover {
+  background: #e2e2e2;
+}
+
+.chatPollResults {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pollBarRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.pollBarRow span {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.pollBar {
+  flex: 1;
+  background: #f1f1f1;
+  height: 8px;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+.pollBarFillGeneric {
+  background: #aaa;
+  width: 2.8%;
+  height: 100%;
+  transition: width 0.4s ease;
+}
+.pollBarFillPersonalized {
+  background: #252525;
+  width: 97.2%;
+  height: 100%;
+  transition: width 0.4s ease;
+}
+.pollResultText {
+  font-size: 0.75rem;
+  color: #333;
+  margin-top: 4px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/************************************************************/
+/* NEW CLASSES FOR THE FULL SCREEN BUTTON (Jony Ive style)  */
+/************************************************************/
+.fullScreenButton {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 5; /* above video but below overlays like .soundOverlay */
+  font-family: "Montserrat", sans-serif;
+  backdrop-filter: blur(10px);
+}
+.fullScreenButton:hover {
+  background: rgba(0, 0, 0, 0.65);
+}
+.showFullScreenButton {
+  opacity: 1;
+}
+
+/************************************************************/
+/* ADDED FOR OFFER/TIMER + SOCIAL PROOF (45-85 min)          */
+/************************************************************/
+.offerOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.offerContainer {
+  background: #ffffff;
+  padding: 24px 28px;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 360px;
+  width: 90%;
+  font-family: "Montserrat", sans-serif;
+}
+
+.offerTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.offerTimerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 10px;
+}
+
+.offerTimerBox,
+.offerSpotsBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f6f6f6;
+  border-radius: 6px;
+  padding: 8px 12px;
+  min-width: 100px;
+}
+
+.offerTimerBox span,
+.offerSpotsBox span {
+  font-size: 0.8rem;
+  color: #666;
+}
+.offerTimerBox strong,
+.offerSpotsBox strong {
+  font-size: 1.2rem;
+  color: #000;
+  margin-top: 4px;
+}
+
+.investNowBtn {
+  width: 100%;
+  background: #252525;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.investNowBtn:hover {
+  background: #013289;
+}
+
+/* ----------------------------------------------------------------- */
+/* Additional styling for the entire page and general typography     */
+/* ----------------------------------------------------------------- */
 body {
   font-family: "Montserrat", sans-serif;
   background-image: linear-gradient(to bottom right, #f0f4f8, #e6ebf0);
@@ -27,14 +987,6 @@ body {
   z-index: 2;
 }
 
-.container {
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 .result-header {
   width: 100%;
   background-color: #252525;
@@ -51,22 +1003,13 @@ body {
   font-weight: 700;
   margin: 0;
 }
+
 .fade-in {
   opacity: 0;
   transition: opacity 1s ease-in-out;
 }
 
 .fade-in.visible {
-  opacity: 1;
-}
-
-/* index.css */
-.footer-fade-in {
-  opacity: 0;
-  transition: opacity 1s ease-in-out; /* Smooth fade-in over 1 second */
-}
-
-.footer-fade-in.visible {
   opacity: 1;
 }
 
@@ -289,6 +1232,10 @@ body {
   display: none;
 }
 
+.streak-container {
+  position: relative;
+}
+
 .streak-counter {
   font-size: 20px;
   font-weight: 600;
@@ -301,7 +1248,7 @@ body {
   transition: all 0.5s ease-in-out;
   z-index: 2;
   position: absolute;
-  bottom: -60px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -379,10 +1326,6 @@ body {
   flex-shrink: 0;
 }
 
-.content-box.generated .new-demo-button {
-  bottom: 0; /* Reset position after generation */
-}
-
 .new-demo-button {
   display: inline-block;
   background-color: #252525;
@@ -404,6 +1347,10 @@ body {
   align-self: center;
   position: relative;
   bottom: auto; /* Remove absolute positioning */
+}
+
+.content-box.generated .new-demo-button {
+  bottom: 0; /* Reset position after generation */
 }
 
 .new-demo-button.visible {
@@ -505,20 +1452,6 @@ p span.p {
   margin-bottom: var(--spacing);
   margin-top: var(--spacing);
 }
-
-/*.container.style1 {*/
-/*    --alignment: center;*/
-/*    --flex-alignment: center;*/
-/*    --indent-left: 1;*/
-/*    --indent-right: 1;*/
-/*    --margin-left: auto;*/
-/*    --margin-right: auto;*/
-/*    display: flex;*/
-/*    width: 100%;*/
-/*    align-items: center;*/
-/*    justify-content: center;*/
-/*    background-color: transparent;*/
-/*}*/
 
 body {
   font-family: "Montserrat", sans-serif;
@@ -814,7 +1747,6 @@ strong {
     opacity: 0;
   }
 }
-
 @keyframes spark {
   0% {
     transform: translate(0, 0) scale(1);
@@ -955,8 +1887,7 @@ strong {
   margin-top: 0.75em;
 }
 
-/* Header.css */
-
+/* Header image */
 .image {
   text-align: center; /* Centers the image */
   display: flex;
@@ -1033,250 +1964,6 @@ p span.p {
   --margin-right: auto;
 }
 
-/* FOOTER */
-
-/* Footer Styles */
-h1.style2,
-h2.style2,
-h3.style2,
-p.style2 {
-  color: #1f1c1c;
-  font-family: "Montserrat", sans-serif;
-  letter-spacing: 0.05rem;
-  width: calc(100% + 0.05rem);
-  font-size: 0.875em;
-  line-height: 1.25;
-  font-weight: 200;
-  text-align: center;
-}
-
-h1.style1,
-h2.style1,
-h3.style1,
-p.style1 {
-  color: rgba(31, 28, 28, 0.439);
-  font-family: "Montserrat", sans-serif;
-  letter-spacing: 0.05rem;
-  width: calc(100% + 0.05rem);
-  font-size: 0.875em;
-  line-height: 1.25;
-  font-weight: 200;
-  text-align: center;
-}
-
-@media (max-width: 600px) {
-  footer .share-button {
-    width: 40px;
-    height: 40px;
-  }
-
-  footer .share-button svg {
-    width: 20px;
-    height: 20px;
-  }
-}
-
-@media (max-width: 400px) {
-  footer .share-button {
-    width: 36px;
-    height: 36px;
-  }
-
-  footer .share-button svg {
-    width: 18px;
-    height: 18px;
-  }
-}
-
-.embed02 {
-  .share-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .share-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    color: #ffffff;
-    transition: opacity 0.3s ease;
-  }
-
-  .share-button:hover {
-    opacity: 0.8;
-  }
-
-  @media (max-width: 600px) {
-    .share-button {
-      width: 40px;
-      height: 40px;
-    }
-
-    .share-button svg {
-      width: 20px;
-      height: 20px;
-    }
-  }
-  @media (max-width: 400px) {
-    .share-button {
-      width: 36px;
-      height: 36px;
-    }
-
-    .share-button svg {
-      width: 18px;
-      height: 18px;
-    }
-  }
-}
-
-:root {
-  font-family: "Montserrat", sans-serif;
-  bs-font-sans-serif: "Montserrat", sans-serif;
-  --clock-base-size: 1px;
-}
-
-body,
-* {
-  font-family: "Montserrat", sans-serif !important;
-}
-
-.container > .wrapper {
-  display: flex;
-  vertical-align: top;
-  position: relative;
-  max-width: 100%;
-  border-radius: inherit;
-}
-
-#text02 a {
-  text-decoration: underline;
-  color: black;
-}
-
-h1.style2 mark,
-h2.style2 mark,
-h3.style2 mark,
-p.style2 mark {
-  padding: 0px;
-  color: #252525;
-  background-color: transparent;
-}
-
-h1.style2,
-h2.style2,
-h3.style2,
-p.style2 {
-  color: #1f1c1c;
-  font-family: "Montserrat", sans-serif;
-  letter-spacing: 0.05rem;
-  width: calc(100% + 0.05rem);
-  font-size: 0.875em;
-  line-height: 1.25;
-  font-weight: 200;
-}
-
-html,
-body,
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  vertical-align: baseline;
-}
-
-h1,
-h2,
-h3,
-p {
-  direction: var(--site-language-direction);
-  position: relative;
-}
-
 .container.style3 > .wrapper > .inner {
   --gutters: 2rem;
   --padding-horizontal: 2rem;
@@ -1319,20 +2006,6 @@ p {
 #image03 .frame {
   width: 7rem;
   transition: none;
-}
-
-#image03 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#image03 img {
-  display: block;
-  margin: 0 auto;
 }
 
 @media (max-width: 736px) {
