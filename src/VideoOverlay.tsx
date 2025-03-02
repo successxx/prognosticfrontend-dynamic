@@ -45,7 +45,7 @@ const overlayItems: OverlayItem[] = [
   content: "", // The content will be populated from webinarInjectionData
   startTime: 69.08, // When it should start showing (in seconds)
   endTime: 90.07, // When it should stop showing (in seconds)
-  position: { x: 0.54, y: 0.49 }, // Centered under "personal", similar height to consultation text
+  position: { x: 0.54, y: 0.54 }, // Centered under "personal", similar height to consultation text
   style: {
     color: "#252525",
     fontSize: "1.8em", // This would be 1.5% of the video width
