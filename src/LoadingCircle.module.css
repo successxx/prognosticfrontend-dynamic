@@ -1,98 +1,88 @@
 .prognostic-ai-demo-results-container {
-  font-family: "Montserrat", sans-serif;
-  background-color: #f0f4f8;
-  width: 100%;
-  max-width: 800px;
-  margin: 40px auto; /* margin auto to center horizontally */
-  border-radius: 15px;
-  overflow: hidden;
-  text-align: center; /* ensure everything inside is centered horizontally */
+    font-family: 'Montserrat', sans-serif;
+    background-color: #F0F4F8;
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    border-radius: 15px;
+    overflow: hidden;
 }
 
 .prognostic-ai-demo-results-container * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .pai-dr-header {
-  background-color: #252525;
-  color: white;
-  padding: 20px;
-  font-size: 24px;
-  font-weight: 700;
-  text-align: center;
-  width: 100%;
+    background-color: #252525;
+    color: white;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
 }
 
 .pai-dr-content {
-  background-color: white;
-  padding: 30px;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 0 0 15px 15px;
+    background-color: white;
+    padding: 30px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 15px 15px;
 }
 
 .pai-dr-spinner {
-  border: 8px solid #f3f3f3;
-  border-top: 8px solid #252525;
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-  animation: pai-dr-spin 1s linear infinite;
-  margin-bottom: 30px;
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #252525;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: pai-dr-spin 1s linear infinite;
+    margin-bottom: 30px;
 }
 
 @keyframes pai-dr-spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .pai-dr-message {
-  font-size: 20px;
-  color: #333;
-  text-align: center;
-  opacity: 1;
-  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    font-size: 20px;
+    color: #333;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
 
 .fade-out {
-  opacity: 0;
-  transform: translateY(20px); /* Gliding down while fading out */
+    opacity: 0;
+    transform: translateY(20px); /* Gliding down while fading out */
 }
 
 .fade-in {
-  opacity: 1;
-  transform: translateY(0); /* Return to original position */
+    opacity: 1;
+    transform: translateY(0); /* Return to original position */
 }
 
 .pai-dr-footer {
-  text-align: center;
-  padding: 10px 20px;
-  margin-top: 10px;
-  font-size: 14px;
-  color: #555;
-}
-.pai-dr-footer img {
-  max-width: 180px;
-  display: block;
-  margin: 0 auto; /* center the logo if any */
+    text-align: center;
+    padding: 10px 20px;
 }
 
 .pai-dr-button {
-  display: inline-block;
-  background-color: #252525;
-  color: white;
-  font-size: 12px;
-  padding: 5px 10px;
-  border-radius: 4px;
-  text-decoration: none;
-  font-weight: 400;
-  margin-top: 12px;
+    display: inline-block;
+    background-color: #252525;
+    color: white;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 400;
 }
