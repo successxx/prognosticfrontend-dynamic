@@ -1,5 +1,5 @@
 /**************************************/
-/* 1) Outer container, subtle background*/
+/* 1) Outer container, subtle background */
 /**************************************/
 .container {
   display: flex;
@@ -8,7 +8,6 @@
   box-sizing: border-box;
   padding: 20px;
   width: 80%;
-  /* min-height: 100vh; */
   background: #eaeff3;
   gap: 20px;
   position: relative;
@@ -61,7 +60,7 @@
   background: #fff;
   border: 2px solid #dcdcdc;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   padding: 16px;
   width: 100%;
   margin: 0 auto;
@@ -112,20 +111,17 @@
 }
 
 /**************************************/
-/* 3) The 70/30 layout, same height   */
+/* 3) Video Container (Single Column, 16×9) */
 /**************************************/
 .videoWrapper {
   position: relative;
-  /* 16×9 ratio trick */
-  padding-bottom: 56.25%; 
+  padding-bottom: 56.25%; /* 16:9 ratio */
   height: 0;
-
-  /* Keep anything else you like */
   overflow: hidden;
-  background: #000; /* optional background if the video is narrower */
-  border-radius: 6px; /* optional rounding */
-  max-width: 100%;    /* ensures it doesn't overflow your container */
-  margin: 0 auto;     /* center horizontally if you want */
+  background: #000;
+  border-radius: 6px;
+  max-width: 100%;
+  margin: 0 auto;
 }
 
 .videoPlayer {
@@ -134,9 +130,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* ensures cropping to fill container if needed */
+  object-fit: cover;
 }
-
 
 /**************************************/
 /* 4) Sound overlay to unmute         */
@@ -371,9 +366,7 @@
   100% {
     transform: translate(0, 0);
   }
-  /* 50% {
-    transform: translate(3px, -3px);
-  } */
+  /* 50% { transform: translate(3px, -3px); } */
 }
 
 .animateIn {
@@ -725,17 +718,7 @@
   .zoomContainer {
     max-width: 90vw;
   }
-  .twoColumnLayout {
-    height: auto;
-    flex-direction: column;
-  }
-  .videoColumn,
-  .chatColumn {
-    flex: none;
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-  }
+  /* In a single–column layout, remove any two–column classes if present */
   .videoWrapper {
     width: 100%;
     flex: none;
@@ -839,7 +822,7 @@
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
-  z-index: 5; /* above video but below overlays like .soundOverlay */
+  z-index: 5;
   font-family: "Montserrat", sans-serif;
   backdrop-filter: blur(10px);
 }
