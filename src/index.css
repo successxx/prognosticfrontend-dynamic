@@ -125,7 +125,7 @@ body {
   top: calc(0.22 * var(--clock-base-size));
   right: calc(0.6 * var(--clock-base-size));
   font-family: "SF Pro", sans-serif !important;
-  font-size: calc(0.4 * var(--clock-base-size));
+  font-size: calc(0.44 * var(--clock-base-size));
   color: white;
   user-select: none;
   pointer-events: none;
