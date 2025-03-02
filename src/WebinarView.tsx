@@ -34,12 +34,15 @@ export interface IWebinarInjection {
 }
 
 /**
- * Changes requested:
- *  1) Autoplay OFF (user must manually press Play).
- *  2) Prevent skipping: user can play/pause but can't scrub.
- *  3) Switch video to "clientsa1i.mp4".
- *  4) Keep voice injection at 0.5s and exit-intent bubble.
- *  5) Single-click overlay => unmute + play, reading "Click to watch your AI agents."
+ * Demo "Webinar" video code that duplicates the main webinar logic
+ * but with minimal changes. Key features:
+ *  - Manual play (no autoplay).
+ *  - Prevent skipping (scrub locked).
+ *  - "Click to enable sound" overlay.
+ *  - Exit-intent bubble.
+ *  - Voice injection at 0.5s if an audio link is provided.
+ *  - HEADLINE  (appears ~5–20s).
+ *  - CLOCK DRAG-IN (at 10s) + wobble + drag out after ~10s.
  */
 const WebinarView: React.FC = () => {
   const [webinarInjectionData, setWebinarInjectionData] =
@@ -50,7 +53,8 @@ const WebinarView: React.FC = () => {
 
   // Has the user interacted to enable sound?
   const [hasInteracted, setHasInteracted] = useState<boolean>(false);
-  // Audio for the 0.5s injection
+
+  // Audio reference for the injection at ~0.5s
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Exit-intent
@@ -61,7 +65,19 @@ const WebinarView: React.FC = () => {
   // Track last valid playback time to prevent scrubbing:
   const lastTimeRef = useRef<number>(0);
 
-  // Fetch data (including `audio_link` + `exit_message`)
+  // ============ ADDED FOR HEADLINE & CLOCK =================
+  // 1) Headline states
+  const [showHeadline, setShowHeadline] = useState(false);
+  const [hasShownHeadline, setHasShownHeadline] = useState(false);
+
+  // 2) Clock states
+  const [showClockWidget, setShowClockWidget] = useState(false);
+  const [clockDragInComplete, setClockDragInComplete] = useState(false);
+  const [clockRemoved, setClockRemoved] = useState(false);
+
+  // =========================================================
+
+  // Fetch data (including `audio_link` and `exit_message`)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
@@ -154,6 +170,70 @@ const WebinarView: React.FC = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [hasShownOverlay]);
 
+  // ============ ADDED FOR HEADLINE & CLOCK =================
+  /**
+   * We attach a single timeupdate event to the <video> that decides:
+   *  - Headline visible from 5–20s
+   *  - Clock drags in at 10s, wobbles ~10s, then drags out
+   */
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    function handleVideoTiming() {
+      const t = vid.currentTime;
+
+      // HEADLINE from 5s to 20s
+      if (t >= 5 && t < 20) {
+        if (!hasShownHeadline) {
+          setHasShownHeadline(true);
+          setShowHeadline(true);
+        }
+      } else {
+        if (showHeadline) {
+          setShowHeadline(false);
+        }
+      }
+
+      // CLOCK in at 10s
+      if (!showClockWidget && !clockRemoved && t >= 10) {
+        setShowClockWidget(true);
+      }
+    }
+
+    vid.addEventListener("timeupdate", handleVideoTiming);
+    return () => {
+      vid.removeEventListener("timeupdate", handleVideoTiming);
+    };
+  }, [
+    showClockWidget,
+    clockRemoved,
+    hasShownHeadline,
+    showHeadline,
+  ]);
+
+  // Once clock has "dragIn" done, wait 10s → dragOut
+  useEffect(() => {
+    if (clockDragInComplete) {
+      const timer = setTimeout(() => {
+        setClockRemoved(true);
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [clockDragInComplete]);
+
+  // Once we mark clockRemoved, hide fully after 1s
+  useEffect(() => {
+    if (clockRemoved) {
+      // Just wait for the animateOut to finish
+      const hideTimer = setTimeout(() => {
+        setShowClockWidget(false);
+      }, 1000);
+      return () => clearTimeout(hideTimer);
+    }
+  }, [clockRemoved]);
+  // =========================================================
+
   return (
     <div className={styles.container} style={{ textAlign: "center" }}>
       {/* Hidden audio for voice injection */}
@@ -177,24 +257,77 @@ const WebinarView: React.FC = () => {
           videoContainerRef={videoWrapperRef}
           webinarInjectionData={webinarInjectionData}
         />
+
+        {/* The Clock Overlay (child component) */}
         <VideoClock videoContainerRef={videoWrapperRef} />
 
+        {/* ADDED: HEADLINE if showHeadline is true */}
+        {showHeadline && (
+          <div className={styles.headlineText}>
+            {/* If your data has a specific `headline`, use it; else fallback. */}
+            {webinarInjectionData?.headline || "Your AI Headline Here"}
+          </div>
+        )}
+
+        {/* The <video> itself */}
         <video
           ref={videoRef}
-          // Autoplay removed so user must press play
+          // Autoplay is removed; user must press play
           controls
           playsInline
           muted={!hasInteracted}
           className={styles.videoPlayer}
         >
           <source
-            src="https://progwebinar.blob.core.windows.net/video/clientsdemo2.mp4"
+            src="https://progwebinar.blob.core.windows.net/video/clientsaidemovid.mp4"
             type="video/mp4"
           />
           Your browser does not support HTML5 video.
         </video>
 
-        {/* Single overlay => unmute + play with one click */}
+        {/* ADDED: The Clock Widget directly in this file (or we can do a separate component).
+            But from your snippet, we reference the same classes. */}
+        {showClockWidget && (
+          <div
+            className={`
+              ${styles.clockWidget}
+              ${clockRemoved ? styles.animateOut : styles.animateIn}
+              ${clockDragInComplete && !clockRemoved ? styles.wobble : ""}
+            `}
+            onAnimationEnd={(e) => {
+              if (e.animationName.includes("dragIn") && !clockDragInComplete) {
+                setClockDragInComplete(true);
+              }
+            }}
+          >
+            <div className={styles.widgetHeader}>
+              <div className={styles.windowControls}>
+                <div className={`${styles.windowButton} ${styles.closeButton}`} />
+                <div
+                  className={`${styles.windowButton} ${styles.minimizeButton}`}
+                />
+                <div className={`${styles.windowButton} ${styles.maximizeButton}`} />
+              </div>
+              <div className={styles.widgetTitle}>Clock Widget</div>
+            </div>
+            <div className={styles.widgetContent}>
+              <span className={styles.clockTime}>
+                {/* Could show an actual clock time. For now just text. */}
+                {(new Date()).toLocaleTimeString()}
+              </span>
+              <span className={styles.clockDate}>
+                {(new Date()).toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Single-click overlay => unmute + play */}
         {!hasInteracted && (
           <div
             className={styles.soundOverlay}
@@ -215,8 +348,8 @@ const WebinarView: React.FC = () => {
         )}
       </div>
 
-      {/* CTA Button */}
-      <div>
+      {/* CTA Button or anything else below */}
+      <div style={{ marginTop: "20px" }}>
         <button
           onClick={() => window.open("https://webinar.clients.ai", "_blank")}
           style={{
