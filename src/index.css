@@ -1,8 +1,5 @@
-/* ==========================
-   styles.css (Global)
-   ========================== */
+/* index.css main from your existing code + extra clock stuff */
 
-/* Root / Body */
 body {
   font-family: "Montserrat", sans-serif;
   background-image: linear-gradient(to bottom right, #f0f4f8, #e6ebf0);
@@ -26,13 +23,12 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 100vh; /* Full screen height */
+  min-height: 100vh;
   overflow: hidden;
   position: relative;
   z-index: 2;
 }
 
-/* Main container for our “demo” video content */
 .container {
   width: 100%;
   margin: 0 auto;
@@ -41,22 +37,7 @@ body {
   box-sizing: border-box;
 }
 
-/* The “header” style you had */
-.result-header {
-  width: 100%;
-  background-color: #252525;
-  color: white;
-  padding: 20px 15px;
-  border-radius: 15px 15px 0 0;
-  margin-bottom: 0;
-  text-align: center;
-  box-sizing: border-box;
-}
-.result-header h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0;
-}
+/* Basic fade in used in the app */
 .fade-in {
   opacity: 0;
   transition: opacity 1s ease-in-out;
@@ -65,193 +46,7 @@ body {
   opacity: 1;
 }
 
-/* Additional fading, context boxes, typed-output, etc. */
-.footer-fade-in {
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-}
-.footer-fade-in.visible {
-  opacity: 1;
-}
-.first-context-box {
-  background-color: white;
-  border-radius: 0 0 10px 10px;
-  padding: 20px 65px 40px;
-  margin-bottom: 40px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  position: relative;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  opacity: 1;
-  transition: opacity 0.3s ease-in-out;
-}
-.content-box {
-  background-color: white;
-  border-radius: 10px;
-  padding: 20px 65px 40px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  position: relative;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  opacity: 1;
-  transition: opacity 0.3s ease-in-out;
-}
-.inner {
-  --padding-horizontal: 1rem;
-  --padding-vertical: 2.125rem;
-  --spacing: 1.375rem;
-  --width: 97rem;
-  border-radius: var(--border-radius-tl) var(--border-radius-tr)
-    var(--border-radius-br) var(--border-radius-bl);
-  max-width: 100%;
-  position: relative;
-  width: var(--width);
-  z-index: 1;
-  padding: var(--padding-vertical) var(--padding-horizontal);
-}
-@media (max-width: 768px) {
-  .inner {
-    --width: 100%;
-    --padding-vertical: 0rem;
-    --padding-horizontal: 0rem;
-  }
-  .container {
-    padding-right: 0.5rem;
-    padding-left: 0.5rem;
-    width: 100%;
-    box-sizing: border-box;
-  }
-}
-.content-box:last-child {
-  margin-bottom: 0;
-}
-
-/* typed-output, text styling */
-#typed-output {
-  width: 100%;
-  max-width: 100%;
-  font-size: 20px;
-  line-height: 1.7;
-  color: #333;
-  margin: 0 auto;
-  opacity: 1;
-  transition: opacity 0.3s ease-in-out;
-}
-#typed-output strong {
-  font-weight: 700;
-}
-#typed-output em {
-  font-style: italic;
-}
-
-/* Various headings */
-#typed-output h1,
-#typed-output h2,
-#typed-output h3 {
-  font-weight: 700;
-  margin-top: 0.2em;
-  margin-bottom: 1em;
-  text-align: center;
-}
-#typed-output h1 { font-size: 36px; }
-#typed-output h2 { font-size: 32px; }
-#typed-output h3 { font-size: 28px; }
-
-/* Positioning for the "typing-complete" flow */
-.content-box::after {
-  content: "";
-  position: absolute;
-  bottom: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 40px;
-  background: linear-gradient(to bottom, #252525, transparent);
-}
-.content-box:last-child::after {
-  display: none;
-}
-.content-box::before {
-  content: "●";
-  position: absolute;
-  bottom: -50px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 24px;
-  color: #252525;
-  z-index: 1;
-}
-.content-box:first-child {
-  border-radius: 0 0 10px 10px;
-}
-.content-box:nth-child(even)::before {
-  content: "◆";
-  color: #ff6b6b;
-}
-.content-box:nth-child(3n)::before {
-  content: "■";
-  color: #4ecdc4;
-}
-.content-box:last-child::before {
-  display: none;
-}
-.content-box::after {
-  content: "";
-  position: absolute;
-  bottom: -60px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 60px;
-  background: linear-gradient(to bottom, #0066cc, transparent);
-}
-.content-box:nth-child(odd)::after { left: 25%; }
-.content-box:nth-child(even)::after { left: 75%; }
-.content-box:nth-child(3n)::after { left: 50%; }
-.content-box:nth-child(odd)::before { left: 25%; }
-.content-box:nth-child(even)::before { left: 75%; }
-.content-box:nth-child(3n)::before { left: 50%; }
-.content-box:nth-child(even)::after {
-  background: linear-gradient(to bottom, #0066cc, #ff6b6b);
-}
-.content-box:nth-child(3n)::after {
-  background: linear-gradient(to bottom, #0066cc, #4ecdc4);
-}
-.content-box:last-child::after {
-  display: none;
-}
-
-/* Streak counter */
-.streak-counter {
-  font-size: 20px;
-  font-weight: 600;
-  color: #252525;
-  background-color: rgba(255, 255, 255, 0.95);
-  padding: 12px 20px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(1, 66, 172, 0.2);
-  opacity: 0;
-  transition: all 0.5s ease-in-out;
-  z-index: 2;
-  position: absolute;
-  bottom: -60px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.streak-counter.visible {
-  opacity: 1;
-  bottom: -50px;
-}
-
-/* Fireworks container & animations */
+/* The fireworks container */
 #fireworks-container {
   position: fixed;
   top: 0;
@@ -301,378 +96,181 @@ body {
   }
 }
 
-/* Additional styling for highlight boxes, etc. */
-.highlight-box {
-  background-color: #f5f5f7;
-  border-left: 5px solid #0066cc;
-  border-radius: 10px;
-  padding: 20px;
-  margin: 20px 0;
-}
-.action-item {
-  display: flex;
-  align-items: flex-start;
-  margin: 20px 0;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-.action-item:before {
-  content: "✅";
-  margin-right: 15px;
-  font-size: 24px;
-  flex-shrink: 0;
-}
-.new-demo-button {
-  display: inline-block;
-  background-color: #252525;
-  color: white;
-  font-size: 18px;
-  padding: 12px 24px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 700;
-  transition: all 0.3s ease;
-  text-align: center;
-  width: auto;
-  max-width: none;
-  box-sizing: border-box;
+/* Streak counter logic */
+.streak-counter {
+  font-size: 20px;
+  font-weight: 600;
+  color: #252525;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 12px 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(1, 66, 172, 0.2);
   opacity: 0;
-  transform: translateY(20px);
-  animation: none;
-  white-space: nowrap;
-  align-self: center;
-  position: relative;
-  bottom: auto;
+  transition: all 0.5s ease-in-out;
+  z-index: 2;
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
 }
-.new-demo-button.visible {
+.streak-counter.visible {
   opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  bottom: -50px;
 }
-.new-demo-button:hover {
-  background-color: #0056d6;
+
+/* HEADLINE text (global) if needed. 
+   We'll rely on "styles.headlineText" in the module for position,
+   but we keep the font custom here if needed. 
+*/
+
+/* The “video-overlay” global container for overlay items */
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: calc(var(--overlay-width) / 100);
 }
-@media (max-width: 600px) {
-  .content-box {
-    padding: 15px 15px 30px;
-  }
+.overlay-item {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+  z-index: 2;
 }
-@keyframes buttonAppear {
+.overlay-item.visible {
+  opacity: 1;
+}
+
+/* The drag in/out clock classes exactly from webinar */
+.clockWidget {
+  position: absolute;
+  top: 40%;
+  left: 45%;
+  width: 320px;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  z-index: 999; /* ensure it's on top */
+  transform: translate(-120%, -120%);
+}
+
+@keyframes dragIn {
   0% {
-    opacity: 0;
-    transform: translateY(20px);
+    transform: translate(-120%, -120%);
+  }
+  25% {
+    transform: translate(-78%, -65%);
+  }
+  45% {
+    transform: translate(-48%, -35%);
+  }
+  65% {
+    transform: translate(-25%, -15%);
+  }
+  80% {
+    transform: translate(-10%, -5%);
+  }
+  92% {
+    transform: translate(-3%, -1%);
   }
   100% {
-    opacity: 1;
-    transform: translateY(0);
+    transform: translate(0, 0);
   }
 }
-#typed-output br {
-  content: "";
-  display: block;
-  margin-top: 0.75em;
+@keyframes dragOut {
+  0% {
+    transform: translate(0, 0);
+  }
+  45% {
+    transform: translate(90%, -5%);
+  }
+  70% {
+    transform: translate(140%, -3%);
+  }
+  100% {
+    transform: translate(200%, 10%);
+  }
+}
+@keyframes wobble {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
 }
 
-/* Some image styling */
-.image {
-  text-align: center;
+.animateIn {
+  animation: dragIn 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.animateOut {
+  animation: dragOut 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.wobble {
+  animation: wobble 2s infinite ease-in-out;
+}
+
+/* For the clock widget’s internal layout (header, content) */
+.widgetHeader {
+  background: #f5f5f7;
+  height: 28px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  padding: 0 10px;
+  position: relative;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.windowControls {
+  display: flex;
+  gap: 6px;
+  position: absolute;
+  left: 10px;
+}
+.windowButton {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.closeButton {
+  background: #ff5f57;
+}
+.minimizeButton {
+  background: #febc2e;
+}
+.maximizeButton {
+  background: #28c840;
+}
+.widgetTitle {
   width: 100%;
+  text-align: center;
+  font-size: 13px;
+  color: #3f3f3f;
+  font-weight: 500;
 }
-.image img {
-  border-radius: 0 !important;
-  max-width: 100%;
-  height: auto;
-  vertical-align: top;
-}
-@media (max-width: 980px) {
-  html {
-    font-size: 11pt;
-  }
-}
-@media (max-width: 1280px) {
-  html {
-    font-size: 13pt;
-  }
-}
-@media (max-width: 1680px) {
-  html {
-    font-size: 13pt;
-  }
-}
-html {
-  /* font-size: 18pt; */
-}
-h1 span.p,
-h2 span.p,
-h3 span.p,
-p span.p {
-  display: block;
-  position: relative;
-}
-#main {
-  --alignment: center;
-  --flex-alignment: center;
-  --indent-left: 1;
-  --indent-right: 1;
-  --margin-left: auto;
-  --margin-right: auto;
-  --border-radius-tl: 0;
-  --border-radius-tr: 0;
-  --border-radius-br: 0;
-  --border-radius-bl: 0;
+.widgetContent {
+  padding: 20px;
+  background: #fff;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  display: flex;
-  flex-grow: 0;
-  flex-shrink: 0;
-  justify-content: center;
-  max-width: 100%;
-  position: relative;
-  text-align: var(--alignment);
-  z-index: 1;
+  gap: 8px;
 }
-.container.style3 {
-  --alignment: center;
-  --flex-alignment: center;
-  --indent-left: 1;
-  --indent-right: 1;
-  --margin-left: auto;
-  --margin-right: auto;
-}
-
-/* FOOTER STYLES */
-h1.style2,
-h2.style2,
-h3.style2,
-p.style2 {
-  color: #1f1c1c;
-  font-family: "Montserrat", sans-serif;
-  letter-spacing: 0.05rem;
-  width: calc(100% + 0.05rem);
-  font-size: 0.875em;
-  line-height: 1.25;
-  font-weight: 200;
+.clockTime {
+  font-size: 2.4rem;
+  font-weight: 500;
+  color: #1d1d1f;
+  margin-bottom: 4px;
   text-align: center;
 }
-h1.style1,
-h2.style1,
-h3.style1,
-p.style1 {
-  color: rgba(31, 28, 28, 0.439);
-  font-family: "Montserrat", sans-serif;
-  letter-spacing: 0.05rem;
-  width: calc(100% + 0.05rem);
-  font-size: 0.875em;
-  line-height: 1.25;
-  font-weight: 200;
+.clockDate {
+  font-size: 0.9rem;
+  color: #86868b;
+  font-weight: 400;
   text-align: center;
 }
-@media (max-width: 600px) {
-  footer .share-button {
-    width: 40px;
-    height: 40px;
-  }
-  footer .share-button svg {
-    width: 20px;
-    height: 20px;
-  }
-}
-@media (max-width: 400px) {
-  footer .share-button {
-    width: 36px;
-    height: 36px;
-  }
-  footer .share-button svg {
-    width: 18px;
-    height: 18px;
-  }
-}
-.embed02 {
-  .share-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  .share-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    color: #ffffff;
-    transition: opacity 0.3s ease;
-  }
-  .share-button:hover {
-    opacity: 0.8;
-  }
-  @media (max-width: 600px) {
-    .share-button {
-      width: 40px;
-      height: 40px;
-    }
-    .share-button svg {
-      width: 20px;
-      height: 20px;
-    }
-  }
-  @media (max-width: 400px) {
-    .share-button {
-      width: 36px;
-      height: 36px;
-    }
-    .share-button svg {
-      width: 18px;
-      height: 18px;
-    }
-  }
-}
 
-/* SF Pro font, etc. */
-@font-face {
-  font-family: "SF Pro";
-  src: url("../fonts/SFProText-Regular.woff2") format("woff2"),
-    url("../fonts/SFProText-Regular.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-:root {
-  font-family: "Montserrat", sans-serif;
-  bs-font-sans-serif: "Montserrat", sans-serif;
-  --clock-base-size: 1px;
-}
-body,
-* {
-  font-family: "Montserrat", sans-serif !important;
-}
-.container > .wrapper {
-  display: flex;
-  vertical-align: top;
-  position: relative;
-  max-width: 100%;
-  border-radius: inherit;
-}
-#text02 a {
-  text-decoration: underline;
-  color: black;
-}
-h1.style2 mark,
-h2.style2 mark,
-h3.style2 mark,
-p.style2 mark {
-  padding: 0px;
-  color: #252525;
-  background-color: transparent;
-}
-h1.style2,
-h2.style2,
-h3.style2,
-p.style2 {
-  color: #1f1c1c;
-  font-family: "Montserrat", sans-serif;
-  letter-spacing: 0.05rem;
-  width: calc(100% + 0.05rem);
-  font-size: 0.875em;
-  line-height: 1.25;
-  font-weight: 200;
-}
-html,
-body,
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  vertical-align: baseline;
-}
-h1,
-h2,
-h3,
-p {
-  direction: var(--site-language-direction);
-  position: relative;
-}
+/* Additional resets or styles from your original index.css can go here... */
