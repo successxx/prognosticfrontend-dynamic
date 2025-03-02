@@ -305,33 +305,22 @@ const overlayItems: OverlayItem[] = [
   },
 ];
 
-export const VideoOverlay: React.FC<VideoOverlayProps> = ({
-  videoRef,
-  videoContainerRef,
-  webinarInjectionData,
-}) => {
-  const [currentTime, setCurrentTime] = useState(0);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const rafId = useRef<number>();
-
-  const updatedOverlayItems = useMemo(() => {
-    if (!webinarInjectionData) {
-      return [];
-    }
+const updatedOverlayItems = React.useMemo(() => {
+    if (!webinarInjectionData) return [];
     return overlayItems.map((item) => ({
       ...item,
       content: webinarInjectionData[item.key]?.trim() ?? "",
     }));
   }, [webinarInjectionData]);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+  React.useEffect(() => {
+    const videoEl = videoRef.current;
+    if (!videoEl) return;
 
-    const updateTime = () => {
-      setCurrentTime(video.currentTime);
+    function updateTime() {
+      setCurrentTime(videoEl.currentTime);
       rafId.current = requestAnimationFrame(updateTime);
-    };
+    }
     rafId.current = requestAnimationFrame(updateTime);
 
     return () => {
@@ -339,24 +328,23 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
     };
   }, [videoRef]);
 
-  useEffect(() => {
-    const updateOverlaySize = () => {
+  React.useEffect(() => {
+    function updateOverlaySize() {
       if (videoContainerRef.current && overlayRef.current) {
         const { width, height } = videoContainerRef.current.getBoundingClientRect();
         overlayRef.current.style.setProperty("--overlay-width", `${width}px`);
         overlayRef.current.style.setProperty("--overlay-height", `${height}px`);
       }
-    };
+    }
     updateOverlaySize();
     window.addEventListener("resize", updateOverlaySize);
-    return () => {
-      window.removeEventListener("resize", updateOverlaySize);
-    };
+    return () => window.removeEventListener("resize", updateOverlaySize);
   }, [videoContainerRef]);
 
-  // Keys that should embed raw HTML
-  const embeddableInjection = (key: keyof IWebinarInjection) =>
-    key === "email_1" || key === "email_2" || key === "salesletter";
+  function embeddableInjection(key) {
+    // if key is "email_1","email_2","salesletter", etc.
+    return key === "email_1" || key === "email_2" || key === "salesletter";
+  }
 
   return (
     <div ref={overlayRef} className="video-overlay">
@@ -365,7 +353,6 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
         if (!videoRef.current) return null;
 
         if (embeddableInjection(item.key)) {
-          // Render with dangerouslySetInnerHTML
           return (
             <div
               key={index}
@@ -379,7 +366,6 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
             />
           );
         } else {
-          // Render as normal text
           return (
             <div
               key={index}
@@ -397,4 +383,4 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
       })}
     </div>
   );
-};
+}
