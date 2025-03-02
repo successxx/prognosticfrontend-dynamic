@@ -1,86 +1,149 @@
-/*******************************************************
-7) WEBINARVIEW 
-*******************************************************/
-import React from 'react';
-import ReactDOM from 'react-dom';
-// If you have these components in separate files, import them here:
-// import ExitOverlay from './ExitOverlay';
-// import VideoOverlay from './VideoOverlay';
-// import VideoClock from './VideoClock';
-// import ClockWidgetContent from './ClockWidgetContent';
+import React, { useEffect, useRef, useState } from "react";
+import ReactDOM from "react-dom";
+import styles from "./WebinarView.module.css";
+import { VideoOverlay } from "./VideoOverlay";
+import { VideoClock } from "./VideoClock";
 
-function WebinarView() {
-  const videoRef = React.useRef(null);
-  const videoWrapperRef = React.useRef(null);
-  const audioRef = React.useRef(null);
+export interface IWebinarInjection {
+  Business_description: string;
+  Industry: string;
+  Offer_topic: string;
+  Products_services: string;
+  audio_link: string;
+  audio_link_two: string;
+  company_name: string;
+  email_1: string;
+  email_2: string;
+  user_name: string;
+  lead_email: string;
+  exit_message: string;
+  headline: string;
+  offer_description: string;
+  offer_goal: string;
+  offer_name: string;
+  offer_price: string;
+  offer_url: string;
+  pain_points: string;
+  primary_benefits: string;
+  primary_goal: string;
+  salesletter: string;
+  target_audience: string;
+  target_url: string;
+  website_url: string;
+  testimonials: string;
+}
 
-  // exit-intent
-  const [showExitOverlay, setShowExitOverlay] = React.useState(false);
-  const [hasShownOverlay, setHasShownOverlay] = React.useState(false);
-  const [exitMessage, setExitMessage] = React.useState("");
+/**
+ * Changes requested:
+ *  1) Autoplay OFF (user must manually press Play).
+ *  2) Prevent skipping: user can play/pause but can't scrub.
+ *  3) Switch video to "clientsa1i.mp4".
+ *  4) Keep voice injection at 0.5s and exit-intent bubble.
+ *  5) Single-click overlay => unmute + play, reading "Click to watch your AI agents."
+ */
+const WebinarView: React.FC = () => {
+  const [webinarInjectionData, setWebinarInjectionData] =
+    useState<IWebinarInjection>();
 
-  // user clicked to unmute
-  const [hasInteracted, setHasInteracted] = React.useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoWrapperRef = useRef<HTMLDivElement>(null);
 
-  // injection data from server
-  const [webinarInjectionData, setWebinarInjectionData] = React.useState(null);
+  // Has the user interacted to enable sound?
+  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
+  // Audio for the 0.5s injection
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // clock
-  const [showClockWidget, setShowClockWidget] = React.useState(false);
-  const [clockDragInComplete, setClockDragInComplete] = React.useState(false);
-  const [clockRemoved, setClockRemoved] = React.useState(false);
+  // Exit-intent
+  const [showExitOverlay, setShowExitOverlay] = useState<boolean>(false);
+  const [hasShownOverlay, setHasShownOverlay] = useState<boolean>(false);
+  const [exitMessage, setExitMessage] = useState<string>("");
 
-  // headline
-  const [showHeadline, setShowHeadline] = React.useState(false);
+  // Track last valid playback time to prevent scrubbing:
+  const lastTimeRef = useRef<number>(0);
 
-  // 1) Load user data
-  React.useEffect(() => {
+  // Fetch data (including `audio_link` + `exit_message`)
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
 
     if (userEmail) {
-      fetch("https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_email: userEmail }),
-      })
-        .then((resp) => {
+      (async () => {
+        try {
+          const resp = await fetch(
+            "https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ user_email: userEmail }),
+            }
+          );
           if (!resp.ok) throw new Error("Error fetching user data");
-          return resp.json();
-        })
-        .then((data) => {
+          const data = await resp.json();
           setWebinarInjectionData(data);
-          if (audioRef.current && data.audio_link) {
-            audioRef.current.src = data.audio_link;
-          }
+
+          // Store exit message
           if (data.exit_message) {
             setExitMessage(data.exit_message);
           }
-        })
-        .catch((err) => console.error("Error loading user data:", err));
+          // If we have an audio link, set it in audioRef
+          if (audioRef.current && data.audio_link) {
+            audioRef.current.src = data.audio_link;
+          }
+        } catch (err) {
+          console.error("Error loading user data:", err);
+        }
+      })();
     }
   }, []);
 
-  // 2) Voice injection at 0.5s
-  React.useEffect(() => {
+  // Voice injection at 0.5s
+  useEffect(() => {
     const vid = videoRef.current;
     if (!vid || !audioRef.current) return;
-    function handleTime() {
+
+    function handleTimeUpdate() {
+      // Save current time so we can revert if user tries to scrub
+      lastTimeRef.current = vid.currentTime;
+
+      // If we've passed 0.5s, play the injection
       if (vid.currentTime >= 0.5) {
-        audioRef.current.play().catch((err) => console.warn("Voice injection blocked:", err));
-        vid.removeEventListener("timeupdate", handleTime);
+        audioRef.current
+          .play()
+          .catch((err) =>
+            console.warn("Voice injection blocked by browser:", err)
+          );
+        vid.removeEventListener("timeupdate", handleTimeUpdate);
       }
     }
-    vid.addEventListener("timeupdate", handleTime);
-    return () => vid.removeEventListener("timeupdate", handleTime);
+
+    vid.addEventListener("timeupdate", handleTimeUpdate);
+    return () => vid.removeEventListener("timeupdate", handleTimeUpdate);
   }, []);
 
-  // 3) Freed scrubbing => no skip prevention
+  // Prevent skipping by reverting any attempt to move the scrubber
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
 
-  // 4) Exit-intent
-  React.useEffect(() => {
+    function handleSeeking() {
+      // If user tries to scrub, jump them back
+      if (Math.abs(vid.currentTime - lastTimeRef.current) > 0.1) {
+        vid.currentTime = lastTimeRef.current;
+      }
+    }
+    vid.addEventListener("seeking", handleSeeking);
+    return () => {
+      vid.removeEventListener("seeking", handleSeeking);
+    };
+  }, []);
+
+  // Exit-intent detection
+  useEffect(() => {
     if (hasShownOverlay) return;
-    function handleMouseMove(e) {
+
+    function handleMouseMove(e: MouseEvent) {
       const threshold = window.innerHeight * 0.1;
       if (e.clientY < threshold) {
         setShowExitOverlay(true);
@@ -91,151 +154,69 @@ function WebinarView() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [hasShownOverlay]);
 
-  // 5) Clock => show @4s, hide @8s
-  React.useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
-
-    function clockCheck() {
-      const t = vid.currentTime;
-      if (!showClockWidget && t >= 4) {
-        setShowClockWidget(true);
-      }
-      if (!clockRemoved && t >= 8) {
-        setClockRemoved(true);
-      }
-    }
-    vid.addEventListener("timeupdate", clockCheck);
-    return () => vid.removeEventListener("timeupdate", clockCheck);
-  }, [showClockWidget, clockRemoved]);
-
-  // once removed => hide fully after 1s
-  React.useEffect(() => {
-    if (clockRemoved) {
-      const timer = setTimeout(() => {
-        setShowClockWidget(false);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [clockRemoved]);
-
-  // 6) Headline @45.04–55.04
-  React.useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
-
-    function headlineCheck() {
-      const t = vid.currentTime;
-      if (t >= 45.04 && t < 55.04) {
-        setShowHeadline(true);
-      } else {
-        setShowHeadline(false);
-      }
-    }
-    vid.addEventListener("timeupdate", headlineCheck);
-    return () => vid.removeEventListener("timeupdate", headlineCheck);
-  }, []);
-
   return (
-    <div className="container" style={{ textAlign: "center" }}>
-      {/* Hidden audio */}
+    <div className={styles.container} style={{ textAlign: "center" }}>
+      {/* Hidden audio for voice injection */}
       <audio ref={audioRef} style={{ display: "none" }} />
 
-      {/* Exit-intent */}
+      {/* Exit-intent overlay */}
       {showExitOverlay &&
         ReactDOM.createPortal(
-          <ExitOverlay message={exitMessage} onClose={() => setShowExitOverlay(false)} />,
+          <ExitOverlay
+            message={exitMessage}
+            onClose={() => setShowExitOverlay(false)}
+          />,
           document.body
         )}
 
       {/* The video container */}
-      <div ref={videoWrapperRef} className="videoWrapper">
-        {/* Overlays */}
+      <div ref={videoWrapperRef} className={styles.videoWrapper}>
+        {/* Overlays from your existing code */}
         <VideoOverlay
           videoRef={videoRef}
           videoContainerRef={videoWrapperRef}
           webinarInjectionData={webinarInjectionData}
         />
-
-        {/* The top menu bar clock, if you have it: */}
         <VideoClock videoContainerRef={videoWrapperRef} />
 
         <video
           ref={videoRef}
+          // Autoplay removed so user must press play
           controls
           playsInline
           muted={!hasInteracted}
-          className="videoPlayer"
+          className={styles.videoPlayer}
         >
           <source
-            src="https://progwebinar.blob.core.windows.net/video/clientsaidemovid.mp4"
+            src="https://progwebinar.blob.core.windows.net/video/clientsdemo2.mp4"
             type="video/mp4"
           />
           Your browser does not support HTML5 video.
         </video>
 
-        {/* Sound overlay => unmute */}
+        {/* Single overlay => unmute + play with one click */}
         {!hasInteracted && (
           <div
-            className="soundOverlay"
+            className={styles.soundOverlay}
             onClick={() => {
               setHasInteracted(true);
               if (videoRef.current) {
                 videoRef.current.muted = false;
+                // Start playing immediately
                 videoRef.current.play().catch((err) => {
                   console.warn("Play blocked by browser:", err);
                 });
               }
             }}
           >
-            <div className="soundIcon">🔊</div>
-            <div className="soundText">Click to watch your AI agents</div>
-          </div>
-        )}
-
-        {/* The clock widget (4s–8s) */}
-        {showClockWidget && (
-          <div
-            className={
-              "clockWidget " +
-              (clockRemoved ? "animateOut" : clockDragInComplete ? "wobble" : "animateIn")
-            }
-            onAnimationEnd={(e) => {
-              if (e.animationName.includes("dragIn")) {
-                setClockDragInComplete(true);
-              }
-            }}
-          >
-            <div className="widgetHeader">
-              <div className="windowControls">
-                <div className="windowButton closeButton" />
-                <div className="windowButton minimizeButton" />
-                <div className="windowButton maximizeButton" />
-              </div>
-              <div className="widgetTitle">Clock Widget</div>
-            </div>
-            <ClockWidgetContent />
-          </div>
-        )}
-
-        {/* Headline */}
-        {showHeadline && webinarInjectionData?.headline && (
-          <div
-            className="headlineText"
-            style={{
-              fontFamily: "'SF Pro Display', sans-serif",
-              letterSpacing: "0.02em",
-              lineHeight: "1.1",
-              color: "#252525",
-            }}
-          >
-            {webinarInjectionData.headline}
+            <div className={styles.soundIcon}>🔊</div>
+            <div className={styles.soundText}>Click to watch your AI agents</div>
           </div>
         )}
       </div>
 
-      {/* CTA button below */}
-      <div style={{ marginTop: "20px" }}>
+      {/* CTA Button */}
+      <div>
         <button
           onClick={() => window.open("https://webinar.clients.ai", "_blank")}
           style={{
@@ -252,13 +233,35 @@ function WebinarView() {
           Join The Next AI Agent Training
         </button>
       </div>
-
-      {/* Footer or text */}
-      <p style={{ marginTop: "10px", fontSize: "0.9rem" }}>
-        © {new Date().getFullYear()} Clients.ai
-      </p>
     </div>
   );
-}
+};
+
+/**
+ * Exit-intent bubble
+ */
+const ExitOverlay: React.FC<{
+  message: string;
+  onClose: () => void;
+}> = ({ message, onClose }) => {
+  const defaultMsg = "Wait! Are you sure you want to leave?";
+
+  return (
+    <div className={styles.exitOverlay} onClick={onClose}>
+      <div
+        className={styles.iphoneMessageBubble}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button className={styles.exitCloseBtn} onClick={onClose}>
+          ×
+        </button>
+        <div className={styles.iphoneSender}>Selina</div>
+        <div className={styles.iphoneMessageText}>
+          {message && message.trim() ? message : defaultMsg}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default WebinarView;
