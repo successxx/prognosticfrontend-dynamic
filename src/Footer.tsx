@@ -85,7 +85,7 @@ const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
   </span>
 </div>
 
-                    <p id="text07" className="style1">© 202Clients.ai</p></div>
+                    <p id="text07" className="style1">© 2025 Clients.ai</p></div>
             </div>
         </div>
     );
