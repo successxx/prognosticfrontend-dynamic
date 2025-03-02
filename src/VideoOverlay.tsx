@@ -1,20 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { IWebinarInjection } from "./WebinarView";
-
-interface OverlayItem {
-  key: keyof IWebinarInjection;
-  content: string;
-  startTime: number;
-  endTime: number;
-  position: { x: number; y: number };
-  style?: React.CSSProperties;
-}
-
-interface VideoOverlayProps {
-  videoRef: React.RefObject<HTMLVideoElement>;
-  videoContainerRef: React.RefObject<HTMLDivElement> | null;
-  webinarInjectionData?: IWebinarInjection;
-}
+/*******************************************************
+6) VIDEOOVERLAY
+*******************************************************/
+function VideoOverlay({ videoRef, videoContainerRef, webinarInjectionData }) {
+  const [currentTime, setCurrentTime] = React.useState(0);
+  const overlayRef = React.useRef(null);
+  const rafId = React.useRef(null);
 
 // Your overlay data from user:
 const overlayItems: OverlayItem[] = [
@@ -300,30 +290,20 @@ const overlayItems: OverlayItem[] = [
   },
 ];
 
-const VideoOverlay: React.FC<VideoOverlayProps> = ({
-  videoRef,
-  videoContainerRef,
-  webinarInjectionData,
-}) => {
-  const [currentTime, setCurrentTime] = useState(0);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const rafId = useRef<number>();
-
-  // Merge data
-  const updatedOverlayItems = useMemo(() => {
+const updatedOverlayItems = React.useMemo(() => {
     if (!webinarInjectionData) return [];
     return overlayItems.map((item) => ({
       ...item,
-      content: webinarInjectionData[item.key] ?? "",
+      content: webinarInjectionData[item.key]?.trim() ?? "",
     }));
   }, [webinarInjectionData]);
 
-  useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
+  React.useEffect(() => {
+    const videoEl = videoRef.current;
+    if (!videoEl) return;
 
     function updateTime() {
-      setCurrentTime(vid.currentTime);
+      setCurrentTime(videoEl.currentTime);
       rafId.current = requestAnimationFrame(updateTime);
     }
     rafId.current = requestAnimationFrame(updateTime);
@@ -333,20 +313,21 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
     };
   }, [videoRef]);
 
-  useEffect(() => {
-    if (!videoContainerRef?.current || !overlayRef.current) return;
+  React.useEffect(() => {
     function updateOverlaySize() {
-      const { width, height } = videoContainerRef.current.getBoundingClientRect();
-      overlayRef.current.style.setProperty("--overlay-width", `${width}px`);
-      overlayRef.current.style.setProperty("--overlay-height", `${height}px`);
+      if (videoContainerRef.current && overlayRef.current) {
+        const { width, height } = videoContainerRef.current.getBoundingClientRect();
+        overlayRef.current.style.setProperty("--overlay-width", ${width}px);
+        overlayRef.current.style.setProperty("--overlay-height", ${height}px);
+      }
     }
     updateOverlaySize();
     window.addEventListener("resize", updateOverlaySize);
     return () => window.removeEventListener("resize", updateOverlaySize);
   }, [videoContainerRef]);
 
-  function embeddableInjection(key: keyof IWebinarInjection) {
-    // for example, if it’s “email_1, email_2, salesletter”
+  function embeddableInjection(key) {
+    // if key is "email_1","email_2","salesletter", etc.
     return key === "email_1" || key === "email_2" || key === "salesletter";
   }
 
@@ -360,11 +341,11 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
           return (
             <div
               key={index}
-              className={`overlay-item ${isVisible ? "visible" : ""}`}
+              className={overlay-item ${isVisible ? "visible" : ""}}
               style={{
                 ...item.style,
-                left: `${item.position.x * 100}%`,
-                top: `${item.position.y * 100}%`,
+                left: ${item.position.x * 100}%,
+                top: ${item.position.y * 100}%,
               }}
               dangerouslySetInnerHTML={{ __html: item.content }}
             />
@@ -373,11 +354,11 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
           return (
             <div
               key={index}
-              className={`overlay-item ${isVisible ? "visible" : ""}`}
+              className={overlay-item ${isVisible ? "visible" : ""}}
               style={{
                 ...item.style,
-                left: `${item.position.x * 100}%`,
-                top: `${item.position.y * 100}%`,
+                left: ${item.position.x * 100}%,
+                top: ${item.position.y * 100}%,
               }}
             >
               {item.content}
@@ -387,6 +368,4 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({
       })}
     </div>
   );
-};
-
-export default VideoOverlay;
+}
