@@ -1,6 +1,4 @@
-import type React from "react";
-import "./index.css";
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { IWebinarInjection } from "./WebinarView";
 
 interface OverlayItem {
@@ -9,8 +7,8 @@ interface OverlayItem {
   startTime: number;
   endTime: number;
   position: {
-    x: number; // 0 to 1, representing percentage across width
-    y: number; // 0 to 1, representing percentage down height
+    x: number; // 0..1 (percentage of container width)
+    y: number; // 0..1 (percentage of container height)
   };
   style?: React.CSSProperties;
 }
@@ -314,18 +312,16 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
   const overlayRef = useRef<HTMLDivElement>(null);
   const rafId = useRef<number>();
 
+  // Prepare items with the real data
   const updatedOverlayItems = useMemo(() => {
-    if (!webinarInjectionData) {
-      return [];
-    }
-    return overlayItems.map((item) => {
-      return {
-        ...item,
-        content: webinarInjectionData[item.key]?.trim(),
-      };
-    });
+    if (!webinarInjectionData) return [];
+    return overlayItems.map((item) => ({
+      ...item,
+      content: webinarInjectionData[item.key]?.trim() || "",
+    }));
   }, [webinarInjectionData]);
 
+  // Track video time continuously
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -334,13 +330,14 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
       setCurrentTime(video.currentTime);
       rafId.current = requestAnimationFrame(updateTime);
     };
-
     rafId.current = requestAnimationFrame(updateTime);
+
     return () => {
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
-  }, []);
+  }, [videoRef]);
 
+  // Update overlay’s CSS vars for sizing
   useEffect(() => {
     const updateOverlaySize = () => {
       if (videoContainerRef.current && overlayRef.current) {
@@ -350,60 +347,48 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
         overlayRef.current.style.setProperty("--overlay-height", `${height}px`);
       }
     };
-
     updateOverlaySize();
     window.addEventListener("resize", updateOverlaySize);
-
-    return () => {
-      window.removeEventListener("resize", updateOverlaySize);
-    };
+    return () => window.removeEventListener("resize", updateOverlaySize);
   }, [videoContainerRef]);
 
+  // Determine if the item is HTML injection
   const embeddableInjection = (key: keyof IWebinarInjection) => {
-    // Includes the keys those contains the html content
     return key === "email_1" || key === "email_2" || key === "salesletter";
   };
 
   return (
     <div ref={overlayRef} className="video-overlay">
       {updatedOverlayItems.map((item, index) => {
-        if (!videoRef.current) return null;
-        return (
-          <>
-            {embeddableInjection(item.key) ? (
-              <div
-                key={index}
-                className={`overlay-item ${
-                  currentTime >= item.startTime && currentTime <= item.endTime
-                    ? "visible"
-                    : ""
-                }`}
-                style={{
-                  ...item.style,
-                  left: `${item.position.x * 100}%`,
-                  top: `${item.position.y * 100}%`,
-                }}
-                dangerouslySetInnerHTML={{ __html: item.content }}
-              />
-            ) : (
-              <div
-                key={index}
-                className={`overlay-item ${
-                  currentTime >= item.startTime && currentTime <= item.endTime
-                    ? "visible"
-                    : ""
-                }`}
-                style={{
-                  ...item.style,
-                  left: `${item.position.x * 100}%`,
-                  top: `${item.position.y * 100}%`,
-                }}
-              >
-                {item.content}
-              </div>
-            )}
-          </>
-        );
+        const isVisible = currentTime >= item.startTime && currentTime <= item.endTime;
+        const style: React.CSSProperties = {
+          ...item.style,
+          left: `${item.position.x * 100}%`,
+          top: `${item.position.y * 100}%`,
+        };
+
+        if (embeddableInjection(item.key)) {
+          // If it's HTML injection, use dangerouslySetInnerHTML
+          return (
+            <div
+              key={index}
+              className={`overlay-item ${isVisible ? "visible" : ""}`}
+              style={style}
+              dangerouslySetInnerHTML={{ __html: item.content }}
+            />
+          );
+        } else {
+          // Otherwise, plain text
+          return (
+            <div
+              key={index}
+              className={`overlay-item ${isVisible ? "visible" : ""}`}
+              style={style}
+            >
+              {item.content}
+            </div>
+          );
+        }
       })}
     </div>
   );
