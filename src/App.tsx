@@ -69,7 +69,7 @@ function App() {
             <p className="content-box text-center">{error}</p>
           ) : (
             <div className="d-flex flex-column w-100 justify-content-center">
-              <div className={d-flex w-100 justify-content-center fade-in ${isContentVisible ? "visible" : ""}}>
+              <div className={`d-flex w-100 justify-content-center fade-in ${isContentVisible ? "visible" : ""}`}>
                 <WebinarView />
                 <Fireworks />
               </div>
