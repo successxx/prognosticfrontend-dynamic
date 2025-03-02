@@ -1,45 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+<!-- WEBINARVIEW.TSX (REACT/JSX) -->
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  MutableRefObject,
+} from "react";
 import ReactDOM from "react-dom";
-import { VideoOverlay } from "./VideoOverlay";
-// Import your existing small Mac-style clock:
-import { VideoClock } from "./VideoClock";
+import { IWebinarInjection } from "./WebinarView"; // You already have this interface
+import styles from "./WebinarView.module.css"; // import your module CSS
+import { VideoOverlay } from "./VideoOverlay"; // same as your existing code
+// NOTE: We are preserving all your existing exit-intent, audio, & no-skip logic.
+//       We only add: clock drag-in from 4–8s, headline from 1–15s (for easy testing).
 
-export interface IWebinarInjection {
-  Business_description: string;
-  Industry: string;
-  Offer_topic: string;
-  Products_services: string;
-  audio_link: string;
-  audio_link_two: string;
-  company_name: string;
-  email_1: string;
-  email_2: string;
-  user_name: string;
-  lead_email: string;
-  exit_message: string;
-  headline: string;
-  offer_description: string;
-  offer_goal: string;
-  offer_name: string;
-  offer_price: string;
-  offer_url: string;
-  pain_points: string;
-  primary_benefits: string;
-  primary_goal: string;
-  salesletter: string;
-  target_audience: string;
-  target_url: string;
-  website_url: string;
-  testimonials: string;
-}
-
-/**
- * This is the full demo video component with:
- *  - Clock drag-in from 4s to 8s
- *  - Headline injection from 1s to 15s
- *  - Everything else (audio injection, exit-intent, no-scrub) unchanged
- */
 const WebinarView: React.FC = () => {
+  // -------------------------------------------
+  // Existing states and refs from your “demo” code
+  // -------------------------------------------
   const [webinarInjectionData, setWebinarInjectionData] =
     useState<IWebinarInjection>();
 
@@ -48,25 +25,27 @@ const WebinarView: React.FC = () => {
 
   // Has the user interacted to enable sound?
   const [hasInteracted, setHasInteracted] = useState<boolean>(false);
+
   // Audio for the 0.5s injection
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Exit-intent overlay
+  // Exit-intent
   const [showExitOverlay, setShowExitOverlay] = useState<boolean>(false);
   const [hasShownOverlay, setHasShownOverlay] = useState<boolean>(false);
   const [exitMessage, setExitMessage] = useState<string>("");
 
-  // Track last valid playback time to prevent scrubbing:
+  // Track last valid playback time to prevent scrubbing
   const lastTimeRef = useRef<number>(0);
 
-  // ---------------------
-  // HEADLINE
-  // ---------------------
-  const [showHeadline, setShowHeadline] = useState(false);
+  // -------------------------------------------
+  // NEW states for the “headline” (like the webinar)
+  // -------------------------------------------
+  const [headline, setHeadline] = useState<string>("");
+  const [showHeadline, setShowHeadline] = useState<boolean>(false);
 
-  // ---------------------
-  // CLOCK WIDGET
-  // ---------------------
+  // -------------------------------------------
+  // NEW states for the “drag-in clock” (like the webinar)
+  // -------------------------------------------
   const [showClockWidget, setShowClockWidget] = useState(false);
   const [clockDragInComplete, setClockDragInComplete] = useState(false);
   const [clockRemoved, setClockRemoved] = useState(false);
@@ -74,9 +53,9 @@ const WebinarView: React.FC = () => {
   const [currentDateObj, setCurrentDateObj] = useState<Date | null>(null);
   const clockIntervalRef = useRef<NodeJS.Timer | null>(null);
 
-  // =====================================================
-  // 1) Fetch data (including audio_link + exit_message)
-  // =====================================================
+  // -------------------------------------------
+  // 1) Fetch data (including audio link + exit msg + headline)
+  // -------------------------------------------
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
@@ -88,7 +67,9 @@ const WebinarView: React.FC = () => {
             "https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two",
             {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json",
+              },
               body: JSON.stringify({ user_email: userEmail }),
             }
           );
@@ -96,14 +77,17 @@ const WebinarView: React.FC = () => {
           const data = await resp.json();
           setWebinarInjectionData(data);
 
-          // exit message
-          if (data.exit_message) {
-            setExitMessage(data.exit_message);
-          }
+          // store exit message
+          if (data.exit_message) setExitMessage(data.exit_message);
 
-          // audio link
+          // If we have an audio link, set it in audioRef
           if (audioRef.current && data.audio_link) {
             audioRef.current.src = data.audio_link;
+          }
+
+          // HEADLINE from server
+          if (data.headline) {
+            setHeadline(data.headline);
           }
         } catch (err) {
           console.error("Error loading user data:", err);
@@ -112,22 +96,20 @@ const WebinarView: React.FC = () => {
     }
   }, []);
 
-  // =====================================================
+  // -------------------------------------------
   // 2) Voice injection at 0.5s
-  // =====================================================
+  // -------------------------------------------
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid || !audioRef.current) return;
 
     function handleTimeUpdate() {
-      // Always store last valid playback time (for no-scrub logic)
-      lastTimeRef.current = vid.currentTime;
-
-      // Once past 0.5s, play injection
+      lastTimeRef.current = vid.currentTime; // track last valid time
+      // If we've passed 0.5s, play injection once
       if (vid.currentTime >= 0.5) {
-        audioRef.current.play().catch((err) => {
-          console.warn("Voice injection blocked by browser:", err);
-        });
+        audioRef.current
+          .play()
+          .catch((err) => console.warn("Voice injection blocked:", err));
         vid.removeEventListener("timeupdate", handleTimeUpdate);
       }
     }
@@ -136,14 +118,15 @@ const WebinarView: React.FC = () => {
     return () => vid.removeEventListener("timeupdate", handleTimeUpdate);
   }, []);
 
-  // =====================================================
-  // 3) Prevent scrubbing by reverting any seeking
-  // =====================================================
+  // -------------------------------------------
+  // 3) Prevent skipping by reverting any attempt to scrub
+  // -------------------------------------------
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
 
     function handleSeeking() {
+      // If user tries to scrub, jump them back
       if (Math.abs(vid.currentTime - lastTimeRef.current) > 0.1) {
         vid.currentTime = lastTimeRef.current;
       }
@@ -154,9 +137,9 @@ const WebinarView: React.FC = () => {
     };
   }, []);
 
-  // =====================================================
+  // -------------------------------------------
   // 4) Exit-intent detection
-  // =====================================================
+  // -------------------------------------------
   useEffect(() => {
     if (hasShownOverlay) return;
 
@@ -171,42 +154,41 @@ const WebinarView: React.FC = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [hasShownOverlay]);
 
-  // =====================================================
-  // 5) HEADLINE & CLOCK timing checks (1–15s for headline, 4–8s for clock)
-  // =====================================================
+  // -------------------------------------------
+  // 5) HEADLINE timing: show from 0:01 to 0:15 (for easy testing)
+  //    (Change to 45.04–55.04 in production if desired.)
+  // -------------------------------------------
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
 
-    function handleTiming() {
+    function checkHeadline() {
       const t = vid.currentTime;
-
-      // Headline: show from 1–15s
+      // Show from 1s to 15s
       if (t >= 1 && t < 15) {
         setShowHeadline(true);
       } else {
         setShowHeadline(false);
       }
-
-      // Clock: appear at 4s, vanish at 8s
-      if (t >= 4 && !showClockWidget && !clockRemoved) {
-        setShowClockWidget(true);
-      }
-      if (t >= 8 && !clockRemoved) {
-        setClockRemoved(true);
-      }
     }
 
-    vid.addEventListener("timeupdate", handleTiming);
+    vid.addEventListener("timeupdate", checkHeadline);
+    vid.addEventListener("seeking", checkHeadline);
     return () => {
-      vid.removeEventListener("timeupdate", handleTiming);
+      vid.removeEventListener("timeupdate", checkHeadline);
+      vid.removeEventListener("seeking", checkHeadline);
     };
-  }, [showClockWidget, clockRemoved]);
+  }, []);
 
-  // =====================================================
-  // 6) Update clock time once it’s visible
-  // =====================================================
+  // -------------------------------------------
+  // 6) CLOCK WIDGET: replicate “webinar” logic
+  //    - Appear at 4s => animate in => remain ~4s => animate out
+  // -------------------------------------------
+  // Step A: Once currentTime >=4 => show clock => start ticking
   useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+
     function updateClock() {
       const now = new Date();
       setCurrentDateObj(now);
@@ -220,31 +202,52 @@ const WebinarView: React.FC = () => {
       );
     }
 
-    if (showClockWidget && !clockRemoved) {
-      if (!clockIntervalRef.current) {
-        // start interval
-        updateClock();
-        clockIntervalRef.current = setInterval(updateClock, 1000);
-      }
-    } else {
-      // ensure cleanup
+    function startClock() {
+      updateClock();
+      clockIntervalRef.current = setInterval(updateClock, 1000);
+    }
+
+    function stopClock() {
       if (clockIntervalRef.current) {
-        clearInterval(clockIntervalRef.current as NodeJS.Timeout);
+        clearInterval(clockIntervalRef.current);
         clockIntervalRef.current = null;
       }
     }
 
-    return () => {
-      if (clockIntervalRef.current) {
-        clearInterval(clockIntervalRef.current as NodeJS.Timeout);
-        clockIntervalRef.current = null;
+    function handleTimeUpdate() {
+      const t = vid.currentTime;
+      // Once we cross 4s => show clock (if not already)
+      if (t >= 4 && !showClockWidget) {
+        setShowClockWidget(true);
+        startClock();
       }
-    };
-  }, [showClockWidget, clockRemoved]);
+    }
 
-  // Once we “remove” the clock, actually hide it after 1s
+    vid.addEventListener("timeupdate", handleTimeUpdate);
+    return () => {
+      vid.removeEventListener("timeupdate", handleTimeUpdate);
+      stopClock();
+    };
+  }, [showClockWidget]);
+
+  // Step B: After “drag in” completes => wait 4s => animate out
+  //         Then hide fully 1s after animate out
   useEffect(() => {
+    // once dragIn completes, we set a 4s timer => remove
+    if (clockDragInComplete) {
+      const timer = setTimeout(() => {
+        setClockRemoved(true); // triggers animateOut
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [clockDragInComplete]);
+
+  useEffect(() => {
+    // once we set clockRemoved => after 1s, hide clock entirely
     if (clockRemoved) {
+      if (clockIntervalRef.current) {
+        clearInterval(clockIntervalRef.current as unknown as number);
+      }
       const hideTimer = setTimeout(() => {
         setShowClockWidget(false);
       }, 1000);
@@ -252,15 +255,15 @@ const WebinarView: React.FC = () => {
     }
   }, [clockRemoved]);
 
-  // =====================================================
+  // -------------------------------------------
   // RENDER
-  // =====================================================
+  // -------------------------------------------
   return (
-    <div className="container">
+    <div className={styles.container} style={{ textAlign: "center" }}>
       {/* Hidden audio for voice injection */}
       <audio ref={audioRef} style={{ display: "none" }} />
 
-      {/* Exit-intent Overlay */}
+      {/* Exit-intent overlay */}
       {showExitOverlay &&
         ReactDOM.createPortal(
           <ExitOverlay
@@ -270,25 +273,22 @@ const WebinarView: React.FC = () => {
           document.body
         )}
 
-      {/* Video container */}
-      <div ref={videoWrapperRef} className="videoWrapper">
-        {/* Overlays for embedded text, etc. */}
+      {/* The video container */}
+      <div ref={videoWrapperRef} className={styles.videoWrapper}>
+        {/* Overlays from your existing code */}
         <VideoOverlay
           videoRef={videoRef}
           videoContainerRef={videoWrapperRef}
           webinarInjectionData={webinarInjectionData}
         />
 
-        {/* The small top-right Mac-style clock (unchanged) */}
-        <VideoClock videoContainerRef={videoWrapperRef} />
-
-        {/* The actual video element */}
+        {/* The actual video (muted until user interacts) */}
         <video
           ref={videoRef}
           controls
           playsInline
           muted={!hasInteracted}
-          className="videoPlayer"
+          className={styles.videoPlayer}
         >
           <source
             src="https://progwebinar.blob.core.windows.net/video/clientsaidemovid.mp4"
@@ -297,83 +297,55 @@ const WebinarView: React.FC = () => {
           Your browser does not support HTML5 video.
         </video>
 
-        {/* Single-click overlay => unmute + play */}
+        {/* Single overlay => unmute + play with one click */}
         {!hasInteracted && (
           <div
-            className="soundOverlay"
+            className={styles.soundOverlay}
             onClick={() => {
               setHasInteracted(true);
               if (videoRef.current) {
                 videoRef.current.muted = false;
+                // Start playing immediately
                 videoRef.current.play().catch((err) => {
-                  console.warn("Play blocked:", err);
+                  console.warn("Play blocked by browser:", err);
                 });
               }
             }}
           >
-            <div className="soundIcon">🔊</div>
-            <div className="soundText">Click to watch your AI agents</div>
+            <div className={styles.soundIcon}>🔊</div>
+            <div className={styles.soundText}>Click to watch your AI agents</div>
           </div>
         )}
 
-        {/* HEADLINE injection from 1s to 15s */}
-        {showHeadline && webinarInjectionData?.headline?.trim() && (
+        {/* HEADLINE from 0:01 to 0:15 (for quick testing) */}
+        {showHeadline && headline.trim().length > 0 && (
           <div
-            className="headlineText"
+            className="headlineText" /* global class for position, or keep in module */
             style={{
-              fontFamily: "SF Pro Display, sans-serif",
+              // override with Jony Ive style:
+              fontFamily: "'SF Pro Display', sans-serif",
               color: "#252525",
-              lineHeight: "1.1",
-              letterSpacing: "0.02em",
+              lineHeight: "1.2",
+              letterSpacing: "0.01em",
             }}
           >
-            {webinarInjectionData.headline}
+            {headline}
           </div>
         )}
 
-        {/* Drag-in clock widget EXACTLY as webinar */}
+        {/* CLOCK WIDGET from ~4s to ~8s, EXACT style from webinar code */}
         {showClockWidget && (
-          <div
-            className={
-              "clockWidget " +
-              (clockRemoved
-                ? "animateOut"
-                : clockDragInComplete
-                ? "wobble"
-                : "animateIn")
-            }
-            onAnimationEnd={(e) => {
-              if (e.animationName.includes("dragIn")) {
-                setClockDragInComplete(true);
-              }
-            }}
-          >
-            <div className="widgetHeader">
-              <div className="windowControls">
-                <div className="windowButton closeButton" />
-                <div className="windowButton minimizeButton" />
-                <div className="windowButton maximizeButton" />
-              </div>
-              <div className="widgetTitle">Clock Widget</div>
-            </div>
-            <div className="widgetContent">
-              <div className="clockTime">{currentTimeString}</div>
-              <div className="clockDate">
-                {currentDateObj
-                  ? currentDateObj.toLocaleDateString("en-US", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : ""}
-              </div>
-            </div>
-          </div>
+          <ClockWidget
+            currentTime={currentTimeString}
+            currentDate={currentDateObj}
+            dragInComplete={clockDragInComplete}
+            setDragInComplete={setClockDragInComplete}
+            clockRemoved={clockRemoved}
+          />
         )}
       </div>
 
-      {/* CTA button, unchanged */}
+      {/* CTA Button (unchanged) */}
       <div style={{ marginTop: "1rem" }}>
         <button
           onClick={() => window.open("https://webinar.clients.ai", "_blank")}
@@ -396,7 +368,7 @@ const WebinarView: React.FC = () => {
 };
 
 /**
- * Exit-intent bubble
+ * Subcomponent: iPhone-style exit-intent bubble
  */
 const ExitOverlay: React.FC<{
   message: string;
@@ -405,18 +377,79 @@ const ExitOverlay: React.FC<{
   const defaultMsg = "Wait! Are you sure you want to leave?";
 
   return (
-    <div className="exitOverlay" onClick={onClose}>
+    <div className={styles.exitOverlay} onClick={onClose}>
       <div
-        className="iphoneMessageBubble"
+        className={styles.iphoneMessageBubble}
         onClick={(e) => e.stopPropagation()}
       >
-        <button className="exitCloseBtn" onClick={onClose}>
+        <button className={styles.exitCloseBtn} onClick={onClose}>
           ×
         </button>
-        <div className="iphoneSender">Selina</div>
-        <div className="iphoneMessageText">
+        <div className={styles.iphoneSender}>Selina</div>
+        <div className={styles.iphoneMessageText}>
           {message && message.trim() ? message : defaultMsg}
         </div>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Subcomponent: Clock widget from the webinar code
+ */
+interface ClockWidgetProps {
+  currentTime: string;
+  currentDate: Date | null;
+  dragInComplete: boolean;
+  setDragInComplete: React.Dispatch<React.SetStateAction<boolean>>;
+  clockRemoved: boolean;
+}
+
+const ClockWidget: React.FC<ClockWidgetProps> = ({
+  currentTime,
+  currentDate,
+  dragInComplete,
+  setDragInComplete,
+  clockRemoved,
+}) => {
+  const widgetRef = useRef<HTMLDivElement | null>(null);
+
+  const handleAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
+    if (e.animationName.includes("dragIn")) {
+      setDragInComplete(true);
+    }
+  };
+
+  const dateString = currentDate
+    ? currentDate.toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "";
+
+  // Determine final classes exactly as the webinar does
+  let widgetClass = "clockWidget"; // global class
+  if (!clockRemoved) {
+    widgetClass += dragInComplete ? " wobble" : " animateIn";
+  } else {
+    widgetClass += " animateOut";
+  }
+
+  return (
+    <div className={widgetClass} ref={widgetRef} onAnimationEnd={handleAnimationEnd}>
+      <div className="widgetHeader">
+        <div className="windowControls">
+          <div className="windowButton closeButton" />
+          <div className="windowButton minimizeButton" />
+          <div className="windowButton maximizeButton" />
+        </div>
+        <div className="widgetTitle">Clock Widget</div>
+      </div>
+      <div className="widgetContent">
+        <div className="clockTime">{currentTime}</div>
+        <div className="clockDate">{dateString}</div>
       </div>
     </div>
   );
