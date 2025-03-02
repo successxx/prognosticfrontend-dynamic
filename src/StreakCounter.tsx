@@ -1,6 +1,8 @@
 /*******************************************************
 4) STREAKCOUNTER
 *******************************************************/
+import React from 'react';
+
 function StreakCounter({ streak }) {
   const [visible, setVisible] = React.useState(false);
 
@@ -13,8 +15,10 @@ function StreakCounter({ streak }) {
   }, [streak]);
 
   return (
-    <div className={streak-counter ${visible ? "visible" : ""}} id="streak-counter">
+    <div className={`streak-counter ${visible ? "visible" : ""}`} id="streak-counter">
       Streak: {streak} 🔥
     </div>
   );
 }
+
+export default StreakCounter;
