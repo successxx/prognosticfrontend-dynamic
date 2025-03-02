@@ -1,29 +1,42 @@
-/*******************************************************
-11) APP 
-*******************************************************/
-import React from 'react';
-import Header from './Header';
-import WebinarView from './WebinarView';
-import Fireworks from './Fireworks';
-import StreakCounter from './StreakCounter';
+/* App.tsx
+   This orchestrates the “loading page” + final video page (WebinarView).
+*/
 
-function App() {
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState("");
-  const [isContentVisible, setIsContentVisible] = React.useState(false);
-  const [streak] = React.useState(1);
+import React, { useState, useEffect } from "react";
+import Header from "./Header";
+import Footer from "./Footer";
+import WebinarView from "./WebinarView";
+import StreakCounter from "./StreakCounter";
+import Fireworks from "./Fireworks";
+import LoadingCircle from "./LoadingCircle";
 
-  React.useEffect(() => {
+import "./index.css"; // Global styles
+// If your bundler uses separate .module.css, you can import them as well
+
+const App: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+  const [isContentVisible, setIsContentVisible] = useState<boolean>(false);
+
+  // Example streak
+  const [streak] = useState<number>(1);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
+
+    // If no user_email, show error
     if (!userEmail) {
       setError("Please provide your email to access the webinar.");
       setLoading(false);
       return;
     }
+
+    // We remain in "loading" until the backend confirms data
     setLoading(true);
 
-    const pollId = setInterval(async () => {
+    // Poll /get_user_two every 3 seconds
+    const intervalId = setInterval(async () => {
       try {
         const resp = await fetch(
           "https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two",
@@ -38,49 +51,41 @@ function App() {
           if (data.success === true) {
             setLoading(false);
             setIsContentVisible(true);
-            clearInterval(pollId);
+            clearInterval(intervalId);
           } else {
-            console.log("Data not ready yet, poll again...");
+            console.log("Data not ready yet, continuing to poll...");
           }
         } else {
-          console.log("4xx error, continuing to poll...");
+          // Possibly 404 or 4xx
+          console.log("Still not ready or 4xx. continuing to poll...");
         }
       } catch (err) {
         console.error("Polling error:", err);
       }
     }, 3000);
 
-    return () => clearInterval(pollId);
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
-    <div className="wrapper py-4">
-      {/* Smaller + centered logo */}
+    <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      {/* We'll show a smaller + centered logo up top via <Header /> */}
       <Header />
 
-      {/* REMOVED the <hr id="divider02" className="hr-custom" /> divider */}
-
       {loading ? (
-        <>
-          <div style={{ textAlign: "center", margin: "30px" }}>
-            <div>Loading...</div>
-          </div>
-          <p id="text07" className="style1">
-            © {new Date().getFullYear()} Clients.ai
-          </p>
-        </>
+        <LoadingCircle />
       ) : (
         <>
           {error ? (
             <p className="content-box text-center">{error}</p>
           ) : (
-            <div className="d-flex flex-column w-100 justify-content-center">
-              <div className={`d-flex w-100 justify-content-center fade-in ${isContentVisible ? "visible" : ""}`}>
+            <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <div className={`fade-in ${isContentVisible ? "visible" : ""}`}>
                 <WebinarView />
                 <Fireworks />
               </div>
-              <div className="streak-container row justify-content-center mt-5">
-                <div className="col-12 col-sm-6 text-center">
+              <div className="streak-container row justify-content-center mt-5" style={{ position: "relative" }}>
+                <div className="col-12 col-sm-6 text-center" style={{ position: "relative" }}>
                   <StreakCounter streak={streak} />
                 </div>
               </div>
@@ -88,8 +93,11 @@ function App() {
           )}
         </>
       )}
+
+      {/* Possibly place your Footer at the bottom */}
+      <Footer isFooterVisible={!loading && !error} />
     </div>
   );
-}
+};
 
 export default App;
