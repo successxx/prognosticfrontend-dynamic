@@ -32,7 +32,7 @@ const overlayItems: OverlayItem[] = [
   style: {
     color: "#252525",
     fontSize: "1.5em", // This would be 1.5% of the video width
-    fontFamily: '"Montserrat", sans-serif',
+    fontFamily: '"SF Pro Display", sans-serif',
     fontWeight: "500",
     lineHeight: "1.4",
     textAlign: "center",
