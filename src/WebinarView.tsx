@@ -308,7 +308,7 @@ const WebinarView: React.FC = () => {
       {/* CTA Button */}
       <div style={{ marginTop: "20px" }}>
         <button
-          onClick={() => window.open("https://webinar.clients.ai", "_blank")}
+          onClick={() => window.open("https://invest.clients.ai", "_blank")}
           style={{
             backgroundColor: "#252525",
             color: "#fff",
@@ -320,7 +320,7 @@ const WebinarView: React.FC = () => {
             cursor: "pointer",
           }}
         >
-          Join The Next AI Agent Training
+          Start Your Free 18-Day Trial Now
         </button>
       </div>
     </div>
