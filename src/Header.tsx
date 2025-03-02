@@ -1,5 +1,8 @@
-2) HEADER (smaller + centered logo if you want)
-*******************************************************/
+/*******************************************************
+ * 2) HEADER (smaller + centered logo if you want)
+ *******************************************************/
+import React from 'react';
+
 function Header() {
   // Per your code, you can do something like:
   // import headerImage from './assets/header.png';
@@ -22,3 +25,5 @@ function Header() {
     </div>
   );
 }
+
+export default Header;
