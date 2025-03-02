@@ -253,9 +253,9 @@
   position: absolute;
   top: auto; /* Remove the vertical centering */
   right: auto; /* Remove the right positioning */
-  left: 67%; /* Position it at roughly the same horizontal position as "personal" */
+  left: 72%; /* Position it at roughly the same horizontal position as "personal" */
   transform: translateX(-50%); /* Center it horizontally relative to its position */
-  bottom: 30%; /* Position it vertically below the "personal" text */
+  bottom: 27%; /* Position it vertically below the "personal" text */
   font-family: "Montserrat", sans-serif;
   font-weight: 500;
   font-size: 30px; /* Match the size of the consultation text */
@@ -924,4 +924,22 @@ video::-webkit-media-controls-timeline {
   video::-webkit-media-controls-panel {
   background-color: #C3C3C3 !important; /* or #F7F8FA if you prefer */
 }
+}
+
+@media (max-width: 600px) {
+  .clockWidget {
+    /* Make it smaller */
+    width: 200px;                /* instead of 320px */
+    top: 50%;                    /* recenter for mobile */
+    left: 50%;
+    transform: translate(-50%, -50%); /* combine the shift & keep it centered */
+  }
+
+  /* Optionally shrink the clock text a bit so it fits */
+  .clockTime {
+    font-size: 1.8rem; 
+  }
+  .clockDate {
+    font-size: 0.8rem;
+  }
 }
