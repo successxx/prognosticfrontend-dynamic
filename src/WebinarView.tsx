@@ -1,196 +1,214 @@
-/* WebinarView.tsx
-   The main video page code
-   referencing your “video drag in/out” logic 
-   with a fluid approach from left to right
-*/
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import styles from "./WebinarView.module.css";
-import VideoClock from "./VideoClock";
-import VideoOverlay from "./VideoOverlay"; 
-import Fireworks from "./Fireworks"; // if you want
-// If you have an interface for injection:
+import VideoClock from "./VideoClock"; // Fixed: now a default export
+import VideoOverlay from "./VideoOverlay";
+import Fireworks from "./Fireworks";
 
-export interface IWebinarInjection {
-  // same fields ...
-}
-
-const WebinarView: React.FC = () => {
-  // Refs
+function WebinarView() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoWrapperRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // States
-  const [connecting, setConnecting] = useState(true);
-  const [hasInteracted, setHasInteracted] = useState(false);
   const [showExitOverlay, setShowExitOverlay] = useState(false);
+  const [hasShownOverlay, setHasShownOverlay] = useState(false);
   const [exitMessage, setExitMessage] = useState("");
-  const [clockVisible, setClockVisible] = useState(false);
+
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const [webinarInjectionData, setWebinarInjectionData] = useState<any>(null);
+
+  const [showClockWidget, setShowClockWidget] = useState(false);
+  const [clockDragInComplete, setClockDragInComplete] = useState(false);
   const [clockRemoved, setClockRemoved] = useState(false);
-  const [clockDragDone, setClockDragDone] = useState(false);
-
   const [showHeadline, setShowHeadline] = useState(false);
-  const [webinarInjectionData, setWebinarInjectionData] = useState<IWebinarInjection>();
 
-  // On mount, do your logic
+  // Load user data
   useEffect(() => {
-    // Fake a 2s “connecting”
-    const timer = setTimeout(() => {
-      setConnecting(false);
-      if (videoRef.current) {
-        videoRef.current.play().catch(() => {});
-      }
-    }, 2000);
-    return () => clearTimeout(timer);
+    const params = new URLSearchParams(window.location.search);
+    const userEmail = params.get("user_email");
+    if (userEmail) {
+      fetch("https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_email: userEmail }),
+      })
+        .then((resp) => {
+          if (!resp.ok) throw new Error("Error fetching user data");
+          return resp.json();
+        })
+        .then((data) => {
+          setWebinarInjectionData(data);
+          if (audioRef.current && data.audio_link) {
+            audioRef.current.src = data.audio_link;
+          }
+          if (data.exit_message) {
+            setExitMessage(data.exit_message);
+          }
+        })
+        .catch((err) => console.error("Error loading user data:", err));
+    }
   }, []);
 
-  // Freed scrubbing => no skip prevention
-  // just let them move the video time
+  // Voice injection at 0.5s
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid || !audioRef.current) return;
+    function handleTime() {
+      if (vid.currentTime >= 0.5) {
+        audioRef.current.play().catch((err) => console.warn("Voice injection blocked:", err));
+        vid.removeEventListener("timeupdate", handleTime);
+      }
+    }
+    vid.addEventListener("timeupdate", handleTime);
+    return () => vid.removeEventListener("timeupdate", handleTime);
+  }, []);
 
-  // Clock => show at 4s, hide at 8s
+  // Exit-intent overlay
+  useEffect(() => {
+    if (hasShownOverlay) return;
+    function handleMouseMove(e: MouseEvent) {
+      if (e.clientY < window.innerHeight * 0.1) {
+        setShowExitOverlay(true);
+        setHasShownOverlay(true);
+      }
+    }
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [hasShownOverlay]);
+
+  // Clock widget: show at 4s, hide at 8s
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
-
-    function checkClock() {
+    function clockCheck() {
       const t = vid.currentTime;
-      if (!clockVisible && t >= 4 && t < 8) {
-        setClockVisible(true);
-      }
-      if (!clockRemoved && t >= 8) {
-        setClockRemoved(true);
-      }
+      if (!showClockWidget && t >= 4) setShowClockWidget(true);
+      if (!clockRemoved && t >= 8) setClockRemoved(true);
     }
-    vid.addEventListener("timeupdate", checkClock);
-    return () => vid.removeEventListener("timeupdate", checkClock);
-  }, [clockVisible, clockRemoved]);
+    vid.addEventListener("timeupdate", clockCheck);
+    return () => vid.removeEventListener("timeupdate", clockCheck);
+  }, [showClockWidget, clockRemoved]);
 
-  // Once removed => hide fully after 1s
   useEffect(() => {
     if (clockRemoved) {
-      const timer = setTimeout(() => {
-        setClockVisible(false);
-      }, 1000);
+      const timer = setTimeout(() => setShowClockWidget(false), 1000);
       return () => clearTimeout(timer);
     }
   }, [clockRemoved]);
 
-  // Headline from 45.04–55.04 (example)
+  // Headline: show between 45.04 and 55.04 seconds
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
-    function handleHeadline() {
+    function headlineCheck() {
       const t = vid.currentTime;
-      if (t >= 45.04 && t < 55.04) {
-        setShowHeadline(true);
-      } else {
-        setShowHeadline(false);
-      }
+      setShowHeadline(t >= 45.04 && t < 55.04);
     }
-    vid.addEventListener("timeupdate", handleHeadline);
-    return () => vid.removeEventListener("timeupdate", handleHeadline);
+    vid.addEventListener("timeupdate", headlineCheck);
+    return () => vid.removeEventListener("timeupdate", headlineCheck);
   }, []);
 
-  if (connecting) {
-    return (
-      <div className={styles.connectingOverlay}>
-        <div className={styles.connectingBox}>
-          <div className={styles.connectingSpinner}></div>
-          <div className={styles.connectingText}>Connecting you now...</div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className={styles.container}>
-      {/* Hidden audio for injection if needed */}
-      <audio ref={audioRef} style={{ display:"none" }} />
-
-      {/* The video wrapper */}
-      <div className={styles.zoomContainer}>
-        <div className={styles.zoomTopBar}>
-          <div className={styles.zoomTitle}>Clients.ai Advanced Training</div>
-          <div className={styles.zoomLiveMinutes}>Live for XX mins</div>
-        </div>
-
-        <div className={styles.videoWrapper}>
-          <VideoOverlay
-            videoRef={videoRef}
-            videoContainerRef={null} /* or pass the ref if you want dynamic sizing */
-            webinarInjectionData={webinarInjectionData}
+    <div className={styles.container} style={{ textAlign: "center" }}>
+      <audio ref={audioRef} style={{ display: "none" }} />
+      {showExitOverlay &&
+        ReactDOM.createPortal(
+          <ExitOverlay message={exitMessage} onClose={() => setShowExitOverlay(false)} />,
+          document.body
+        )}
+      <div ref={videoWrapperRef} className={styles.videoWrapper}>
+        <VideoOverlay
+          videoRef={videoRef}
+          videoContainerRef={videoWrapperRef}
+          webinarInjectionData={webinarInjectionData}
+        />
+        <VideoClock videoContainerRef={videoWrapperRef} />
+        <video
+          ref={videoRef}
+          controls
+          playsInline
+          muted={!hasInteracted}
+          className={styles.videoPlayer}
+        >
+          <source
+            src="https://progwebinar.blob.core.windows.net/video/clientsaidemovid.mp4"
+            type="video/mp4"
           />
-          <VideoClock videoContainerRef={null} />
-
-          <video
-            ref={videoRef}
-            className={styles.videoPlayer}
-            controls
-            muted={!hasInteracted}
-            onPlay={() => console.log("video playing")}
-          >
-            <source src="https://progwebinar.blob.core.windows.net/video/clientsaidemovid.mp4" />
-          </video>
-
-          {!hasInteracted && (
-            <div
-              className={styles.soundOverlay}
-              onClick={() => {
-                setHasInteracted(true);
-                if (videoRef.current) {
-                  videoRef.current.muted = false;
-                  videoRef.current.play().catch(() => {});
-                }
-              }}
-            >
-              <div className={styles.soundIcon}>🔊</div>
-              <div className={styles.soundText}>Click to enable sound</div>
-            </div>
-          )}
-
-          {/* The clock */}
-          {clockVisible && (
-            <div
-              className={
-                styles.clockWidget +
-                " " +
-                (clockRemoved
-                  ? styles.animateOut
-                  : clockDragDone
-                  ? styles.wobble
-                  : styles.animateIn)
+          Your browser does not support HTML5 video.
+        </video>
+        {!hasInteracted && (
+          <div
+            className={styles.soundOverlay}
+            onClick={() => {
+              setHasInteracted(true);
+              if (videoRef.current) {
+                videoRef.current.muted = false;
+                videoRef.current.play().catch((err) => console.warn("Play blocked:", err));
               }
-              onAnimationEnd={(e) => {
-                if (e.animationName.includes("dragIn")) {
-                  setClockDragDone(true);
-                }
-              }}
-            >
-              <div className={styles.widgetHeader}>
-                <div className={styles.windowControls}>
-                  <div className={`${styles.windowButton} ${styles.closeButton}`} />
-                  <div className={`${styles.windowButton} ${styles.minimizeButton}`} />
-                  <div className={`${styles.windowButton} ${styles.maximizeButton}`} />
-                </div>
-                <div className={styles.widgetTitle}>Clock Widget</div>
+            }}
+          >
+            <div className={styles.soundIcon}>🔊</div>
+            <div className={styles.soundText}>Click to watch your AI agents</div>
+          </div>
+        )}
+        {showClockWidget && (
+          <div
+            className={
+              styles.clockWidget +
+              " " +
+              (clockRemoved ? styles.animateOut : clockDragInComplete ? styles.wobble : styles.animateIn)
+            }
+            onAnimationEnd={(e) => {
+              if (e.animationName.includes("dragIn")) setClockDragInComplete(true);
+            }}
+          >
+            <div className={styles.widgetHeader}>
+              <div className={styles.windowControls}>
+                <div className={`${styles.windowButton} ${styles.closeButton}`} />
+                <div className={`${styles.windowButton} ${styles.minimizeButton}`} />
+                <div className={`${styles.windowButton} ${styles.maximizeButton}`} />
               </div>
-              <div className={styles.widgetContent}>
-                <div className={styles.clockTime}>12:34:56 PM</div>
-                <div className={styles.clockDate}>Monday, June 1, 2025</div>
-              </div>
+              <div className={styles.widgetTitle}>Clock Widget</div>
             </div>
-          )}
-
-          {/* Headline text */}
-          {showHeadline && (
-            <div className={styles.headlineText}>
-              {"Hello from the headline injection."}
-            </div>
-          )}
-        </div>
+            <ClockWidgetContent />
+          </div>
+        )}
+        {showHeadline && webinarInjectionData?.headline && (
+          <div
+            className={styles.headlineText}
+            style={{
+              fontFamily: "'SF Pro Display', sans-serif",
+              letterSpacing: "0.02em",
+              lineHeight: "1.1",
+              color: "#252525",
+            }}
+          >
+            {webinarInjectionData.headline}
+          </div>
+        )}
       </div>
+      <div style={{ marginTop: "20px" }}>
+        <button
+          onClick={() => window.open("https://webinar.clients.ai", "_blank")}
+          style={{
+            backgroundColor: "#252525",
+            color: "#fff",
+            border: "none",
+            padding: "16px 32px",
+            fontSize: "1rem",
+            fontWeight: 600,
+            borderRadius: "6px",
+            cursor: "pointer",
+          }}
+        >
+          Join The Next AI Agent Training
+        </button>
+      </div>
+      <p style={{ marginTop: "10px", fontSize: "0.9rem" }}>
+        © {new Date().getFullYear()} Clients.ai
+      </p>
     </div>
   );
-};
+}
 
 export default WebinarView;
