@@ -3,21 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <title>Clients.ai Results</title>
+
+    <!-- Montserrat + other fonts -->
     <link
       href="https://fonts.googleapis.com/css2?display=swap&amp;family=Montserrat:ital,wght@0,200;0,400;0,500;0,700;1,200;1,400;1,500;1,700"
       rel="stylesheet"
       type="text/css"
     />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light only" />
     <meta name="description" content="Predictive AI Super Computing" />
     <meta property="og:site_name" content="Your Clients.ai Results" />
     <meta property="og:title" content="Your Clients.ai Results" />
     <meta property="og:type" content="website" />
-    <meta
-      property="og:description"
-      content="Predictive AI Super Computing"
-    />
+    <meta property="og:description" content="Predictive AI Super Computing" />
     <meta
       property="og:image"
       content="https://see.prognostic.ai/assets/images/card.jpg?v=5453594d"
@@ -30,19 +30,20 @@
     <link rel="canonical" href="https://see.clients.ai" />
     <link rel="icon" type="image/png" href="src/assets/favicon.png" />
 
-    <!-- The main global CSS -->
+    <!-- Main global CSS -->
     <link rel="stylesheet" href="src/index.css" />
   </head>
+
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
-    <!-- Root for React -->
+    <!-- Root for React app -->
     <div id="root" class="root"></div>
 
-    <!-- Hidden typed-output so Fireworks can center on it -->
+    <!-- Hidden container to let Fireworks center on it -->
     <div id="typed-output" style="display:none"></div>
 
-    <!-- Your main bundler entry -->
+    <!-- Main React/TypeScript entry point -->
     <script src="/src/main.tsx" type="module"></script>
   </body>
 </html>
