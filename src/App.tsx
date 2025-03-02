@@ -74,8 +74,6 @@ const App: React.FC = () => {
   return (
     <div className="wrapper py-4">
       <Header />
-      <hr id="divider02" className="hr-custom" />
-
       {loading ? (
         <>
           <LoadingCircle />
