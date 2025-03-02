@@ -1,43 +1,332 @@
-/* =========================
-   WEBINAR VIDEO PAGE STYLES
-========================== */
-
-/* Container for the webinar video page */
-.container {
+ =====================
+  1) GLOBAL + BASICS
+  =====================
+*/
+body {
+  font-family: "Montserrat", sans-serif;
+  background-image: linear-gradient(to bottom right, #f0f4f8, #e6ebf0);
+  margin: 0;
+  padding: 40px 0;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  font-family: "Montserrat", sans-serif;
-  box-sizing: border-box;
-  padding: 20px;
-  width: 80%;
-  background: #eaeff3;
-  gap: 20px;
-  position: relative;
-  margin: 0 auto;
+  align-items: center;
+  font-size: 18px;
 }
 
-/* Video wrapper (16:9 ratio) */
-.videoWrapper {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%;
-  height: 0;
+.root {
+  width: 90%;
+  min-height: 100vh;
+}
+
+/* Basic fade in for your "fade-in" classes */
+.fade-in {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+.fade-in.visible {
+  opacity: 1;
+}
+
+/*
+  =====================
+  2) WRAPPER / CONTAINER
+  =====================
+*/
+#wrapper {
+  -webkit-overflow-scrolling: touch;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
   overflow: hidden;
-  background: #000;
-  border-radius: 6px;
+  position: relative;
+  z-index: 2;
 }
 
-/* Video element fills container without black bars */
+.container {
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/*
+  =====================
+  3) FIREWORKS
+  =====================
+*/
+#fireworks-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+}
+.firework,
+.spark {
+  position: absolute;
+  border-radius: 50%;
+}
+.firework {
+  width: 6px;
+  height: 6px;
+  animation: shoot 1s ease-out forwards;
+}
+.spark {
+  width: 5px;
+  height: 5px;
+  animation: spark 0.8s ease-out forwards;
+}
+
+@keyframes shoot {
+  0% {
+    transform: translateY(50vh) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-25vh) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50vh) scale(0.8);
+    opacity: 0;
+  }
+}
+@keyframes spark {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
+  }
+}
+
+/*
+  =====================
+  4) STREAK COUNTER
+  =====================
+*/
+.streak-counter {
+  font-size: 20px;
+  font-weight: 600;
+  color: #252525;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 12px 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(1, 66, 172, 0.2);
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
+  z-index: 2;
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.streak-counter.visible {
+  opacity: 1;
+  bottom: -50px;
+}
+
+/*
+  =====================
+  5) DRAG CLOCK (GLOBAL)
+  =====================
+*/
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: calc(var(--overlay-width) / 100);
+}
+.overlay-item {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+  z-index: 2;
+}
+.overlay-item.visible {
+  opacity: 1;
+}
+
+/*
+  =====================
+  6) CLOCK KEYFRAMES
+  ( EXACT from original webinar,
+    so it “drags in from left” 
+    at 4s and “drags out right” at 8s)
+  =====================
+*/
+.clockWidget {
+  position: absolute;
+  top: 40%;
+  left: 45%;
+  width: 320px;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  z-index: 999;
+  transform: translate(-120%, -120%);
+}
+
+@keyframes dragIn {
+  0% {
+    transform: translate(-120%, -120%);
+  }
+  25% {
+    transform: translate(-78%, -65%);
+  }
+  45% {
+    transform: translate(-48%, -35%);
+  }
+  65% {
+    transform: translate(-25%, -15%);
+  }
+  80% {
+    transform: translate(-10%, -5%);
+  }
+  92% {
+    transform: translate(-3%, -1%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+@keyframes dragOut {
+  0% {
+    transform: translate(0, 0);
+  }
+  45% {
+    transform: translate(90%, -5%);
+  }
+  70% {
+    transform: translate(140%, -3%);
+  }
+  100% {
+    transform: translate(200%, 10%);
+  }
+}
+@keyframes wobble {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  /* 50% {
+    transform: translate(3px, -3px);
+  } */
+}
+
+.animateIn {
+  animation: dragIn 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.animateOut {
+  animation: dragOut 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.wobble {
+  animation: wobble 2s infinite ease-in-out;
+}
+
+/* Clock widget's internal styling */
+.widgetHeader {
+  background: #f5f5f7;
+  height: 28px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  position: relative;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.windowControls {
+  display: flex;
+  gap: 6px;
+  position: absolute;
+  left: 10px;
+}
+.windowButton {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.closeButton {
+  background: #ff5f57;
+}
+.minimizeButton {
+  background: #febc2e;
+}
+.maximizeButton {
+  background: #28c840;
+}
+.widgetTitle {
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  color: #3f3f3f;
+  font-weight: 500;
+}
+.widgetContent {
+  padding: 20px;
+  background: #fff;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.clockTime {
+  font-size: 2.4rem;
+  font-weight: 500;
+  color: #1d1d1f;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.clockDate {
+  font-size: 0.9rem;
+  color: #86868b;
+  font-weight: 400;
+  text-align: center;
+}
+
+/*
+  =====================
+  7) WEBINARVIEW.MODULE
+  (embedding the same styles we had, but relevant changes)
+  =====================
+*/
+/* We'll replicate your .videoWrapper, .videoPlayer, etc. but with object-fit: cover 
+   so the video fully covers the container. 
+*/
 .videoPlayer {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* fill the container fully */
 }
 
-/* Sound overlay */
+.videoWrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  background: #000;
+  border-radius: 6px;
+  flex: 1;
+}
+
+/* The sound overlay, exit bubble, chat, etc. as the user had. */
 .soundOverlay {
   position: absolute;
   top: 0;
@@ -64,32 +353,7 @@
   opacity: 0.9;
 }
 
-/* Full screen button */
-.fullScreenButton {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  background: rgba(0, 0, 0, 0.45);
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  font-size: 0.75rem;
-  border-radius: 4px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 5;
-  font-family: "Montserrat", sans-serif;
-  backdrop-filter: blur(10px);
-}
-.fullScreenButton:hover {
-  background: rgba(0, 0, 0, 0.65);
-}
-.showFullScreenButton {
-  opacity: 1;
-}
-
-/* Exit overlay */
+/* exitOverlay, iPhone bubble, etc. */
 .exitOverlay {
   position: fixed;
   top: 0;
@@ -105,8 +369,12 @@
   cursor: pointer;
 }
 @keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 .iphoneMessageBubble {
   position: relative;
@@ -121,9 +389,18 @@
   cursor: auto;
 }
 @keyframes bubblePop {
-  0% { transform: scale(0.85); opacity: 0; }
-  55% { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 .exitCloseBtn {
   position: absolute;
@@ -158,7 +435,7 @@
   border-right-color: #0a84ff;
 }
 
-/* Headline text overlay */
+/* HEADLINE text absolute */
 .headlineText {
   position: absolute;
   top: 50%;
@@ -174,97 +451,33 @@
   z-index: 3;
 }
 
-/* Clock widget (drag in/out) */
-.clockWidget {
+/*
+  =====================
+  8) FULL SCREEN BUTTON
+  =====================
+*/
+.fullScreenButton {
   position: absolute;
-  top: 40%;
-  left: 45%;
-  width: 320px;
-  background: rgba(255, 255, 255, 0.98);
-  border-radius: 10px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  z-index: 3;
-  transform: translate(-120%, -120%);
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 5;
+  font-family: "Montserrat", sans-serif;
+  backdrop-filter: blur(10px);
 }
-@keyframes dragIn {
-  0% { transform: translate(-120%, -120%); }
-  25% { transform: translate(-78%, -65%); }
-  45% { transform: translate(-48%, -35%); }
-  65% { transform: translate(-25%, -15%); }
-  80% { transform: translate(-10%, -5%); }
-  92% { transform: translate(-3%, -1%); }
-  100% { transform: translate(0, 0); }
+.fullScreenButton:hover {
+  background: rgba(0, 0, 0, 0.65);
 }
-@keyframes dragOut {
-  0% { transform: translate(0, 0); }
-  45% { transform: translate(90%, -5%); }
-  70% { transform: translate(140%, -3%); }
-  100% { transform: translate(200%, 10%); }
+.showFullScreenButton {
+  opacity: 1;
 }
-@keyframes wobble {
-  0%, 100% { transform: translate(0, 0); }
-}
-.animateIn {
-  animation: dragIn 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-.animateOut {
-  animation: dragOut 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-.wobble {
-  animation: wobble 2s infinite ease-in-out;
-}
-.widgetHeader {
-  background: #f5f5f7;
-  height: 28px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  position: relative;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-.windowControls {
-  display: flex;
-  gap: 6px;
-  position: absolute;
-  left: 10px;
-}
-.windowButton {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-.closeButton { background: #ff5f57; }
-.minimizeButton { background: #febc2e; }
-.maximizeButton { background: #28c840; }
-.widgetTitle {
-  width: 100%;
-  text-align: center;
-  font-size: 13px;
-  color: #3f3f3f;
-  font-weight: 500;
-}
-.widgetContent {
-  padding: 20px;
-  background: #fff;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-.clockTime {
-  font-size: 2.4rem;
-  font-weight: 500;
-  color: #1d1d1f;
-  margin-bottom: 4px;
-  text-align: center;
-}
-.clockDate {
-  font-size: 0.9rem;
-  color: #86868b;
-  font-weight: 400;
-  text-align: center;
-}
+
+/* Chat, poll, invests, etc. remain from your original code. */
