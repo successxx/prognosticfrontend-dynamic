@@ -1,310 +1,303 @@
-/* Container with subtle background, etc. */
-.container {
-  display: flex;
-  flex-direction: column;
-  font-family: "Montserrat", sans-serif;
-  box-sizing: border-box;
-  padding: 20px;
-  width: 80%;
-  margin: 0 auto;
-  background: #eaeff3;
-  gap: 20px;
-  position: relative;
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
+import styles from "./WebinarView.module.css";
+import VideoOverlay from "./VideoOverlay";
+import VideoClockWidget from "./VideoClockWidget"; // fluid clock
+import ExitOverlay from "./ExitOverlay";
+
+interface IWebinarInjection {
+  Business_description: string;
+  Industry: string;
+  Offer_topic: string;
+  Products_services: string;
+  audio_link: string;
+  audio_link_two: string;
+  company_name: string;
+  email_1: string;
+  email_2: string;
+  user_name: string;
+  lead_email: string;
+  exit_message: string;
+  headline: string;
+  offer_description: string;
+  offer_goal: string;
+  offer_name: string;
+  offer_price: string;
+  offer_url: string;
+  pain_points: string;
+  primary_benefits: string;
+  primary_goal: string;
+  salesletter: string;
+  target_audience: string;
+  target_url: string;
+  website_url: string;
+  testimonials: string;
 }
 
-/* Video wrapper to keep a 16:9 aspect ratio,
-   ensuring the video covers the container fully */
-.videoWrapper {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
-  background: #000;
-  overflow: hidden;
-  border-radius: 6px;
-}
+const WebinarView: React.FC = () => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoWrapperRef = useRef<HTMLDivElement | null>(null);
 
-.videoPlayer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* This ensures no black bars, cropping if ratio mismatch. */
-  display: block;
-}
+  // Audio
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-/* Sound overlay for unmute functionality */
-.soundOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.65);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  cursor: pointer;
-  z-index: 4;
-}
-.soundIcon {
-  font-size: 2rem;
-  margin-bottom: 12px;
-  opacity: 0.9;
-}
-.soundText {
-  font-size: 1rem;
-  font-weight: 500;
-  opacity: 0.9;
-}
+  // For sound overlay
+  const [hasInteracted, setHasInteracted] = useState(false);
 
-/* Clock widget fluid drag animations
-   We'll define them so that the widget is offscreen on the left initially,
-   slides fully across, then slides off to the right. */
-.clockWidget {
-  position: absolute;
-  top: 40%;
-  width: 320px;
-  max-width: 35vw; /* so it also scales on small screens */
-  background: rgba(255, 255, 255, 0.98);
-  border-radius: 10px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  z-index: 999;
-  /* Start fully offscreen to the left using transformX ~ -150% */
-  transform: translateX(-150%);
-  animation-fill-mode: forwards;
-}
+  // Exit-intent
+  const [showExitOverlay, setShowExitOverlay] = useState(false);
+  const [hasShownOverlay, setHasShownOverlay] = useState(false);
+  const [exitMessage, setExitMessage] = useState("");
 
-@keyframes dragIn {
-  0% {
-    transform: translateX(-150%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
-}
+  // Headline
+  const [showHeadline, setShowHeadline] = useState(false);
 
-@keyframes dragOut {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(150%);
-  }
-}
+  // Clock widget
+  const [showClockWidget, setShowClockWidget] = useState(false);
+  const [clockDragInComplete, setClockDragInComplete] = useState(false);
+  const [clockRemoved, setClockRemoved] = useState(false);
 
-.animateIn {
-  animation: dragIn 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.animateOut {
-  animation: dragOut 1s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.wobble {
-  animation: wobble 2s infinite ease-in-out;
-}
+  // Injection data
+  const [webinarInjectionData, setWebinarInjectionData] =
+    useState<IWebinarInjection | null>(null);
 
-@keyframes wobble {
-  0%, 100% {
-    transform: translateX(0%);
-  }
-  50% {
-    transform: translateX(3%);
-  }
-}
+  // 1) On mount: fetch user data if available
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const userEmail = params.get("user_email");
 
-/* The Mac-like widget styling: */
-.widgetHeader {
-  background: #f5f5f7;
-  height: 28px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  position: relative;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-.windowControls {
-  display: flex;
-  gap: 6px;
-  position: absolute;
-  left: 10px;
-}
-.windowButton {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-.closeButton {
-  background: #ff5f57;
-}
-.minimizeButton {
-  background: #febc2e;
-}
-.maximizeButton {
-  background: #28c840;
-}
-.widgetTitle {
-  width: 100%;
-  text-align: center;
-  font-size: 13px;
-  color: #3f3f3f;
-  font-weight: 500;
-}
-.widgetContent {
-  padding: 20px;
-  background: #fff;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-.clockTime {
-  font-size: 2.4rem;
-  font-weight: 500;
-  color: #1d1d1f;
-  margin-bottom: 4px;
-  text-align: center;
-}
-.clockDate {
-  font-size: 0.9rem;
-  color: #86868b;
-  font-weight: 400;
-  text-align: center;
-}
+    if (userEmail) {
+      fetch("https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_email: userEmail }),
+      })
+        .then((resp) => {
+          if (!resp.ok) throw new Error("Error fetching user data");
+          return resp.json();
+        })
+        .then((data) => {
+          setWebinarInjectionData(data);
+          if (audioRef.current && data.audio_link) {
+            audioRef.current.src = data.audio_link;
+          }
+          if (data.exit_message) {
+            setExitMessage(data.exit_message);
+          }
+        })
+        .catch((err) => console.error("Error loading user data:", err));
+    }
+  }, []);
 
-/* Headline text overlay on the right side */
-.headlineText {
-  position: absolute;
-  top: 50%;
-  right: 75px;
-  transform: translateY(-50%);
-  font-family: "Montserrat", sans-serif;
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 1.2;
-  color: #2e2e2e;
-  text-align: center;
-  max-width: 30%;
-  z-index: 3;
-}
+  // 2) Try playing the voice injection at ~0.5s in
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid || !audioRef.current) return;
 
-/* The exit overlay bubble */
-.exitOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 9999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 0.25s ease;
-  cursor: pointer;
-}
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-.iphoneMessageBubble {
-  position: relative;
-  max-width: 80%;
-  width: 320px;
-  background: #0a84ff;
-  color: #fff;
-  border-radius: 18px;
-  padding: 14px 20px;
-  animation: bubblePop 0.35s ease-out;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  cursor: auto;
-}
-@keyframes bubblePop {
-  0% {
-    transform: scale(0.85);
-    opacity: 0;
-  }
-  55% {
-    transform: scale(1.05);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-.exitCloseBtn {
-  position: absolute;
-  top: 6px;
-  right: 12px;
-  border: none;
-  background: transparent;
-  font-size: 1.2rem;
-  line-height: 1;
-  cursor: pointer;
-  color: #fff;
-  opacity: 0.9;
-}
-.iphoneSender {
-  font-weight: 600;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-}
-.iphoneMessageText {
-  font-size: 1rem;
-  line-height: 1.4;
-  white-space: pre-line;
-}
-.iphoneMessageBubble::before {
-  content: "";
-  position: absolute;
-  left: -10px;
-  bottom: 20px;
-  width: 0;
-  height: 0;
-  border: 10px solid transparent;
-  border-right-color: #0a84ff;
-}
+    function handleTimeUpdate() {
+      if (vid.currentTime >= 0.5) {
+        audioRef.current.play().catch((err) => {
+          console.warn("Voice injection blocked or prevented:", err);
+        });
+        vid.removeEventListener("timeupdate", handleTimeUpdate);
+      }
+    }
+    vid.addEventListener("timeupdate", handleTimeUpdate);
 
-/* Basic footer styling if needed */
-.footer {
-  text-align: center;
-  font-size: 0.75rem;
-  color: #999;
-  margin-top: 25px;
-  font-family: "Montserrat", sans-serif;
-}
+    return () => {
+      vid.removeEventListener("timeupdate", handleTimeUpdate);
+    };
+  }, []);
 
-/* Fullscreen button (if you choose to keep it) */
-.fullScreenButton {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  background: rgba(0, 0, 0, 0.45);
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  font-size: 0.75rem;
-  border-radius: 4px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 5;
-  font-family: "Montserrat", sans-serif;
-  backdrop-filter: blur(10px);
-}
-.fullScreenButton:hover {
-  background: rgba(0, 0, 0, 0.65);
-}
-.showFullScreenButton {
-  opacity: 1;
-}
+  // 3) Freed scrubbing => we do nothing special
+
+  // 4) Exit-intent overlay
+  useEffect(() => {
+    if (hasShownOverlay) return;
+
+    function handleMouseMove(e: MouseEvent) {
+      const threshold = window.innerHeight * 0.1;
+      if (e.clientY < threshold) {
+        setShowExitOverlay(true);
+        setHasShownOverlay(true);
+      }
+    }
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [hasShownOverlay]);
+
+  // 5) Clock widget @4s => show, then @8s => remove
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    function clockCheck() {
+      const t = vid.currentTime;
+      if (!showClockWidget && t >= 4) {
+        setShowClockWidget(true);
+      }
+      if (!clockRemoved && t >= 8) {
+        setClockRemoved(true);
+      }
+    }
+    vid.addEventListener("timeupdate", clockCheck);
+    return () => {
+      vid.removeEventListener("timeupdate", clockCheck);
+    };
+  }, [showClockWidget, clockRemoved]);
+
+  // Once removed => hide fully after 1s
+  useEffect(() => {
+    if (clockRemoved) {
+      const timer = setTimeout(() => {
+        setShowClockWidget(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [clockRemoved]);
+
+  // 6) Show headline between 45.04–55.04
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    function handleHeadlineCheck() {
+      const t = vid.currentTime;
+      if (t >= 45.04 && t < 55.04) {
+        setShowHeadline(true);
+      } else {
+        setShowHeadline(false);
+      }
+    }
+    vid.addEventListener("timeupdate", handleHeadlineCheck);
+    return () => {
+      vid.removeEventListener("timeupdate", handleHeadlineCheck);
+    };
+  }, []);
+
+  return (
+    <div className={styles.container}>
+      {/* hidden audio injection */}
+      <audio ref={audioRef} style={{ display: "none" }} />
+
+      {/* exit-intent */}
+      {showExitOverlay && (
+        createPortal(
+          <ExitOverlay
+            message={exitMessage}
+            onClose={() => setShowExitOverlay(false)}
+          />,
+          document.body
+        )
+      )}
+
+      {/* The video container */}
+      <div ref={videoWrapperRef} className={styles.videoWrapper}>
+        {/* Overlays: e.g. headline, etc. */}
+        <VideoOverlay
+          videoRef={videoRef}
+          containerRef={videoWrapperRef}
+          webinarData={webinarInjectionData}
+        />
+
+        {/* The actual video */}
+        <video
+          ref={videoRef}
+          className={styles.videoPlayer}
+          controls
+          muted={!hasInteracted}
+          playsInline
+        >
+          <source
+            src="https://progwebinar.blob.core.windows.net/video/clientsaidemovid.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support HTML5 video.
+        </video>
+
+        {/* Sound overlay => unmute */}
+        {!hasInteracted && (
+          <div
+            className={styles.soundOverlay}
+            onClick={() => {
+              setHasInteracted(true);
+              if (videoRef.current) {
+                videoRef.current.muted = false;
+                videoRef.current.play().catch((err) => {
+                  console.warn("Play blocked by browser:", err);
+                });
+              }
+            }}
+          >
+            <div className={styles.soundIcon}>🔊</div>
+            <div className={styles.soundText}>Click to enable sound</div>
+          </div>
+        )}
+
+        {/* Clock widget */}
+        {showClockWidget && (
+          <div
+            className={
+              `${styles.clockWidget} ` +
+              (clockRemoved
+                ? styles.animateOut
+                : clockDragInComplete
+                ? styles.wobble
+                : styles.animateIn)
+            }
+            onAnimationEnd={(e) => {
+              if (e.animationName.includes("dragIn")) {
+                setClockDragInComplete(true);
+              }
+            }}
+          >
+            <div className={styles.widgetHeader}>
+              <div className={styles.windowControls}>
+                <div className={`${styles.windowButton} ${styles.closeButton}`} />
+                <div className={`${styles.windowButton} ${styles.minimizeButton}`} />
+                <div className={`${styles.windowButton} ${styles.maximizeButton}`} />
+              </div>
+              <div className={styles.widgetTitle}>Clock Widget</div>
+            </div>
+            <VideoClockWidget />
+          </div>
+        )}
+
+        {/* Headline text */}
+        {showHeadline && webinarInjectionData?.headline && (
+          <div className={styles.headlineText}>
+            {webinarInjectionData.headline}
+          </div>
+        )}
+      </div>
+
+      {/* Example CTA button or footer content */}
+      <div style={{ marginTop: "20px", textAlign: "center" }}>
+        <button
+          onClick={() => window.open("https://webinar.clients.ai", "_blank")}
+          style={{
+            backgroundColor: "#252525",
+            color: "#fff",
+            border: "none",
+            padding: "16px 32px",
+            fontSize: "1rem",
+            fontWeight: 600,
+            borderRadius: "6px",
+            cursor: "pointer",
+          }}
+        >
+          Join The Next AI Agent Training
+        </button>
+      </div>
+
+      <footer className={styles.footer}>
+        © {new Date().getFullYear()} Clients.ai
+      </footer>
+    </div>
+  );
+};
+
+export default WebinarView;
