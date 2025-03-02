@@ -1,10 +1,16 @@
-import {StrictMode} from 'react'
-import {createRoot} from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+/* main.tsx
+   This is your entry point that does the "ReactDOM.createRoot(...)" 
+   and renders <App />.
+*/
 
-createRoot(document.getElementById('root') as HTMLElement).render(
-    <StrictMode>
-        <App/>
-    </StrictMode>,
-)
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+// The const rootEl + createRoot:
+const rootEl = document.getElementById("root");
+if (rootEl) {
+  const root = ReactDOM.createRoot(rootEl);
+  root.render(<App />);
+}
+
