@@ -12,14 +12,14 @@ const App: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [isContentVisible, setIsContentVisible] = useState<boolean>(false);
 
-  // Example streak (if you still want the streak logic)
+  // Example streak
   const [streak] = useState<number>(1);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
 
-    // If no user_email in the query string, show an error and skip polling
+    // If no user_email in the query string, show an error
     if (!userEmail) {
       setError("Please provide your email to access the webinar.");
       setLoading(false);
@@ -29,7 +29,7 @@ const App: React.FC = () => {
     // We stay in "loading" state until the backend confirms data exists
     setLoading(true);
 
-    // Poll /get_user_two every 3 seconds to see if data is ready
+    // Poll /get_user_two every 3 seconds
     const intervalId = setInterval(async () => {
       try {
         const resp = await fetch(
@@ -41,26 +41,23 @@ const App: React.FC = () => {
           }
         );
 
-        // If response is 200 and JSON says success: true, we assume data is ready
         if (resp.ok) {
           const data = await resp.json();
           if (data.success === true) {
-            // Data found, so we can stop loading
+            // Data found, stop loading
             setLoading(false);
             setIsContentVisible(true);
             clearInterval(intervalId);
           } else {
-            // success: false or 404 means "not found" - keep polling
             console.log("Data not ready yet, continuing to poll...");
           }
         } else {
-          // Could be 404, 400, etc. We just keep polling unless you prefer to stop
+          // Possibly a 404 or 4xx
           console.log("Still not ready or 4xx error. Continuing to poll...");
         }
       } catch (err) {
         console.error("Polling error:", err);
-        // You could optionally stop polling on error:
-        // clearInterval(intervalId);
+        // Could stop polling or keep going
         // setError("Backend error while polling for data.");
         // setLoading(false);
       }
