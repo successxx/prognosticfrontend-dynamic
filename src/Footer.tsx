@@ -1,31 +1,26 @@
-import React from "react";
-import "./index.css";
-
+import React from 'react';
+import './index.css';
+import headerImage from "./assets/header.png"; // Import the CSS file (you can place the CSS styles here)
+// Define the type for the props
 interface FooterProps {
-  isFooterVisible: boolean;
+    isFooterVisible: boolean;
 }
 
-const Footer: React.FC<FooterProps> = ({ isFooterVisible }) => {
-  const handleSmsClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (navigator.userAgent.match("like Mac OS X")) {
-      e.preventDefault();
-      window.location.href = e.currentTarget.href.replace("?", "&");
-    }
-  };
+const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
+    const handleSmsClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (navigator.userAgent.match('like Mac OS X')) {
+            e.preventDefault();
+            window.location.href = e.currentTarget.href.replace('?', '&');
+        }
+    };
 
-  return (
-    <div
-      id="container02"
-      className="style3 container default"
-      style={{
-        display: isFooterVisible ? "block" : "none",
-        textAlign: "center",
-      }}
-    >
-      <div className="wrapper">
-        <div className="inner">
-          <p id="text01" className={`style2`}>
-            <span className="p">
+    return (
+        <div id="container02" className="style3 container default">
+            <div className="wrapper">
+                <div className="inner">
+                    <p id="text01"
+                       className={`style2 ${isFooterVisible ? 'footer-fade-in visible' : 'footer-fade-in'}`}>
+                    <span className="p">
                         The next time you hear someone talking about AI in marketing,
                         <strong>think of Clients.<mark>ai</mark>.</strong><br/>
                         <em>Can You Think Of A Friend Who Would Like To Close More Deals?</em><br/>
@@ -33,7 +28,8 @@ const Footer: React.FC<FooterProps> = ({ isFooterVisible }) => {
                     </span>
                     </p>
                     <div id="embed02" className="embed02">
-            <div className="share-buttons"><a
+                        <style></style>
+                        <div className="share-buttons"><a
                             href="sms:?&amp;body=Hey,%20check%20out%20this%20new%20marketing%20software.%20it%20recreates%20new%20marketing%20for%20each%20lead%20in%20real%20time,%20and%20I%20thought%20of%20you!%20I%20just%20took%20their%20quiz%20and%20got%20mind-blowing%20personal%20insights.%20Try%20it%20out%20and%20see%20if%20their%20AI%20can%20make%20you%20some%20money!%20https%3A%2F%2FPrognostic.ai"
                             onClick={handleSmsClick}
                             target="_blank" rel="noopener noreferrer" className="share-button"
