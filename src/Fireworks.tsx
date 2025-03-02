@@ -1,13 +1,15 @@
-function Fireworks() {
-  React.useEffect(() => {
+import React, { useEffect } from "react";
+
+const Fireworks: React.FC = () => {
+  useEffect(() => {
     createFireworks();
   }, []);
 
   function createFireworks() {
     const container = document.getElementById("fireworks-container");
     if (!container) return;
-    container.innerHTML = "";
 
+    container.innerHTML = "";
     const colors = [
       "#FF00FF",
       "#A020F0",
@@ -34,7 +36,7 @@ function Fireworks() {
     }
   }
 
-  function createFirework(container, colors, x, y) {
+  function createFirework(container: HTMLElement, colors: string[], x: number, y: number) {
     const firework = document.createElement("div");
     firework.className = "firework";
     firework.style.left = `${x + (Math.random() - 0.5) * 300}px`;
@@ -59,4 +61,6 @@ function Fireworks() {
   }
 
   return <div id="fireworks-container"></div>;
-}
+};
+
+export default Fireworks;
