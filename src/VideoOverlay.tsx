@@ -22,6 +22,24 @@ interface VideoOverlayProps {
 }
 
 const overlayItems: OverlayItem[] = [
+  // Add this to the overlayItems array
+{
+  key: "headline", // Use 'headline' to match the data field in your JSON
+  content: "", // The content will be populated from webinarInjectionData
+  startTime: 0, // When it should start showing (in seconds)
+  endTime: 600, // When it should stop showing (in seconds)
+  position: { x: 0.766, y: 0.78 }, // x: 76.6% from left, y: 78% from top (100% - 22%)
+  style: {
+    color: "#252525",
+    fontSize: "1.5em", // This would be 1.5% of the video width
+    fontFamily: '"Montserrat", sans-serif',
+    fontWeight: "500",
+    lineHeight: "1.4",
+    textAlign: "center",
+    maxWidth: "30em", // 30em = 30 × font size
+    zIndex: "3"
+  },
+},
   {
     key: "lead_email",
     content: "",
