@@ -6,6 +6,8 @@ import Fireworks from "./Fireworks";
 import "./index.css";
 import LoadingCircle from "./LoadingCircle";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Footer from "./Footer";
+
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -90,7 +92,7 @@ const App: React.FC = () => {
               <div
                 className={`d-flex w-100 justify-content-center fade-in ${
                   isContentVisible ? "visible" : ""
-                }`}
+                }`
               >
                 {/* Show the actual webinar/video once we're done loading */}
                 <WebinarView />
@@ -105,6 +107,7 @@ const App: React.FC = () => {
           )}
         </>
       )}
+      <Footer isFooterVisible={true} />
     </div>
   );
 };
