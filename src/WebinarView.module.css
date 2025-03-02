@@ -8,6 +8,7 @@
   box-sizing: border-box;
   padding: 20px;
   width: 80%;
+  /* min-height: 100vh; */
   background: #eaeff3;
   gap: 20px;
   position: relative;
@@ -40,8 +41,12 @@
   animation: spin 1s infinite linear;
 }
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 .connectingText {
   font-size: 1.2rem;
@@ -86,9 +91,15 @@
   margin-right: 4px;
 }
 @keyframes pulseZoom {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 .zoomLiveMinutes {
   font-size: 0.55rem;
@@ -101,20 +112,8 @@
 }
 
 /**************************************/
-/* 3) One-Column Layout for Video     */
+/* 3) The 70/30 layout, same height   */
 /**************************************/
-/* Remove the twoColumnLayout if not needed. */
-.videoWrapper {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 ratio */
-  height: 0;
-  overflow: visible; /* Allow clock to escape if needed */
-  background: #000;
-  border-radius: 6px;
-  flex: 1;
-  width: 100%;
-  margin: 0 auto;
-}
 .videoPlayer {
   position: absolute;
   top: 0;
@@ -123,6 +122,40 @@
   height: 100%;
   object-fit: cover;
 }
+
+.twoColumnLayout {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+}
+.videoColumn {
+  flex: 0 0 70%;
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+}
+.chatColumn {
+  flex: 0 0 30%;
+  max-width: 30%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* For the video, strictly keep 16:9 within the forced container height */
+.videoWrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  overflow: hidden;
+  background: #000;
+  border-radius: 6px;
+  flex: 1;
+  /* No max-width or margin here by default */
+}
+
 
 /**************************************/
 /* 4) Sound overlay to unmute         */
@@ -171,8 +204,12 @@
   cursor: pointer;
 }
 @keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 .iphoneMessageBubble {
   position: relative;
@@ -187,9 +224,18 @@
   cursor: auto;
 }
 @keyframes bubblePop {
-  0% { transform: scale(0.85); opacity: 0; }
-  55% { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 .exitCloseBtn {
   position: absolute;
@@ -303,23 +349,50 @@
 }
 
 @keyframes dragIn {
-  0% { transform: translate(-120%, -120%); }
-  25% { transform: translate(-78%, -65%); }
-  45% { transform: translate(-48%, -35%); }
-  65% { transform: translate(-25%, -15%); }
-  80% { transform: translate(-10%, -5%); }
-  92% { transform: translate(-3%, -1%); }
-  100% { transform: translate(0, 0); }
+  0% {
+    transform: translate(-120%, -120%);
+  }
+  25% {
+    transform: translate(-78%, -65%);
+  }
+  45% {
+    transform: translate(-48%, -35%);
+  }
+  65% {
+    transform: translate(-25%, -15%);
+  }
+  80% {
+    transform: translate(-10%, -5%);
+  }
+  92% {
+    transform: translate(-3%, -1%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
 }
 @keyframes dragOut {
-  0% { transform: translate(0, 0); }
-  45% { transform: translate(90%, -5%); }
-  70% { transform: translate(140%, -3%); }
-  100% { transform: translate(200%, 10%); }
+  0% {
+    transform: translate(0, 0);
+  }
+  45% {
+    transform: translate(90%, -5%);
+  }
+  70% {
+    transform: translate(140%, -3%);
+  }
+  100% {
+    transform: translate(200%, 10%);
+  }
 }
 @keyframes wobble {
-  0%, 100% { transform: translate(0, 0); }
-  /* Optional 50% { transform: translate(3px, -3px); } */
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  /* 50% {
+    transform: translate(3px, -3px);
+  } */
 }
 
 .animateIn {
@@ -356,9 +429,15 @@
   height: 12px;
   border-radius: 50%;
 }
-.closeButton { background: #ff5f57; }
-.minimizeButton { background: #febc2e; }
-.maximizeButton { background: #28c840; }
+.closeButton {
+  background: #ff5f57;
+}
+.minimizeButton {
+  background: #febc2e;
+}
+.maximizeButton {
+  background: #28c840;
+}
 .widgetTitle {
   width: 100%;
   text-align: center;
@@ -528,8 +607,14 @@
   text-align: left;
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .user {
   background: #f0f2f5;
@@ -598,11 +683,17 @@
   max-width: 300px;
 }
 @keyframes slideIn {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 @keyframes fadeOut {
-  to { opacity: 0; }
+  to {
+    opacity: 0;
+  }
 }
 .notificationIcon {
   background: #252525;
@@ -650,8 +741,20 @@
 /* 12) Responsive Adjustments         */
 /**************************************/
 @media (max-width: 1200px) {
-  .zoomContainer { max-width: 90vw; }
-  /* For one column, we remove forced height so the 16:9 ratio is maintained */
+  .zoomContainer {
+    max-width: 90vw;
+  }
+  .twoColumnLayout {
+    height: auto;
+    flex-direction: column;
+  }
+  .videoColumn,
+  .chatColumn {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
   .videoWrapper {
     width: 100%;
     flex: none;
@@ -755,7 +858,7 @@
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
-  z-index: 5;
+  z-index: 5; /* above video but below overlays like .soundOverlay */
   font-family: "Montserrat", sans-serif;
   backdrop-filter: blur(10px);
 }
