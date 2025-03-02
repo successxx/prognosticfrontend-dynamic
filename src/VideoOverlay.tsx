@@ -1,12 +1,26 @@
-/*******************************************************
-6) VIDEOOVERLAY
-*******************************************************/
-function VideoOverlay({ videoRef, videoContainerRef, webinarInjectionData }) {
-  const [currentTime, setCurrentTime] = React.useState(0);
-  const overlayRef = React.useRef(null);
-  const rafId = React.useRef(null);
+import type React from "react";
+import "./index.css";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { IWebinarInjection } from "./WebinarView";
 
-// Your overlay data from user:
+interface OverlayItem {
+  key: keyof IWebinarInjection;
+  content: string;
+  startTime: number;
+  endTime: number;
+  position: {
+    x: number; // 0 to 1, representing percentage across width
+    y: number; // 0 to 1, representing percentage down height
+  };
+  style?: React.CSSProperties;
+}
+
+interface VideoOverlayProps {
+  videoRef: React.RefObject<HTMLVideoElement>;
+  videoContainerRef: React.RefObject<HTMLDivElement>;
+  webinarInjectionData?: IWebinarInjection;
+}
+
 const overlayItems: OverlayItem[] = [
   {
     key: "lead_email",
@@ -290,82 +304,106 @@ const overlayItems: OverlayItem[] = [
   },
 ];
 
-const updatedOverlayItems = React.useMemo(() => {
-    if (!webinarInjectionData) return [];
-    return overlayItems.map((item) => ({
-      ...item,
-      content: webinarInjectionData[item.key]?.trim() ?? "",
-    }));
+export const VideoOverlay: React.FC<VideoOverlayProps> = ({
+  videoRef,
+  videoContainerRef,
+  webinarInjectionData,
+}) => {
+  const [currentTime, setCurrentTime] = useState(0);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const rafId = useRef<number>();
+
+  const updatedOverlayItems = useMemo(() => {
+    if (!webinarInjectionData) {
+      return [];
+    }
+    return overlayItems.map((item) => {
+      return {
+        ...item,
+        content: webinarInjectionData[item.key]?.trim(),
+      };
+    });
   }, [webinarInjectionData]);
 
-  React.useEffect(() => {
-    const videoEl = videoRef.current;
-    if (!videoEl) return;
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
 
-    function updateTime() {
-      setCurrentTime(videoEl.currentTime);
+    const updateTime = () => {
+      setCurrentTime(video.currentTime);
       rafId.current = requestAnimationFrame(updateTime);
-    }
-    rafId.current = requestAnimationFrame(updateTime);
+    };
 
+    rafId.current = requestAnimationFrame(updateTime);
     return () => {
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
-  }, [videoRef]);
+  }, []);
 
-  React.useEffect(() => {
-    function updateOverlaySize() {
+  useEffect(() => {
+    const updateOverlaySize = () => {
       if (videoContainerRef.current && overlayRef.current) {
-        const { width, height } = videoContainerRef.current.getBoundingClientRect();
-        overlayRef.current.style.setProperty("--overlay-width", ${width}px);
-        overlayRef.current.style.setProperty("--overlay-height", ${height}px);
+        const { width, height } =
+          videoContainerRef.current.getBoundingClientRect();
+        overlayRef.current.style.setProperty("--overlay-width", `${width}px`);
+        overlayRef.current.style.setProperty("--overlay-height", `${height}px`);
       }
-    }
+    };
+
     updateOverlaySize();
     window.addEventListener("resize", updateOverlaySize);
-    return () => window.removeEventListener("resize", updateOverlaySize);
+
+    return () => {
+      window.removeEventListener("resize", updateOverlaySize);
+    };
   }, [videoContainerRef]);
 
-  function embeddableInjection(key) {
-    // if key is "email_1","email_2","salesletter", etc.
+  const embeddableInjection = (key: keyof IWebinarInjection) => {
+    // Includes the keys those contains the html content
     return key === "email_1" || key === "email_2" || key === "salesletter";
-  }
+  };
 
   return (
     <div ref={overlayRef} className="video-overlay">
       {updatedOverlayItems.map((item, index) => {
-        const isVisible = currentTime >= item.startTime && currentTime <= item.endTime;
         if (!videoRef.current) return null;
-
-        if (embeddableInjection(item.key)) {
-          return (
-            <div
-              key={index}
-              className={overlay-item ${isVisible ? "visible" : ""}}
-              style={{
-                ...item.style,
-                left: ${item.position.x * 100}%,
-                top: ${item.position.y * 100}%,
-              }}
-              dangerouslySetInnerHTML={{ __html: item.content }}
-            />
-          );
-        } else {
-          return (
-            <div
-              key={index}
-              className={overlay-item ${isVisible ? "visible" : ""}}
-              style={{
-                ...item.style,
-                left: ${item.position.x * 100}%,
-                top: ${item.position.y * 100}%,
-              }}
-            >
-              {item.content}
-            </div>
-          );
-        }
+        return (
+          <>
+            {embeddableInjection(item.key) ? (
+              <div
+                key={index}
+                className={`overlay-item ${
+                  currentTime >= item.startTime && currentTime <= item.endTime
+                    ? "visible"
+                    : ""
+                }`}
+                style={{
+                  ...item.style,
+                  left: `${item.position.x * 100}%`,
+                  top: `${item.position.y * 100}%`,
+                }}
+                dangerouslySetInnerHTML={{ __html: item.content }}
+              />
+            ) : (
+              <div
+                key={index}
+                className={`overlay-item ${
+                  currentTime >= item.startTime && currentTime <= item.endTime
+                    ? "visible"
+                    : ""
+                }`}
+                style={{
+                  ...item.style,
+                  left: `${item.position.x * 100}%`,
+                  top: `${item.position.y * 100}%`,
+                }}
+              >
+                {item.content}
+              </div>
+            )}
+          </>
+        );
       })}
     </div>
   );
-}
+};
