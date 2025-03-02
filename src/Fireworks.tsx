@@ -1,6 +1,8 @@
 /*******************************************************
 5) FIREWORKS
 *******************************************************/
+import React from 'react';
+
 function Fireworks() {
   React.useEffect(() => {
     createFireworks();
@@ -37,11 +39,11 @@ function Fireworks() {
     }
   }
 
-  function createFirework(container, colors, x, y) {
+  function createFirework(container: HTMLElement, colors: string[], x: number, y: number) {
     const firework = document.createElement("div");
     firework.className = "firework";
-    firework.style.left = ${x + (Math.random() - 0.5) * 300}px;
-    firework.style.top = ${y + (Math.random() - 0.5) * 200}px;
+    firework.style.left = `${x + (Math.random() - 0.5) * 300}px`;
+    firework.style.top = `${y + (Math.random() - 0.5) * 200}px`;
     firework.style.backgroundColor =
       colors[Math.floor(Math.random() * colors.length)];
     container.appendChild(firework);
@@ -55,11 +57,13 @@ function Fireworks() {
       spark.style.top = firework.style.top;
       const angle = Math.random() * Math.PI * 2;
       const distance = 50 + Math.random() * 100;
-      spark.style.setProperty("--tx", ${Math.cos(angle) * distance}px);
-      spark.style.setProperty("--ty", ${Math.sin(angle) * distance}px);
+      spark.style.setProperty("--tx", `${Math.cos(angle) * distance}px`);
+      spark.style.setProperty("--ty", `${Math.sin(angle) * distance}px`);
       container.appendChild(spark);
     }
   }
 
   return <div id="fireworks-container"></div>;
 }
+
+export default Fireworks;
