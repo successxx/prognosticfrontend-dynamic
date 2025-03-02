@@ -127,7 +127,6 @@
   display: flex;
   flex-wrap: nowrap;
   gap: 16px;
-  height: 94%;
 }
 .videoColumn {
   flex: 0 0 70%;
@@ -148,15 +147,15 @@
 /* For the video, strictly keep 16:9 within the forced container height */
 .videoWrapper {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 ratio */
+  padding-bottom: 56.25%; /* 16:9 */
   height: 0;
   overflow: hidden;
   background: #000;
-  border-radius: 6px; /* optional */
-  flex: 1;           /* optional if you’re using flex layouts */
-  max-width: 100%;
-  margin: 0 auto;    /* centers if you want it centered horizontally */
+  border-radius: 6px;
+  flex: 1;
+  /* No max-width or margin here by default */
 }
+
 
 /**************************************/
 /* 4) Sound overlay to unmute         */
