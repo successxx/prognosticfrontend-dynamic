@@ -1,6 +1,14 @@
 /*******************************************************
 7) WEBINARVIEW 
 *******************************************************/
+import React from 'react';
+import ReactDOM from 'react-dom';
+// If you have these components in separate files, import them here:
+// import ExitOverlay from './ExitOverlay';
+// import VideoOverlay from './VideoOverlay';
+// import VideoClock from './VideoClock';
+// import ClockWidgetContent from './ClockWidgetContent';
+
 function WebinarView() {
   const videoRef = React.useRef(null);
   const videoWrapperRef = React.useRef(null);
@@ -252,3 +260,5 @@ function WebinarView() {
     </div>
   );
 }
+
+export default WebinarView;
