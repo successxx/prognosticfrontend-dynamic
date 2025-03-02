@@ -41,20 +41,15 @@ const overlayItems: OverlayItem[] = [
   },
 },
   {
-  key: "headline", // Use 'headline' to match the data field in your JSON
-  content: "", // The content will be populated from webinarInjectionData
-  startTime: 69.08, // When it should start showing (in seconds)
-  endTime: 90.07, // When it should stop showing (in seconds)
-  position: { x: 0.52, y: 0.51 }, // Centered under "personal", similar height to consultation text
-  style: {
-    color: "#252525",
-    fontSize: "1.8em", // This would be 1.5% of the video width
-    fontFamily: '"Montserrat", sans-serif',
-    fontWeight: "500",
+    key: "headline",
+    content: "",
+    startTime: 69.08,
+    endTime: 90.07,
+    position: { x: 0.52, y: 0.51 },
     lineHeight: "1.4",
     textAlign: "center",
-    maxWidth: "13m", // 30em = 30 × font size
-    zIndex: "3"
+    fontWeight: "500",
+    style: { color: "#252525", fontSize: "1.8em" },
   },
 },
   {
@@ -70,7 +65,7 @@ const overlayItems: OverlayItem[] = [
     content: "John Doe",
     startTime: 268.04,
     endTime: 281.06,
-    position: { x: 0.571, y: 0.44 },
+    position: { x: 0.571, y: 0.47 },
     style: { color: "#252525", fontSize: "0.7em" },
   },
   {
@@ -96,7 +91,7 @@ const overlayItems: OverlayItem[] = [
     key: "lead_email",
     content: "",
     startTime: 299.40,
-    endTime: 300.07,
+    endTime: 308.07,
     position: { x: 0.039, y: 0.34 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
