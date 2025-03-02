@@ -251,7 +251,7 @@
 /**************************************/
 .headlineText {
   position: absolute;
-  left: 76%; /* Position it at roughly the same horizontal position as "personal" */
+  left: 76.6%; /* Position it at roughly the same horizontal position as "personal" */
   transform: translateX(-50%); /* Center it horizontally relative to its position */
   bottom: 22%; /* Position it vertically below the "personal" text */
   font-family: "Montserrat", sans-serif;
