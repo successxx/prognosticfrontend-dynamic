@@ -57,7 +57,7 @@
 /* 2) Zoom Container (Double Size)    */
 /**************************************/
 .zoomContainer {
-  background: #fff;
+  background: #F7F8FA;
   border: 2px solid #dcdcdc;
   border-radius: 10px;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.08);
