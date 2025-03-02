@@ -1,7 +1,6 @@
-// File: /src/App.tsx
 import React, { useEffect, useState } from "react";
-import LoadingIndicator from "./LoadingCircle"; // Uses LoadingCircle.module.css
-import WebinarView from "./WebinarView";         // Uses WebinarView.module.css
+import LoadingIndicator from "./LoadingCircle";
+import WebinarView from "./WebinarView";
 import Header from "./Header";
 import Footer from "./Footer";
 import Fireworks from "./Fireworks";
@@ -13,7 +12,7 @@ function App() {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [streak] = useState(1);
 
-  // For demonstration, we simulate a 10-second loading period.
+  // Simulate a loading period (10 seconds)
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
