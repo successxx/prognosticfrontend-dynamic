@@ -78,7 +78,7 @@ const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
                     <div
   id="image03"
   className="image"
-  style={{ paddingTop: "10px", paddingBottom: "10px" }}
+  style={{ paddingTop: "16px", paddingBottom: "10px" }}
 >
   <span className="frame">
     <img src={headerImage} alt="Header"/>
