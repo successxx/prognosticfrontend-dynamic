@@ -45,13 +45,13 @@ const overlayItems: OverlayItem[] = [
   content: "", // The content will be populated from webinarInjectionData
   startTime: 69.08, // When it should start showing (in seconds)
   endTime: 90.07, // When it should stop showing (in seconds)
-  position: { x: 0.652, y: 0.51 }, // These are the estimated coordinates
+  position: { x: 0.662, y: 0.51 }, // These are the estimated coordinates
   style: {
     color: "#252525",
-    fontSize: "1.5em", // This would be 1.5% of the video width
+    fontSize: "1.8em", // This would be 1.5% of the video width
     fontFamily: '"Montserrat", sans-serif',
     fontWeight: "550",
-    lineHeight: "1.4",
+    lineHeight: "1.5",
     textAlign: "center",
     maxWidth: "15em", // 30em = 30 × font size
     zIndex: "3"
