@@ -1,5 +1,5 @@
 /**************************************/
-/* 1) Outer container, subtle background*/
+/* 1) Outer container, subtle background */
 /**************************************/
 .container {
   display: flex;
@@ -8,7 +8,6 @@
   box-sizing: border-box;
   padding: 20px;
   width: 80%;
-  /* min-height: 100vh; */
   background: #eaeff3;
   gap: 20px;
   position: relative;
@@ -116,14 +115,13 @@
 /**************************************/
 .videoWrapper {
   position: relative;
-  /* 16:9 ratio trick */
-  padding-bottom: 56.25%;
-  height: 0;
+  width: 100%;
+  padding-bottom: 56.25%; /* Fallback for browsers that don't support aspect-ratio */
+  aspect-ratio: 16 / 9;
+  height: auto;
   overflow: hidden;
   background: #000;
   border-radius: 6px;
-  max-width: 100%;
-  margin: 0 auto;
 }
 
 .videoPlayer {
@@ -368,9 +366,7 @@
   100% {
     transform: translate(0, 0);
   }
-  /* 50% {
-    transform: translate(3px, -3px);
-  } */
+  /* 50% { transform: translate(3px, -3px); } */
 }
 
 .animateIn {
@@ -722,7 +718,7 @@
   .zoomContainer {
     max-width: 90vw;
   }
-  /* single–column layout still, keep the video at 16:9 */
+  /* In a single–column layout, remove any two–column classes if present */
   .videoWrapper {
     width: 100%;
     flex: none;
@@ -738,7 +734,6 @@
   border-bottom: 1px solid #ccc;
   padding: 12px;
   text-align: center;
-  /* No top-border-radius so it aligns with chatHeader */
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
@@ -827,7 +822,7 @@
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
-  z-index: 5; /* above video but below overlays like .soundOverlay */
+  z-index: 5;
   font-family: "Montserrat", sans-serif;
   backdrop-filter: blur(10px);
 }
