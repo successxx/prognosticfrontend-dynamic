@@ -76,11 +76,16 @@ const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
                             </svg>
                         </a></div>
                     </div>
-                    <div id="image03" className="image">
-                        <span className="frame">
-                            <img src={headerImage} alt="Header"/>
-                        </span>
-                    </div>
+                    <div
+  id="image03"
+  className="image"
+  style={{ paddingTop: "10px", paddingBottom: "10px" }}
+>
+  <span className="frame">
+    <img src={headerImage} alt="Header"/>
+  </span>
+</div>
+
                     <p id="text07" className="style1">© 202Clients.ai</p></div>
             </div>
         </div>
