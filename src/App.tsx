@@ -1,6 +1,7 @@
+// File: /src/App.tsx
 import React, { useEffect, useState } from "react";
-import LoadingIndicator from "./LoadingCircle";
-import WebinarView from "./WebinarView";
+import LoadingIndicator from "./LoadingCircle"; // Uses LoadingCircle.module.css
+import WebinarView from "./WebinarView";         // Uses WebinarView.module.css
 import Header from "./Header";
 import Footer from "./Footer";
 import Fireworks from "./Fireworks";
@@ -12,20 +13,18 @@ function App() {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [streak] = useState(1);
 
+  // For demonstration, we simulate a 10-second loading period.
   useEffect(() => {
-    // Example logic: wait 10s, then show webinar (or poll some condition)
     const timer = setTimeout(() => {
       setLoading(false);
       setIsContentVisible(true);
     }, 10000);
-
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <div className="wrapper py-4">
       <Header />
-
       {loading ? (
         <LoadingIndicator />
       ) : error ? (
@@ -45,8 +44,6 @@ function App() {
           </div>
         </>
       )}
-
-      {/* example usage of the “Footer” with isFooterVisible when not loading */}
       <Footer isFooterVisible={!loading} />
     </div>
   );
