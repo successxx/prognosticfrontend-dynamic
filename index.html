@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Clients.ai Demo</title>
+    <title>Clients.ai Results</title>
 
     <!-- Montserrat + other fonts -->
     <link
@@ -30,23 +30,31 @@
     <link rel="canonical" href="https://see.clients.ai" />
     <link rel="icon" type="image/png" href="src/assets/favicon.png" />
 
-    <!-- Our main global CSS + modules -->
-    <link rel="stylesheet" href="./index.css" />
-    <!-- The module CSS files can be processed by your bundler. 
-         If your bundler is set up for CSS modules, they won't 
-         be loaded in a link like this. Instead, you import them 
-         from the TSX. But for demonstration, we keep them separate. -->
-    <link rel="stylesheet" href="./LoadingCircle.module.css" />
-    <link rel="stylesheet" href="./WebinarView.module.css" />
+    <!-- Main global CSS -->
+    <link rel="stylesheet" href="index.css" />
+
+    <!-- Loading Circle CSS -->
+    <link rel="stylesheet" href="LoadingCircle.module.css" />
+
+    <!-- WebinarView CSS -->
+    <link rel="stylesheet" href="WebinarView.module.css" />
   </head>
 
-  <body style="margin:0; padding:0;">
-    <noscript>Please enable JavaScript to run this app.</noscript>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
 
-    <!-- Root for React -->
-    <div id="root"></div>
+    <!-- Root for React app: instructions for usage -->
+    <!-- Make sure in your main.tsx you do: 
+         const rootEl = document.getElementById('root');
+         const root = ReactDOM.createRoot(rootEl);
+         root.render(<App />);
+    -->
+    <div id="root" class="root"></div>
 
-    <!-- Hidden typed-output for fireworks centering -->
+    <!-- Hidden container for Fireworks centering (if used) -->
     <div id="typed-output" style="display:none"></div>
+
+    <!-- Main React/TypeScript entry point -->
+    <script src="main.tsx" type="module"></script>
   </body>
 </html>
