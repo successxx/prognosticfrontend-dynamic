@@ -253,7 +253,7 @@
   position: absolute;
   top: auto; /* Remove the vertical centering */
   right: auto; /* Remove the right positioning */
-  left: 76%; /* Position it at roughly the same horizontal position as "personal" */
+  left: 79%; /* Position it at roughly the same horizontal position as "personal" */
   transform: translateX(-50%); /* Center it horizontally relative to its position */
   bottom: 25%; /* Position it vertically below the "personal" text */
   font-family: "Montserrat", sans-serif;
