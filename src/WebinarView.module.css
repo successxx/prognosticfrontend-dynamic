@@ -253,14 +253,14 @@
   position: absolute;
   top: auto; /* Remove the vertical centering */
   right: auto; /* Remove the right positioning */
-  left: 70%; /* Position it at roughly the same horizontal position as "personal" */
+  left: 60%; /* Position it at roughly the same horizontal position as "personal" */
   transform: translateX(-50%); /* Center it horizontally relative to its position */
-  bottom: 25%; /* Position it vertically below the "personal" text */
+  bottom: 50%; /* Position it vertically below the "personal" text */
   font-family: "Montserrat", sans-serif;
-  font-weight: 400;
-  font-size: 16px; /* Match the size of the consultation text */
-  line-height: 1.4;
-  color: #2e2e2e;
+  font-weight: 500;
+  font-size: 30px; /* Match the size of the consultation text */
+  line-height: 1.8;
+  color: #252525;
   text-align: center;
   max-width: 40%; /* Increase the width to accommodate the longer text */
   z-index: 3;
