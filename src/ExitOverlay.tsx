@@ -1,6 +1,6 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import styles from "./WebinarView.module.css";
+import { createPortal } from "react-dom";
 
 interface ExitOverlayProps {
   message: string;
@@ -8,26 +8,17 @@ interface ExitOverlayProps {
 }
 
 const ExitOverlay: React.FC<ExitOverlayProps> = ({ message, onClose }) => {
-  const defaultMsg = "Wait! Are you sure you want to leave?";
-
-  const handleWrapperClick = () => {
-    onClose();
-  };
-
-  const handleBubbleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
-
   return (
-    <div className={styles.exitOverlay} onClick={handleWrapperClick}>
-      <div className={styles.iphoneMessageBubble} onClick={handleBubbleClick}>
+    <div className={styles.exitOverlay} onClick={onClose}>
+      <div
+        className={styles.iphoneMessageBubble}
+        onClick={(e) => e.stopPropagation()}
+      >
         <button className={styles.exitCloseBtn} onClick={onClose}>
           ×
         </button>
         <div className={styles.iphoneSender}>Selina</div>
-        <div className={styles.iphoneMessageText}>
-          {message && message.trim() ? message : defaultMsg}
-        </div>
+        <div className={styles.iphoneMessageText}>{message}</div>
       </div>
     </div>
   );
