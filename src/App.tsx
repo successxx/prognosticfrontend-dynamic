@@ -1,51 +1,53 @@
 import React, { useEffect, useState } from "react";
 import LoadingIndicator from "./LoadingCircle";
 import WebinarView from "./WebinarView";
+import StreakCounter from "./StreakCounter";
+import Fireworks from "./Fireworks";
 import Header from "./Header";
 import Footer from "./Footer";
-import Fireworks from "./Fireworks";
-import StreakCounter from "./StreakCounter";
 
-function App() {
+/**
+ * Demo App:
+ * 1) Show LoadingIndicator first.
+ * 2) After X seconds (or after some data condition), hide LoadingIndicator and show WebinarView.
+ * 3) Show optional StreakCounter and Fireworks as demonstration.
+ */
+const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [streak] = useState(1);
 
-  // Simulate a loading period (10 seconds)
   useEffect(() => {
+    // Mock a short async process
     const timer = setTimeout(() => {
       setLoading(false);
       setIsContentVisible(true);
-    }, 10000);
+    }, 4000);
     return () => clearTimeout(timer);
   }, []);
 
+  if (loading) {
+    return <LoadingIndicator />;
+  }
+
+  if (error) {
+    return <div style={{ textAlign: "center" }}>{error}</div>;
+  }
+
   return (
-    <div className="wrapper py-4">
+    <div className="wrapper">
       <Header />
-      {loading ? (
-        <LoadingIndicator />
-      ) : error ? (
-        <p style={{ textAlign: "center" }}>{error}</p>
-      ) : (
-        <>
-          {isContentVisible && (
-            <div className="d-flex w-100 justify-content-center fade-in visible">
-              <WebinarView />
-              <Fireworks />
-            </div>
-          )}
-          <div className="streak-container row justify-content-center mt-5">
-            <div className="col-12 col-sm-6 text-center">
-              <StreakCounter streak={streak} />
-            </div>
-          </div>
-        </>
+      {isContentVisible && (
+        <div style={{ position: "relative" }}>
+          <WebinarView />
+          <Fireworks />
+          <StreakCounter streak={streak} />
+        </div>
       )}
-      <Footer isFooterVisible={!loading} />
+      <Footer isFooterVisible={true} />
     </div>
   );
-}
+};
 
 export default App;
