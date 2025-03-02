@@ -921,4 +921,7 @@ video::-webkit-media-controls-current-time-display,
 video::-webkit-media-controls-time-remaining-display,
 video::-webkit-media-controls-timeline {
   display: none !important;
+  video::-webkit-media-controls-panel {
+  background-color: #C3C3C3 !important; /* or #F7F8FA if you prefer */
+}
 }
