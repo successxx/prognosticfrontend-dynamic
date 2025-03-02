@@ -27,8 +27,25 @@ const overlayItems: OverlayItem[] = [
   key: "headline", // Use 'headline' to match the data field in your JSON
   content: "", // The content will be populated from webinarInjectionData
   startTime: 0, // When it should start showing (in seconds)
-  endTime: 600, // When it should stop showing (in seconds)
-  position: { x: 0.766, y: 0.78 }, // x: 76.6% from left, y: 78% from top (100% - 22%)
+  endTime: 11.05, // When it should stop showing (in seconds)
+  position: { x: 0.28, y: 0.78 }, // These are the estimated coordinates
+  style: {
+    color: "#252525",
+    fontSize: "1.5em", // This would be 1.5% of the video width
+    fontFamily: '"Montserrat", sans-serif',
+    fontWeight: "500",
+    lineHeight: "1.4",
+    textAlign: "center",
+    maxWidth: "40em", // 30em = 30 × font size
+    zIndex: "3"
+  },
+},
+  {
+  key: "headline", // Use 'headline' to match the data field in your JSON
+  content: "", // The content will be populated from webinarInjectionData
+  startTime: 69.08, // When it should start showing (in seconds)
+  endTime: 90.07, // When it should stop showing (in seconds)
+  position: { x: 0.767, y: 0.78 }, // Centered under "personal", similar height to consultation text
   style: {
     color: "#252525",
     fontSize: "1.5em", // This would be 1.5% of the video width
