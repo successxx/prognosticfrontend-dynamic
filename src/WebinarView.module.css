@@ -148,12 +148,14 @@
 /* For the video, strictly keep 16:9 within the forced container height */
 .videoWrapper {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
+  padding-bottom: 56.25%; /* 16:9 ratio */
   height: 0;
   overflow: hidden;
   background: #000;
-  border-radius: 6px;
-  flex: 1;
+  border-radius: 6px; /* optional */
+  flex: 1;           /* optional if you’re using flex layouts */
+  max-width: 100%;
+  margin: 0 auto;    /* centers if you want it centered horizontally */
 }
 
 /**************************************/
