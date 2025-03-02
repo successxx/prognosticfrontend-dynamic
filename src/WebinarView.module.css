@@ -1,5 +1,5 @@
 /**************************************/
-/* 1) Outer container, subtle background*/
+/* 1) Outer container, subtle background */
 /**************************************/
 .container {
   display: flex;
@@ -8,8 +8,7 @@
   box-sizing: border-box;
   padding: 20px;
   width: 80%;
-  /* min-height: 100vh; */
-  background: #eaeff3;
+  background: transparent;
   gap: 20px;
   position: relative;
 }
@@ -58,15 +57,12 @@
 /* 2) Zoom Container (Double Size)    */
 /**************************************/
 .zoomContainer {
-  background: #fff;
+  background: #F7F8FA;
   border: 2px solid #dcdcdc;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.08);
   padding: 16px;
-  /* Double the typical width, so it's large */
-  /* max-width: 1800px; */
   width: 100%;
-  /* Also let height grow for a bigger layout */
   margin: 0 auto;
 }
 
@@ -115,8 +111,19 @@
 }
 
 /**************************************/
-/* 3) The 70/30 layout, same height   */
+/* 3) Video Container (Single Column, 16×9) */
 /**************************************/
+.videoWrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* Fallback for browsers that don't support aspect-ratio */
+  aspect-ratio: 16 / 9;
+  height: auto;
+  overflow: hidden;
+  background: #000;
+  border-radius: 6px;
+}
+
 .videoPlayer {
   position: absolute;
   top: 0;
@@ -124,41 +131,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.twoColumnLayout {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 16px;
-  /* Force a bigger container so video & chat share height. */
-  /* height: 800px; double from smaller ~400px. Adjust as needed. */
-  height: 94%;
-}
-.videoColumn {
-  flex: 0 0 70%;
-  max-width: 70%;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  flex: 1;
-}
-.chatColumn {
-  flex: 0 0 30%;
-  max-width: 30%;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-/* For the video, strictly keep 16:9 within the forced container height */
-.videoWrapper {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
-  height: 0;
-  overflow: hidden;
-  background: #000;
-  border-radius: 6px;
-  flex: 1;
 }
 
 /**************************************/
@@ -279,16 +251,16 @@
 /**************************************/
 .headlineText {
   position: absolute;
-  top: 50%;
-  right: 75px;
-  transform: translateY(-50%);
+  left: 76.6%; /* Position it at roughly the same horizontal position as "personal" */
+  transform: none;
+  bottom: 22%; /* Position it vertically below the "personal" text */
   font-family: "Montserrat", sans-serif;
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 1.2;
-  color: #2e2e2e;
+  font-weight: 500;
+  font-size: clamp(16px, 3vw, 30px); /* Responsive font size */
+  line-height: 1.4;
+  color: #252525;
   text-align: center;
-  max-width: 30%;
+  width: 30%; /* Increase the width to accommodate the longer text */
   z-index: 3;
 }
 
@@ -394,9 +366,7 @@
   100% {
     transform: translate(0, 0);
   }
-  /* 50% {
-    transform: translate(3px, -3px);
-  } */
+  /* 50% { transform: translate(3px, -3px); } */
 }
 
 .animateIn {
@@ -748,17 +718,7 @@
   .zoomContainer {
     max-width: 90vw;
   }
-  .twoColumnLayout {
-    height: auto;
-    flex-direction: column;
-  }
-  .videoColumn,
-  .chatColumn {
-    flex: none;
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-  }
+  /* In a single–column layout, remove any two–column classes if present */
   .videoWrapper {
     width: 100%;
     flex: none;
@@ -774,7 +734,6 @@
   border-bottom: 1px solid #ccc;
   padding: 12px;
   text-align: center;
-  /* No top-border-radius so it aligns with chatHeader */
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
@@ -863,7 +822,7 @@
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
-  z-index: 5; /* above video but below overlays like .soundOverlay */
+  z-index: 5;
   font-family: "Montserrat", sans-serif;
   backdrop-filter: blur(10px);
 }
@@ -953,4 +912,32 @@
 }
 .investNowBtn:hover {
   background: #013289;
+}
+
+/* Step 1: Hide the default time/timeline from the video controls (Chrome/Safari/Edge) */
+video::-webkit-media-controls-current-time-display,
+video::-webkit-media-controls-time-remaining-display,
+video::-webkit-media-controls-timeline {
+  display: none !important;
+  video::-webkit-media-controls-panel {
+  background-color: #C3C3C3 !important; /* or #F7F8FA if you prefer */
+}
+}
+
+@media (max-width: 600px) {
+  .clockWidget {
+    /* Make it smaller */
+    width: 200px;                /* instead of 320px */
+    top: 50%;                    /* recenter for mobile */
+    left: 50%;
+    transform: translate(-50%, -50%); /* combine the shift & keep it centered */
+  }
+
+  /* Optionally shrink the clock text a bit so it fits */
+  .clockTime {
+    font-size: 1.8rem; 
+  }
+  .clockDate {
+    font-size: 0.8rem;
+  }
 }
