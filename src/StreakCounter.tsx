@@ -1,7 +1,13 @@
-function StreakCounter({ streak }) {
-  const [visible, setVisible] = React.useState(false);
+import React, { useEffect, useState } from "react";
 
-  React.useEffect(() => {
+interface StreakCounterProps {
+  streak: number;
+}
+
+const StreakCounter: React.FC<StreakCounterProps> = ({ streak }) => {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
     setVisible(true);
     const timer = setTimeout(() => {
       setVisible(false);
@@ -14,4 +20,6 @@ function StreakCounter({ streak }) {
       Streak: {streak} 🔥
     </div>
   );
-}
+};
+
+export default StreakCounter;
