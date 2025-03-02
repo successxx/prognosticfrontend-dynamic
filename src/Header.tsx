@@ -1,4 +1,3 @@
-
 // src/Header.tsx
 
 import React from 'react';
@@ -8,8 +7,8 @@ import './index.css';
 const Header: React.FC = () => (
     <div id="image03" className="image">
         <span className="frame">
-        <img src={headerImage} alt="Header"/>
-            </span>
+            <img src={headerImage} alt="Header"/>
+        </span>
     </div>
 );
 
