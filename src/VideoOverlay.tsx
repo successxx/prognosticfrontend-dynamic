@@ -1,14 +1,37 @@
+// ==========================
+// VIDEOOVERLAY.TSX
+// ==========================
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { IWebinarInjection } from "./WebinarView";
+
+/**
+ * Convert "4:22.79" => 4*60 + 22.79 => 262.79 seconds
+ * If the format is just "12.34", parseFloat will handle it.
+ */
+function parseTimestamp(ts: string): number {
+  // If no colon present, parse as float
+  if (!ts.includes(":")) {
+    return parseFloat(ts) || 0;
+  }
+  // "MM:SS.xx" or "M:SS.xx"
+  const parts = ts.split(":");
+  if (parts.length === 2) {
+    const m = parseFloat(parts[0]) || 0;
+    const s = parseFloat(parts[1]) || 0;
+    return m * 60 + s;
+  }
+  // fallback
+  return parseFloat(ts) || 0;
+}
 
 interface OverlayItem {
   key: keyof IWebinarInjection;
   content: string;
-  startTime: number;
-  endTime: number;
+  startTime: string; // initially a string
+  endTime: string;   // initially a string
   position: {
-    x: number; // 0..1 (percentage of container width)
-    y: number; // 0..1 (percentage of container height)
+    x: number; // 0..1
+    y: number; // 0..1
   };
   style?: React.CSSProperties;
 }
@@ -19,6 +42,7 @@ interface VideoOverlayProps {
   webinarInjectionData?: IWebinarInjection;
 }
 
+// Your overlay data from user:
 const overlayItems: OverlayItem[] = [
   {
     key: "lead_email",
@@ -231,7 +255,6 @@ const overlayItems: OverlayItem[] = [
       textAlign: "left",
     },
   },
-
   {
     key: "email_1",
     content: "",
@@ -312,16 +335,20 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
   const overlayRef = useRef<HTMLDivElement>(null);
   const rafId = useRef<number>();
 
-  // Prepare items with the real data
+  // Convert overlay items to numeric times + inject content
   const updatedOverlayItems = useMemo(() => {
     if (!webinarInjectionData) return [];
     return overlayItems.map((item) => ({
       ...item,
-      content: webinarInjectionData[item.key]?.trim() || "",
+      // parse each time string to numeric
+      startNum: parseTimestamp(item.startTime),
+      endNum: parseTimestamp(item.endTime),
+      // actual text from user data
+      content: (webinarInjectionData[item.key] || item.content || "").trim(),
     }));
   }, [webinarInjectionData]);
 
-  // Track video time continuously
+  // Track video time via requestAnimationFrame
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -337,10 +364,10 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
     };
   }, [videoRef]);
 
-  // Update overlay’s CSS vars for sizing
+  // Update overlay CSS vars for sizing
   useEffect(() => {
     const updateOverlaySize = () => {
-      if (videoContainerRef.current && overlayRef.current) {
+      if (overlayRef.current && videoContainerRef.current) {
         const { width, height } =
           videoContainerRef.current.getBoundingClientRect();
         overlayRef.current.style.setProperty("--overlay-width", `${width}px`);
@@ -352,37 +379,37 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
     return () => window.removeEventListener("resize", updateOverlaySize);
   }, [videoContainerRef]);
 
-  // Determine if the item is HTML injection
-  const embeddableInjection = (key: keyof IWebinarInjection) => {
-    return key === "email_1" || key === "email_2" || key === "salesletter";
-  };
+  const embeddableInjection = (key: keyof IWebinarInjection) =>
+    key === "email_1" || key === "email_2" || key === "salesletter";
 
+  // Render
   return (
     <div ref={overlayRef} className="video-overlay">
       {updatedOverlayItems.map((item, index) => {
-        const isVisible = currentTime >= item.startTime && currentTime <= item.endTime;
-        const style: React.CSSProperties = {
+        // is this overlay item visible at currentTime?
+        const visible = currentTime >= item.startNum && currentTime <= item.endNum;
+        const style = {
           ...item.style,
           left: `${item.position.x * 100}%`,
           top: `${item.position.y * 100}%`,
         };
 
         if (embeddableInjection(item.key)) {
-          // If it's HTML injection, use dangerouslySetInnerHTML
+          // dangerouslySetInnerHTML for HTML
           return (
             <div
               key={index}
-              className={`overlay-item ${isVisible ? "visible" : ""}`}
+              className={`overlay-item ${visible ? "visible" : ""}`}
               style={style}
               dangerouslySetInnerHTML={{ __html: item.content }}
             />
           );
         } else {
-          // Otherwise, plain text
+          // Plain text injection
           return (
             <div
               key={index}
-              className={`overlay-item ${isVisible ? "visible" : ""}`}
+              className={`overlay-item ${visible ? "visible" : ""}`}
               style={style}
             >
               {item.content}
