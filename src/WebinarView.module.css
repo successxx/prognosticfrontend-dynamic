@@ -63,10 +63,7 @@
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   padding: 16px;
-  /* Double the typical width, so it's large */
-  /* max-width: 1800px; */
   width: 100%;
-  /* Also let height grow for a bigger layout */
   margin: 0 auto;
 }
 
@@ -130,8 +127,6 @@
   display: flex;
   flex-wrap: nowrap;
   gap: 16px;
-  /* Force a bigger container so video & chat share height. */
-  /* height: 800px; double from smaller ~400px. Adjust as needed. */
   height: 94%;
 }
 .videoColumn {
@@ -774,7 +769,6 @@
   border-bottom: 1px solid #ccc;
   padding: 12px;
   text-align: center;
-  /* No top-border-radius so it aligns with chatHeader */
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
