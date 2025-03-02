@@ -53,7 +53,7 @@ const overlayItems: OverlayItem[] = [
     fontWeight: "500",
     lineHeight: "1.4",
     textAlign: "center",
-    maxWidth: "18m", // 30em = 30 × font size
+    maxWidth: "15m", // 30em = 30 × font size
     zIndex: "3"
   },
 },
