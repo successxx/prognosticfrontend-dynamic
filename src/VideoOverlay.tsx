@@ -9,8 +9,8 @@ interface OverlayItem {
   startTime: number;
   endTime: number;
   position: {
-    x: number; // 0 to 1, representing percentage across width
-    y: number; // 0 to 1, representing percentage down height
+    x: number; // 0..1 => percentage across width
+    y: number; // 0..1 => percentage down height
   };
   style?: React.CSSProperties;
 }
@@ -318,12 +318,10 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
     if (!webinarInjectionData) {
       return [];
     }
-    return overlayItems.map((item) => {
-      return {
-        ...item,
-        content: webinarInjectionData[item.key]?.trim() ?? "",
-      };
-    });
+    return overlayItems.map((item) => ({
+      ...item,
+      content: webinarInjectionData[item.key]?.trim() ?? "",
+    }));
   }, [webinarInjectionData]);
 
   useEffect(() => {
@@ -344,29 +342,26 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
   useEffect(() => {
     const updateOverlaySize = () => {
       if (videoContainerRef.current && overlayRef.current) {
-        const { width, height } =
-          videoContainerRef.current.getBoundingClientRect();
+        const { width, height } = videoContainerRef.current.getBoundingClientRect();
         overlayRef.current.style.setProperty("--overlay-width", `${width}px`);
         overlayRef.current.style.setProperty("--overlay-height", `${height}px`);
       }
     };
     updateOverlaySize();
     window.addEventListener("resize", updateOverlaySize);
-
     return () => {
       window.removeEventListener("resize", updateOverlaySize);
     };
   }, [videoContainerRef]);
 
-  // Which keys embed raw HTML?
+  // Keys that should embed raw HTML
   const embeddableInjection = (key: keyof IWebinarInjection) =>
     key === "email_1" || key === "email_2" || key === "salesletter";
 
   return (
     <div ref={overlayRef} className="video-overlay">
       {updatedOverlayItems.map((item, index) => {
-        const isVisible =
-          currentTime >= item.startTime && currentTime <= item.endTime;
+        const isVisible = currentTime >= item.startTime && currentTime <= item.endTime;
         if (!videoRef.current) return null;
 
         if (embeddableInjection(item.key)) {
