@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-function Fireworks() {
+const Fireworks: React.FC = () => {
   useEffect(() => {
     createFireworks();
   }, []);
@@ -65,7 +65,7 @@ function Fireworks() {
     }
   }
 
-  return <div id="fireworks-container" />;
-}
+  return <div id="fireworks-container"></div>;
+};
 
 export default Fireworks;
