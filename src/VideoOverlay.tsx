@@ -1,6 +1,4 @@
-import type React from "react";
-import "./index.css";
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { IWebinarInjection } from "./WebinarView";
 
 interface OverlayItem {
@@ -8,16 +6,13 @@ interface OverlayItem {
   content: string;
   startTime: number;
   endTime: number;
-  position: {
-    x: number; // 0..1 => percentage across width
-    y: number; // 0..1 => percentage down height
-  };
+  position: { x: number; y: number };
   style?: React.CSSProperties;
 }
 
 interface VideoOverlayProps {
   videoRef: React.RefObject<HTMLVideoElement>;
-  videoContainerRef: React.RefObject<HTMLDivElement>;
+  videoContainerRef: React.RefObject<HTMLDivElement> | null;
   webinarInjectionData?: IWebinarInjection;
 }
 
@@ -305,20 +300,30 @@ const overlayItems: OverlayItem[] = [
   },
 ];
 
-const updatedOverlayItems = React.useMemo(() => {
+const VideoOverlay: React.FC<VideoOverlayProps> = ({
+  videoRef,
+  videoContainerRef,
+  webinarInjectionData,
+}) => {
+  const [currentTime, setCurrentTime] = useState(0);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const rafId = useRef<number>();
+
+  // Merge data
+  const updatedOverlayItems = useMemo(() => {
     if (!webinarInjectionData) return [];
     return overlayItems.map((item) => ({
       ...item,
-      content: webinarInjectionData[item.key]?.trim() ?? "",
+      content: webinarInjectionData[item.key] ?? "",
     }));
   }, [webinarInjectionData]);
 
-  React.useEffect(() => {
-    const videoEl = videoRef.current;
-    if (!videoEl) return;
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
 
     function updateTime() {
-      setCurrentTime(videoEl.currentTime);
+      setCurrentTime(vid.currentTime);
       rafId.current = requestAnimationFrame(updateTime);
     }
     rafId.current = requestAnimationFrame(updateTime);
@@ -328,21 +333,20 @@ const updatedOverlayItems = React.useMemo(() => {
     };
   }, [videoRef]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (!videoContainerRef?.current || !overlayRef.current) return;
     function updateOverlaySize() {
-      if (videoContainerRef.current && overlayRef.current) {
-        const { width, height } = videoContainerRef.current.getBoundingClientRect();
-        overlayRef.current.style.setProperty("--overlay-width", `${width}px`);
-        overlayRef.current.style.setProperty("--overlay-height", `${height}px`);
-      }
+      const { width, height } = videoContainerRef.current.getBoundingClientRect();
+      overlayRef.current.style.setProperty("--overlay-width", `${width}px`);
+      overlayRef.current.style.setProperty("--overlay-height", `${height}px`);
     }
     updateOverlaySize();
     window.addEventListener("resize", updateOverlaySize);
     return () => window.removeEventListener("resize", updateOverlaySize);
   }, [videoContainerRef]);
 
-  function embeddableInjection(key) {
-    // if key is "email_1","email_2","salesletter", etc.
+  function embeddableInjection(key: keyof IWebinarInjection) {
+    // for example, if it’s “email_1, email_2, salesletter”
     return key === "email_1" || key === "email_2" || key === "salesletter";
   }
 
@@ -383,4 +387,6 @@ const updatedOverlayItems = React.useMemo(() => {
       })}
     </div>
   );
-}
+};
+
+export default VideoOverlay;
