@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Clients.ai Results</title>
+    <title>Clients.ai Demo</title>
 
     <!-- Montserrat + other fonts -->
     <link
@@ -30,20 +30,23 @@
     <link rel="canonical" href="https://see.clients.ai" />
     <link rel="icon" type="image/png" href="src/assets/favicon.png" />
 
-    <!-- Main global CSS -->
-    <link rel="stylesheet" href="src/index.css" />
+    <!-- Our main global CSS + modules -->
+    <link rel="stylesheet" href="./index.css" />
+    <!-- The module CSS files can be processed by your bundler. 
+         If your bundler is set up for CSS modules, they won't 
+         be loaded in a link like this. Instead, you import them 
+         from the TSX. But for demonstration, we keep them separate. -->
+    <link rel="stylesheet" href="./LoadingCircle.module.css" />
+    <link rel="stylesheet" href="./WebinarView.module.css" />
   </head>
 
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+  <body style="margin:0; padding:0;">
+    <noscript>Please enable JavaScript to run this app.</noscript>
 
-    <!-- Root for React app -->
-    <div id="root" class="root"></div>
+    <!-- Root for React -->
+    <div id="root"></div>
 
-    <!-- Hidden container to let Fireworks center on it -->
+    <!-- Hidden typed-output for fireworks centering -->
     <div id="typed-output" style="display:none"></div>
-
-    <!-- Main React/TypeScript entry point -->
-    <script src="/src/main.tsx" type="module"></script>
   </body>
 </html>
