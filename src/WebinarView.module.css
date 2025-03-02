@@ -8,7 +8,7 @@
   box-sizing: border-box;
   padding: 20px;
   width: 80%;
-  background: #eaeff3;
+  background: transparent;
   gap: 20px;
   position: relative;
 }
@@ -60,7 +60,7 @@
   background: #fff;
   border: 2px solid #dcdcdc;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.08);
   padding: 16px;
   width: 100%;
   margin: 0 auto;
@@ -914,4 +914,11 @@
 }
 .investNowBtn:hover {
   background: #013289;
+}
+
+/* Step 1: Hide the default time/timeline from the video controls (Chrome/Safari/Edge) */
+video::-webkit-media-controls-current-time-display,
+video::-webkit-media-controls-time-remaining-display,
+video::-webkit-media-controls-timeline {
+  display: none !important;
 }
