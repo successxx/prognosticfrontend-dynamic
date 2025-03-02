@@ -24,6 +24,7 @@ const Fireworks: React.FC = () => {
       "#FF4500",
     ];
 
+    // We rely on #typed-output for the bounding rect to center fireworks
     const textBox = document.getElementById("typed-output");
     if (!textBox) return;
     const rect = textBox.getBoundingClientRect();
