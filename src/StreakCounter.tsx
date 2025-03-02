@@ -4,7 +4,7 @@ interface StreakCounterProps {
   streak: number;
 }
 
-const StreakCounter: React.FC<StreakCounterProps> = ({ streak }) => {
+function StreakCounter({ streak }: StreakCounterProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -16,10 +16,13 @@ const StreakCounter: React.FC<StreakCounterProps> = ({ streak }) => {
   }, [streak]);
 
   return (
-    <div className={`streak-counter ${visible ? "visible" : ""}`} id="streak-counter">
+    <div
+      className={`streak-counter ${visible ? "visible" : ""}`}
+      id="streak-counter"
+    >
       Streak: {streak} 🔥
     </div>
   );
-};
+}
 
 export default StreakCounter;
