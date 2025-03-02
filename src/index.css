@@ -121,7 +121,8 @@ body {
 
 .clock {
   position: absolute;
-  top: calc(0.3 * var(--clock-base-size));
+  /* Decrease 0.3 to 0.25 (or 0.2) to shift it up */
+  top: calc(0.25 * var(--clock-base-size));
   right: calc(0.6 * var(--clock-base-size));
   font-family: "SF Pro", sans-serif !important;
   font-size: calc(0.4 * var(--clock-base-size));
@@ -130,6 +131,7 @@ body {
   pointer-events: none;
   z-index: 2;
 }
+
 
 .video-overlay {
   position: absolute;
