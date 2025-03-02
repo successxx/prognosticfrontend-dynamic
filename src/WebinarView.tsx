@@ -228,20 +228,23 @@ const WebinarView: React.FC = () => {
           </div>
         )}
 
-        {/* The video element */}
-        <video
-          ref={videoRef}
-          controls
-          playsInline
-          muted={!hasInteracted}
-          className={styles.videoPlayer}
-        >
-          <source
-            src="https://progwebinar.blob.core.windows.net/video/clientsaidemovid.mp4"
-            type="video/mp4"
-          />
-          Your browser does not support HTML5 video.
-        </video>
+{/* The video element */}
+<video
+  ref={videoRef}
+  controls
+  controlsList="nodownload"
+  disablePictureInPicture
+  playsInline
+  muted={!hasInteracted}
+  className={styles.videoPlayer}
+>
+  <source
+    src="https://progwebinar.blob.core.windows.net/video/clientsaidemovid.mp4"
+    type="video/mp4"
+  />
+  Your browser does not support HTML5 video.
+</video>
+
 
         {/* CLOCK widget – this one animates into view over the video,
             then animates out. It remains within the video container so it appears as if you dragged it in */}
