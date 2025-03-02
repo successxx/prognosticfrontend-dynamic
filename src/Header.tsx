@@ -10,7 +10,7 @@ const Header: React.FC = () => (
                 target="_blank" 
                 rel="noopener noreferrer"
             >
-                <img src={headerImage} alt="Header"/>
+                <img src={headerImage} alt="Clients.ai"/>
             </a>
         </span>
     </div>
