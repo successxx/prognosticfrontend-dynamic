@@ -158,7 +158,7 @@ const WebinarView: React.FC = () => {
     function handleVideoTiming() {
       const t = vid.currentTime;
       // HEADLINE: show from 5 to 20 seconds
-      if (t >= 5 && t < 20) {
+      if (t >= 69.17 && t < 90.07) {
         if (!hasShownHeadline) {
           setHasShownHeadline(true);
           setShowHeadline(true);
@@ -167,7 +167,7 @@ const WebinarView: React.FC = () => {
         if (showHeadline) setShowHeadline(false);
       }
       // CLOCK: show at 10 seconds if not already shown
-      if (!showClockWidget && !clockRemoved && t >= 10) {
+      if (!showClockWidget && !clockRemoved && t >= 4) {
         setShowClockWidget(true);
       }
     }
@@ -180,7 +180,7 @@ const WebinarView: React.FC = () => {
     if (clockDragInComplete) {
       const timer = setTimeout(() => {
         setClockRemoved(true);
-      }, 10000);
+      }, 8000);
       return () => clearTimeout(timer);
     }
   }, [clockDragInComplete]);
