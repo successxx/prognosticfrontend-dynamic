@@ -121,7 +121,7 @@ body {
 
 .clock {
   position: absolute;
-top: calc(0.3 * var(--clock-base-size) - 5px);
+top: calc(0.3 * var(--clock-base-size) - 2px);
   right: calc(0.6 * var(--clock-base-size));
   font-family: "SF Pro", sans-serif !important;
   font-size: calc(0.44 * var(--clock-base-size));
