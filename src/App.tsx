@@ -1,6 +1,12 @@
 /*******************************************************
 11) APP 
 *******************************************************/
+import React from 'react';
+import Header from './Header';
+import WebinarView from './WebinarView';
+import Fireworks from './Fireworks';
+import StreakCounter from './StreakCounter';
+
 function App() {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState("");
@@ -85,3 +91,5 @@ function App() {
     </div>
   );
 }
+
+export default App;
