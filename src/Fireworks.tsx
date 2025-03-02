@@ -1,16 +1,13 @@
-// src/Fireworks.tsx
-import React, { useEffect } from "react";
-
-const Fireworks: React.FC = () => {
-  useEffect(() => {
+function Fireworks() {
+  React.useEffect(() => {
     createFireworks();
   }, []);
 
-  const createFireworks = () => {
+  function createFireworks() {
     const container = document.getElementById("fireworks-container");
     if (!container) return;
-
     container.innerHTML = "";
+
     const colors = [
       "#FF00FF",
       "#A020F0",
@@ -24,7 +21,6 @@ const Fireworks: React.FC = () => {
       "#FF4500",
     ];
 
-    // We rely on #typed-output for the bounding rect to center fireworks
     const textBox = document.getElementById("typed-output");
     if (!textBox) return;
     const rect = textBox.getBoundingClientRect();
@@ -36,14 +32,9 @@ const Fireworks: React.FC = () => {
         createFirework(container, colors, centerX, centerY);
       }, i * 50);
     }
-  };
+  }
 
-  const createFirework = (
-    container: HTMLElement,
-    colors: string[],
-    x: number,
-    y: number
-  ) => {
+  function createFirework(container, colors, x, y) {
     const firework = document.createElement("div");
     firework.className = "firework";
     firework.style.left = `${x + (Math.random() - 0.5) * 300}px`;
@@ -65,9 +56,7 @@ const Fireworks: React.FC = () => {
       spark.style.setProperty("--ty", `${Math.sin(angle) * distance}px`);
       container.appendChild(spark);
     }
-  };
+  }
 
   return <div id="fireworks-container"></div>;
-};
-
-export default Fireworks;
+}
