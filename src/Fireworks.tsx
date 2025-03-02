@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-const Fireworks: React.FC = () => {
+function Fireworks() {
   useEffect(() => {
     createFireworks();
   }, []);
@@ -8,8 +8,8 @@ const Fireworks: React.FC = () => {
   function createFireworks() {
     const container = document.getElementById("fireworks-container");
     if (!container) return;
-
     container.innerHTML = "";
+
     const colors = [
       "#FF00FF",
       "#A020F0",
@@ -36,7 +36,12 @@ const Fireworks: React.FC = () => {
     }
   }
 
-  function createFirework(container: HTMLElement, colors: string[], x: number, y: number) {
+  function createFirework(
+    container: HTMLElement,
+    colors: string[],
+    x: number,
+    y: number
+  ) {
     const firework = document.createElement("div");
     firework.className = "firework";
     firework.style.left = `${x + (Math.random() - 0.5) * 300}px`;
@@ -60,7 +65,7 @@ const Fireworks: React.FC = () => {
     }
   }
 
-  return <div id="fireworks-container"></div>;
-};
+  return <div id="fireworks-container" />;
+}
 
 export default Fireworks;
