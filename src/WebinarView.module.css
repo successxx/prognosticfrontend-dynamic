@@ -253,13 +253,13 @@
   position: absolute;
   top: auto; /* Remove the vertical centering */
   right: auto; /* Remove the right positioning */
-  left: 72%; /* Position it at roughly the same horizontal position as "personal" */
+  left: 77%; /* Position it at roughly the same horizontal position as "personal" */
   transform: translateX(-50%); /* Center it horizontally relative to its position */
-  bottom: 27%; /* Position it vertically below the "personal" text */
+  bottom: 25%; /* Position it vertically below the "personal" text */
   font-family: "Montserrat", sans-serif;
   font-weight: 500;
   font-size: 30px; /* Match the size of the consultation text */
-  line-height: 1.8;
+  line-height: 1.4;
   color: #252525;
   text-align: center;
   max-width: 30%; /* Increase the width to accommodate the longer text */
