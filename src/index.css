@@ -1,152 +1,22 @@
-/*
-  1) GLOBAL + BASICS
-*/
-body {
-  font-family: "Montserrat", sans-serif;
-  background-image: linear-gradient(to bottom right, #f0f4f8, #e6ebf0);
-  margin: 0;
-  padding: 40px 0;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 18px;
-}
+/* =========================
+   WEBINAR VIDEO PAGE STYLES
+========================== */
 
-.root {
-  width: 90%;
-  min-height: 100vh;
-}
-
-/* Basic fade in for your "fade-in" classes */
-.fade-in {
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-}
-.fade-in.visible {
-  opacity: 1;
-}
-
-/* ---------------------------
-   1) GLOBAL & BASICS
---------------------------- */
-body {
-  font-family: "Montserrat", sans-serif;
-  background-image: linear-gradient(to bottom right, #f0f4f8, #e6ebf0);
-  margin: 0;
-  padding: 40px 0;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 18px;
-}
-.root {
-  width: 90%;
-  min-height: 100vh;
-}
-
-/* Fade-in transition */
-.fade-in {
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-}
-.fade-in.visible {
-  opacity: 1;
-}
-
-/* ---------------------------
-   2) WRAPPER / CONTAINER
---------------------------- */
-#wrapper,
+/* Container for the webinar video page */
 .container {
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: "Montserrat", sans-serif;
   box-sizing: border-box;
+  padding: 20px;
+  width: 80%;
+  background: #eaeff3;
+  gap: 20px;
+  position: relative;
+  margin: 0 auto;
 }
 
-/* ---------------------------
-   3) FIREWORKS (if used)
---------------------------- */
-#fireworks-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1000;
-}
-.firework,
-.spark {
-  position: absolute;
-  border-radius: 50%;
-}
-.firework {
-  width: 6px;
-  height: 6px;
-  animation: shoot 1s ease-out forwards;
-}
-.spark {
-  width: 5px;
-  height: 5px;
-  animation: spark 0.8s ease-out forwards;
-}
-@keyframes shoot {
-  0% {
-    transform: translateY(50vh) scale(0);
-    opacity: 0;
-  }
-  50% {
-    transform: translateY(-25vh) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-50vh) scale(0.8);
-    opacity: 0;
-  }
-}
-@keyframes spark {
-  0% {
-    transform: translate(0, 0) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(var(--tx), var(--ty)) scale(0);
-    opacity: 0;
-  }
-}
-
-/* ---------------------------
-   4) STREAK COUNTER
---------------------------- */
-.streak-counter {
-  font-size: 20px;
-  font-weight: 600;
-  color: #252525;
-  background-color: rgba(255, 255, 255, 0.95);
-  padding: 12px 20px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(1, 66, 172, 0.2);
-  opacity: 0;
-  transition: all 0.5s ease-in-out;
-  z-index: 2;
-  position: absolute;
-  bottom: -60px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.streak-counter.visible {
-  opacity: 1;
-  bottom: -50px;
-}
-
-/* ---------------------------
-   5) VIDEO PAGE STYLES
---------------------------- */
-/* Video container (16:9 ratio) */
+/* Video wrapper (16:9 ratio) */
 .videoWrapper {
   position: relative;
   width: 100%;
@@ -157,7 +27,7 @@ body {
   border-radius: 6px;
 }
 
-/* The video element fills its container without black bars */
+/* Video element fills container without black bars */
 .videoPlayer {
   position: absolute;
   top: 0;
@@ -167,7 +37,7 @@ body {
   object-fit: cover;
 }
 
-/* Sound overlay for unmuting */
+/* Sound overlay */
 .soundOverlay {
   position: absolute;
   top: 0;
@@ -219,22 +89,103 @@ body {
   opacity: 1;
 }
 
-/* Clock widget (fluid width using vw) */
+/* Exit overlay */
+.exitOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.25s ease;
+  cursor: pointer;
+}
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.iphoneMessageBubble {
+  position: relative;
+  max-width: 80%;
+  width: 320px;
+  background: #0a84ff;
+  color: #fff;
+  border-radius: 18px;
+  padding: 14px 20px;
+  animation: bubblePop 0.35s ease-out;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  cursor: auto;
+}
+@keyframes bubblePop {
+  0% { transform: scale(0.85); opacity: 0; }
+  55% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.exitCloseBtn {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #fff;
+  opacity: 0.9;
+}
+.iphoneSender {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.iphoneMessageText {
+  font-size: 1rem;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+.iphoneMessageBubble::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  bottom: 20px;
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  border-right-color: #0a84ff;
+}
+
+/* Headline text overlay */
+.headlineText {
+  position: absolute;
+  top: 50%;
+  right: 75px;
+  transform: translateY(-50%);
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.2;
+  color: #2e2e2e;
+  text-align: center;
+  max-width: 30%;
+  z-index: 3;
+}
+
+/* Clock widget (drag in/out) */
 .clockWidget {
   position: absolute;
   top: 40%;
   left: 45%;
-  width: 25vw;
-  min-width: 180px;
-  max-width: 400px;
+  width: 320px;
   background: rgba(255, 255, 255, 0.98);
   border-radius: 10px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   z-index: 3;
   transform: translate(-120%, -120%);
 }
-
-/* Keyframe animations for the clock widget */
 @keyframes dragIn {
   0% { transform: translate(-120%, -120%); }
   25% { transform: translate(-78%, -65%); }
@@ -262,8 +213,6 @@ body {
 .wobble {
   animation: wobble 2s infinite ease-in-out;
 }
-
-/* Clock widget internal styling */
 .widgetHeader {
   background: #f5f5f7;
   height: 28px;
@@ -318,141 +267,4 @@ body {
   color: #86868b;
   font-weight: 400;
   text-align: center;
-}
-
-/* Footer styling */
-.footer {
-  text-align: center;
-  font-size: 0.75rem;
-  color: #999;
-  margin-top: 25px;
-  font-family: "Montserrat", sans-serif;
-}
-
-/*
-  2) WRAPPER / CONTAINER
-*/
-#wrapper {
-  -webkit-overflow-scrolling: touch;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 100vh;
-  overflow: hidden;
-  position: relative;
-  z-index: 2;
-}
-
-.container {
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/*
-  3) FIREWORKS 
-*/
-#fireworks-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1000;
-}
-.firework,
-.spark {
-  position: absolute;
-  border-radius: 50%;
-}
-.firework {
-  width: 6px;
-  height: 6px;
-  animation: shoot 1s ease-out forwards;
-}
-.spark {
-  width: 5px;
-  height: 5px;
-  animation: spark 0.8s ease-out forwards;
-}
-@keyframes shoot {
-  0% {
-    transform: translateY(50vh) scale(0);
-    opacity: 0;
-  }
-  50% {
-    transform: translateY(-25vh) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-50vh) scale(0.8);
-    opacity: 0;
-  }
-}
-@keyframes spark {
-  0% {
-    transform: translate(0, 0) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(var(--tx), var(--ty)) scale(0);
-    opacity: 0;
-  }
-}
-
-/*
-  4) STREAK COUNTER 
-*/
-.streak-counter {
-  font-size: 20px;
-  font-weight: 600;
-  color: #252525;
-  background-color: rgba(255, 255, 255, 0.95);
-  padding: 12px 20px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(1, 66, 172, 0.2);
-  opacity: 0;
-  transition: all 0.5s ease-in-out;
-  z-index: 2;
-  position: absolute;
-  bottom: -60px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.streak-counter.visible {
-  opacity: 1;
-  bottom: -50px;
-}
-
-/* Some generic container transitions */
-.d-flex {
-  display: flex;
-}
-.w-100 {
-  width: 100%;
-}
-.justify-content-center {
-  justify-content: center;
-}
-.text-center {
-  text-align: center;
-}
-
-/* Minimal fade-in for .fade-in */
-.py-4 {
-  padding: 1.5rem 0;
-}
-.mt-5 {
-  margin-top: 3rem;
-}
-
-/* Additional basic classes for your usage */
-.content-box {
-  background: #fff;
-  padding: 20px;
-  border-radius: 6px;
 }
