@@ -121,8 +121,9 @@ body {
 
 .clock {
   position: absolute;
-top: calc(0.3 * var(--clock-base-size) - 2px);
+  top: calc(0.3 * var(--clock-base-size));
   right: calc(0.6 * var(--clock-base-size));
+  transform: translateY(-50%);
   font-family: "SF Pro", sans-serif !important;
   font-size: calc(0.44 * var(--clock-base-size));
   color: white;
@@ -130,6 +131,7 @@ top: calc(0.3 * var(--clock-base-size) - 2px);
   pointer-events: none;
   z-index: 2;
 }
+
 
 
 .video-overlay {
