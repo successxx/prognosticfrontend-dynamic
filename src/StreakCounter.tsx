@@ -4,7 +4,7 @@ interface StreakCounterProps {
   streak: number;
 }
 
-function StreakCounter({ streak }: StreakCounterProps) {
+const StreakCounter: React.FC<StreakCounterProps> = ({ streak }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -17,12 +17,26 @@ function StreakCounter({ streak }: StreakCounterProps) {
 
   return (
     <div
-      className={`streak-counter ${visible ? "visible" : ""}`}
-      id="streak-counter"
+      style={{
+        fontSize: "20px",
+        fontWeight: 600,
+        color: "#252525",
+        backgroundColor: "rgba(255, 255, 255, 0.95)",
+        padding: "12px 20px",
+        borderRadius: "12px",
+        boxShadow: "0 5px 15px rgba(1, 66, 172, 0.2)",
+        opacity: visible ? 1 : 0,
+        transition: "all 0.5s ease-in-out",
+        zIndex: 2,
+        position: "absolute",
+        bottom: visible ? "-50px" : "-60px",
+        left: "50%",
+        transform: "translateX(-50%)",
+      }}
     >
       Streak: {streak} 🔥
     </div>
   );
-}
+};
 
 export default StreakCounter;
