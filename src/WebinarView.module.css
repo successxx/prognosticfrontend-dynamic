@@ -251,16 +251,18 @@
 /**************************************/
 .headlineText {
   position: absolute;
-  top: 50%;
-  right: 75px;
-  transform: translateY(-50%);
+  top: auto; /* Remove the vertical centering */
+  right: auto; /* Remove the right positioning */
+  left: 70%; /* Position it at roughly the same horizontal position as "personal" */
+  transform: translateX(-50%); /* Center it horizontally relative to its position */
+  bottom: 25%; /* Position it vertically below the "personal" text */
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
-  font-size: 24px;
-  line-height: 1.2;
+  font-size: 16px; /* Match the size of the consultation text */
+  line-height: 1.4;
   color: #2e2e2e;
   text-align: center;
-  max-width: 30%;
+  max-width: 40%; /* Increase the width to accommodate the longer text */
   z-index: 3;
 }
 
