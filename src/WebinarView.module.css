@@ -118,16 +118,16 @@
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* from the user’s original code: object-fit: cover
+     We replace with contain to avoid zooming. */
+  object-fit: contain;
 }
 
 .twoColumnLayout {
   display: flex;
   flex-wrap: nowrap;
   gap: 16px;
-  /* Force bigger container if needed. 
-     You can remove or reduce the 'height' if it triggers weird resizing. */
-  height: auto; /* changed from 94% to auto to avoid weird zooming */
+  height: auto; /* was 94%, set to auto to avoid forced resizing */
 }
 .videoColumn {
   flex: 0 0 70%;
@@ -147,7 +147,7 @@
 
 .videoWrapper {
   position: relative;
-  padding-bottom: 56.25%;
+  padding-bottom: 56.25%; /* keep 16:9 ratio */
   height: 0;
   overflow: hidden;
   background: #000;
