@@ -26,7 +26,7 @@ const App: React.FC = () => {
       return;
     }
 
-    // We stay in "loading" state until the backend confirms data exists
+    // Remain in "loading" until the backend confirms data
     setLoading(true);
 
     // Poll /get_user_two every 3 seconds
@@ -57,9 +57,6 @@ const App: React.FC = () => {
         }
       } catch (err) {
         console.error("Polling error:", err);
-        // Could stop polling or keep going
-        // setError("Backend error while polling for data.");
-        // setLoading(false);
       }
     }, 3000);
 
@@ -68,8 +65,13 @@ const App: React.FC = () => {
 
   return (
     <div className="wrapper py-4">
+      {/* We want the logo smaller & centered => 
+          adjust the "Header" component’s styling accordingly (the user can do so in Header.tsx).
+          Also removed the <hr> that was between the header and video. */}
       <Header />
-      <hr id="divider02" className="hr-custom" />
+
+      {/* Remove <hr id="divider02" className="hr-custom" /> so there's no divider */}
+      {/* <hr id="divider02" className="hr-custom" /> -- REMOVED */}
 
       {loading ? (
         <>
@@ -89,7 +91,7 @@ const App: React.FC = () => {
                   isContentVisible ? "visible" : ""
                 }`}
               >
-                {/* Show the actual webinar/video once we're done loading */}
+                {/* Show the actual webinar/video once done loading */}
                 <WebinarView />
                 <Fireworks />
               </div>
