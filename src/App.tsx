@@ -77,9 +77,6 @@ const App: React.FC = () => {
       {loading ? (
         <>
           <LoadingCircle />
-          <p id="text07" className="style1">
-            © {new Date().getFullYear()} Clients.ai
-          </p>
         </>
       ) : (
         <>
