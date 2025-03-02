@@ -23,14 +23,6 @@ interface VideoOverlayProps {
 
 const overlayItems: OverlayItem[] = [
   {
-    key: "headline",
-    content: "",
-    startTime: "0.79",
-    endTime: "4:26.38",
-    position: { x: 0.573, y: 0.338 },
-    style: { color: "#252525", fontSize: "0.7em" },
-  },
-  {
     key: "lead_email",
     content: "",
     startTime: "4:22.79",
