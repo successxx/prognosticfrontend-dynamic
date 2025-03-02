@@ -1,14 +1,11 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import styles from "./WebinarView.module.css";
 import { VideoOverlay } from "./VideoOverlay";
-import { IWebinarInjection } from "./WebinarView";
 import { VideoClock } from "./VideoClock";
 
 /**
- * Here is our local interface – repeated for reference.
- * If this is already declared in your code, you can remove this duplication,
- * but we'll keep it in case you need it.
+ * Keep or define your data interface
  */
 export interface IWebinarInjection {
   Business_description: string;
@@ -40,36 +37,35 @@ export interface IWebinarInjection {
 }
 
 const WebinarView: React.FC = () => {
-  // References
+  // Refs
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const videoWrapperRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Exit-intent
-  const [showExitOverlay, setShowExitOverlay] = useState<boolean>(false);
-  const [hasShownOverlay, setHasShownOverlay] = useState<boolean>(false);
-  const [exitMessage, setExitMessage] = useState<string>("");
+  const [showExitOverlay, setShowExitOverlay] = useState(false);
+  const [hasShownOverlay, setHasShownOverlay] = useState(false);
+  const [exitMessage, setExitMessage] = useState("");
 
-  // "Has user clicked to unmute?"
-  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
+  // Interactions
+  const [hasInteracted, setHasInteracted] = useState(false);
 
-  // We store injection data from the server
-  const [webinarInjectionData, setWebinarInjectionData] =
-    useState<IWebinarInjection>();
+  // Injection data
+  const [webinarInjectionData, setWebinarInjectionData] = useState<IWebinarInjection>();
 
-  // Track last valid playback time for skip prevention
+  // lastTimeRef for skip prevention - but we will allow scrubbing, so we’ll remove that logic
   const lastTimeRef = useRef<number>(0);
 
-  // Clock states
+  // Clock
   const [showClockWidget, setShowClockWidget] = useState(false);
   const [clockDragInComplete, setClockDragInComplete] = useState(false);
   const [clockRemoved, setClockRemoved] = useState(false);
 
-  // Headline states
+  // Headline
   const [showHeadline, setShowHeadline] = useState(false);
   const [hasShownHeadline, setHasShownHeadline] = useState(false);
 
-  // Load user data
+  // 1) Load user data
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
@@ -89,10 +85,11 @@ const WebinarView: React.FC = () => {
           const data = await resp.json();
           setWebinarInjectionData(data);
 
-          // If we have an audio link, set it in audioRef
+          // If audio link, set to audioRef
           if (audioRef.current && data.audio_link) {
             audioRef.current.src = data.audio_link;
           }
+          // If exit message
           if (data.exit_message) {
             setExitMessage(data.exit_message);
           }
@@ -103,15 +100,13 @@ const WebinarView: React.FC = () => {
     }
   }, []);
 
-  // 1) Voice injection at 0.5s
+  // 2) Voice injection at 0.5s
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid || !audioRef.current) return;
 
     function handleTimeUpdate() {
-      lastTimeRef.current = vid.currentTime; // track for skip prevention
-
-      // If we've passed 0.5s, play the injection
+      // once crossing 0.5 => play injection
       if (vid.currentTime >= 0.5) {
         audioRef.current
           .play()
@@ -120,28 +115,13 @@ const WebinarView: React.FC = () => {
       }
     }
     vid.addEventListener("timeupdate", handleTimeUpdate);
-
-    return () => {
-      vid.removeEventListener("timeupdate", handleTimeUpdate);
-    };
+    return () => vid.removeEventListener("timeupdate", handleTimeUpdate);
   }, []);
 
-  // 2) Prevent skipping
-  useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
+  // 3) Freed scrubbing => remove skip logic
+  // (No code for skip prevention now)
 
-    function handleSeeking() {
-      // if user tries to scrub
-      if (Math.abs(vid.currentTime - lastTimeRef.current) > 0.1) {
-        vid.currentTime = lastTimeRef.current;
-      }
-    }
-    vid.addEventListener("seeking", handleSeeking);
-    return () => vid.removeEventListener("seeking", handleSeeking);
-  }, []);
-
-  // 3) Exit-intent detection
+  // 4) Exit-intent detection
   useEffect(() => {
     if (hasShownOverlay) return;
 
@@ -156,69 +136,58 @@ const WebinarView: React.FC = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [hasShownOverlay]);
 
-  // 4) Clock widget – show at 4s, remove at 8s
+  // 5) Clock widget => 4s to 8s
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
 
-    function handleClockCheck() {
+    function checkClock() {
       const t = vid.currentTime;
-      // Appear at 4s
       if (!showClockWidget && !clockRemoved && t >= 4) {
         setShowClockWidget(true);
       }
-      // Force removal at 8s
-      if (t >= 8 && !clockRemoved) {
+      if (!clockRemoved && t >= 8) {
         setClockRemoved(true);
       }
-      lastTimeRef.current = t;
     }
-    vid.addEventListener("timeupdate", handleClockCheck);
-    return () => {
-      vid.removeEventListener("timeupdate", handleClockCheck);
-    };
+    vid.addEventListener("timeupdate", checkClock);
+    return () => vid.removeEventListener("timeupdate", checkClock);
   }, [showClockWidget, clockRemoved]);
 
-  // Once the clock is removed, we wait the dragOut animation (1s) and hide the entire widget
+  // Once clockRemoved => hide after animation
   useEffect(() => {
     if (clockRemoved) {
-      // Hide after 1s
-      const hideTimer = setTimeout(() => {
+      const timer = setTimeout(() => {
         setShowClockWidget(false);
-      }, 1000);
-      return () => clearTimeout(hideTimer);
+      }, 1000); // matches 1s of animateOut
+      return () => clearTimeout(timer);
     }
   }, [clockRemoved]);
 
-  // 5) Headline – show 45.04s to 55.04s
+  // 6) Headline at 45.04–55.04
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
 
     function handleHeadline() {
       const t = vid.currentTime;
-
-      // Appear at 45.04, vanish at 55.04
       if (t >= 45.04 && t < 55.04) {
         setShowHeadline(true);
-        if (!hasShownHeadline) {
-          setHasShownHeadline(true);
-        }
+        if (!hasShownHeadline) setHasShownHeadline(true);
       } else {
         setShowHeadline(false);
       }
     }
-
     vid.addEventListener("timeupdate", handleHeadline);
     return () => vid.removeEventListener("timeupdate", handleHeadline);
   }, [hasShownHeadline]);
 
   return (
     <div className={styles.container} style={{ textAlign: "center" }}>
-      {/* Hidden audio for voice injection */}
+      {/* Hidden audio injection */}
       <audio ref={audioRef} style={{ display: "none" }} />
 
-      {/* Exit-intent overlay */}
+      {/* Exit bubble */}
       {showExitOverlay &&
         ReactDOM.createPortal(
           <ExitOverlay
@@ -228,18 +197,19 @@ const WebinarView: React.FC = () => {
           document.body
         )}
 
-      {/* The video container */}
+      {/* Video container */}
       <div ref={videoWrapperRef} className={styles.videoWrapper}>
-        {/* Overlays for text injection (like email_1, salesletter, etc.) */}
+        {/* Overlays from the server */}
         <VideoOverlay
           videoRef={videoRef}
           videoContainerRef={videoWrapperRef}
           webinarInjectionData={webinarInjectionData}
         />
-        {/* The separate "menu bar" clock if you have it: */}
+
+        {/* Mac-like clock at top if you want */}
         <VideoClock videoContainerRef={videoWrapperRef} />
 
-        {/* The actual video */}
+        {/* The actual video => object-fit: contain via CSS */}
         <video
           ref={videoRef}
           controls
@@ -254,7 +224,7 @@ const WebinarView: React.FC = () => {
           Your browser does not support HTML5 video.
         </video>
 
-        {/* Single overlay => unmute + play with one click */}
+        {/* Unmute overlay */}
         {!hasInteracted && (
           <div
             className={styles.soundOverlay}
@@ -269,17 +239,17 @@ const WebinarView: React.FC = () => {
             }}
           >
             <div className={styles.soundIcon}>🔊</div>
-            <div className={styles.soundText}>Click to watch your AI agents</div>
+            <div className={styles.soundText}>
+              Click to watch your AI agents
+            </div>
           </div>
         )}
 
-        {/* The "drag in" clock widget  */}
+        {/* Clock: from left to right */}
         {showClockWidget && (
           <div
-            // we rely on global classes, not local style binding
             className={
-              "clockWidget" +
-              " " +
+              "clockWidget " +
               (clockRemoved
                 ? "animateOut"
                 : clockDragInComplete
@@ -304,14 +274,14 @@ const WebinarView: React.FC = () => {
           </div>
         )}
 
-        {/* The headline text */}
+        {/* Headline text */}
         {showHeadline && webinarInjectionData?.headline && (
           <div
             className={styles.headlineText}
             style={{
               fontFamily: "'SF Pro Display', sans-serif",
               letterSpacing: "0.02em",
-              lineHeight: "1.1", // slightly less line-spacing than the webinar
+              lineHeight: "1.1",
               color: "#252525",
             }}
           >
@@ -320,7 +290,7 @@ const WebinarView: React.FC = () => {
         )}
       </div>
 
-      {/* CTA Button below the video */}
+      {/* CTA button below */}
       <div style={{ marginTop: "20px" }}>
         <button
           onClick={() => window.open("https://webinar.clients.ai", "_blank")}
@@ -339,7 +309,7 @@ const WebinarView: React.FC = () => {
         </button>
       </div>
 
-      {/* Footer / copyright area */}
+      {/* Footer */}
       <p style={{ marginTop: "10px", fontSize: "0.9rem" }}>
         © {new Date().getFullYear()} Clients.ai
       </p>
@@ -348,7 +318,7 @@ const WebinarView: React.FC = () => {
 };
 
 /**
- * Minimal clock widget content - placed inside the "drag in/out" container
+ * Clock widget content, same as your original
  */
 function ClockWidgetContent() {
   const [timeString, setTimeString] = useState("");
@@ -357,7 +327,6 @@ function ClockWidgetContent() {
   useEffect(() => {
     const updateClock = () => {
       const now = new Date();
-      // e.g. "02:34:05 PM"
       setTimeString(
         now.toLocaleTimeString("en-US", {
           hour: "2-digit",
@@ -366,7 +335,6 @@ function ClockWidgetContent() {
           hour12: true,
         })
       );
-      // e.g. "Wednesday, August 9, 2025"
       setDateString(
         now.toLocaleDateString("en-US", {
           weekday: "long",
@@ -376,7 +344,7 @@ function ClockWidgetContent() {
         })
       );
     };
-    updateClock(); // immediate
+    updateClock();
     const intId = setInterval(updateClock, 1000);
     return () => clearInterval(intId);
   }, []);
@@ -390,7 +358,7 @@ function ClockWidgetContent() {
 }
 
 /**
- * The exit-intent bubble
+ * Exit-intent bubble
  */
 const ExitOverlay: React.FC<{
   message: string;
