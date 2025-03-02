@@ -92,7 +92,7 @@ const App: React.FC = () => {
               <div
                 className={`d-flex w-100 justify-content-center fade-in ${
                   isContentVisible ? "visible" : ""
-                }`
+                }`}
               >
                 {/* Show the actual webinar/video once we're done loading */}
                 <WebinarView />
