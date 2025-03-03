@@ -555,8 +555,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "email_1",
     content: "",
-    startTime: 476.39,
-    endTime: 503.70,
+    startTime: 475.89,
+    endTime: 502.70,
     position: { x: 0.13, y: 0.3 },
     style: {
       color: "#252525",
@@ -570,8 +570,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "email_2",
     content: "",
-    startTime: 503.70,
-    endTime: 512.37,
+    startTime: 502.70,
+    endTime: 511.37,
     position: { x: 0.13, y: 0.3 },
     style: {
       color: "#252525",
@@ -585,9 +585,9 @@ const overlayItems: OverlayItem[] = [
   {
     key: "salesletter",
     content: "",
-    startTime: 512.39,
-    endTime: 526.69,
-    position: { x: 0.24, y: 0.25 },
+    startTime: 511.37,
+    endTime: 526.29,
+    position: { x: 0.243, y: 0.25 },
     style: {
       color: "#252525",
       fontSize: "0.9em",
@@ -601,7 +601,7 @@ const overlayItems: OverlayItem[] = [
     key: "company_name",
     content: "",
     startTime: 527.71,
-    endTime: 538.76,
+    endTime: 538.46,
     position: { x: 0.33, y: 0.32 },
     style: { color: "#252525", fontSize: "0.6em", fontWeight: "500" },
   },
@@ -609,7 +609,7 @@ const overlayItems: OverlayItem[] = [
     key: "Products_services",
     content: "",
     startTime: 527.71,
-    endTime: 538.76,
+    endTime: 538.46,
     position: { x: 0.303, y: 0.37 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
@@ -617,7 +617,7 @@ const overlayItems: OverlayItem[] = [
     key: "offer_price",
     content: "",
     startTime: 527.71,
-    endTime: 538.76,
+    endTime: 538.46,
     position: { x: 0.303, y: 0.386 },
     style: { color: "#252525", fontSize: "0.6em", fontWeight: "600" },
   },
