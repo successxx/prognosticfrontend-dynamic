@@ -112,7 +112,7 @@ const WebinarView: React.FC = () => {
     if (!vid || !audioRef.current) return;
     function handleTimeUpdate() {
       lastTimeRef.current = vid.currentTime;
-      if (vid.currentTime >= 46.09) {
+      if (vid.currentTime >= 45.09) {
         audioRef.current
           .play()
           .catch((err) =>
