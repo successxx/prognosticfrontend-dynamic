@@ -345,7 +345,7 @@ const overlayItems: OverlayItem[] = [
     key: "lead_email",
     content: "",
     startTime: 309.28,
-    endTime: 312.87,
+    endTime: 311.87,
     position: { x: 0.573, y: 0.338 },
     style: { color: "#252525", fontSize: "0.7em" },
   },
@@ -362,7 +362,7 @@ const overlayItems: OverlayItem[] = [
     content: "John Doe",
     startTime: 337.74,
     endTime: 354.86,
-    position: { x: 0.043, y: 0.264 },
+    position: { x: 0.042, y: 0.266 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
@@ -370,7 +370,7 @@ const overlayItems: OverlayItem[] = [
     content: "123-456-7890",
     startTime: 340.20,
     endTime: 354.86,
-    position: { x: 0.043, y: 0.303 },
+    position: { x: 0.042, y: 0.305 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
