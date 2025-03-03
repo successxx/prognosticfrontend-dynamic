@@ -27,7 +27,7 @@ const overlayItems: OverlayItem[] = [
   key: "headline", // Use 'headline' to match the data field in your JSON
   content: "", // The content will be populated from webinarInjectionData
   startTime: 0, // When it should start showing (in seconds)
-  endTime: 02.02, // When it should stop showing (in seconds)
+  endTime: 2.02, // When it should stop showing (in seconds)
   position: { x: 0.5, y: 0.5 }, // These are the estimated coordinates
   style: {
     color: "#252525",
@@ -43,8 +43,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "lead_email",
     content: "",
-    startTime: 02.14,
-    endTime: 03.01,
+    startTime: 2.14,
+    endTime: 3.01,
     position: { x: 0.573, y: 0.338 },
     style: { color: "#252525", fontSize: "0.7em" },
   },
@@ -60,8 +60,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_url",
     content: "123-456-7890",
-    startTime: 03.13,
-    endTime: 04.01,
+    startTime: 3.13,
+    endTime: 4.01,
     position: { x: 0.043, y: 0.303 },
     style: {
       color: "#252525",
@@ -71,8 +71,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "lead_email",
     content: "",
-    startTime: 03.13,
-    endTime: 04.01,
+    startTime: 3.13,
+    endTime: 4.01,
     position: { x: 0.039, y: 0.34 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
@@ -80,8 +80,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "website_url",
     content: "www.example.com",
-    startTime: 05.12,
-    endTime: 05.23,
+    startTime: 5.12,
+    endTime: 5.23,
     position: { x: 0.372, y: 0.648 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
