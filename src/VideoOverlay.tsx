@@ -663,10 +663,9 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
     };
   }, [videoContainerRef]);
 
-  const embeddableInjection = (key: keyof IWebinarInjection) => {
-    // Includes the keys those contains the html content
-    return key === "email_1" || key === "email_2" || key === "salesletter";
-  };
+ const embeddableInjection = (key: keyof IWebinarInjection) => {
+  return key === "email_1" || key === "email_2" || key === "salesletter" || key === "headline";
+};
 
   return (
     <div ref={overlayRef} className="video-overlay">
