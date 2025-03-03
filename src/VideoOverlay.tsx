@@ -571,7 +571,7 @@ const overlayItems: OverlayItem[] = [
     key: "email_2",
     content: "",
     startTime: 502.70,
-    endTime: 511.37,
+    endTime: 511.07,
     position: { x: 0.13, y: 0.3 },
     style: {
       color: "#252525",
@@ -585,7 +585,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "salesletter",
     content: "",
-    startTime: 511.37,
+    startTime: 511.07,
     endTime: 526.29,
     position: { x: 0.243, y: 0.25 },
     style: {
@@ -613,15 +613,6 @@ const overlayItems: OverlayItem[] = [
     position: { x: 0.303, y: 0.37 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
-  {
-    key: "offer_price",
-    content: "",
-    startTime: 527.71,
-    endTime: 538.46,
-    position: { x: 0.303, y: 0.386 },
-    style: { color: "#252525", fontSize: "0.6em", fontWeight: "600" },
-  },
-];
 
 export const VideoOverlay: React.FC<VideoOverlayProps> = ({
   videoRef,
