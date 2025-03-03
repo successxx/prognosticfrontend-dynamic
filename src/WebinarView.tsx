@@ -300,7 +300,7 @@ const WebinarView: React.FC = () => {
             }}
           >
             <div className={styles.soundIcon}>🔊</div>
-            <div className={styles.soundText}>Click to watch your AI agents</div>
+            <div className={styles.soundText}>Click to Deploy Your AI Agents</div>
           </div>
         )}
       </div>
