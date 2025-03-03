@@ -329,7 +329,7 @@ const overlayItems: OverlayItem[] = [
   content: "", // The content will be populated from webinarInjectionData
   startTime: 115.17, // When it should start showing (in seconds)
   endTime: 136.16, // When it should stop showing (in seconds)
-  position: { x: 0.62, y: 0.47 }, // These are the estimated coordinates
+  position: { x: 0.64, y: 0.47 }, // These are the estimated coordinates
   style: {
     color: "#252525",
     fontSize: "2em", // This would be 1.5% of the video width
