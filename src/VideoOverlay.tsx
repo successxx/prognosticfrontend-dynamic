@@ -269,7 +269,7 @@ const overlayItems: OverlayItem[] = [
     endTime: 33.49,
     position: { x: 0.13, y: 0.3 },
     style: {
-      color: "#131313",
+      color: "#000000",
       fontSize: "0.9em",
       maxWidth: "81em",
       maxHeight: "30em",
@@ -284,7 +284,7 @@ const overlayItems: OverlayItem[] = [
     endTime: 37.31,
     position: { x: 0.13, y: 0.3 },
     style: {
-      color: "#131313",
+      color: "#000000",
       fontSize: "0.9em",
       maxWidth: "81em",
       maxHeight: "20em",
@@ -299,7 +299,7 @@ const overlayItems: OverlayItem[] = [
     endTime: 43.82,
     position: { x: 0.25, y: 0.25 },
     style: {
-      color: "#131313",
+      color: "#000000",
       fontSize: "0.9em",
       maxWidth: "62em",
       maxHeight: "28em",
