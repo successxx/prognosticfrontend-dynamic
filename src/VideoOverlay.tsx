@@ -65,7 +65,6 @@ const overlayItems: OverlayItem[] = [
     position: { x: 0.573, y: 0.338 },
     style: { color: "#252525", fontSize: "0.7em" },
   },
-
   {
     key: "user_name",
     content: "John Doe",
@@ -93,7 +92,6 @@ const overlayItems: OverlayItem[] = [
     position: { x: 0.039, y: 0.34 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
-
   {
     key: "website_url",
     content: "www.example.com",
@@ -102,7 +100,6 @@ const overlayItems: OverlayItem[] = [
     position: { x: 0.372, y: 0.648 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
-  
   {
     key: "company_name",
     content: "",
@@ -135,7 +132,6 @@ const overlayItems: OverlayItem[] = [
     position: { x: 0.372, y: 0.667 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
-
   {
     key: "primary_goal",
     content: "Primary Goal",
@@ -174,7 +170,6 @@ const overlayItems: OverlayItem[] = [
       textAlign: "left",
     },
   },
-
   {
     key: "offer_name",
     content: "Offer Name",
