@@ -167,7 +167,7 @@ const WebinarView: React.FC = () => {
         if (showHeadline) setShowHeadline(false);
       }
       // CLOCK: show at 10 seconds if not already shown
-      if (!showClockWidget && !clockRemoved && t >= 1) {
+      if (!showClockWidget && !clockRemoved && t >= 47) {
         setShowClockWidget(true);
       }
     }
@@ -180,7 +180,7 @@ const WebinarView: React.FC = () => {
     if (clockDragInComplete) {
       const timer = setTimeout(() => {
         setClockRemoved(true);
-      }, 4500);
+      }, 4000);
       return () => clearTimeout(timer);
     }
   }, [clockDragInComplete]);
