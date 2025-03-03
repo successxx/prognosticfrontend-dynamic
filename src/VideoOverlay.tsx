@@ -96,7 +96,7 @@ const overlayItems: OverlayItem[] = [
     key: "website_url",
     content: "www.example.com",
     startTime: 5.12,
-    endTime: 5.23,
+    endTime: 6.1,
     position: { x: 0.372, y: 0.648 },
     style: { color: "#131313", fontSize: "0.6em" },
   },
