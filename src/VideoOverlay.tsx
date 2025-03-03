@@ -32,6 +32,7 @@ const overlayItems: OverlayItem[] = [
   style: {
     color: "#131313",
     fontSize: "2em", // This would be 1.5% of the video width
+    transform: "translate(-50%, -50%)",
     fontFamily: '"Montserrat", sans-serif',
     fontWeight: "550",
     lineHeight: "1.5",
@@ -49,6 +50,7 @@ const overlayItems: OverlayItem[] = [
   style: {
     color: "#131313",
     fontSize: "3em", // This would be 1.5% of the video width
+    transform: "translate(-50%, -50%)",
     fontFamily: '"Montserrat", sans-serif',
     fontWeight: "550",
     lineHeight: "1.5",
@@ -70,7 +72,7 @@ const overlayItems: OverlayItem[] = [
     content: "John Doe",
     startTime: 3.13,
     endTime: 4.01,
-    position: { x: 0.043, y: 0.264 },
+    position: { x: 0.042, y: 0.266 },
     style: { color: "#131313", fontSize: "0.6em" },
   },
   {
@@ -78,7 +80,7 @@ const overlayItems: OverlayItem[] = [
     content: "123-456-7890",
     startTime: 3.13,
     endTime: 4.01,
-    position: { x: 0.043, y: 0.303 },
+    position: { x: 0.042, y: 0.305 },
     style: {
       color: "#131313",
       fontSize: "0.6em",
@@ -89,7 +91,7 @@ const overlayItems: OverlayItem[] = [
     content: "",
     startTime: 3.13,
     endTime: 4.01,
-    position: { x: 0.039, y: 0.34 },
+    position: { x: 0.042, y: 0.342 },
     style: { color: "#131313", fontSize: "0.6em" },
   },
   {
