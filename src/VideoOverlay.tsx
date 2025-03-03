@@ -250,8 +250,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "testimonials",
     content: "Testimonials",
-    startTime: 24.52,
-    endTime: 26.49,
+    startTime: 24.22,
+    endTime: 26.09,
     position: { x: 0.38, y: 0.552 },
     style: {
       color: "#131313",
@@ -281,7 +281,7 @@ const overlayItems: OverlayItem[] = [
     key: "email_2",
     content: "",
     startTime: 34.43,
-    endTime: 37.11,
+    endTime: 37.31,
     position: { x: 0.13, y: 0.3 },
     style: {
       color: "#131313",
@@ -296,7 +296,7 @@ const overlayItems: OverlayItem[] = [
     key: "salesletter",
     content: "",
     startTime: 38.43,
-    endTime: 43.62,
+    endTime: 43.82,
     position: { x: 0.24, y: 0.25 },
     style: {
       color: "#131313",
