@@ -99,7 +99,7 @@ const overlayItems: OverlayItem[] = [
     content: "www.example.com",
     startTime: 5.12,
     endTime: 6.1,
-    position: { x: 0.375, y: 0.669 },
+    position: { x: 0.375, y: 0.655 },
     style: { color: "#131313", fontSize: "0.6em" },
   },
   {
