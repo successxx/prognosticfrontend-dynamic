@@ -43,7 +43,7 @@ const overlayItems: OverlayItem[] = [
   {
   key: "headline", // Use 'headline' to match the data field in your JSON
   content: "", // The content will be populated from webinarInjectionData
-  startTime: 0, // When it should start showing (in seconds)
+  startTime: 1.12, // When it should start showing (in seconds)
   endTime: 2.02, // When it should stop showing (in seconds)
   position: { x: 0.25, y: 0.25 }, // These are the estimated coordinates
   style: {
