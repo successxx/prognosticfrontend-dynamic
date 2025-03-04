@@ -35,13 +35,6 @@ export interface IWebinarInjection {
 
 /**
  * WebinarView.tsx – Single–Column Demo
- *
- * This file is a near–duplicate of the webinar version but adjusted so that:
- *  • The video container always stays at a strict 16×9 ratio.
- *  • The layout is a single column (no chat column).
- *  • The clock widget appears as though it were a Mac clock dragged into view and then removed,
- *    but it remains within the video’s bounds.
- *  • All other functionalities (exit–intent, voice injection, click–to–unmute, headline) remain intact.
  */
 const WebinarView: React.FC = () => {
   const [webinarInjectionData, setWebinarInjectionData] =
@@ -64,23 +57,18 @@ const WebinarView: React.FC = () => {
   // Track last valid playback time to prevent scrubbing
   const lastTimeRef = useRef<number>(0);
 
-  // ============ ADDED FOR HEADLINE & CLOCK =============
-  // Headline: show between 69.17s and 90.07s
+  // HEADLINE & CLOCK
   const [showHeadline, setShowHeadline] = useState(false);
   const [hasShownHeadline, setHasShownHeadline] = useState(false);
-
-  // Clock widget: dragged in at ~47s, wobbles for ~4s, then dragged out
   const [showClockWidget, setShowClockWidget] = useState(false);
   const [clockDragInComplete, setClockDragInComplete] = useState(false);
   const [clockRemoved, setClockRemoved] = useState(false);
-  // ======================================================
 
-  // === NEW: DEMO COUNTDOWN STATES ===
+  // DEMO COUNTDOWN
   // The “live” portion of the demo starts at 47s in the video
-  const DEMO_START_TIME = 47; // 47 seconds
+  const DEMO_START_TIME = 47;
   const [demoTimeLeft, setDemoTimeLeft] = useState(DEMO_START_TIME);
   const [demoIsLive, setDemoIsLive] = useState(false);
-  // ===============================
 
   // Fetch injection data once on mount
   useEffect(() => {
@@ -100,6 +88,7 @@ const WebinarView: React.FC = () => {
           if (!resp.ok) throw new Error("Error fetching user data");
           const data = await resp.json();
           setWebinarInjectionData(data);
+
           if (data.exit_message) {
             setExitMessage(data.exit_message);
           }
@@ -113,7 +102,7 @@ const WebinarView: React.FC = () => {
     }
   }, []);
 
-  // Polling logic (re-fetch data to see if second half changes)
+  // Polling logic (re-fetch data in case second half changes)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
@@ -139,12 +128,12 @@ const WebinarView: React.FC = () => {
         ) {
           setWebinarInjectionData(newData);
 
-          // Optionally refresh exit message if it changed
+          // Refresh exit message if changed
           if (newData.exit_message) {
             setExitMessage(newData.exit_message);
           }
 
-          // Optionally refresh audio if "audio_link" was updated
+          // Refresh audio if changed
           if (audioRef.current && newData.audio_link) {
             audioRef.current.src = newData.audio_link;
           }
@@ -164,7 +153,6 @@ const WebinarView: React.FC = () => {
 
     function handleTimeUpdate() {
       lastTimeRef.current = vid.currentTime;
-      // Start the voice injection
       if (vid.currentTime >= 45.09) {
         audioRef.current
           .play()
@@ -174,6 +162,7 @@ const WebinarView: React.FC = () => {
         vid.removeEventListener("timeupdate", handleTimeUpdate);
       }
     }
+
     vid.addEventListener("timeupdate", handleTimeUpdate);
     return () => vid.removeEventListener("timeupdate", handleTimeUpdate);
   }, []);
@@ -206,7 +195,7 @@ const WebinarView: React.FC = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [hasShownOverlay]);
 
-  // HEADLINE & CLOCK logic (via a single timeupdate listener)
+  // HEADLINE & CLOCK & DEMO COUNTDOWN
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
@@ -214,7 +203,7 @@ const WebinarView: React.FC = () => {
     function handleVideoTiming() {
       const t = vid.currentTime;
 
-      // HEADLINE: show from 69.17s to 90.07s
+      // Headline from 69.17s to 90.07s
       if (t >= 69.17 && t < 90.07) {
         if (!hasShownHeadline) {
           setHasShownHeadline(true);
@@ -224,12 +213,12 @@ const WebinarView: React.FC = () => {
         if (showHeadline) setShowHeadline(false);
       }
 
-      // CLOCK: show at ~47s if not already shown
+      // Clock at ~47s
       if (!showClockWidget && !clockRemoved && t >= 47) {
         setShowClockWidget(true);
       }
 
-      // DEMO COUNTDOWN
+      // Demo countdown
       if (t < DEMO_START_TIME) {
         setDemoTimeLeft(Math.ceil(DEMO_START_TIME - t));
         setDemoIsLive(false);
@@ -240,9 +229,15 @@ const WebinarView: React.FC = () => {
 
     vid.addEventListener("timeupdate", handleVideoTiming);
     return () => vid.removeEventListener("timeupdate", handleVideoTiming);
-  }, [showClockWidget, clockRemoved, hasShownHeadline, showHeadline]);
+  }, [
+    hasShownHeadline,
+    showHeadline,
+    showClockWidget,
+    clockRemoved,
+    webinarInjectionData,
+  ]);
 
-  // After the clock dragIn completes, wait ~4s then initiate dragOut
+  // Once clock finishes dragging in, start a 4s timer then remove
   useEffect(() => {
     if (clockDragInComplete) {
       const timer = setTimeout(() => {
@@ -252,7 +247,7 @@ const WebinarView: React.FC = () => {
     }
   }, [clockDragInComplete]);
 
-  // Once clock is marked as removed, hide it completely after animateOut (~1s)
+  // Hide clock widget after animateOut (~1s)
   useEffect(() => {
     if (clockRemoved) {
       const hideTimer = setTimeout(() => {
@@ -277,37 +272,39 @@ const WebinarView: React.FC = () => {
           document.body
         )}
 
-      {/* Video container – note: single column layout */}
-      <div ref={videoWrapperRef} className={styles.videoWrapper}>
-        {/* Minimalistic text top-left for the Jony Ive style countdown */}
-        <div className={styles.demoIndicator}>
-          {!demoIsLive ? (
-            <>Your live demo begins in {demoTimeLeft}s</>
-          ) : (
-            <>
-              <div className={styles.redDot} />
-              Your demo is currently live...
-            </>
-          )}
-        </div>
+      {/* 
+        Jony Ive–style countdown TEXT
+        Placed ABOVE the video container in normal flow
+      */}
+      <div className={styles.demoIndicator}>
+        {demoIsLive ? (
+          <>
+            <div className={styles.redDot} />
+            Your demo is currently live...
+          </>
+        ) : (
+          <>Your live demo begins in {demoTimeLeft}s</>
+        )}
+      </div>
 
-        {/* Overlays from original code */}
+      {/* Video container */}
+      <div ref={videoWrapperRef} className={styles.videoWrapper}>
+        {/* Original Overlays */}
         <VideoOverlay
           videoRef={videoRef}
           videoContainerRef={videoWrapperRef}
           webinarInjectionData={webinarInjectionData}
         />
-        {/* VideoClock component (if you use it) */}
         <VideoClock videoContainerRef={videoWrapperRef} />
 
-        {/* HEADLINE overlay */}
+        {/* Headline overlay */}
         {showHeadline && (
           <div className={styles.headlineText}>
             {webinarInjectionData?.headline || "Your AI Headline Here"}
           </div>
         )}
 
-        {/* The video element */}
+        {/* The video itself */}
         <video
           ref={videoRef}
           controls
@@ -324,7 +321,7 @@ const WebinarView: React.FC = () => {
           Your browser does not support HTML5 video.
         </video>
 
-        {/* CLOCK widget – animates into view over the video, then out */}
+        {/* Clock widget (drag in & out) */}
         {showClockWidget && (
           <div
             className={
@@ -369,7 +366,7 @@ const WebinarView: React.FC = () => {
           </div>
         )}
 
-        {/* Sound overlay – appears if the user hasn’t clicked yet */}
+        {/* Sound overlay – appears if user hasn’t clicked yet */}
         {!hasInteracted && (
           <div
             className={styles.soundOverlay}
