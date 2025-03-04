@@ -108,7 +108,7 @@ const overlayItems: OverlayItem[] = [
     startTime: 10.12,
     endTime: 18.53,
     position: { x: 0.372, y: 0.52 },
-    style: { color: "#131313", fontSize: "0.6em" },
+    style: { color: "#000000", fontSize: "0.6em" },
   },
   {
     key: "Industry",
@@ -116,7 +116,7 @@ const overlayItems: OverlayItem[] = [
     startTime: 10.12,
     endTime: 18.53,
     position: { x: 0.508, y: 0.52 },
-    style: { color: "#131313", fontSize: "0.6em" },
+    style: { color: "#000000", fontSize: "0.6em" },
   },
   {
     key: "Products_services",
@@ -124,7 +124,7 @@ const overlayItems: OverlayItem[] = [
     startTime: 10.12,
     endTime: 18.53,
     position: { x: 0.372, y: 0.585 },
-    style: { color: "#131313", fontSize: "0.6em" },
+    style: { color: "#000000", fontSize: "0.6em" },
   },
   {
     key: "Business_description",
@@ -132,7 +132,7 @@ const overlayItems: OverlayItem[] = [
     startTime: 10.12,
     endTime: 18.53,
     position: { x: 0.372, y: 0.667 },
-    style: { color: "#131313", fontSize: "0.6em" },
+    style: { color: "#000000", fontSize: "0.6em" },
   },
   {
     key: "primary_goal",
@@ -140,7 +140,7 @@ const overlayItems: OverlayItem[] = [
     startTime: 18.13,
     endTime: 22.53,
     position: { x: 0.372, y: 0.525 },
-    style: { color: "#131313", fontSize: "0.6em" },
+    style: { color: "#000000", fontSize: "0.6em" },
   },
   {
     key: "target_audience",
@@ -149,7 +149,7 @@ const overlayItems: OverlayItem[] = [
     endTime: 22.53,
     position: { x: 0.372, y: 0.58 },
     style: {
-      color: "#131313",
+      color: "#000000",
       fontSize: "0.6em",
       maxWidth: "41em",
       maxHeight: "4.3em",
@@ -164,7 +164,7 @@ const overlayItems: OverlayItem[] = [
     endTime: 22.53,
     position: { x: 0.372, y: 0.664 },
     style: {
-      color: "#131313",
+      color: "#000000",
       fontSize: "0.6em",
       maxWidth: "41em",
       maxHeight: "4.3em",
@@ -178,7 +178,7 @@ const overlayItems: OverlayItem[] = [
     startTime: 22.53,
     endTime: 24.52,
     position: { x: 0.37, y: 0.477 },
-    style: { color: "#131313", fontSize: "0.6em" },
+    style: { color: "#000000", fontSize: "0.6em" },
   },
   {
     key: "offer_price",
@@ -186,7 +186,7 @@ const overlayItems: OverlayItem[] = [
     startTime: 22.53,
     endTime: 24.52,
     position: { x: 0.514, y: 0.477 },
-    style: { color: "#131313", fontSize: "0.6em" },
+    style: { color: "#000000", fontSize: "0.6em" },
   },
   {
     key: "offer_description",
@@ -195,7 +195,7 @@ const overlayItems: OverlayItem[] = [
     endTime: 24.52,
     position: { x: 0.37, y: 0.54 },
     style: {
-      color: "#131313",
+      color: "#000000",
       fontSize: "0.6em",
       maxWidth: "20em",
       maxHeight: "4.3em",
@@ -210,7 +210,7 @@ const overlayItems: OverlayItem[] = [
     endTime: 24.52,
     position: { x: 0.507, y: 0.54 },
     style: {
-      color: "#131313",
+      color: "#000000",
       fontSize: "0.6em",
       maxWidth: "20em",
       maxHeight: "4.3em",
@@ -225,7 +225,7 @@ const overlayItems: OverlayItem[] = [
     endTime: 24.52,
     position: { x: 0.37, y: 0.634 },
     style: {
-      color: "#131313",
+      color: "#000000",
       fontSize: "0.6em",
       maxWidth: "20em",
       maxHeight: "4.3em",
@@ -240,7 +240,7 @@ const overlayItems: OverlayItem[] = [
     endTime: 24.47,
     position: { x: 0.507, y: 0.634 },
     style: {
-      color: "#131313",
+      color: "#000000",
       fontSize: "0.6em",
       maxWidth: "20em",
       maxHeight: "4.3em",
@@ -254,7 +254,7 @@ const overlayItems: OverlayItem[] = [
     endTime: 26.26,
     position: { x: 0.38, y: 0.552 },
     style: {
-      color: "#131313",
+      color: "#000000",
       fontSize: "0.6em",
       maxWidth: "41em",
       maxHeight: "7em",
