@@ -75,11 +75,6 @@ const WebinarView: React.FC = () => {
   const [clockRemoved, setClockRemoved] = useState(false);
   // ======================================================
 
-  // =========== NEW: “Live Demo Countdown” State ==========
-  // The user wants a countdown that starts at 47 and, once it hits 0,
-  // it changes to a "Your demo is currently live..." message with a red blinking dot.
-  const [demoCountdown, setDemoCountdown] = useState<number>(47);
-
   // Fetch injection data (exit message, headline, audio link, etc.) once on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -247,29 +242,6 @@ const WebinarView: React.FC = () => {
     }
   }, [clockRemoved]);
 
-  // ====== DEMO COUNTDOWN EFFECT ======
-  // We want "Your live demo begins in XXs" to show from time=0 up to time=47,
-  // then "Your demo is currently live..." (with blinking dot) after 47s.
-  useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
-
-    function updateDemoCountdown() {
-      const current = vid.currentTime;
-      // If currentTime < 47, display (47 - currentTime).
-      // If >= 47, set countdown to 0 (so we can show "currently live").
-      if (current < 47) {
-        const diff = 47 - current;
-        setDemoCountdown(Math.floor(diff >= 0 ? diff : 0));
-      } else {
-        setDemoCountdown(0);
-      }
-    }
-
-    vid.addEventListener("timeupdate", updateDemoCountdown);
-    return () => vid.removeEventListener("timeupdate", updateDemoCountdown);
-  }, []);
-
   return (
     <div className={styles.container} style={{ textAlign: "center" }}>
       {/* Hidden audio for voice injection */}
@@ -284,23 +256,6 @@ const WebinarView: React.FC = () => {
           />,
           document.body
         )}
-
-      {/* 
-        =============== THE NEW LIVE DEMO COUNTER ===============
-        Displayed top-left above the video container. 
-        - While demoCountdown > 0 => "Your live demo begins in Xs"
-        - Once it hits 0 => "Your demo is currently live" w/ blinking red dot
-      */}
-      <div className={styles.liveDemoStatus}>
-        {demoCountdown > 0 ? (
-          <>Your live demo begins in {demoCountdown}s</>
-        ) : (
-          <>
-            Your demo is currently live
-            <span className={styles.liveDot}></span>
-          </>
-        )}
-      </div>
 
       {/* Video container – note: single column layout */}
       <div ref={videoWrapperRef} className={styles.videoWrapper}>
