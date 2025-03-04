@@ -133,6 +133,40 @@
   object-fit: cover;
 }
 
+/* NEW: Minimalistic Jony Ive–style countdown text */
+.demoIndicator {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 5;
+  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  color: #252525;
+  font-size: clamp(0.7rem, 2vw, 0.95rem);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+/* A blinking red dot for "currently live" */
+.redDot {
+  width: 6px;
+  height: 6px;
+  background: #ff0000;
+  border-radius: 50%;
+  animation: blink 1.5s infinite;
+}
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 /**************************************/
 /* 4) Sound overlay to unmute         */
 /**************************************/
@@ -348,7 +382,6 @@
   100% {
     transform: translate(0, 0);
   }
-  /* 50% { transform: translate(3px, -3px); } */
 }
 
 .animateIn {
@@ -700,7 +733,6 @@
   .zoomContainer {
     max-width: 90vw;
   }
-  /* In a single–column layout, remove any two–column classes if present */
   .videoWrapper {
     width: 100%;
     flex: none;
@@ -896,60 +928,28 @@
   background: #013289;
 }
 
-/* === LIVE DEMO COUNTDOWN / STATUS (Jony Ive style) === */
-.liveDemoStatus {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 12px;
-  color: #252525;
-  font-family: "SF Pro Display", sans-serif; /* “As jony ive would have it” */
-  font-size: clamp(0.7rem, 1.4vw, 1rem); /* adapt to screen size */
-  pointer-events: none;
-  z-index: 999;
-  line-height: 1.4;
-}
-
-.liveDot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  margin-left: 6px;
-  margin-right: 4px;
-  background-color: red;
-  border-radius: 50%;
-  animation: blinkDot 1s infinite alternate;
-  vertical-align: middle;
-}
-
-@keyframes blinkDot {
-  0% { opacity: 1; }
-  100% { opacity: 0.2; }
-}
-
-
 /* Step 1: Hide the default time/timeline from the video controls (Chrome/Safari/Edge) */
 video::-webkit-media-controls-current-time-display,
 video::-webkit-media-controls-time-remaining-display,
 video::-webkit-media-controls-timeline {
   display: none !important;
-  video::-webkit-media-controls-panel {
-  background-color: #C3C3C3 !important; /* or #F7F8FA if you prefer */
 }
+video::-webkit-media-controls-panel {
+  background-color: #c3c3c3 !important; /* or #F7F8FA if you prefer */
 }
 
+/**************************************/
+/* Mobile adjustments for clock widget*/
+/**************************************/
 @media (max-width: 600px) {
   .clockWidget {
-    /* Make it smaller */
-    width: 200px;                /* instead of 320px */
-    top: 50%;                    /* recenter for mobile */
+    width: 200px;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* combine the shift & keep it centered */
+    transform: translate(-50%, -50%);
   }
-
-  /* Optionally shrink the clock text a bit so it fits */
   .clockTime {
-    font-size: 1.8rem; 
+    font-size: 1.8rem;
   }
   .clockDate {
     font-size: 0.8rem;
