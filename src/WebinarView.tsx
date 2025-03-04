@@ -75,7 +75,7 @@ const WebinarView: React.FC = () => {
   const [clockRemoved, setClockRemoved] = useState(false);
   // ======================================================
 
-  // Fetch injection data (exit message, headline, audio link, etc.)
+  // Fetch injection data (exit message, headline, audio link, etc.) once on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
@@ -105,6 +105,53 @@ const WebinarView: React.FC = () => {
       })();
     }
   }, []);
+
+  // === POLLING LOGIC ADDED ===
+  // Periodically re-fetch data in case the second half of overlays is updated in the DB
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const userEmail = params.get("user_email");
+    if (!userEmail) return;
+
+    // Poll every 10 seconds (adjust as needed)
+    const pollInterval = setInterval(async () => {
+      try {
+        // We can fetch again:
+        const resp = await fetch(
+          "https://progwebinar.blob.core.windows.net/video/cdemo69.mp4",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user_email: userEmail }),
+          }
+        );
+        if (!resp.ok) throw new Error("Error fetching user data (polling)");
+        const newData = await resp.json();
+
+        // Compare old vs. new; if changed, update:
+        if (
+          !webinarInjectionData ||
+          JSON.stringify(newData) !== JSON.stringify(webinarInjectionData)
+        ) {
+          setWebinarInjectionData(newData);
+
+          // Optionally refresh exit message if it changed
+          if (newData.exit_message) {
+            setExitMessage(newData.exit_message);
+          }
+
+          // Optionally refresh audio if "audio_link" was updated
+          if (audioRef.current && newData.audio_link) {
+            audioRef.current.src = newData.audio_link;
+          }
+        }
+      } catch (err) {
+        console.error("Error during polling fetch:", err);
+      }
+    }, 10000);
+
+    return () => clearInterval(pollInterval);
+  }, [webinarInjectionData]);
 
   // Voice injection at 0.5s
   useEffect(() => {
@@ -166,7 +213,7 @@ const WebinarView: React.FC = () => {
       } else {
         if (showHeadline) setShowHeadline(false);
       }
-      // CLOCK: show at 10 seconds if not already shown
+      // CLOCK: show at ~47 seconds if not already shown
       if (!showClockWidget && !clockRemoved && t >= 47) {
         setShowClockWidget(true);
       }
@@ -175,7 +222,7 @@ const WebinarView: React.FC = () => {
     return () => vid.removeEventListener("timeupdate", handleVideoTiming);
   }, [showClockWidget, clockRemoved, hasShownHeadline, showHeadline]);
 
-  // After the clock dragIn completes, wait 10s then initiate dragOut
+  // After the clock dragIn completes, wait 4s then initiate dragOut
   useEffect(() => {
     if (clockDragInComplete) {
       const timer = setTimeout(() => {
@@ -185,7 +232,7 @@ const WebinarView: React.FC = () => {
     }
   }, [clockDragInComplete]);
 
-  // Once clock is marked as removed, hide it completely after animateOut completes (~1s)
+  // Once clock is marked as removed, hide it completely after animateOut (~1s)
   useEffect(() => {
     if (clockRemoved) {
       const hideTimer = setTimeout(() => {
@@ -218,7 +265,7 @@ const WebinarView: React.FC = () => {
           videoContainerRef={videoWrapperRef}
           webinarInjectionData={webinarInjectionData}
         />
-        {/* VideoClock component (if you use it separately) */}
+        {/* VideoClock component (if you use it) */}
         <VideoClock videoContainerRef={videoWrapperRef} />
 
         {/* HEADLINE overlay */}
@@ -228,33 +275,31 @@ const WebinarView: React.FC = () => {
           </div>
         )}
 
-{/* The video element */}
-<video
-  ref={videoRef}
-  controls
-  controlsList="nodownload"
-  disablePictureInPicture
-  playsInline
-  muted={!hasInteracted}
-  className={styles.videoPlayer}
->
-  <source
-    src="https://progwebinar.blob.core.windows.net/video/clientsdemo6969.mp4"
-    type="video/mp4"
-  />
-  Your browser does not support HTML5 video.
-</video>
+        {/* The video element */}
+        <video
+          ref={videoRef}
+          controls
+          controlsList="nodownload"
+          disablePictureInPicture
+          playsInline
+          muted={!hasInteracted}
+          className={styles.videoPlayer}
+        >
+          <source
+            src="https://progwebinar.blob.core.windows.net/video/clientsdemo6969.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support HTML5 video.
+        </video>
 
-
-        {/* CLOCK widget – this one animates into view over the video,
-            then animates out. It remains within the video container so it appears as if you dragged it in */}
+        {/* CLOCK widget – animates into view over the video, then out */}
         {showClockWidget && (
           <div
-            className={`
-              ${styles.clockWidget}
-              ${clockRemoved ? styles.animateOut : styles.animateIn}
-              ${clockDragInComplete && !clockRemoved ? styles.wobble : ""}
-            `}
+            className={
+              `${styles.clockWidget} ` +
+              (clockRemoved ? styles.animateOut : styles.animateIn) +
+              (clockDragInComplete && !clockRemoved ? ` ${styles.wobble}` : "")
+            }
             onAnimationEnd={(e) => {
               if (e.animationName.includes("dragIn") && !clockDragInComplete) {
                 setClockDragInComplete(true);
@@ -264,17 +309,21 @@ const WebinarView: React.FC = () => {
             <div className={styles.widgetHeader}>
               <div className={styles.windowControls}>
                 <div className={`${styles.windowButton} ${styles.closeButton}`} />
-                <div className={`${styles.windowButton} ${styles.minimizeButton}`} />
-                <div className={`${styles.windowButton} ${styles.maximizeButton}`} />
+                <div
+                  className={`${styles.windowButton} ${styles.minimizeButton}`}
+                />
+                <div
+                  className={`${styles.windowButton} ${styles.maximizeButton}`}
+                />
               </div>
               <div className={styles.widgetTitle}>Clock Widget</div>
             </div>
             <div className={styles.widgetContent}>
               <span className={styles.clockTime}>
-                {(new Date()).toLocaleTimeString()}
+                {new Date().toLocaleTimeString()}
               </span>
               <span className={styles.clockDate}>
-                {(new Date()).toLocaleDateString("en-US", {
+                {new Date().toLocaleDateString("en-US", {
                   weekday: "long",
                   year: "numeric",
                   month: "long",
