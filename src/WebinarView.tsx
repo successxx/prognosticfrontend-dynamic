@@ -75,6 +75,29 @@ const WebinarView: React.FC = () => {
   const [clockRemoved, setClockRemoved] = useState(false);
   // ======================================================
 
+  // ============ ADDED FOR "Jony Ive–style" DEMO COUNTDOWN ============
+  const [demoCountdown, setDemoCountdown] = useState<number>(47);
+
+  useEffect(() => {
+    let interval: number | undefined;
+    interval = window.setInterval(() => {
+      setDemoCountdown((prev) => {
+        if (prev <= 1) {
+          // Once we hit 0, stop counting
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, []);
+
+  const isLive = demoCountdown === 0;
+  // ======================================================
+
   // Fetch injection data (exit message, headline, audio link, etc.) once on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -153,7 +176,7 @@ const WebinarView: React.FC = () => {
     return () => clearInterval(pollInterval);
   }, [webinarInjectionData]);
 
-  // Voice injection at 0.5s
+  // Voice injection at 0.5s (or 45.09s in your code)
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid || !audioRef.current) return;
@@ -204,7 +227,7 @@ const WebinarView: React.FC = () => {
     if (!vid) return;
     function handleVideoTiming() {
       const t = vid.currentTime;
-      // HEADLINE: show from 5 to 20 seconds
+      // HEADLINE: show from ~5s to 20s in your scenario
       if (t >= 69.17 && t < 90.07) {
         if (!hasShownHeadline) {
           setHasShownHeadline(true);
@@ -257,7 +280,25 @@ const WebinarView: React.FC = () => {
           document.body
         )}
 
-      {/* Video container – note: single column layout */}
+      {/* 
+        --------------- 
+        The "Jony Ive–style" minimal text area for countdown or live status 
+        --------------- 
+      */}
+      <div className={styles.demoIndicator}>
+        {isLive ? (
+          <div className={styles.liveText}>
+            <span className={styles.blinkingDot}></span>
+            Your demo is currently live...
+          </div>
+        ) : (
+          <div className={styles.liveText}>
+            Your live demo begins in {demoCountdown}s
+          </div>
+        )}
+      </div>
+
+      {/* Video container – single column layout */}
       <div ref={videoWrapperRef} className={styles.videoWrapper}>
         {/* Overlays from original code */}
         <VideoOverlay
@@ -265,7 +306,7 @@ const WebinarView: React.FC = () => {
           videoContainerRef={videoWrapperRef}
           webinarInjectionData={webinarInjectionData}
         />
-        {/* VideoClock component (if you use it) */}
+        {/* VideoClock component */}
         <VideoClock videoContainerRef={videoWrapperRef} />
 
         {/* HEADLINE overlay */}
@@ -308,7 +349,9 @@ const WebinarView: React.FC = () => {
           >
             <div className={styles.widgetHeader}>
               <div className={styles.windowControls}>
-                <div className={`${styles.windowButton} ${styles.closeButton}`} />
+                <div
+                  className={`${styles.windowButton} ${styles.closeButton}`}
+                />
                 <div
                   className={`${styles.windowButton} ${styles.minimizeButton}`}
                 />
