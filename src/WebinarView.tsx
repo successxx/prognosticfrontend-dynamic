@@ -75,28 +75,10 @@ const WebinarView: React.FC = () => {
   const [clockRemoved, setClockRemoved] = useState(false);
   // ======================================================
 
-  // ============ ADDED FOR "Jony Ive–style" DEMO COUNTDOWN ============
+  // =========== NEW: “Live Demo Countdown” State ==========
+  // The user wants a countdown that starts at 47 and, once it hits 0,
+  // it changes to a "Your demo is currently live..." message with a red blinking dot.
   const [demoCountdown, setDemoCountdown] = useState<number>(47);
-
-  useEffect(() => {
-    let interval: number | undefined;
-    interval = window.setInterval(() => {
-      setDemoCountdown((prev) => {
-        if (prev <= 1) {
-          // Once we hit 0, stop counting
-          clearInterval(interval);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, []);
-
-  const isLive = demoCountdown === 0;
-  // ======================================================
 
   // Fetch injection data (exit message, headline, audio link, etc.) once on mount
   useEffect(() => {
@@ -176,7 +158,7 @@ const WebinarView: React.FC = () => {
     return () => clearInterval(pollInterval);
   }, [webinarInjectionData]);
 
-  // Voice injection at 0.5s (or 45.09s in your code)
+  // Voice injection at 0.5s
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid || !audioRef.current) return;
@@ -227,7 +209,7 @@ const WebinarView: React.FC = () => {
     if (!vid) return;
     function handleVideoTiming() {
       const t = vid.currentTime;
-      // HEADLINE: show from ~5s to 20s in your scenario
+      // HEADLINE: show from 5 to 20 seconds
       if (t >= 69.17 && t < 90.07) {
         if (!hasShownHeadline) {
           setHasShownHeadline(true);
@@ -265,6 +247,29 @@ const WebinarView: React.FC = () => {
     }
   }, [clockRemoved]);
 
+  // ====== DEMO COUNTDOWN EFFECT ======
+  // We want "Your live demo begins in XXs" to show from time=0 up to time=47,
+  // then "Your demo is currently live..." (with blinking dot) after 47s.
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    function updateDemoCountdown() {
+      const current = vid.currentTime;
+      // If currentTime < 47, display (47 - currentTime).
+      // If >= 47, set countdown to 0 (so we can show "currently live").
+      if (current < 47) {
+        const diff = 47 - current;
+        setDemoCountdown(Math.floor(diff >= 0 ? diff : 0));
+      } else {
+        setDemoCountdown(0);
+      }
+    }
+
+    vid.addEventListener("timeupdate", updateDemoCountdown);
+    return () => vid.removeEventListener("timeupdate", updateDemoCountdown);
+  }, []);
+
   return (
     <div className={styles.container} style={{ textAlign: "center" }}>
       {/* Hidden audio for voice injection */}
@@ -281,24 +286,23 @@ const WebinarView: React.FC = () => {
         )}
 
       {/* 
-        --------------- 
-        The "Jony Ive–style" minimal text area for countdown or live status 
-        --------------- 
+        =============== THE NEW LIVE DEMO COUNTER ===============
+        Displayed top-left above the video container. 
+        - While demoCountdown > 0 => "Your live demo begins in Xs"
+        - Once it hits 0 => "Your demo is currently live" w/ blinking red dot
       */}
-      <div className={styles.demoIndicator}>
-        {isLive ? (
-          <div className={styles.liveText}>
-            <span className={styles.blinkingDot}></span>
-            Your demo is currently live...
-          </div>
+      <div className={styles.liveDemoStatus}>
+        {demoCountdown > 0 ? (
+          <>Your live demo begins in {demoCountdown}s</>
         ) : (
-          <div className={styles.liveText}>
-            Your live demo begins in {demoCountdown}s
-          </div>
+          <>
+            Your demo is currently live
+            <span className={styles.liveDot}></span>
+          </>
         )}
       </div>
 
-      {/* Video container – single column layout */}
+      {/* Video container – note: single column layout */}
       <div ref={videoWrapperRef} className={styles.videoWrapper}>
         {/* Overlays from original code */}
         <VideoOverlay
@@ -306,7 +310,7 @@ const WebinarView: React.FC = () => {
           videoContainerRef={videoWrapperRef}
           webinarInjectionData={webinarInjectionData}
         />
-        {/* VideoClock component */}
+        {/* VideoClock component (if you use it) */}
         <VideoClock videoContainerRef={videoWrapperRef} />
 
         {/* HEADLINE overlay */}
@@ -349,9 +353,7 @@ const WebinarView: React.FC = () => {
           >
             <div className={styles.widgetHeader}>
               <div className={styles.windowControls}>
-                <div
-                  className={`${styles.windowButton} ${styles.closeButton}`}
-                />
+                <div className={`${styles.windowButton} ${styles.closeButton}`} />
                 <div
                   className={`${styles.windowButton} ${styles.minimizeButton}`}
                 />
