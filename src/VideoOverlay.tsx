@@ -128,7 +128,7 @@ const overlayItems: OverlayItem[] = [
   },
   {
     key: "Business_description",
-    content: "AI Assistant, $99/month, 24/7 support, Boost productivity",
+    content: "AI Agents, $99/month, 24/7 support, Boost productivity",
     startTime: 10.12,
     endTime: 18.53,
     position: { x: 0.372, y: 0.667 },
@@ -205,7 +205,7 @@ const overlayItems: OverlayItem[] = [
   },
   {
     key: "primary_benefits",
-    content: "Benefits of AI Assistant",
+    content: "Benefits of AI Agents",
     startTime: 22.53,
     endTime: 24.52,
     position: { x: 0.507, y: 0.54 },
@@ -418,7 +418,7 @@ const overlayItems: OverlayItem[] = [
   },
   {
     key: "Business_description",
-    content: "AI Assistant, $99/month, 24/7 support, Boost productivity",
+    content: "AI Agents, $99/month, 24/7 support, Boost productivity",
     startTime: 372.27,
     endTime: 381.25,
     position: { x: 0.372, y: 0.667 },
@@ -495,7 +495,7 @@ const overlayItems: OverlayItem[] = [
   },
   {
     key: "primary_benefits",
-    content: "Benefits of AI Assistant",
+    content: "Benefits of AI Agents",
     startTime: 387.25,
     endTime: 390.82,
     position: { x: 0.507, y: 0.54 },
