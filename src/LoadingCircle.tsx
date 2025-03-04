@@ -3,10 +3,10 @@ import styles from './LoadingCircle.module.css';
 
 const LoadingIndicator: React.FC = () => {
     const loadingMessages = [
-        "Generating your Agents...",
-        "Training your Agents...",
+        "Generating Your Agents...",
+        "Training Your Agents...",
         "Launching Your Agents...",
-        "Deploying...",
+        "Deploying Your Agents...",
         "Success!",
         "Split-testing...",
         "Analyzing test results...",
