@@ -53,7 +53,7 @@ const WebinarView: React.FC = () => {
   // Has the user interacted to enable sound?
   const [hasInteracted, setHasInteracted] = useState<boolean>(false);
 
-  // Audio reference for voice injection at ~0.5s
+  // Audio reference for voice injection at ~45s
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Exit–intent bubble state
@@ -65,22 +65,24 @@ const WebinarView: React.FC = () => {
   const lastTimeRef = useRef<number>(0);
 
   // ============ ADDED FOR HEADLINE & CLOCK =============
-  // Headline: show between 5s and 20s
+  // Headline: show between 69.17s and 90.07s
   const [showHeadline, setShowHeadline] = useState(false);
   const [hasShownHeadline, setHasShownHeadline] = useState(false);
 
-  // Clock widget: dragged in at 10s, wobbles for ~10s, then dragged out
+  // Clock widget: dragged in at ~47s, wobbles for ~4s, then dragged out
   const [showClockWidget, setShowClockWidget] = useState(false);
   const [clockDragInComplete, setClockDragInComplete] = useState(false);
   const [clockRemoved, setClockRemoved] = useState(false);
   // ======================================================
 
-  // =========== NEW: “Live Demo Countdown” State ==========
-  // The user wants a countdown that starts at 47 and, once it hits 0,
-  // it changes to a "Your demo is currently live..." message with a red blinking dot.
-  const [demoCountdown, setDemoCountdown] = useState<number>(47);
+  // === NEW: DEMO COUNTDOWN STATES ===
+  // The “live” portion of the demo starts at 47s in the video
+  const DEMO_START_TIME = 47; // 47 seconds
+  const [demoTimeLeft, setDemoTimeLeft] = useState(DEMO_START_TIME);
+  const [demoIsLive, setDemoIsLive] = useState(false);
+  // ===============================
 
-  // Fetch injection data (exit message, headline, audio link, etc.) once on mount
+  // Fetch injection data once on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
@@ -111,17 +113,14 @@ const WebinarView: React.FC = () => {
     }
   }, []);
 
-  // === POLLING LOGIC ADDED ===
-  // Periodically re-fetch data in case the second half of overlays is updated in the DB
+  // Polling logic (re-fetch data to see if second half changes)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userEmail = params.get("user_email");
     if (!userEmail) return;
 
-    // Poll every 10 seconds (adjust as needed)
     const pollInterval = setInterval(async () => {
       try {
-        // We can fetch again:
         const resp = await fetch(
           "https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two",
           {
@@ -158,12 +157,14 @@ const WebinarView: React.FC = () => {
     return () => clearInterval(pollInterval);
   }, [webinarInjectionData]);
 
-  // Voice injection at 0.5s
+  // Voice injection at ~45s
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid || !audioRef.current) return;
+
     function handleTimeUpdate() {
       lastTimeRef.current = vid.currentTime;
+      // Start the voice injection
       if (vid.currentTime >= 45.09) {
         audioRef.current
           .play()
@@ -181,6 +182,7 @@ const WebinarView: React.FC = () => {
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
+
     function handleSeeking() {
       if (Math.abs(vid.currentTime - lastTimeRef.current) > 0.1) {
         vid.currentTime = lastTimeRef.current;
@@ -193,6 +195,7 @@ const WebinarView: React.FC = () => {
   // Exit–intent detection
   useEffect(() => {
     if (hasShownOverlay) return;
+
     function handleMouseMove(e: MouseEvent) {
       if (e.clientY < window.innerHeight * 0.1) {
         setShowExitOverlay(true);
@@ -207,9 +210,11 @@ const WebinarView: React.FC = () => {
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
+
     function handleVideoTiming() {
       const t = vid.currentTime;
-      // HEADLINE: show from 5 to 20 seconds
+
+      // HEADLINE: show from 69.17s to 90.07s
       if (t >= 69.17 && t < 90.07) {
         if (!hasShownHeadline) {
           setHasShownHeadline(true);
@@ -218,16 +223,26 @@ const WebinarView: React.FC = () => {
       } else {
         if (showHeadline) setShowHeadline(false);
       }
-      // CLOCK: show at ~47 seconds if not already shown
+
+      // CLOCK: show at ~47s if not already shown
       if (!showClockWidget && !clockRemoved && t >= 47) {
         setShowClockWidget(true);
       }
+
+      // DEMO COUNTDOWN
+      if (t < DEMO_START_TIME) {
+        setDemoTimeLeft(Math.ceil(DEMO_START_TIME - t));
+        setDemoIsLive(false);
+      } else {
+        setDemoIsLive(true);
+      }
     }
+
     vid.addEventListener("timeupdate", handleVideoTiming);
     return () => vid.removeEventListener("timeupdate", handleVideoTiming);
   }, [showClockWidget, clockRemoved, hasShownHeadline, showHeadline]);
 
-  // After the clock dragIn completes, wait 4s then initiate dragOut
+  // After the clock dragIn completes, wait ~4s then initiate dragOut
   useEffect(() => {
     if (clockDragInComplete) {
       const timer = setTimeout(() => {
@@ -247,29 +262,6 @@ const WebinarView: React.FC = () => {
     }
   }, [clockRemoved]);
 
-  // ====== DEMO COUNTDOWN EFFECT ======
-  // We want "Your live demo begins in XXs" to show from time=0 up to time=47,
-  // then "Your demo is currently live..." (with blinking dot) after 47s.
-  useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
-
-    function updateDemoCountdown() {
-      const current = vid.currentTime;
-      // If currentTime < 47, display (47 - currentTime).
-      // If >= 47, set countdown to 0 (so we can show "currently live").
-      if (current < 47) {
-        const diff = 47 - current;
-        setDemoCountdown(Math.floor(diff >= 0 ? diff : 0));
-      } else {
-        setDemoCountdown(0);
-      }
-    }
-
-    vid.addEventListener("timeupdate", updateDemoCountdown);
-    return () => vid.removeEventListener("timeupdate", updateDemoCountdown);
-  }, []);
-
   return (
     <div className={styles.container} style={{ textAlign: "center" }}>
       {/* Hidden audio for voice injection */}
@@ -285,25 +277,20 @@ const WebinarView: React.FC = () => {
           document.body
         )}
 
-      {/* 
-        =============== THE NEW LIVE DEMO COUNTER ===============
-        Displayed top-left above the video container. 
-        - While demoCountdown > 0 => "Your live demo begins in Xs"
-        - Once it hits 0 => "Your demo is currently live" w/ blinking red dot
-      */}
-      <div className={styles.liveDemoStatus}>
-        {demoCountdown > 0 ? (
-          <>Your live demo begins in {demoCountdown}s</>
-        ) : (
-          <>
-            Your demo is currently live
-            <span className={styles.liveDot}></span>
-          </>
-        )}
-      </div>
-
       {/* Video container – note: single column layout */}
       <div ref={videoWrapperRef} className={styles.videoWrapper}>
+        {/* Minimalistic text top-left for the Jony Ive style countdown */}
+        <div className={styles.demoIndicator}>
+          {!demoIsLive ? (
+            <>Your live demo begins in {demoTimeLeft}s</>
+          ) : (
+            <>
+              <div className={styles.redDot} />
+              Your demo is currently live...
+            </>
+          )}
+        </div>
+
         {/* Overlays from original code */}
         <VideoOverlay
           videoRef={videoRef}
@@ -341,9 +328,10 @@ const WebinarView: React.FC = () => {
         {showClockWidget && (
           <div
             className={
-              `${styles.clockWidget} ` +
+              styles.clockWidget +
+              " " +
               (clockRemoved ? styles.animateOut : styles.animateIn) +
-              (clockDragInComplete && !clockRemoved ? ` ${styles.wobble}` : "")
+              (clockDragInComplete && !clockRemoved ? " " + styles.wobble : "")
             }
             onAnimationEnd={(e) => {
               if (e.animationName.includes("dragIn") && !clockDragInComplete) {
@@ -353,7 +341,9 @@ const WebinarView: React.FC = () => {
           >
             <div className={styles.widgetHeader}>
               <div className={styles.windowControls}>
-                <div className={`${styles.windowButton} ${styles.closeButton}`} />
+                <div
+                  className={`${styles.windowButton} ${styles.closeButton}`}
+                />
                 <div
                   className={`${styles.windowButton} ${styles.minimizeButton}`}
                 />
@@ -387,14 +377,18 @@ const WebinarView: React.FC = () => {
               setHasInteracted(true);
               if (videoRef.current) {
                 videoRef.current.muted = false;
-                videoRef.current.play().catch((err) =>
-                  console.warn("Play blocked by browser:", err)
-                );
+                videoRef.current
+                  .play()
+                  .catch((err) =>
+                    console.warn("Play blocked by browser:", err)
+                  );
               }
             }}
           >
             <div className={styles.soundIcon}>🔊</div>
-            <div className={styles.soundText}>Click to Deploy Your AI Agents</div>
+            <div className={styles.soundText}>
+              Click to Deploy Your AI Agents
+            </div>
           </div>
         )}
       </div>
