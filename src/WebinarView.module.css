@@ -700,7 +700,6 @@
   .zoomContainer {
     max-width: 90vw;
   }
-  /* In a single–column layout, remove any two–column classes if present */
   .videoWrapper {
     width: 100%;
     flex: none;
@@ -901,25 +900,59 @@ video::-webkit-media-controls-current-time-display,
 video::-webkit-media-controls-time-remaining-display,
 video::-webkit-media-controls-timeline {
   display: none !important;
-  video::-webkit-media-controls-panel {
-  background-color: #C3C3C3 !important; /* or #F7F8FA if you prefer */
 }
+video::-webkit-media-controls-panel {
+  background-color: #C3C3C3 !important;
 }
 
 @media (max-width: 600px) {
   .clockWidget {
-    /* Make it smaller */
-    width: 200px;                /* instead of 320px */
-    top: 50%;                    /* recenter for mobile */
+    width: 200px;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* combine the shift & keep it centered */
+    transform: translate(-50%, -50%);
   }
-
-  /* Optionally shrink the clock text a bit so it fits */
   .clockTime {
-    font-size: 1.8rem; 
+    font-size: 1.8rem;
   }
   .clockDate {
     font-size: 0.8rem;
   }
+}
+
+/**************************************/
+/* ADDED FOR THE Jony Ive–style DEMO INDICATOR */
+/**************************************/
+.demoIndicator {
+  font-family: "SF Pro Display", sans-serif;
+  color: #252525;
+  font-size: 0.95rem;
+  text-align: left;
+  margin-bottom: -8px; /* Slight negative margin to tuck it in elegantly */
+  align-self: flex-start; /* So it's left-aligned in the container */
+  position: relative;
+}
+@media (max-width: 600px) {
+  .demoIndicator {
+    font-size: 0.8rem;
+  }
+}
+.liveText {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+/* Red blinking dot for "live" */
+@keyframes blinkDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.blinkingDot {
+  display: inline-block;
+  width: 0.6em;
+  height: 0.6em;
+  background-color: #ff0000;
+  border-radius: 50%;
+  animation: blinkDot 1s infinite;
+  vertical-align: middle;
 }
