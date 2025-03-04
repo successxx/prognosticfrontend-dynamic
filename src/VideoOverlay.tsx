@@ -586,7 +586,7 @@ const overlayItems: OverlayItem[] = [
     key: "salesletter",
     content: "",
     startTime: 511.07,
-    endTime: 526.29,
+    endTime: 525.29,
     position: { x: 0.243, y: 0.25 },
     style: {
       color: "#252525",
@@ -600,7 +600,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "company_name",
     content: "",
-    startTime: 527.71,
+    startTime: 526,
     endTime: 538.46,
     position: { x: 0.33, y: 0.32 },
     style: { color: "#252525", fontSize: "0.6em", fontWeight: "500" },
@@ -608,7 +608,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Products_services",
     content: "",
-    startTime: 527.71,
+    startTime: 526,
     endTime: 538.46,
     position: { x: 0.303, y: 0.37 },
     style: { color: "#252525", fontSize: "0.6em" },
