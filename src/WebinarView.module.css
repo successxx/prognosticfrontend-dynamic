@@ -116,7 +116,7 @@
 .videoWrapper {
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%; /* Fallback for browsers that don't support aspect-ratio */
+  padding-bottom: 56.25%; /* fallback for older browsers */
   aspect-ratio: 16 / 9;
   height: auto;
   overflow: hidden;
@@ -133,27 +133,29 @@
   object-fit: cover;
 }
 
-/* NEW: Minimalistic Jony Ive–style countdown text */
+/**************************************/
+/* JONY IVE–STYLE COUNTDOWN (ABOVE)   */
+/**************************************/
 .demoIndicator {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 5;
+  /* Placed in normal flow, above video */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   color: #252525;
   font-size: clamp(0.7rem, 2vw, 0.95rem);
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  margin-bottom: 8px; /* a little spacing above the video wrapper */
+  user-select: none;
 }
-/* A blinking red dot for "currently live" */
 .redDot {
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
   background: #ff0000;
   border-radius: 50%;
-  animation: blink 1.5s infinite;
+  margin-right: 6px;
+  animation: blink 1s infinite;
+  flex-shrink: 0;
 }
 @keyframes blink {
   0% {
