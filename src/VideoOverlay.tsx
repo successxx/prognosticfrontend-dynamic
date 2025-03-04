@@ -613,6 +613,7 @@ const overlayItems: OverlayItem[] = [
     position: { x: 0.303, y: 0.37 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
+  ];
 
 export const VideoOverlay: React.FC<VideoOverlayProps> = ({
   videoRef,
