@@ -118,7 +118,7 @@ const WebinarView: React.FC = () => {
       try {
         // We can fetch again:
         const resp = await fetch(
-          "https://progwebinar.blob.core.windows.net/video/cdemo69.mp4",
+          "https://prognostic-ai-backend-acab284a2f57.herokuapp.com/get_user_two",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
