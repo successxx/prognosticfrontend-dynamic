@@ -281,7 +281,7 @@ const overlayItems: OverlayItem[] = [
     key: "email_1",
     content: "",
     startTime: 34.43,
-    endTime: 38.27,
+    endTime: 38.49,
     position: { x: 0.13, y: 0.3 },
     style: {
       color: "#000000",
@@ -295,7 +295,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "email_2",
     content: "",
-    startTime: 38.27,
+    startTime: 38.49,
     endTime: 42.35,
     position: { x: 0.13, y: 0.3 },
     style: {
