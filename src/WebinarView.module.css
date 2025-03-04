@@ -116,7 +116,7 @@
 .videoWrapper {
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%; /* fallback for older browsers */
+  padding-bottom: 56.25%; /* Fallback for browsers that don't support aspect-ratio */
   aspect-ratio: 16 / 9;
   height: auto;
   overflow: hidden;
@@ -131,42 +131,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-/**************************************/
-/* JONY IVE–STYLE COUNTDOWN (ABOVE)   */
-/**************************************/
-.demoIndicator {
-  /* Placed in normal flow, above video */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-  color: #252525;
-  font-size: clamp(0.7rem, 2vw, 0.95rem);
-  margin-bottom: 8px; /* a little spacing above the video wrapper */
-  user-select: none;
-}
-.redDot {
-  width: 10px;
-  height: 10px;
-  background: #ff0000;
-  border-radius: 50%;
-  margin-right: 6px;
-  animation: blink 1s infinite;
-  flex-shrink: 0;
-}
-@keyframes blink {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.3;
-  }
-  100% {
-    opacity: 1;
-  }
 }
 
 /**************************************/
@@ -384,6 +348,7 @@
   100% {
     transform: translate(0, 0);
   }
+  /* 50% { transform: translate(3px, -3px); } */
 }
 
 .animateIn {
@@ -735,6 +700,7 @@
   .zoomContainer {
     max-width: 90vw;
   }
+  /* In a single–column layout, remove any two–column classes if present */
   .videoWrapper {
     width: 100%;
     flex: none;
@@ -935,23 +901,23 @@ video::-webkit-media-controls-current-time-display,
 video::-webkit-media-controls-time-remaining-display,
 video::-webkit-media-controls-timeline {
   display: none !important;
+  video::-webkit-media-controls-panel {
+  background-color: #C3C3C3 !important; /* or #F7F8FA if you prefer */
 }
-video::-webkit-media-controls-panel {
-  background-color: #c3c3c3 !important; /* or #F7F8FA if you prefer */
 }
 
-/**************************************/
-/* Mobile adjustments for clock widget*/
-/**************************************/
 @media (max-width: 600px) {
   .clockWidget {
-    width: 200px;
-    top: 50%;
+    /* Make it smaller */
+    width: 200px;                /* instead of 320px */
+    top: 50%;                    /* recenter for mobile */
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); /* combine the shift & keep it centered */
   }
+
+  /* Optionally shrink the clock text a bit so it fits */
   .clockTime {
-    font-size: 1.8rem;
+    font-size: 1.8rem; 
   }
   .clockDate {
     font-size: 0.8rem;
