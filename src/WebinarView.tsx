@@ -393,7 +393,7 @@ const ExitOverlay: React.FC<{
         <button className={styles.exitCloseBtn} onClick={onClose}>
           ×
         </button>
-        <div className={styles.iphoneSender}>Selina</div>
+        <div className={styles.iphoneSender}>Clients.ai Agents</div>
         <div className={styles.iphoneMessageText}>
           {message && message.trim() ? message : defaultMsg}
         </div>
