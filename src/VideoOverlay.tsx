@@ -311,7 +311,7 @@ const overlayItems: OverlayItem[] = [
   key: "headline", // Use 'headline' to match the data field in your JSON
   content: "", // The content will be populated from webinarInjectionData
   startTime: 48, // When it should start showing (in seconds)
-  endTime: 57.14, // When it should stop showing (in seconds)
+  endTime: 56.14, // When it should stop showing (in seconds)
   position: { x: 0.099, y: 0.45 }, // These are the estimated coordinates
   style: {
     color: "#252525",
@@ -328,7 +328,7 @@ const overlayItems: OverlayItem[] = [
   key: "headline", // Use 'headline' to match the data field in your JSON
   content: "", // The content will be populated from webinarInjectionData
   startTime: 115.17, // When it should start showing (in seconds)
-  endTime: 136.16, // When it should stop showing (in seconds)
+  endTime: 135.56, // When it should stop showing (in seconds)
   position: { x: 0.63, y: 0.47 }, // These are the estimated coordinates
   style: {
     color: "#252525",
@@ -346,7 +346,7 @@ const overlayItems: OverlayItem[] = [
     content: "",
     startTime: 308.38,
     endTime: 311.39,
-    position: { x: 0.57, y: 0.338 },
+    position: { x: 0.58, y: 0.338 },
     style: { color: "#252525", fontSize: "0.7em" },
   },
   {
@@ -354,13 +354,13 @@ const overlayItems: OverlayItem[] = [
     content: "John Doe",
     startTime: 312.53,
     endTime: 325.85,
-    position: { x: 0.574, y: 0.444 },
+    position: { x: 0.574, y: 0.432 },
     style: { color: "#252525", fontSize: "0.7em" },
   },
   {
     key: "user_name",
     content: "John Doe",
-    startTime: 336.94,
+    startTime: 336.64,
     endTime: 354.16,
     position: { x: 0.0415, y: 0.264 },
     style: { color: "#252525", fontSize: "0.6em" },
@@ -379,9 +379,9 @@ const overlayItems: OverlayItem[] = [
   {
     key: "lead_email",
     content: "",
-    startTime: 343.99,
+    startTime: 343.89,
     endTime: 354.16,
-    position: { x: 0.0415, y: 0.342 },
+    position: { x: 0.0415, y: 0.339 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
@@ -395,39 +395,39 @@ const overlayItems: OverlayItem[] = [
   {
     key: "company_name",
     content: "",
-    startTime: 372.27,
-    endTime: 381.25,
+    startTime: 372.07,
+    endTime: 381.2,
     position: { x: 0.372, y: 0.52 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
     key: "Industry",
     content: "",
-    startTime: 372.27,
-    endTime: 381.25,
+    startTime: 372.07,
+    endTime: 381.2,
     position: { x: 0.508, y: 0.52 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
     key: "Products_services",
     content: "Improve efficiency, Tech companies, Time management",
-    startTime: 372.27,
-    endTime: 381.25,
+    startTime: 372.07,
+    endTime: 381.2,
     position: { x: 0.372, y: 0.585 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
     key: "Business_description",
     content: "AI Agents, $99/month, 24/7 support, Boost productivity",
-    startTime: 372.27,
-    endTime: 381.25,
+    startTime: 372.07,
+    endTime: 381.2,
     position: { x: 0.372, y: 0.667 },
     style: { color: "#252525", fontSize: "0.6em" },
   },
   {
     key: "primary_goal",
     content: "Primary Goal",
-    startTime: 381.25,
+    startTime: 381.2,
     endTime: 387.25,
     position: { x: 0.372, y: 0.525 },
     style: { color: "#252525", fontSize: "0.6em" },
