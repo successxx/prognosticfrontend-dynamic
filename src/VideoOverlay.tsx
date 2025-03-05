@@ -137,7 +137,7 @@ const overlayItems: OverlayItem[] = [
     key: "company_name",
     content: "",
     startTime: 10.12,
-    endTime: 18.5,
+    endTime: 18.48,
     position: { x: 0.372, y: 0.52 },
     style: {
       color: "#131313",
@@ -152,7 +152,7 @@ const overlayItems: OverlayItem[] = [
     key: "Industry",
     content: "",
     startTime: 10.12,
-    endTime: 18.5,
+    endTime: 18.48,
     position: { x: 0.508, y: 0.52 },
     style: {
       color: "#131313",
@@ -167,7 +167,7 @@ const overlayItems: OverlayItem[] = [
     key: "Products_services",
     content: "Improve efficiency, Tech companies, Time management",
     startTime: 10.12,
-    endTime: 18.5,
+    endTime: 18.48,
     position: { x: 0.372, y: 0.585 },
     style: {
       color: "#131313",
@@ -182,7 +182,7 @@ const overlayItems: OverlayItem[] = [
     key: "Business_description",
     content: "AI Agents, $99/month, 24/7 support, Boost productivity",
     startTime: 10.12,
-    endTime: 18.5,
+    endTime: 18.48,
     position: { x: 0.372, y: 0.667 },
     style: {
       color: "#131313",
@@ -196,8 +196,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "primary_goal",
     content: "Primary Goal",
-    startTime: 18.47,
-    endTime: 22.43,
+    startTime: 18.57,
+    endTime: 22.48,
     position: { x: 0.372, y: 0.525 },
     style: {
       color: "#000000",
@@ -211,8 +211,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "target_audience",
     content: "Target Audience",
-    startTime: 18.47,
-    endTime: 22.43,
+    startTime: 18.57,
+    endTime: 22.48,
     position: { x: 0.372, y: 0.58 },
     style: {
       color: "#000000",
@@ -226,8 +226,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "pain_points",
     content: "Customer Pain Points",
-    startTime: 18.47,
-    endTime: 22.43,
+    startTime: 18.57,
+    endTime: 22.48,
     position: { x: 0.372, y: 0.664 },
     style: {
       color: "#000000",
@@ -332,7 +332,7 @@ const overlayItems: OverlayItem[] = [
     key: "testimonials",
     content: "Testimonials",
     startTime: 24.57,
-    endTime: 26.34,
+    endTime: 26.27,
     position: { x: 0.38, y: 0.552 },
     style: {
       color: "#000000",
