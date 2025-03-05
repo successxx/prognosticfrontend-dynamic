@@ -137,7 +137,7 @@ const overlayItems: OverlayItem[] = [
     key: "company_name",
     content: "",
     startTime: 10.12,
-    endTime: 17.73,
+    endTime: 18.23,
     position: { x: 0.372, y: 0.52 },
     style: {
       color: "#131313",
@@ -152,7 +152,7 @@ const overlayItems: OverlayItem[] = [
     key: "Industry",
     content: "",
     startTime: 10.12,
-    endTime: 17.73,
+    endTime: 18.23,
     position: { x: 0.508, y: 0.52 },
     style: {
       color: "#131313",
@@ -167,7 +167,7 @@ const overlayItems: OverlayItem[] = [
     key: "Products_services",
     content: "Improve efficiency, Tech companies, Time management",
     startTime: 10.12,
-    endTime: 17.73,
+    endTime: 18.23,
     position: { x: 0.372, y: 0.585 },
     style: {
       color: "#131313",
@@ -182,7 +182,7 @@ const overlayItems: OverlayItem[] = [
     key: "Business_description",
     content: "AI Agents, $99/month, 24/7 support, Boost productivity",
     startTime: 10.12,
-    endTime: 17.73,
+    endTime: 18.23,
     position: { x: 0.372, y: 0.667 },
     style: {
       color: "#131313",
@@ -196,7 +196,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "primary_goal",
     content: "Primary Goal",
-    startTime: 17.73,
+    startTime: 18.23,
     endTime: 22.4,
     position: { x: 0.372, y: 0.525 },
     style: {
@@ -211,7 +211,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "target_audience",
     content: "Target Audience",
-    startTime: 17.73,
+    startTime: 18.23,
     endTime: 22.4,
     position: { x: 0.372, y: 0.58 },
     style: {
@@ -226,7 +226,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "pain_points",
     content: "Customer Pain Points",
-    startTime: 17.73,
+    startTime: 18.23,
     endTime: 22.4,
     position: { x: 0.372, y: 0.664 },
     style: {
@@ -241,8 +241,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_name",
     content: "Offer Name",
-    startTime: 22.4,
-    endTime: 24.37,
+    startTime: 22.5,
+    endTime: 24.5,
     position: { x: 0.37, y: 0.477 },
     style: {
       color: "#000000",
@@ -256,8 +256,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_price",
     content: "3000",
-    startTime: 22.4,
-    endTime: 24.37,
+    startTime: 22.5,
+    endTime: 24.5,
     position: { x: 0.514, y: 0.477 },
     style: {
       color: "#000000",
@@ -271,8 +271,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_description",
     content: "john.doe@example.com",
-    startTime: 22.4,
-    endTime: 24.37,
+    startTime: 22.5,
+    endTime: 24.5,
     position: { x: 0.37, y: 0.54 },
     style: {
       color: "#000000",
@@ -286,8 +286,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "primary_benefits",
     content: "Benefits of AI Agents",
-    startTime: 22.4,
-    endTime: 24.37,
+    startTime: 22.5,
+    endTime: 24.5,
     position: { x: 0.507, y: 0.54 },
     style: {
       color: "#000000",
@@ -301,8 +301,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_goal",
     content: "Offer goal",
-    startTime: 22.4,
-    endTime: 24.37,
+    startTime: 22.5,
+    endTime: 24.5,
     position: { x: 0.37, y: 0.634 },
     style: {
       color: "#000000",
@@ -316,8 +316,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Offer_topic",
     content: "Offer topic",
-    startTime: 22.4,
-    endTime: 24.37,
+    startTime: 22.5,
+    endTime: 24.5,
     position: { x: 0.507, y: 0.634 },
     style: {
       color: "#000000",
@@ -331,7 +331,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "testimonials",
     content: "Testimonials",
-    startTime: 24.47,
+    startTime: 24.27,
     endTime: 26.46,
     position: { x: 0.38, y: 0.552 },
     style: {
@@ -346,22 +346,22 @@ const overlayItems: OverlayItem[] = [
   {
     key: "user_name",
     content: "",
-    startTime: 26.56,
+    startTime: 26.4,
     endTime: 34.37,
-    position: { x: 0.54, y: 0.183 },
+    position: { x: 0.568, y: 0.183 },
     style: {
       color: "#252525",
       fontSize: "2.4em",
       textAlign: "left",
       transform: "translate(-50%, -50%)",
       fontFamily: '"Montserrat", sans-serif',
-      fontWeight: "600",
+      fontWeight: "550",
     },
   },
   {
     key: "salesletter",
     content: "",
-    startTime: 26.56,
+    startTime: 26.4,
     endTime: 34.37,
     position: { x: 0.25, y: 0.25 },
     style: {
@@ -369,6 +369,22 @@ const overlayItems: OverlayItem[] = [
       fontSize: "0.9em",
       maxWidth: "62em",
       maxHeight: "28em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+{
+    key: "user_name",
+    content: "",
+    startTime: 34.37,
+    endTime: 42.85,
+    position: { x: 0.124, y: 0.079 },
+    style: {
+      color: "#000000",
+      fontSize: "0.7em",
+      fontWeight: "600",
+      maxWidth: "30em",
+      maxHeight: "1.3em",
       overflow: "hidden",
       textAlign: "left",
     },
