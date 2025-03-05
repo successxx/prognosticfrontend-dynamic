@@ -6,6 +6,8 @@ import Fireworks from "./Fireworks";
 import "./index.css";
 import LoadingCircle from "./LoadingCircle";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Footer from "./Footer";
+
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -72,14 +74,9 @@ const App: React.FC = () => {
   return (
     <div className="wrapper py-4">
       <Header />
-      <hr id="divider02" className="hr-custom" />
-
       {loading ? (
         <>
           <LoadingCircle />
-          <p id="text07" className="style1">
-            © {new Date().getFullYear()} Clients.ai
-          </p>
         </>
       ) : (
         <>
@@ -105,6 +102,7 @@ const App: React.FC = () => {
           )}
         </>
       )}
+      <Footer isFooterVisible={true} />
     </div>
   );
 };

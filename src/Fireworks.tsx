@@ -71,4 +71,3 @@ const Fireworks: React.FC = () => {
 };
 
 export default Fireworks;
-

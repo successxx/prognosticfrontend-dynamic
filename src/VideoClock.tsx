@@ -39,7 +39,7 @@ export const VideoClock: React.FC<VideoClock> = ({ videoContainerRef }) => {
     const ampm = hours >= 12 ? "PM" : "AM";
     const formattedHours = hours % 12 || 12;
 
-    return `${day} ${month} ${dateNum} ${formattedHours}:${minutes} ${ampm}`;
+    return `${day} ${month} ${dateNum}  ${formattedHours}:${minutes} ${ampm}`;
   };
 
   useEffect(() => {

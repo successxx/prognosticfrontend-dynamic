@@ -22,12 +22,412 @@ interface VideoOverlayProps {
 }
 
 const overlayItems: OverlayItem[] = [
+  // Add this to the overlayItems array
+  {
+    key: "headline", // Use 'headline' to match the data field in your JSON
+    content: "", // The content will be populated from webinarInjectionData
+    startTime: 0.11, // When it should start showing (in seconds)
+    endTime: 1.01, // When it should stop showing (in seconds)
+    position: { x: 0.5, y: 0.5 }, // These are the estimated coordinates
+    style: {
+      color: "#131313",
+      fontSize: "2em", // This would be 1.5% of the video width
+      transform: "translate(-50%, -50%)",
+      fontFamily: '"Montserrat", sans-serif',
+      fontWeight: "550",
+      lineHeight: "1.5",
+      textAlign: "center",
+      maxWidth: "30em", // 30em = 30 × font size
+      zIndex: "3",
+    },
+  },
+  {
+    key: "headline", // Use 'headline' to match the data field in your JSON
+    content: "", // The content will be populated from webinarInjectionData
+    startTime: 1.12, // When it should start showing (in seconds)
+    endTime: 2.02, // When it should stop showing (in seconds)
+    position: { x: 0.5, y: 0.5 }, // These are the estimated coordinates
+    style: {
+      color: "#131313",
+      fontSize: "3em", // This would be 1.5% of the video width
+      transform: "translate(-50%, -50%)",
+      fontFamily: '"Montserrat", sans-serif',
+      fontWeight: "550",
+      lineHeight: "1.5",
+      textAlign: "center",
+      maxWidth: "30em", // 30em = 30 × font size
+      zIndex: "3",
+    },
+  },
   {
     key: "lead_email",
     content: "",
-    startTime: 13,
-    endTime: 16.08,
+    startTime: 2.14,
+    endTime: 3.01,
     position: { x: 0.573, y: 0.338 },
+    style: {
+      color: "#131313",
+      fontSize: "0.7em",
+      maxWidth: "20em",
+      maxHeight: "1.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "user_name",
+    content: "John Doe",
+    startTime: 3.13,
+    endTime: 4.01,
+    position: { x: 0.042, y: 0.266 },
+    style: {
+      color: "#131313",
+      fontSize: "0.6em",
+      maxHeight: "1.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "offer_url",
+    content: "123-456-7890",
+    startTime: 3.13,
+    endTime: 4.01,
+    position: { x: 0.042, y: 0.305 },
+    style: {
+      color: "#131313",
+      fontSize: "0.6em",
+      maxWidth: "18em",
+      maxHeight: "1.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "lead_email",
+    content: "",
+    startTime: 3.13,
+    endTime: 4.01,
+    position: { x: 0.042, y: 0.342 },
+    style: {
+      color: "#131313",
+      fontSize: "0.6em",
+      maxWidth: "18em",
+      maxHeight: "1.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "website_url",
+    content: "www.example.com",
+    startTime: 5.12,
+    endTime: 6.1,
+    position: { x: 0.375, y: 0.607 },
+    style: {
+      color: "#131313",
+      fontSize: "0.6em",
+      maxWidth: "43em",
+      maxHeight: "4.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "company_name",
+    content: "",
+    startTime: 10.12,
+    endTime: 18.53,
+    position: { x: 0.372, y: 0.52 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "20em",
+      maxHeight: "1.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "Industry",
+    content: "",
+    startTime: 10.12,
+    endTime: 18.53,
+    position: { x: 0.508, y: 0.52 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "20em",
+      maxHeight: "1.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "Products_services",
+    content: "Improve efficiency, Tech companies, Time management",
+    startTime: 10.12,
+    endTime: 18.53,
+    position: { x: 0.372, y: 0.585 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "41em",
+      maxHeight: "4.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "Business_description",
+    content: "AI Agents, $99/month, 24/7 support, Boost productivity",
+    startTime: 10.12,
+    endTime: 18.53,
+    position: { x: 0.372, y: 0.667 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "41em",
+      maxHeight: "4.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "primary_goal",
+    content: "Primary Goal",
+    startTime: 18.13,
+    endTime: 22.53,
+    position: { x: 0.372, y: 0.525 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "43em",
+      maxHeight: "1.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "target_audience",
+    content: "Target Audience",
+    startTime: 18.13,
+    endTime: 22.53,
+    position: { x: 0.372, y: 0.58 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "41em",
+      maxHeight: "4.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "pain_points",
+    content: "Customer Pain Points",
+    startTime: 18.13,
+    endTime: 22.53,
+    position: { x: 0.372, y: 0.664 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "41em",
+      maxHeight: "4.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "offer_name",
+    content: "Offer Name",
+    startTime: 22.53,
+    endTime: 24.52,
+    position: { x: 0.37, y: 0.477 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "20em",
+      maxHeight: "1.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "offer_price",
+    content: "3000",
+    startTime: 22.53,
+    endTime: 24.52,
+    position: { x: 0.514, y: 0.477 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "18em",
+      maxHeight: "1.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "offer_description",
+    content: "john.doe@example.com",
+    startTime: 22.53,
+    endTime: 24.52,
+    position: { x: 0.37, y: 0.54 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "20em",
+      maxHeight: "4.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "primary_benefits",
+    content: "Benefits of AI Agents",
+    startTime: 22.53,
+    endTime: 24.52,
+    position: { x: 0.507, y: 0.54 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "20em",
+      maxHeight: "4.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "offer_goal",
+    content: "Offer goal",
+    startTime: 22.53,
+    endTime: 24.52,
+    position: { x: 0.37, y: 0.634 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "20em",
+      maxHeight: "4.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "Offer_topic",
+    content: "Offer topic",
+    startTime: 22.53,
+    endTime: 24.47,
+    position: { x: 0.507, y: 0.634 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "20em",
+      maxHeight: "4.3em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "testimonials",
+    content: "Testimonials",
+    startTime: 24.47,
+    endTime: 26.06,
+    position: { x: 0.38, y: 0.552 },
+    style: {
+      color: "#000000",
+      fontSize: "0.6em",
+      maxWidth: "41em",
+      maxHeight: "7em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "salesletter",
+    content: "",
+    startTime: 26.26,
+    endTime: 34.37,
+    position: { x: 0.25, y: 0.25 },
+    style: {
+      color: "#000000",
+      fontSize: "0.9em",
+      maxWidth: "62em",
+      maxHeight: "28em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "email_1",
+    content: "",
+    startTime: 34.37,
+    endTime: 38.29,
+    position: { x: 0.13, y: 0.3 },
+    style: {
+      color: "#000000",
+      fontSize: "0.9em",
+      maxWidth: "81em",
+      maxHeight: "30em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "email_2",
+    content: "",
+    startTime: 38.29,
+    endTime: 42.85,
+    position: { x: 0.13, y: 0.3 },
+    style: {
+      color: "#000000",
+      fontSize: "0.9em",
+      maxWidth: "81em",
+      maxHeight: "20em",
+      overflow: "hidden",
+      textAlign: "left",
+    },
+  },
+  {
+    key: "headline", // Use 'headline' to match the data field in your JSON
+    content: "", // The content will be populated from webinarInjectionData
+    startTime: 48, // When it should start showing (in seconds)
+    endTime: 56.14, // When it should stop showing (in seconds)
+    position: { x: 0.099, y: 0.45 }, // These are the estimated coordinates
+    style: {
+      color: "#252525",
+      fontSize: "1.5em", // This would be 1.5% of the video width
+      fontFamily: '"SF Pro Display", sans-serif',
+      fontWeight: "500",
+      lineHeight: "1.4",
+      textAlign: "center",
+      maxWidth: "30em", // 30em = 30 × font size
+      zIndex: "3",
+    },
+  },
+  {
+    key: "headline", // Use 'headline' to match the data field in your JSON
+    content: "", // The content will be populated from webinarInjectionData
+    startTime: 115.17, // When it should start showing (in seconds)
+    endTime: 135.56, // When it should stop showing (in seconds)
+    position: { x: 0.63, y: 0.47 }, // These are the estimated coordinates
+    style: {
+      color: "#252525",
+      fontSize: "2em", // This would be 1.5% of the video width
+      fontFamily: '"Montserrat", sans-serif',
+      fontWeight: "550",
+      lineHeight: "1.5",
+      textAlign: "center",
+      maxWidth: "15em", // 30em = 30 × font size
+      zIndex: "3",
+    },
+  },
+  {
+    key: "lead_email",
+    content: "",
+    startTime: 308.38,
+    endTime: 311.39,
+    position: { x: 0.58, y: 0.338 },
     style: {
       color: "#252525",
       fontSize: "0.7em",
@@ -40,13 +440,13 @@ const overlayItems: OverlayItem[] = [
   {
     key: "user_name",
     content: "John Doe",
-    startTime: 17.8,
-    endTime: 26.7,
-    position: { x: 0.573, y: 0.44 },
+    startTime: 312.53,
+    endTime: 325.85,
+    position: { x: 0.574, y: 0.432 },
     style: {
       color: "#252525",
-      fontSize: "0.6em",
-      maxWidth: "24em",
+      fontSize: "0.7em",
+      maxWidth: "20em",
       maxHeight: "1.3em",
       overflow: "hidden",
       textAlign: "left",
@@ -55,9 +455,9 @@ const overlayItems: OverlayItem[] = [
   {
     key: "user_name",
     content: "John Doe",
-    startTime: 41.15,
-    endTime: 58.57,
-    position: { x: 0.043, y: 0.264 },
+    startTime: 336.64,
+    endTime: 354.16,
+    position: { x: 0.0415, y: 0.264 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
@@ -70,9 +470,9 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_url",
     content: "123-456-7890",
-    startTime: 43.6,
-    endTime: 58.57,
-    position: { x: 0.043, y: 0.303 },
+    startTime: 340.2,
+    endTime: 354.16,
+    position: { x: 0.0415, y: 0.305 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
@@ -85,9 +485,9 @@ const overlayItems: OverlayItem[] = [
   {
     key: "lead_email",
     content: "",
-    startTime: 48.5,
-    endTime: 58.57,
-    position: { x: 0.043, y: 0.34 },
+    startTime: 343.89,
+    endTime: 354.16,
+    position: { x: 0.0415, y: 0.339 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
@@ -100,9 +500,9 @@ const overlayItems: OverlayItem[] = [
   {
     key: "website_url",
     content: "www.example.com",
-    startTime: 69.28,
-    endTime: 71.94,
-    position: { x: 0.372, y: 0.608 },
+    startTime: 364.87,
+    endTime: 367.43,
+    position: { x: 0.372, y: 0.607 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
@@ -115,8 +515,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "company_name",
     content: "",
-    startTime: 76.38,
-    endTime: 85.35,
+    startTime: 372.07,
+    endTime: 381.2,
     position: { x: 0.372, y: 0.52 },
     style: {
       color: "#252525",
@@ -130,8 +530,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Industry",
     content: "",
-    startTime: 76.38,
-    endTime: 85.35,
+    startTime: 372.07,
+    endTime: 381.2,
     position: { x: 0.508, y: 0.52 },
     style: {
       color: "#252525",
@@ -145,8 +545,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Products_services",
     content: "Improve efficiency, Tech companies, Time management",
-    startTime: 76.38,
-    endTime: 85.35,
+    startTime: 372.07,
+    endTime: 381.2,
     position: { x: 0.372, y: 0.585 },
     style: {
       color: "#252525",
@@ -159,9 +559,9 @@ const overlayItems: OverlayItem[] = [
   },
   {
     key: "Business_description",
-    content: "AI Assistant, $99/month, 24/7 support, Boost productivity",
-    startTime: 76.38,
-    endTime: 85.35,
+    content: "AI Agents, $99/month, 24/7 support, Boost productivity",
+    startTime: 372.07,
+    endTime: 381.2,
     position: { x: 0.372, y: 0.667 },
     style: {
       color: "#252525",
@@ -175,8 +575,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "primary_goal",
     content: "Primary Goal",
-    startTime: 85.36,
-    endTime: 91.72,
+    startTime: 381.2,
+    endTime: 387.25,
     position: { x: 0.372, y: 0.525 },
     style: {
       color: "#252525",
@@ -190,8 +590,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "target_audience",
     content: "Target Audience",
-    startTime: 85.36,
-    endTime: 91.72,
+    startTime: 381.25,
+    endTime: 387.25,
     position: { x: 0.372, y: 0.58 },
     style: {
       color: "#252525",
@@ -205,8 +605,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "pain_points",
     content: "Customer Pain Points",
-    startTime: 85.36,
-    endTime: 91.72,
+    startTime: 381.25,
+    endTime: 387.25,
     position: { x: 0.372, y: 0.664 },
     style: {
       color: "#252525",
@@ -220,8 +620,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_name",
     content: "Offer Name",
-    startTime: 91.85,
-    endTime: 95.03,
+    startTime: 387.25,
+    endTime: 390.82,
     position: { x: 0.37, y: 0.477 },
     style: {
       color: "#252525",
@@ -235,8 +635,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_price",
     content: "3000",
-    startTime: 91.85,
-    endTime: 95.03,
+    startTime: 387.25,
+    endTime: 390.82,
     position: { x: 0.514, y: 0.477 },
     style: {
       color: "#252525",
@@ -250,8 +650,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_description",
     content: "john.doe@example.com",
-    startTime: 91.85,
-    endTime: 95.03,
+    startTime: 387.25,
+    endTime: 390.82,
     position: { x: 0.37, y: 0.54 },
     style: {
       color: "#252525",
@@ -264,9 +664,9 @@ const overlayItems: OverlayItem[] = [
   },
   {
     key: "primary_benefits",
-    content: "Benefits of AI Assistant",
-    startTime: 91.85,
-    endTime: 95.03,
+    content: "Benefits of AI Agents",
+    startTime: 387.25,
+    endTime: 390.82,
     position: { x: 0.507, y: 0.54 },
     style: {
       color: "#252525",
@@ -280,8 +680,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_goal",
     content: "Offer goal",
-    startTime: 91.85,
-    endTime: 95.03,
+    startTime: 387.25,
+    endTime: 390.82,
     position: { x: 0.37, y: 0.634 },
     style: {
       color: "#252525",
@@ -295,8 +695,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Offer_topic",
     content: "Offer topic",
-    startTime: 91.85,
-    endTime: 95.03,
+    startTime: 387.25,
+    endTime: 390.82,
     position: { x: 0.507, y: 0.634 },
     style: {
       color: "#252525",
@@ -310,8 +710,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "testimonials",
     content: "Testimonials",
-    startTime: 95.04,
-    endTime: 98.3,
+    startTime: 390.92,
+    endTime: 393.85,
     position: { x: 0.38, y: 0.552 },
     style: {
       color: "#252525",
@@ -322,12 +722,11 @@ const overlayItems: OverlayItem[] = [
       textAlign: "left",
     },
   },
-
   {
     key: "email_1",
     content: "",
-    startTime: 179.7,
-    endTime: 207.01,
+    startTime: 475.89,
+    endTime: 502.7,
     position: { x: 0.13, y: 0.3 },
     style: {
       color: "#252525",
@@ -341,8 +740,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "email_2",
     content: "",
-    startTime: 207.01,
-    endTime: 215.68,
+    startTime: 502.7,
+    endTime: 511.07,
     position: { x: 0.13, y: 0.3 },
     style: {
       color: "#252525",
@@ -356,9 +755,9 @@ const overlayItems: OverlayItem[] = [
   {
     key: "salesletter",
     content: "",
-    startTime: 215.7,
-    endTime: 230,
-    position: { x: 0.24, y: 0.25 },
+    startTime: 511.07,
+    endTime: 525.29,
+    position: { x: 0.243, y: 0.25 },
     style: {
       color: "#252525",
       fontSize: "0.9em",
@@ -371,8 +770,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "company_name",
     content: "",
-    startTime: 231.02,
-    endTime: 242.07,
+    startTime: 526,
+    endTime: 538.46,
     position: { x: 0.33, y: 0.32 },
     style: {
       color: "#252525",
@@ -387,28 +786,12 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Products_services",
     content: "",
-    startTime: 231.02,
-    endTime: 242.07,
+    startTime: 526,
+    endTime: 538.46,
     position: { x: 0.303, y: 0.37 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
-      maxWidth: "18em",
-      maxHeight: "1.3em",
-      overflow: "hidden",
-      textAlign: "left",
-    },
-  },
-  {
-    key: "offer_price",
-    content: "",
-    startTime: 231.02,
-    endTime: 242.07,
-    position: { x: 0.303, y: 0.386 },
-    style: {
-      color: "#252525",
-      fontSize: "0.6em",
-      fontWeight: "600",
       maxWidth: "18em",
       maxHeight: "1.3em",
       overflow: "hidden",
@@ -472,8 +855,12 @@ export const VideoOverlay: React.FC<VideoOverlayProps> = ({
   }, [videoContainerRef]);
 
   const embeddableInjection = (key: keyof IWebinarInjection) => {
-    // Includes the keys those contains the html content
-    return key === "email_1" || key === "email_2" || key === "salesletter";
+    return (
+      key === "email_1" ||
+      key === "email_2" ||
+      key === "salesletter" ||
+      key === "headline"
+    );
   };
 
   return (
