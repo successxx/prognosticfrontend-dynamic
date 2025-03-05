@@ -423,7 +423,7 @@ const overlayItems: OverlayItem[] = [
     key: "headline", // Use 'headline' to match the data field in your JSON
     content: "", // The content will be populated from webinarInjectionData
     startTime: 48, // When it should start showing (in seconds)
-    endTime: 56.14, // When it should stop showing (in seconds)
+    endTime: 54.14, // When it should stop showing (in seconds)
     position: { x: 0.099, y: 0.45 }, // These are the estimated coordinates
     style: {
       color: "#252525",
@@ -471,9 +471,9 @@ const overlayItems: OverlayItem[] = [
   {
     key: "user_name",
     content: "John Doe",
-    startTime: 310.33,
-    endTime: 324.45,
-    position: { x: 0.574, y: 0.431 },
+    startTime: 310.23,
+    endTime: 324.15,
+    position: { x: 0.574, y: 0.437 },
     style: {
       color: "#252525",
       fontSize: "0.7em",
@@ -516,7 +516,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "lead_email",
     content: "",
-    startTime: 342.09,
+    startTime: 342.19,
     endTime: 352.76,
     position: { x: 0.042, y: 0.342 },
     style: {
@@ -546,7 +546,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "company_name",
     content: "",
-    startTime: 371.19,
+    startTime: 371.09,
     endTime: 379.2,
     position: { x: 0.372, y: 0.52 },
     style: {
@@ -561,7 +561,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Industry",
     content: "",
-    startTime: 371.19,
+    startTime: 371.09,
     endTime: 379.2,
     position: { x: 0.508, y: 0.52 },
     style: {
@@ -576,7 +576,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Products_services",
     content: "Improve efficiency, Tech companies, Time management",
-    startTime: 371.19,
+    startTime: 371.09,
     endTime: 379.2,
     position: { x: 0.372, y: 0.585 },
     style: {
@@ -591,7 +591,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Business_description",
     content: "AI Agents, $99/month, 24/7 support, Boost productivity",
-    startTime: 371.19,
+    startTime: 371.09,
     endTime: 379.2,
     position: { x: 0.372, y: 0.667 },
     style: {
