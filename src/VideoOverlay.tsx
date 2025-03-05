@@ -348,14 +348,14 @@ const overlayItems: OverlayItem[] = [
     content: "",
     startTime: 26.35,
     endTime: 34.43,
-    position: { x: 0.544, y: 0.183 },
+    position: { x: 0.544, y: 0.186 },
     style: {
       color: "#252525",
       fontSize: "2.4em",
       textAlign: "left",
       transform: "translate(-50%, -50%)",
       fontFamily: '"Montserrat", sans-serif',
-      fontWeight: "600",
+      fontWeight: "550",
     },
   },
   {
