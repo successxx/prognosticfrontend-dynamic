@@ -155,7 +155,7 @@ const overlayItems: OverlayItem[] = [
     endTime: 18.53,
     position: { x: 0.508, y: 0.52 },
     style: {
-      color: "#000000",
+      color: "#131313",
       fontSize: "0.6em",
       maxWidth: "20em",
       maxHeight: "1.3em",
@@ -170,7 +170,7 @@ const overlayItems: OverlayItem[] = [
     endTime: 18.53,
     position: { x: 0.372, y: 0.585 },
     style: {
-      color: "#000000",
+      color: "#131313",
       fontSize: "0.6em",
       maxWidth: "41em",
       maxHeight: "4.3em",
@@ -185,7 +185,7 @@ const overlayItems: OverlayItem[] = [
     endTime: 18.53,
     position: { x: 0.372, y: 0.667 },
     style: {
-      color: "#000000",
+      color: "#131313",
       fontSize: "0.6em",
       maxWidth: "41em",
       maxHeight: "4.3em",
@@ -341,6 +341,21 @@ const overlayItems: OverlayItem[] = [
       maxHeight: "7em",
       overflow: "hidden",
       textAlign: "left",
+    },
+  },
+  {
+    key: "user_name",
+    content: "",
+    startTime: 26.26,
+    endTime: 34.37,
+    position: { x: 0.45, y: 0.18 },
+    style: {
+      color: "#252525",
+      fontSize: "2.4em",
+      textAlign: "left",
+      transform: "translate(-50%, -50%)",
+      fontFamily: '"Montserrat", sans-serif',
+      fontWeight: "650",
     },
   },
   {
