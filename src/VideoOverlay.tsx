@@ -841,7 +841,6 @@ const overlayItems: OverlayItem[] = [
       fontSize: "0.6em",
       maxWidth: "18em",
       maxHeight: "1.3em",
-      overflow: "hidden",
       textAlign: "left",
     },
   },
