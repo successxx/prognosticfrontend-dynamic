@@ -332,7 +332,7 @@ const overlayItems: OverlayItem[] = [
     key: "testimonials",
     content: "Testimonials",
     startTime: 24.57,
-    endTime: 26.4,
+    endTime: 26.35,
     position: { x: 0.38, y: 0.552 },
     style: {
       color: "#000000",
@@ -422,11 +422,11 @@ const overlayItems: OverlayItem[] = [
   {
     key: "headline", // Use 'headline' to match the data field in your JSON
     content: "", // The content will be populated from webinarInjectionData
-    startTime: 48, // When it should start showing (in seconds)
+    startTime: 44.5, // When it should start showing (in seconds)
     endTime: 54.14, // When it should stop showing (in seconds)
     position: { x: 0.099, y: 0.45 }, // These are the estimated coordinates
     style: {
-      color: "#252525",
+      color: "#000000",
       fontSize: "1.5em", // This would be 1.5% of the video width
       fontFamily: '"SF Pro Display", sans-serif',
       fontWeight: "500",
