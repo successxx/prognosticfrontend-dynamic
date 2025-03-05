@@ -137,7 +137,7 @@ const overlayItems: OverlayItem[] = [
     key: "company_name",
     content: "",
     startTime: 10.12,
-    endTime: 18.53,
+    endTime: 18.43,
     position: { x: 0.372, y: 0.52 },
     style: {
       color: "#131313",
@@ -152,7 +152,7 @@ const overlayItems: OverlayItem[] = [
     key: "Industry",
     content: "",
     startTime: 10.12,
-    endTime: 18.53,
+    endTime: 18.43,
     position: { x: 0.508, y: 0.52 },
     style: {
       color: "#131313",
@@ -167,7 +167,7 @@ const overlayItems: OverlayItem[] = [
     key: "Products_services",
     content: "Improve efficiency, Tech companies, Time management",
     startTime: 10.12,
-    endTime: 18.53,
+    endTime: 18.43,
     position: { x: 0.372, y: 0.585 },
     style: {
       color: "#131313",
@@ -182,7 +182,7 @@ const overlayItems: OverlayItem[] = [
     key: "Business_description",
     content: "AI Agents, $99/month, 24/7 support, Boost productivity",
     startTime: 10.12,
-    endTime: 18.53,
+    endTime: 18.43,
     position: { x: 0.372, y: 0.667 },
     style: {
       color: "#131313",
@@ -331,8 +331,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "testimonials",
     content: "Testimonials",
-    startTime: 24.67,
-    endTime: 26.26,
+    startTime: 24.57,
+    endTime: 26.3,
     position: { x: 0.38, y: 0.552 },
     style: {
       color: "#000000",
@@ -376,13 +376,13 @@ const overlayItems: OverlayItem[] = [
 {
     key: "user_name",
     content: "",
-    startTime: 34.37,
+    startTime: 34.57,
     endTime: 42.85,
-    position: { x: 0.124, y: 0.079 },
+    position: { x: 0.126, y: 0.0805 },
     style: {
       color: "#000000",
       fontSize: "0.6em",
-      fontWeight: "500",
+      fontWeight: "600",
       maxWidth: "30em",
       maxHeight: "1.3em",
       overflow: "hidden",
@@ -392,7 +392,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "email_1",
     content: "",
-    startTime: 34.37,
+    startTime: 34.57,
     endTime: 38.59,
     position: { x: 0.13, y: 0.3 },
     style: {
