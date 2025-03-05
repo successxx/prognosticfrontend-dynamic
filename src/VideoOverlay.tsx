@@ -754,6 +754,21 @@ const overlayItems: OverlayItem[] = [
     },
   },
   {
+    key: "user_name",
+    content: "",
+    startTime: 475.89,
+    endTime: 511.07,
+    position: { x: 0.544, y: 0.183 },
+    style: {
+      color: "#252525",
+      fontSize: "2.4em",
+      textAlign: "left",
+      transform: "translate(-50%, -50%)",
+      fontFamily: '"Montserrat", sans-serif',
+      fontWeight: "600",
+    },
+  },
+  {
     key: "email_1",
     content: "",
     startTime: 475.89,
