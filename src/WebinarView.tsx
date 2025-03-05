@@ -286,7 +286,7 @@ const WebinarView: React.FC = () => {
           className={styles.videoPlayer}
         >
           <source
-            src="https://progwebinar.blob.core.windows.net/video/3699.mp4"
+            src="https://progwebinar.blob.core.windows.net/video/369damshefineeeee.mp4"
             type="video/mp4"
           />
           Your browser does not support HTML5 video.
