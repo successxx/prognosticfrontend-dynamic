@@ -262,13 +262,20 @@ const overlayItems: OverlayItem[] = [
       textAlign: "left",
     },
   },
-    {
+  {
     key: "user_name",
-    content: "John Doe",
+    content: "",
     startTime: 26.26,
     endTime: 34.37,
-    position: { x: 0.25, y: 0.2 },
-    style: { color: "#131313", fontSize: "3em" },
+    position: { x: 0.45, y: 0.18 },
+    style: {
+    color: "#252525",
+    fontSize: "2.4em",
+    textAlign: "left",
+    transform: "translate(-50%, -50%)",
+    fontFamily: '"Montserrat", sans-serif',
+    fontWeight: "650",
+    },
   },
   {
     key: "salesletter",
