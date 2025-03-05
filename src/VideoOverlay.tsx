@@ -332,7 +332,7 @@ const overlayItems: OverlayItem[] = [
     key: "testimonials",
     content: "Testimonials",
     startTime: 24.57,
-    endTime: 26.32,
+    endTime: 26.4,
     position: { x: 0.38, y: 0.552 },
     style: {
       color: "#000000",
@@ -346,7 +346,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "user_name",
     content: "",
-    startTime: 26.45,
+    startTime: 26.32,
     endTime: 34.43,
     position: { x: 0.544, y: 0.183 },
     style: {
@@ -361,7 +361,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "salesletter",
     content: "",
-    startTime: 26.35,
+    startTime: 26.32,
     endTime: 34.43,
     position: { x: 0.25, y: 0.25 },
     style: {
@@ -439,7 +439,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "headline", // Use 'headline' to match the data field in your JSON
     content: "", // The content will be populated from webinarInjectionData
-    startTime: 111.63, // When it should start showing (in seconds)
+    startTime: 111.93, // When it should start showing (in seconds)
     endTime: 133.26, // When it should stop showing (in seconds)
     position: { x: 0.625, y: 0.47 }, // These are the estimated coordinates
     style: {
@@ -471,8 +471,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "user_name",
     content: "John Doe",
-    startTime: 310.33,
-    endTime: 324.15,
+    startTime: 310.73,
+    endTime: 324,
     position: { x: 0.574, y: 0.437 },
     style: {
       color: "#252525",
@@ -486,8 +486,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "user_name",
     content: "John Doe",
-    startTime: 335.49,
-    endTime: 352.76,
+    startTime: 335.39,
+    endTime: 352.66,
     position: { x: 0.0415, y: 0.266 },
     style: {
       color: "#252525",
@@ -501,8 +501,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_url",
     content: "123-456-7890",
-    startTime: 340.2,
-    endTime: 352.8,
+    startTime: 338.2,
+    endTime: 352.66,
     position: { x: 0.042, y: 0.305 },
     style: {
       color: "#252525",
@@ -517,7 +517,7 @@ const overlayItems: OverlayItem[] = [
     key: "lead_email",
     content: "",
     startTime: 342.19,
-    endTime: 352.76,
+    endTime: 352.72,
     position: { x: 0.042, y: 0.342 },
     style: {
       color: "#252525",
@@ -546,7 +546,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "company_name",
     content: "",
-    startTime: 371,
+    startTime: 370.9,
     endTime: 379.2,
     position: { x: 0.372, y: 0.52 },
     style: {
@@ -561,7 +561,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Industry",
     content: "",
-    startTime: 371,
+    startTime: 370.9,
     endTime: 379.2,
     position: { x: 0.508, y: 0.52 },
     style: {
@@ -576,7 +576,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Products_services",
     content: "Improve efficiency, Tech companies, Time management",
-    startTime: 371,
+    startTime: 370.9,
     endTime: 379.2,
     position: { x: 0.372, y: 0.585 },
     style: {
@@ -591,7 +591,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Business_description",
     content: "AI Agents, $99/month, 24/7 support, Boost productivity",
-    startTime: 371,
+    startTime: 370.9,
     endTime: 379.2,
     position: { x: 0.372, y: 0.667 },
     style: {
@@ -742,7 +742,7 @@ const overlayItems: OverlayItem[] = [
     key: "testimonials",
     content: "Testimonials",
     startTime: 388.4,
-    endTime: 391.39,
+    endTime: 391.49,
     position: { x: 0.38, y: 0.552 },
     style: {
       color: "#252525",
@@ -756,8 +756,8 @@ const overlayItems: OverlayItem[] = [
 {
     key: "user_name",
     content: "",
-    startTime: 470.5,
-    endTime: 511.07,
+    startTime: 470.1,
+    endTime: 509.57,
     position: { x: 0.125, y: 0.081 },
     style: {
       color: "#000000",
@@ -817,9 +817,9 @@ const overlayItems: OverlayItem[] = [
   {
     key: "company_name",
     content: "",
-    startTime: 523.35,
+    startTime: 524.95,
     endTime: 538.46,
-    position: { x: 0.33, y: 0.32 },
+    position: { x: 0.33, y: 0.325 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
@@ -833,7 +833,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Products_services",
     content: "",
-    startTime: 523.35,
+    startTime: 524.95,
     endTime: 538.46,
     position: { x: 0.303, y: 0.37 },
     style: {
