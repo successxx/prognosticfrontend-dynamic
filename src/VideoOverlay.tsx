@@ -116,7 +116,7 @@ const overlayItems: OverlayItem[] = [
     startTime: 10.12,
     endTime: 18.53,
     position: { x: 0.508, y: 0.52 },
-    style: { color: "#000000", fontSize: "0.6em" },
+    style: { color: "#131313", fontSize: "0.6em" },
   },
   {
     key: "Products_services",
@@ -124,7 +124,7 @@ const overlayItems: OverlayItem[] = [
     startTime: 10.12,
     endTime: 18.53,
     position: { x: 0.372, y: 0.585 },
-    style: { color: "#000000", fontSize: "0.6em" },
+    style: { color: "#131313", fontSize: "0.6em" },
   },
   {
     key: "Business_description",
@@ -132,7 +132,7 @@ const overlayItems: OverlayItem[] = [
     startTime: 10.12,
     endTime: 18.53,
     position: { x: 0.372, y: 0.667 },
-    style: { color: "#000000", fontSize: "0.6em" },
+    style: { color: "#131313", fontSize: "0.6em" },
   },
   {
     key: "primary_goal",
@@ -261,6 +261,14 @@ const overlayItems: OverlayItem[] = [
       overflow: "hidden",
       textAlign: "left",
     },
+  },
+    {
+    key: "user_name",
+    content: "John Doe",
+    startTime: 26.26,
+    endTime: 34.37,
+    position: { x: 0.25, y: 0.2 },
+    style: { color: "#131313", fontSize: "3em" },
   },
   {
     key: "salesletter",
