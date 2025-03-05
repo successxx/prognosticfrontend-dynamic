@@ -196,7 +196,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "primary_goal",
     content: "Primary Goal",
-    startTime: 18.53,
+    startTime: 18.47,
     endTime: 22.43,
     position: { x: 0.372, y: 0.525 },
     style: {
@@ -211,7 +211,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "target_audience",
     content: "Target Audience",
-    startTime: 18.53,
+    startTime: 18.47,
     endTime: 22.43,
     position: { x: 0.372, y: 0.58 },
     style: {
@@ -226,7 +226,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "pain_points",
     content: "Customer Pain Points",
-    startTime: 18.53,
+    startTime: 18.47,
     endTime: 22.43,
     position: { x: 0.372, y: 0.664 },
     style: {
@@ -332,7 +332,7 @@ const overlayItems: OverlayItem[] = [
     key: "testimonials",
     content: "Testimonials",
     startTime: 24.57,
-    endTime: 26.3,
+    endTime: 26.34,
     position: { x: 0.38, y: 0.552 },
     style: {
       color: "#000000",
@@ -355,7 +355,7 @@ const overlayItems: OverlayItem[] = [
       textAlign: "left",
       transform: "translate(-50%, -50%)",
       fontFamily: '"Montserrat", sans-serif',
-      fontWeight: "500",
+      fontWeight: "600",
     },
   },
   {
