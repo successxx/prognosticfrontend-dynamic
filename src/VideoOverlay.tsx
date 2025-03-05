@@ -439,7 +439,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "headline", // Use 'headline' to match the data field in your JSON
     content: "", // The content will be populated from webinarInjectionData
-    startTime: 111.57, // When it should start showing (in seconds)
+    startTime: 111.63, // When it should start showing (in seconds)
     endTime: 133.26, // When it should stop showing (in seconds)
     position: { x: 0.625, y: 0.47 }, // These are the estimated coordinates
     style: {
@@ -471,7 +471,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "user_name",
     content: "John Doe",
-    startTime: 310.23,
+    startTime: 310.33,
     endTime: 324.15,
     position: { x: 0.574, y: 0.437 },
     style: {
@@ -486,9 +486,9 @@ const overlayItems: OverlayItem[] = [
   {
     key: "user_name",
     content: "John Doe",
-    startTime: 335.79,
+    startTime: 335.49,
     endTime: 352.76,
-    position: { x: 0.0415, y: 0.264 },
+    position: { x: 0.0415, y: 0.266 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
@@ -502,7 +502,7 @@ const overlayItems: OverlayItem[] = [
     key: "offer_url",
     content: "123-456-7890",
     startTime: 340.2,
-    endTime: 352.76,
+    endTime: 352.8,
     position: { x: 0.042, y: 0.305 },
     style: {
       color: "#252525",
@@ -546,7 +546,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "company_name",
     content: "",
-    startTime: 371.09,
+    startTime: 371,
     endTime: 379.2,
     position: { x: 0.372, y: 0.52 },
     style: {
@@ -561,7 +561,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Industry",
     content: "",
-    startTime: 371.09,
+    startTime: 371,
     endTime: 379.2,
     position: { x: 0.508, y: 0.52 },
     style: {
@@ -576,7 +576,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Products_services",
     content: "Improve efficiency, Tech companies, Time management",
-    startTime: 371.09,
+    startTime: 371,
     endTime: 379.2,
     position: { x: 0.372, y: 0.585 },
     style: {
@@ -591,7 +591,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Business_description",
     content: "AI Agents, $99/month, 24/7 support, Boost productivity",
-    startTime: 371.09,
+    startTime: 371,
     endTime: 379.2,
     position: { x: 0.372, y: 0.667 },
     style: {
@@ -606,8 +606,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "primary_goal",
     content: "Primary Goal",
-    startTime: 379.3,
-    endTime: 385.1,
+    startTime: 379.21,
+    endTime: 385.3,
     position: { x: 0.372, y: 0.525 },
     style: {
       color: "#252525",
@@ -622,8 +622,8 @@ const overlayItems: OverlayItem[] = [
     key: "target_audience",
     content: "Target Audience",
     startTime: 379.3,
-    endTime: 385.1,
-    position: { x: 0.372, y: 0.58 },
+    endTime: 385.3,
+    position: { x: 0.372, y: 0.579 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
@@ -637,8 +637,8 @@ const overlayItems: OverlayItem[] = [
     key: "pain_points",
     content: "Customer Pain Points",
     startTime: 379.3,
-    endTime: 385.1,
-    position: { x: 0.372, y: 0.664 },
+    endTime: 385.3,
+    position: { x: 0.372, y: 0.662 },
     style: {
       color: "#252525",
       fontSize: "0.6em",
@@ -651,8 +651,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_name",
     content: "Offer Name",
-    startTime: 385.45,
-    endTime: 388.32,
+    startTime: 385.35,
+    endTime: 388.6,
     position: { x: 0.37, y: 0.477 },
     style: {
       color: "#252525",
@@ -666,8 +666,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_price",
     content: "3000",
-    startTime: 385.45,
-    endTime: 388.32,
+    startTime: 385.35,
+    endTime: 388.6,
     position: { x: 0.514, y: 0.477 },
     style: {
       color: "#252525",
@@ -681,8 +681,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_description",
     content: "john.doe@example.com",
-    startTime: 385.45,
-    endTime: 388.32,
+    startTime: 385.35,
+    endTime: 388.6,
     position: { x: 0.37, y: 0.54 },
     style: {
       color: "#252525",
@@ -696,8 +696,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "primary_benefits",
     content: "Benefits of AI Agents",
-    startTime: 385.45,
-    endTime: 388.32,
+    startTime: 385.35,
+    endTime: 388.6,
     position: { x: 0.507, y: 0.54 },
     style: {
       color: "#252525",
@@ -711,8 +711,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "offer_goal",
     content: "Offer goal",
-    startTime: 385.45,
-    endTime: 388.32,
+    startTime: 385.35,
+    endTime: 388.6,
     position: { x: 0.37, y: 0.634 },
     style: {
       color: "#252525",
@@ -726,8 +726,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Offer_topic",
     content: "Offer topic",
-    startTime: 385.45,
-    endTime: 388.32,
+    startTime: 385.35,
+    endTime: 388.6,
     position: { x: 0.507, y: 0.634 },
     style: {
       color: "#252525",
@@ -741,8 +741,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "testimonials",
     content: "Testimonials",
-    startTime: 388.5,
-    endTime: 391.19,
+    startTime: 388.4,
+    endTime: 391.39,
     position: { x: 0.38, y: 0.552 },
     style: {
       color: "#252525",
@@ -788,7 +788,7 @@ const overlayItems: OverlayItem[] = [
     key: "email_2",
     content: "",
     startTime: 502.7,
-    endTime: 511.07,
+    endTime: 509.07,
     position: { x: 0.13, y: 0.3 },
     style: {
       color: "#252525",
@@ -802,8 +802,8 @@ const overlayItems: OverlayItem[] = [
   {
     key: "salesletter",
     content: "",
-    startTime: 511.07,
-    endTime: 525.29,
+    startTime: 509.07,
+    endTime: 523.29,
     position: { x: 0.243, y: 0.25 },
     style: {
       color: "#252525",
@@ -817,7 +817,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "company_name",
     content: "",
-    startTime: 526,
+    startTime: 523.35,
     endTime: 538.46,
     position: { x: 0.33, y: 0.32 },
     style: {
@@ -833,7 +833,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "Products_services",
     content: "",
-    startTime: 526,
+    startTime: 523.35,
     endTime: 538.46,
     position: { x: 0.303, y: 0.37 },
     style: {
