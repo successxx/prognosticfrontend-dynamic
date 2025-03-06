@@ -761,8 +761,8 @@ const overlayItems: OverlayItem[] = [
     position: { x: 0.125, y: 0.081 },
     style: {
       color: "#000000",
-      fontSize: "0.6em",
-      fontWeight: "600",
+      fontSize: "0.7em",
+      fontWeight: "500",
       maxWidth: "30em",
       maxHeight: "1.3em",
       overflow: "hidden",
