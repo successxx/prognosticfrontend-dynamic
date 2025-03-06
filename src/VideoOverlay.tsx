@@ -348,7 +348,7 @@ const overlayItems: OverlayItem[] = [
     content: "",
     startTime: 26.32,
     endTime: 34.43,
-    position: { x: 0.544, y: 0.182 },
+    position: { x: 0.5, y: 0.182 },
     style: {
       color: "#2A2A2A",
       fontSize: "2.4em",
