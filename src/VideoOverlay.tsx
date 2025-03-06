@@ -348,7 +348,7 @@ const overlayItems: OverlayItem[] = [
     content: "",
     startTime: 26.32,
     endTime: 34.43,
-    position: { x: 0.51, y: 0.182 },
+    position: { x: 0.513, y: 0.182 },
     style: {
       color: "#2A2A2A",
       fontSize: "2.4em",
@@ -471,7 +471,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "user_name",
     content: "John Doe",
-    startTime: 310.69,
+    startTime: 310.5 9,
     endTime: 324,
     position: { x: 0.574, y: 0.437 },
     style: {
@@ -762,7 +762,7 @@ const overlayItems: OverlayItem[] = [
     style: {
       color: "#000000",
       fontSize: "0.7em",
-      fontWeight: "500",
+      fontWeight: "600",
       maxWidth: "30em",
       maxHeight: "1.3em",
       overflow: "hidden",
