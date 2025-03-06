@@ -818,7 +818,7 @@ const overlayItems: OverlayItem[] = [
     key: "company_name",
     content: "",
     startTime: 524.95,
-    endTime: 536.26,
+    endTime: 535.76,
     position: { x: 0.33, y: 0.325 },
     style: {
       color: "#252525",
@@ -834,7 +834,7 @@ const overlayItems: OverlayItem[] = [
     key: "Products_services",
     content: "",
     startTime: 524.95,
-    endTime: 536.26,
+    endTime: 535.76,
     position: { x: 0.303, y: 0.37 },
     style: {
       color: "#252525",
