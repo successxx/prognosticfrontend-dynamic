@@ -471,7 +471,7 @@ const overlayItems: OverlayItem[] = [
   {
     key: "user_name",
     content: "John Doe",
-    startTime: 310.65 9,
+    startTime: 310.659,
     endTime: 324,
     position: { x: 0.574, y: 0.437 },
     style: {
