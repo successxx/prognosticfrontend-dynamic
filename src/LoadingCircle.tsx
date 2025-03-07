@@ -4,7 +4,7 @@
                     
                     {/* Bar chart - conversion metrics */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>Conversion Metrics</div>
+                        <div className={styles['pai-dr-chart-header']}>Analyzing Metrics</div>
                         <div className={styles['pai-dr-bar-chart']}>
                             <div className={styles['pai-dr-bar']} style={{height: '75%', animationDelay: '0.2s'}} data-value="75%"></div>
                             <div className={styles['pai-dr-bar']} style={{height: '45%', animationDelay: '0.3s'}} data-value="45%"></div>
@@ -26,7 +26,7 @@
                     
                     {/* Personality radar chart */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>Personality Profile</div>
+                        <div className={styles['pai-dr-chart-header']}>Jungian Psychoanalysis</div>
                         <div className={styles['pai-dr-radar-chart']}>
                             <div className={styles['pai-dr-radar-point']} style={{top: '10%', left: '50%', animationDelay: '1.4s'}}></div>
                             <div className={styles['pai-dr-radar-point']} style={{top: '35%', left: '85%', animationDelay: '1.5s'}}></div>
