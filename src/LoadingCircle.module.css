@@ -1,12 +1,12 @@
-/**********************************************/
-/* Container & Header                         */
-/**********************************************/
+/**************************************************/
+/* Container & Header                             */
+/**************************************************/
 
 .prognostic-ai-demo-results-container {
     font-family: 'Montserrat', sans-serif;
     background-color: #F0F4F8;
     width: 100%;
-    max-width: 1300px; /* Enough width for 3 columns (and partial overlap) */
+    max-width: 1400px; /* Enough for 3 columns plus offsets */
     margin: 20px auto;
     border-radius: 15px;
     overflow: hidden;
@@ -23,12 +23,11 @@
     font-size: 24px;
     font-weight: 700;
     text-align: center;
-    text-transform: uppercase;
     position: relative;
     overflow: hidden;
+    text-transform: uppercase;
 }
 
-/* Subtle scanning line across the header */
 .pai-dr-header::after {
     content: '';
     position: absolute;
@@ -45,9 +44,9 @@
     100% { left: 200%; }
 }
 
-/**********************************************/
-/* Content Area                               */
-/**********************************************/
+/**************************************************/
+/* Content                                        */
+/**************************************************/
 
 .pai-dr-content {
     background-color: #fff;
@@ -65,14 +64,14 @@
 .pai-dr-visualization {
     position: relative;
     width: 100%;
-    height: 800px; /* taller for 4 rows */
+    height: 1000px; /* Large enough for 4 rows + extra overlaps */
     margin-bottom: 30px;
     perspective: 1000px;
 }
 
-/**********************************************/
-/* Data Modules (3 columns × 4 rows + 3 extra)*/
-/**********************************************/
+/**************************************************/
+/* Data Modules: 3 columns x 4 rows + 12 overlap  */
+/**************************************************/
 
 .pai-dr-data-module {
     position: absolute;
@@ -89,13 +88,311 @@
     z-index: 2;
 }
 
+/* Hover highlight */
 .pai-dr-data-module:hover {
     box-shadow: 0 3px 15px rgba(37,37,37,0.2);
 }
 
-/**********************************************/
-/* Chart Header Styling                       */
-/**********************************************/
+/**************************************************/
+/* We assign the first 12 modules' positions with
+   0.2s incremental delays. Then #13-#24 come
+   with bigger delays (like 3s+).                 */
+/**************************************************/
+
+/*
+   We'll place them in 3 columns x 4 rows for the first 12:
+   row1: #1 (left), #2 (center), #3 (right)
+   row2: #4 (left), #5 (center), #6 (right)
+   row3: #7 (left), #8 (center), #9 (right)
+   row4: #10 (left), #11 (center), #12 (right)
+
+   Then #13-#24 appear offset in random spots.
+*/
+
+/* Module 1 */
+.pai-dr-data-module:nth-child(1) {
+    top: 5%;
+    left: 2%;
+    width: 220px;
+    height: 150px;
+    animation: fly-in-left 1s ease-out;
+    animation-delay: 0.2s;
+}
+
+/* Module 2 */
+.pai-dr-data-module:nth-child(2) {
+    top: 5%;
+    left: 32%;
+    width: 220px;
+    height: 160px;
+    animation: fly-in-top 1s ease-out;
+    animation-delay: 0.4s;
+}
+
+/* Module 3 */
+.pai-dr-data-module:nth-child(3) {
+    top: 5%;
+    right: 2%;
+    width: 220px;
+    height: 150px;
+    animation: fly-in-right 1s ease-out;
+    animation-delay: 0.6s;
+}
+
+/* Module 4 */
+.pai-dr-data-module:nth-child(4) {
+    top: 28%;
+    left: 2%;
+    width: 210px;
+    height: 150px;
+    animation: fly-in-left 1s ease-out;
+    animation-delay: 0.8s;
+}
+
+/* Module 5 */
+.pai-dr-data-module:nth-child(5) {
+    top: 28%;
+    left: 32%;
+    width: 230px;
+    height: 150px;
+    animation: fly-in-top 1s ease-out;
+    animation-delay: 1.0s;
+}
+
+/* Module 6 */
+.pai-dr-data-module:nth-child(6) {
+    top: 28%;
+    right: 2%;
+    width: 220px;
+    height: 160px;
+    animation: fly-in-right 1s ease-out;
+    animation-delay: 1.2s;
+}
+
+/* Module 7 */
+.pai-dr-data-module:nth-child(7) {
+    top: 50%;
+    left: 2%;
+    width: 220px;
+    height: 150px;
+    animation: fly-in-left 1s ease-out;
+    animation-delay: 1.4s;
+}
+
+/* Module 8 */
+.pai-dr-data-module:nth-child(8) {
+    top: 50%;
+    left: 32%;
+    width: 220px;
+    height: 150px;
+    animation: fly-in-top 1s ease-out;
+    animation-delay: 1.6s;
+}
+
+/* Module 9 */
+.pai-dr-data-module:nth-child(9) {
+    top: 50%;
+    right: 2%;
+    width: 210px;
+    height: 150px;
+    animation: fly-in-right 1s ease-out;
+    animation-delay: 1.8s;
+}
+
+/* Module 10 */
+.pai-dr-data-module:nth-child(10) {
+    top: 72%;
+    left: 2%;
+    width: 220px;
+    height: 160px;
+    animation: fly-in-left 1s ease-out;
+    animation-delay: 2.0s;
+}
+
+/* Module 11 */
+.pai-dr-data-module:nth-child(11) {
+    top: 72%;
+    left: 32%;
+    width: 220px;
+    height: 150px;
+    animation: fly-in-top 1s ease-out;
+    animation-delay: 2.2s;
+}
+
+/* Module 12 */
+.pai-dr-data-module:nth-child(12) {
+    top: 72%;
+    right: 2%;
+    width: 220px;
+    height: 150px;
+    animation: fly-in-right 1s ease-out;
+    animation-delay: 2.4s;
+}
+
+/* Overlapping modules #13-#24 (bigger delays) */
+/* We'll position them somewhat randomly around the center 
+   or partial overlaps. We'll do 0.2 increments starting ~3s */
+
+.pai-dr-data-module:nth-child(13) {
+    top: 15%;
+    left: 25%;
+    width: 210px;
+    height: 150px;
+    animation: fly-in-left 1s ease-out;
+    animation-delay: 3.0s;
+    z-index: 4;
+}
+
+.pai-dr-data-module:nth-child(14) {
+    top: 35%;
+    left: 42%;
+    width: 200px;
+    height: 140px;
+    animation: fly-in-top 1s ease-out;
+    animation-delay: 3.2s;
+    z-index: 4;
+}
+
+.pai-dr-data-module:nth-child(15) {
+    top: 60%;
+    left: 30%;
+    width: 210px;
+    height: 150px;
+    animation: fly-in-right 1s ease-out;
+    animation-delay: 3.4s;
+    z-index: 4;
+}
+
+.pai-dr-data-module:nth-child(16) {
+    top: 20%;
+    left: 60%;
+    width: 230px;
+    height: 160px;
+    animation: fly-in-left 1s ease-out;
+    animation-delay: 3.6s;
+    z-index: 4;
+}
+
+.pai-dr-data-module:nth-child(17) {
+    top: 45%;
+    left: 15%;
+    width: 220px;
+    height: 140px;
+    animation: fly-in-top 1s ease-out;
+    animation-delay: 3.8s;
+    z-index: 4;
+}
+
+.pai-dr-data-module:nth-child(18) {
+    top: 65%;
+    left: 55%;
+    width: 220px;
+    height: 150px;
+    animation: fly-in-right 1s ease-out;
+    animation-delay: 4.0s;
+    z-index: 4;
+}
+
+.pai-dr-data-module:nth-child(19) {
+    top: 38%;
+    left: 5%;
+    width: 220px;
+    height: 150px;
+    animation: fly-in-left 1s ease-out;
+    animation-delay: 4.2s;
+    z-index: 4;
+}
+
+.pai-dr-data-module:nth-child(20) {
+    top: 58%;
+    left: 38%;
+    width: 210px;
+    height: 140px;
+    animation: fly-in-top 1s ease-out;
+    animation-delay: 4.4s;
+    z-index: 4;
+}
+
+.pai-dr-data-module:nth-child(21) {
+    top: 25%;
+    right: 5%;
+    width: 220px;
+    height: 150px;
+    animation: fly-in-right 1s ease-out;
+    animation-delay: 4.6s;
+    z-index: 4;
+}
+
+.pai-dr-data-module:nth-child(22) {
+    top: 55%;
+    left: 65%;
+    width: 230px;
+    height: 160px;
+    animation: fly-in-left 1s ease-out;
+    animation-delay: 4.8s;
+    z-index: 4;
+}
+
+.pai-dr-data-module:nth-child(23) {
+    top: 75%;
+    left: 40%;
+    width: 210px;
+    height: 140px;
+    animation: fly-in-top 1s ease-out;
+    animation-delay: 5.0s;
+    z-index: 4;
+}
+
+.pai-dr-data-module:nth-child(24) {
+    top: 50%;
+    right: 10%;
+    width: 220px;
+    height: 150px;
+    animation: fly-in-right 1s ease-out;
+    animation-delay: 5.2s;
+    z-index: 4;
+}
+
+/**************************************************/
+/* Fly-In Keyframes (No slow drifting or angles)  */
+/**************************************************/
+
+@keyframes fly-in-left {
+    0% {
+        transform: translateX(-300px) scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fly-in-right {
+    0% {
+        transform: translateX(300px) scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fly-in-top {
+    0% {
+        transform: translateY(-300px) scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/**************************************************/
+/* Chart Headers                                 */
+/**************************************************/
 
 .pai-dr-chart-header {
     font-size: 9px;
@@ -108,233 +405,9 @@
     margin-bottom: 3px;
 }
 
-/**********************************************/
-/* Positioning 12 Modules (3 columns × 4 rows) */
-/* We'll define the final top/left or top/right
-   and the animations that snap them in.      */
-/**********************************************/
-
-/*
-   We'll arrange them visually like:
-
-   Row1: #1 (left), #2 (center), #3 (right)
-   Row2: #4 (left), #5 (center), #6 (right)
-   Row3: #7 (left), #8 (center), #9 (right)
-   Row4: #10 (left), #11 (center), #12 (right)
-
-   Then #13, #14, #15 come in after with overlap.
-*/
-
-/* Module 1 (Row1, Col1) */
-.pai-dr-data-module:nth-child(1) {
-    top: 5%;
-    left: 3%;
-    width: 220px;
-    height: 140px;
-    animation: fly-in-left 1s ease-out forwards;
-    animation-delay: 0.2s; /* Each module has a unique delay increment of 0.2s */
-    z-index: 2;
-}
-
-/* Module 2 (Row1, Col2) */
-.pai-dr-data-module:nth-child(2) {
-    top: 5%;
-    left: 33%;
-    width: 220px;
-    height: 150px;
-    animation: fly-in-top 1s ease-out forwards;
-    animation-delay: 0.4s;
-    z-index: 2;
-}
-
-/* Module 3 (Row1, Col3) */
-.pai-dr-data-module:nth-child(3) {
-    top: 5%;
-    right: 3%;
-    width: 200px;
-    height: 140px;
-    animation: fly-in-right 1s ease-out forwards;
-    animation-delay: 0.6s;
-    z-index: 2;
-}
-
-/* Module 4 (Row2, Col1) */
-.pai-dr-data-module:nth-child(4) {
-    top: 30%;
-    left: 3%;
-    width: 210px;
-    height: 130px;
-    animation: fly-in-left 1s ease-out forwards;
-    animation-delay: 0.8s;
-    z-index: 2;
-}
-
-/* Module 5 (Row2, Col2) */
-.pai-dr-data-module:nth-child(5) {
-    top: 30%;
-    left: 33%;
-    width: 220px;
-    height: 140px;
-    animation: fly-in-top 1s ease-out forwards;
-    animation-delay: 1.0s;
-    z-index: 2;
-}
-
-/* Module 6 (Row2, Col3) */
-.pai-dr-data-module:nth-child(6) {
-    top: 30%;
-    right: 3%;
-    width: 220px;
-    height: 150px;
-    animation: fly-in-right 1s ease-out forwards;
-    animation-delay: 1.2s;
-    z-index: 2;
-}
-
-/* Module 7 (Row3, Col1) */
-.pai-dr-data-module:nth-child(7) {
-    top: 55%;
-    left: 3%;
-    width: 220px;
-    height: 140px;
-    animation: fly-in-left 1s ease-out forwards;
-    animation-delay: 1.4s;
-    z-index: 2;
-}
-
-/* Module 8 (Row3, Col2) */
-.pai-dr-data-module:nth-child(8) {
-    top: 55%;
-    left: 33%;
-    width: 210px;
-    height: 140px;
-    animation: fly-in-top 1s ease-out forwards;
-    animation-delay: 1.6s;
-    z-index: 2;
-}
-
-/* Module 9 (Row3, Col3) */
-.pai-dr-data-module:nth-child(9) {
-    top: 55%;
-    right: 3%;
-    width: 200px;
-    height: 140px;
-    animation: fly-in-right 1s ease-out forwards;
-    animation-delay: 1.8s;
-    z-index: 2;
-}
-
-/* Module 10 (Row4, Col1) */
-.pai-dr-data-module:nth-child(10) {
-    top: 75%;
-    left: 3%;
-    width: 220px;
-    height: 150px;
-    animation: fly-in-left 1s ease-out forwards;
-    animation-delay: 2.0s;
-    z-index: 2;
-}
-
-/* Module 11 (Row4, Col2) */
-.pai-dr-data-module:nth-child(11) {
-    top: 75%;
-    left: 33%;
-    width: 220px;
-    height: 140px;
-    animation: fly-in-top 1s ease-out forwards;
-    animation-delay: 2.2s;
-    z-index: 2;
-}
-
-/* Module 12 (Row4, Col3) */
-.pai-dr-data-module:nth-child(12) {
-    top: 75%;
-    right: 3%;
-    width: 210px;
-    height: 130px;
-    animation: fly-in-right 1s ease-out forwards;
-    animation-delay: 2.4s;
-    z-index: 2;
-}
-
-/* Overlapping Modules 13, 14, 15 (arrive after bigger delay) */
-
-/* Module 13 */
-.pai-dr-data-module:nth-child(13) {
-    top: 20%;
-    left: 25%;
-    width: 200px;
-    height: 130px;
-    animation: fly-in-left 1s ease-out forwards;
-    animation-delay: 3.2s; /* after all the first 12 have arrived */
-    z-index: 4; /* higher so it overlaps */
-}
-
-/* Module 14 */
-.pai-dr-data-module:nth-child(14) {
-    top: 50%;
-    left: 45%;
-    width: 180px;
-    height: 130px;
-    animation: fly-in-top 1s ease-out forwards;
-    animation-delay: 3.4s;
-    z-index: 4;
-}
-
-/* Module 15 */
-.pai-dr-data-module:nth-child(15) {
-    top: 70%;
-    left: 35%;
-    width: 220px;
-    height: 140px;
-    animation: fly-in-right 1s ease-out forwards;
-    animation-delay: 3.6s;
-    z-index: 4;
-}
-
-/**********************************************/
-/* Fly-In Keyframes (No rotation or slow drift)*/
-/**********************************************/
-
-/* from left */
-@keyframes fly-in-left {
-    0% {
-        transform: translateX(-200px) scale(0.5);
-        opacity: 0;
-    }
-    100% {
-        transform: translateX(0) scale(1);
-        opacity: 1;
-    }
-}
-/* from right */
-@keyframes fly-in-right {
-    0% {
-        transform: translateX(200px) scale(0.5);
-        opacity: 0;
-    }
-    100% {
-        transform: translateX(0) scale(1);
-        opacity: 1;
-    }
-}
-/* from top */
-@keyframes fly-in-top {
-    0% {
-        transform: translateY(-200px) scale(0.5);
-        opacity: 0;
-    }
-    100% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-    }
-}
-
-/**********************************************/
-/* Chart Animations (Large 60s cycles)        */
-/**********************************************/
-
-/* BAR CHARTS */
+/**************************************************/
+/* Bar Charts with 120s infinite animation        */
+/**************************************************/
 
 .pai-dr-bar-chart {
     display: flex;
@@ -350,9 +423,9 @@
     border-radius: 1px 1px 0 0;
     position: relative;
     transform-origin: bottom;
-    animation: bar-extended-60 60s ease-in-out infinite;
     opacity: 1;
-    height: 50% !important; /* baseline so never 0 */
+    animation: bar-extended-120 120s ease-in-out infinite;
+    height: 50% !important; /* baseline */
 }
 
 .pai-dr-bar::after {
@@ -365,32 +438,34 @@
     color: #252525;
 }
 
-/* 60s cycle with multiple steps */
-@keyframes bar-extended-60 {
+/* 120s with multiple steps to ensure big movement */
+@keyframes bar-extended-120 {
     0%   { height: 40% !important; }
     5%   { height: 65% !important; }
-    10%  { height: 80% !important; }
+    10%  { height: 85% !important; }
     15%  { height: 55% !important; }
-    20%  { height: 85% !important; }
+    20%  { height: 90% !important; }
     25%  { height: 45% !important; }
-    30%  { height: 90% !important; }
+    30%  { height: 92% !important; }
     35%  { height: 50% !important; }
-    40%  { height: 70% !important; }
+    40%  { height: 75% !important; }
     45%  { height: 60% !important; }
     50%  { height: 88% !important; }
     55%  { height: 40% !important; }
     60%  { height: 78% !important; }
     65%  { height: 52% !important; }
-    70%  { height: 95% !important; }
-    75%  { height: 55% !important; }
-    80%  { height: 75% !important; }
-    85%  { height: 65% !important; }
-    90%  { height: 92% !important; }
-    95%  { height: 50% !important; }
+    70%  { height: 96% !important; }
+    75%  { height: 58% !important; }
+    80%  { height: 80% !important; }
+    85%  { height: 68% !important; }
+    90%  { height: 98% !important; }
+    95%  { height: 55% !important; }
     100% { height: 40% !important; }
 }
 
-/* LINE CHARTS */
+/**************************************************/
+/* Line Charts (120s)                             */
+/**************************************************/
 
 .pai-dr-line-chart {
     width: 100%;
@@ -403,12 +478,12 @@
     height: 1px;
     background-color: #252525;
     transform-origin: 0 0;
-    animation: line-extended-60 60s ease-in-out infinite;
+    animation: line-extended-120 120s ease-in-out infinite;
     opacity: 1;
     width: 50% !important;
 }
 
-@keyframes line-extended-60 {
+@keyframes line-extended-120 {
     0%   { width: 30% !important; }
     5%   { width: 65% !important; }
     10%  { width: 45% !important; }
@@ -446,7 +521,9 @@
     50% { transform: scale(1.5); }
 }
 
-/* PIE CHARTS */
+/**************************************************/
+/* Pie Charts (120s)                              */
+/**************************************************/
 
 .pai-dr-pie-chart {
     width: 50px;
@@ -464,10 +541,10 @@
     transform-origin: 50% 50%;
     background-color: #252525;
     opacity: 0.9;
-    animation: pie-extended-60 60s ease-in-out infinite;
+    animation: pie-extended-120 120s ease-in-out infinite;
 }
 
-@keyframes pie-extended-60 {
+@keyframes pie-extended-120 {
     0%   { transform: rotate(0deg) skew(30deg); }
     5%   { transform: rotate(60deg) skew(50deg); }
     10%  { transform: rotate(110deg) skew(20deg); }
@@ -491,7 +568,9 @@
     100% { transform: rotate(0deg) skew(30deg); }
 }
 
-/* RADAR CHARTS */
+/**************************************************/
+/* Radar Charts                                   */
+/**************************************************/
 
 .pai-dr-radar-chart {
     position: relative;
@@ -509,8 +588,8 @@
 }
 
 @keyframes radar-point-entry {
-    0%   { opacity: 0; transform: scale(0); }
-    50%  { opacity: 1; transform: scale(1.5); }
+    0% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1.5); }
     100% { opacity: 1; transform: scale(1); }
 }
 
@@ -524,11 +603,11 @@
 }
 
 @keyframes radar-line-entry {
-    0%   { width: 0; opacity: 0; }
+    0% { width: 0; opacity: 0; }
     100% { width: 100%; opacity: 0.6; }
 }
 
-/* Pulsing shape in the center, 60s cycle */
+/* Radar shape pulses for 120s in a big cycle */
 .pai-dr-radar-shape {
     position: absolute;
     top: 50%;
@@ -538,10 +617,10 @@
     background-color: rgba(37,37,37,0.15);
     clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
     transform: translate(-50%,-50%) scale(0.8);
-    animation: radar-shape-pulse 60s ease-in-out infinite;
+    animation: radar-shape-pulse-120 120s ease-in-out infinite;
 }
 
-@keyframes radar-shape-pulse {
+@keyframes radar-shape-pulse-120 {
     0%   { transform: translate(-50%,-50%) scale(0.7) rotate(0deg); }
     10%  { transform: translate(-50%,-50%) scale(0.9) rotate(20deg); }
     20%  { transform: translate(-50%,-50%) scale(1.1) rotate(40deg); }
@@ -555,7 +634,9 @@
     100% { transform: translate(-50%,-50%) scale(0.7) rotate(360deg); }
 }
 
-/* THINKING TREE (Strategic Roadmap) */
+/**************************************************/
+/* Thinking Tree (120s)                           */
+/**************************************************/
 
 .pai-dr-tree {
     width: 90%;
@@ -570,12 +651,12 @@
     height: 10px;
     border-radius: 50%;
     background-color: #252525;
-    animation: tree-node-60 60s ease-in-out infinite;
+    animation: tree-node-120 120s ease-in-out infinite;
     transform-origin: center;
     opacity: 1;
 }
 
-@keyframes tree-node-60 {
+@keyframes tree-node-120 {
     0%   { transform: scale(1); }
     5%   { transform: scale(1.4); }
     10%  { transform: scale(1); }
@@ -592,7 +673,9 @@
     70%  { transform: scale(1.4); }
     75%  { transform: scale(1); }
     80%  { transform: scale(1.5); }
-    90%  { transform: scale(1); }
+    85%  { transform: scale(1); }
+    90%  { transform: scale(1.6); }
+    95%  { transform: scale(1); }
     100% { transform: scale(1); }
 }
 
@@ -601,11 +684,11 @@
     height: 2px;
     background-color: #252525;
     transform-origin: 0 0;
-    animation: tree-branch-60 60s ease-in-out infinite;
+    animation: tree-branch-120 120s ease-in-out infinite;
     opacity: 1;
 }
 
-@keyframes tree-branch-60 {
+@keyframes tree-branch-120 {
     0%   { width: 30%; }
     5%   { width: 55%; }
     10%  { width: 40%; }
@@ -629,7 +712,9 @@
     100% { width: 30%; }
 }
 
-/* BRAIN WAVES */
+/**************************************************/
+/* Brain Waves (120s)                             */
+/**************************************************/
 
 .pai-dr-brain-waves {
     position: relative;
@@ -655,26 +740,26 @@
         #252525 90%,
         transparent 100%);
     opacity: 0.9;
-    animation: wave-60 60s linear infinite;
+    animation: wave-120 120s linear infinite;
 }
 
-@keyframes wave-60 {
+@keyframes wave-120 {
     0%   { transform: translateX(0) scaleX(1); }
     10%  { transform: translateX(-10%) scaleX(1.05); }
     20%  { transform: translateX(-20%) scaleX(0.95); }
     30%  { transform: translateX(-30%) scaleX(1.1); }
     40%  { transform: translateX(-50%) scaleX(1); }
-    50%  { transform: translateX(-60%) scaleX(1.1); }
-    60%  { transform: translateX(-70%) scaleX(1); }
-    70%  { transform: translateX(-90%) scaleX(1.05); }
-    80%  { transform: translateX(-110%) scaleX(0.95); }
-    90%  { transform: translateX(-130%) scaleX(1.1); }
-    100% { transform: translateX(-150%) scaleX(1); }
+    50%  { transform: translateX(-70%) scaleX(1.1); }
+    60%  { transform: translateX(-90%) scaleX(1.0); }
+    70%  { transform: translateX(-110%) scaleX(1.05); }
+    80%  { transform: translateX(-130%) scaleX(0.95); }
+    90%  { transform: translateX(-150%) scaleX(1.1); }
+    100% { transform: translateX(-180%) scaleX(1); }
 }
 
-/**********************************************/
-/* Grid Overlay                                */
-/**********************************************/
+/**************************************************/
+/* Grid Overlay                                   */
+/**************************************************/
 
 .pai-dr-grid {
     position: absolute;
@@ -689,9 +774,9 @@
     z-index: 1;
 }
 
-/**********************************************/
-/* Floating Data Label in Each Module          */
-/**********************************************/
+/**************************************************/
+/* Floating label with data bits                 */
+/**************************************************/
 
 .pai-dr-data-module::after {
     content: attr(data-label);
@@ -703,27 +788,15 @@
     right: 4px;
 }
 
-/* Unique labels for demonstration */
+/*
+   For demonstration, we can add unique data-label to each module
+   if desired. But you requested each chart also have its own text label,
+   which is in .pai-dr-chart-header. This is just an extra code effect.
+*/
 
-.pai-dr-data-module:nth-child(1)::after { content: "011011"; }
-.pai-dr-data-module:nth-child(2)::after { content: "101010"; }
-.pai-dr-data-module:nth-child(3)::after { content: "110001"; }
-.pai-dr-data-module:nth-child(4)::after { content: "100110"; }
-.pai-dr-data-module:nth-child(5)::after { content: "011100"; }
-.pai-dr-data-module:nth-child(6)::after { content: "001111"; }
-.pai-dr-data-module:nth-child(7)::after { content: "101101"; }
-.pai-dr-data-module:nth-child(8)::after { content: "000111"; }
-.pai-dr-data-module:nth-child(9)::after { content: "111000"; }
-.pai-dr-data-module:nth-child(10)::after { content: "110101"; }
-.pai-dr-data-module:nth-child(11)::after { content: "010101"; }
-.pai-dr-data-module:nth-child(12)::after { content: "001110"; }
-.pai-dr-data-module:nth-child(13)::after { content: "EXTRA1"; }
-.pai-dr-data-module:nth-child(14)::after { content: "EXTRA2"; }
-.pai-dr-data-module:nth-child(15)::after { content: "EXTRA3"; }
-
-/**********************************************/
-/* Loading Message (Fade In/Out)              */
-/**********************************************/
+/**************************************************/
+/* Loading Message (Fade In/Out)                  */
+/**************************************************/
 
 .pai-dr-message {
     font-size: 20px;
@@ -741,14 +814,15 @@
     opacity: 0;
     transform: translateY(20px);
 }
+
 .fade-in {
     opacity: 1;
     transform: translateY(0);
 }
 
-/**********************************************/
-/* Button Styles (If used)                    */
-/**********************************************/
+/**************************************************/
+/* Buttons (If any)                               */
+/**************************************************/
 
 .pai-dr-button {
     display: inline-block;
@@ -773,9 +847,9 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-/**********************************************/
-/* Media Queries                              */
-/**********************************************/
+/**************************************************/
+/* Responsive Adjustments                         */
+/**************************************************/
 
 @media (max-width: 600px) {
     .pai-dr-header {
@@ -786,7 +860,7 @@
         padding: 20px;
     }
     .pai-dr-visualization {
-        height: 500px;
+        height: 600px;
     }
     .pai-dr-data-module {
         transform: scale(0.7);
