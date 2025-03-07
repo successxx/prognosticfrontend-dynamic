@@ -1,108 +1,130 @@
-/* Increase number of charts and position them strategically */
-/* Bar chart - upper left */
+/* Update positioning for graphs to utilize the new wider space */
+/* Left column */
 .pai-dr-data-module:nth-child(1) {
-    top: 10%;
-    left: -150px;
-    width: 150px;
-    height: 100px;
+    top: 15%;
+    left: 5%;
+    width: 180px;
+    height: 120px;
     animation: data-module-from-left 6s ease-out infinite;
     animation-delay: 0.2s;
 }
 
-/* Line chart - middle left */
 .pai-dr-data-module:nth-child(2) {
-    top: 40%;
-    left: -180px;
-    width: 160px;
-    height: 110px;
+    top: 45%;
+    left: 5%;
+    width: 200px;
+    height: 130px;
     animation: data-module-from-left 6s ease-out infinite;
     animation-delay: 0.8s;
 }
 
-/* Personality radar chart - lower left */
 .pai-dr-data-module:nth-child(3) {
-    top: 70%;
-    left: -140px;
-    width: 130px;
-    height: 130px;
+    top: 75%;
+    left: 5%;
+    width: 160px;
+    height: 110px;
     animation: data-module-from-left 6s ease-out infinite;
     animation-delay: 1.4s;
 }
 
-/* Psychographic profile - bottom left */
+/* Middle-left column */
 .pai-dr-data-module:nth-child(4) {
-    top: 85%;
-    left: -120px;
-    width: 110px;
+    top: 20%;
+    left: 25%;
+    width: 170px;
     height: 100px;
     animation: data-module-from-left 6s ease-out infinite;
-    animation-delay: 2.0s;
-}
-
-/* Audience segmentation - top right */
-.pai-dr-data-module:nth-child(5) {
-    top: 15%;
-    right: -160px;
-    width: 140px;
-    height: 100px;
-    animation: data-module-from-right 6s ease-out infinite;
     animation-delay: 0.5s;
 }
 
-/* Sentiment analysis - middle right */
-.pai-dr-data-module:nth-child(6) {
-    top: 45%;
-    right: -170px;
-    width: 150px;
-    height: 110px;
-    animation: data-module-from-right 6s ease-out infinite;
+.pai-dr-data-module:nth-child(5) {
+    top: 55%;
+    left: 25%;
+    width: 180px;
+    height: 120px;
+    animation: data-module-from-left 6s ease-out infinite;
     animation-delay: 1.1s;
 }
 
-/* Demographics breakdown - lower right */
-.pai-dr-data-module:nth-child(7) {
-    top: 75%;
-    right: -130px;
-    width: 120px;
-    height: 100px;
-    animation: data-module-from-right 6s ease-out infinite;
-    animation-delay: 1.7s;
-}
-
-/* Engagement metrics - upper middle */
-.pai-dr-data-module:nth-child(8) {
-    top: 5%;
+/* Center column (new) */
+.pai-dr-data-module:nth-child(6) {
+    top: 15%;
     left: 50%;
     transform: translateX(-50%) scale(0.5);
-    width: 140px;
-    height: 90px;
+    width: 220px;
+    height: 140px;
     animation: data-module-from-top 6s ease-out infinite;
     animation-delay: 0.3s;
     z-index: 3;
 }
 
-/* Behavioral analytics - middle */
-.pai-dr-data-module:nth-child(9) {
+.pai-dr-data-module:nth-child(7) {
     top: 50%;
     left: 50%;
     transform: translateX(-50%) scale(0.5);
-    width: 160px;
-    height: 110px;
+    width: 180px;
+    height: 180px;
     animation: data-module-from-top 6s ease-out infinite;
     animation-delay: 0.9s;
     z-index: 3;
 }
 
-/* Decision tree - lower middle */
-.pai-dr-data-module:nth-child(10) {
+.pai-dr-data-module:nth-child(8) {
     top: 80%;
     left: 50%;
     transform: translateX(-50%) scale(0.5);
-    width: 180px;
+    width: 200px;
     height: 120px;
     animation: data-module-from-bottom 6s ease-out infinite;
     animation-delay: 1.5s;
     z-index: 3;
+}
+
+/* Middle-right column */
+.pai-dr-data-module:nth-child(9) {
+    top: 25%;
+    right: 25%;
+    width: 170px;
+    height: 110px;
+    animation: data-module-from-right 6s ease-out infinite;
+    animation-delay: 0.6s;
+}
+
+.pai-dr-data-module:nth-child(10) {
+    top: 60%;
+    right: 25%;
+    width: 180px;
+    height: 120px;
+    animation: data-module-from-right 6s ease-out infinite;
+    animation-delay: 1.2s;
+}
+
+/* Right column */
+.pai-dr-data-module:nth-child(11) {
+    top: 15%;
+    right: 5%;
+    width: 190px;
+    height: 120px;
+    animation: data-module-from-right 6s ease-out infinite;
+    animation-delay: 0.4s;
+}
+
+.pai-dr-data-module:nth-child(12) {
+    top: 45%;
+    right: 5%;
+    width: 180px;
+    height: 130px;
+    animation: data-module-from-right 6s ease-out infinite;
+    animation-delay: 1.0s;
+}
+
+.pai-dr-data-module:nth-child(13) {
+    top: 75%;
+    right: 5%;
+    width: 170px;
+    height: 110px;
+    animation: data-module-from-right 6s ease-out infinite;
+    animation-delay: 1.6s;
 }
 
 /* Animation for modules coming from top */
@@ -148,7 +170,7 @@
     font-family: 'Montserrat', sans-serif;
     background-color: #F0F4F8;
     width: 100%;
-    max-width: 800px;
+    max-width: 1200px; /* Double the original width */
     margin: 20px auto;
     border-radius: 15px;
     overflow: hidden;
@@ -212,6 +234,7 @@
     height: 500px;
     margin-bottom: 30px;
     perspective: 1000px;
+    padding: 0 40px; /* Add padding */
 }
 
 /* Central core analyzer - removing this as requested */
@@ -576,49 +599,125 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Chart-specific animations - faster and more realistic */
+/* More dynamic and realistic bar animations */
 .pai-dr-bar {
-    animation: bar-grow 2s ease-out forwards;
     transform-origin: bottom;
+    opacity: 0;
+    height: 0 !important; /* Override inline height */
+    animation: randomized-bar-grow 8s ease-out infinite;
 }
 
-/* More realistic bar animation */
-@keyframes bar-grow {
-    0% { height: 0; }
-    30% { height: 30%; }
-    50% { height: 90%; }
-    65% { height: 70%; }
-    80% { height: 85%; }
-    90% { height: 78%; }
-    100% { height: 80%; }
+/* Each bar will have a different height pattern */
+@keyframes randomized-bar-grow {
+    0% { height: 0% !important; opacity: 0; }
+    5% { height: 20% !important; opacity: 0.7; }
+    15% { height: 60% !important; opacity: 1; }
+    25% { height: 45% !important; opacity: 1; }
+    35% { height: 75% !important; opacity: 1; }
+    45% { height: 55% !important; opacity: 1; }
+    55% { height: 80% !important; opacity: 1; }
+    65% { height: 60% !important; opacity: 1; }
+    75% { height: 70% !important; opacity: 1; }
+    85% { height: 50% !important; opacity: 1; }
+    95% { height: 30% !important; opacity: 0.7; }
+    100% { height: 0% !important; opacity: 0; }
 }
 
+/* Make each bar have a different animation pattern */
+.pai-dr-bar:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.pai-dr-bar:nth-child(2) {
+    animation-delay: 0.6s;
+    animation-duration: 7.5s;
+}
+
+.pai-dr-bar:nth-child(3) {
+    animation-delay: 1.0s;
+    animation-duration: 8.2s;
+}
+
+.pai-dr-bar:nth-child(4) {
+    animation-delay: 1.4s;
+    animation-duration: 7.8s;
+}
+
+.pai-dr-bar:nth-child(5) {
+    animation-delay: 1.8s;
+    animation-duration: 8.5s;
+}
+
+/* Dynamic line chart animations */
 .pai-dr-line {
-    animation: line-draw 1.5s ease-out forwards;
+    animation: line-pulse 8s ease-out infinite;
+    opacity: 0;
+    width: 0 !important; /* Override inline width */
 }
 
-/* Faster line drawing */
-@keyframes line-draw {
-    0% { width: 0; }
-    70% { width: 80%; }
-    100% { width: 100%; }
+@keyframes line-pulse {
+    0% { width: 0% !important; opacity: 0; transform: rotate(0deg); }
+    5% { width: 30% !important; opacity: 0.7; }
+    15% { width: 60% !important; opacity: 1; }
+    25% { width: 40% !important; opacity: 1; }
+    35% { width: 90% !important; opacity: 1; }
+    45% { width: 70% !important; opacity: 1; }
+    55% { width: 100% !important; opacity: 1; }
+    65% { width: 80% !important; opacity: 1; }
+    75% { width: 90% !important; opacity: 1; }
+    85% { width: 60% !important; opacity: 1; }
+    95% { width: 30% !important; opacity: 0.7; }
+    100% { width: 0% !important; opacity: 0; }
 }
 
+/* Vary line animations */
+.pai-dr-line:nth-child(1) {
+    animation-delay: 0.3s;
+}
+
+.pai-dr-line:nth-child(2) {
+    animation-delay: 0.9s;
+    animation-duration: 7.5s;
+}
+
+.pai-dr-line:nth-child(3) {
+    animation-delay: 1.5s;
+    animation-duration: 8.2s;
+}
+
+/* Dynamic pie chart animations */
 .pai-dr-pie-segment {
-    animation: pie-grow 2s ease-out forwards;
+    animation: pie-segment-change 8s ease-out infinite;
 }
 
-/* More dramatic pie chart animation */
-@keyframes pie-grow {
-    0% { transform: rotate(0deg) skew(90deg); }
-    60% { transform: rotate(280deg) skew(30deg); }
-    70% { transform: rotate(330deg) skew(10deg); }
-    85% { transform: rotate(350deg) skew(5deg); }
-    100% { transform: rotate(360deg) skew(0deg); }
+@keyframes pie-segment-change {
+    0% { transform: rotate(0deg) skew(90deg); opacity: 0; }
+    5% { transform: rotate(60deg) skew(60deg); opacity: 0.7; }
+    15% { transform: rotate(120deg) skew(30deg); opacity: 1; }
+    25% { transform: rotate(180deg) skew(45deg); opacity: 1; }
+    35% { transform: rotate(240deg) skew(20deg); opacity: 1; }
+    45% { transform: rotate(300deg) skew(40deg); opacity: 1; }
+    55% { transform: rotate(360deg) skew(10deg); opacity: 1; }
+    65% { transform: rotate(300deg) skew(25deg); opacity: 1; }
+    75% { transform: rotate(240deg) skew(35deg); opacity: 1; }
+    85% { transform: rotate(180deg) skew(50deg); opacity: 1; }
+    95% { transform: rotate(60deg) skew(70deg); opacity: 0.7; }
+    100% { transform: rotate(0deg) skew(90deg); opacity: 0; }
 }
 
-.pai-dr-stat-value::before {
-    animation: count-up 1.5s ease-out forwards;
+/* Vary pie segment animations */
+.pai-dr-pie-segment:nth-child(1) {
+    animation-delay: 0.5s;
+}
+
+.pai-dr-pie-segment:nth-child(2) {
+    animation-delay: 1.2s;
+    animation-duration: 7.6s;
+}
+
+.pai-dr-pie-segment:nth-child(3) {
+    animation-delay: 1.9s;
+    animation-duration: 8.3s;
 }
 
 /* Radar chart styling */
@@ -676,7 +775,7 @@
     100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
 }
 
-/* Decision tree styling */
+/* Enhanced decision tree styling for more dynamic branching */
 .pai-dr-tree {
     width: 90%;
     height: 80%;
@@ -691,27 +790,72 @@
     background-color: #252525;
     border-radius: 50%;
     opacity: 0;
-    animation: tree-node-appear 1s ease-out forwards;
+    transform-origin: center;
+    animation: tree-node-pulse 3s ease-out infinite;
 }
 
 .pai-dr-tree-branch {
     position: absolute;
-    height: 1px;
+    height: 2px;
     background-color: #252525;
     transform-origin: 0 0;
     opacity: 0;
-    animation: tree-branch-appear 1.2s ease-out forwards;
+    animation: tree-branch-grow 3s ease-out infinite;
 }
 
-@keyframes tree-node-appear {
+/* Add more dynamic branching nodes */
+.pai-dr-tree-sub-node {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: rgba(37, 37, 37, 0.7);
+    border-radius: 50%;
+    opacity: 0;
+    animation: tree-sub-node-appear 2.5s ease-out infinite;
+}
+
+.pai-dr-tree-sub-branch {
+    position: absolute;
+    height: 1px;
+    background-color: rgba(37, 37, 37, 0.5);
+    transform-origin: 0 0;
+    opacity: 0;
+    animation: tree-sub-branch-appear 2.5s ease-out infinite;
+}
+
+@keyframes tree-node-pulse {
     0% { opacity: 0; transform: scale(0); }
-    70% { opacity: 1; transform: scale(1.3); }
-    100% { opacity: 1; transform: scale(1); }
+    10% { opacity: 1; transform: scale(1.5); }
+    20% { opacity: 1; transform: scale(1); }
+    70% { opacity: 1; transform: scale(1); }
+    90% { opacity: 0.3; transform: scale(0.8); }
+    100% { opacity: 0; transform: scale(0); }
 }
 
-@keyframes tree-branch-appear {
+@keyframes tree-branch-grow {
     0% { opacity: 0; width: 0; }
-    100% { opacity: 0.8; width: 100%; }
+    15% { opacity: 0.8; width: 0; }
+    40% { opacity: 0.8; width: 100%; }
+    80% { opacity: 0.8; width: 100%; }
+    100% { opacity: 0; width: 100%; }
+}
+
+@keyframes tree-sub-node-appear {
+    0% { opacity: 0; transform: scale(0); }
+    20% { opacity: 0; transform: scale(0); }
+    40% { opacity: 0.7; transform: scale(1.2); }
+    60% { opacity: 0.7; transform: scale(1); }
+    90% { opacity: 0.7; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.8); }
+}
+
+@keyframes tree-sub-branch-appear {
+    0% { opacity: 0; width: 0; }
+    20% { opacity: 0; width: 0; }
+    40% { opacity: 0.5; width: 0; }
+    60% { opacity: 0.5; width: 100%; }
+    90% { opacity: 0.5; width: 100%; }
+    100% { opacity: 0; width: 100%; }
 }
 
 /* Brain wave pattern for psychoanalysis */
