@@ -14,10 +14,6 @@ const LoadingIndicator: React.FC = () => {
         "Running market simulations...",
         "Crafting your success blueprint...",
         "Refining strategies...",
-        "Mapping customer journeys...",
-        "Identifying growth levers...",
-        "Calculating ROI potential...",
-        "Launching AI agents...",
         "Success! Processing...",
         "Success! Finalizing...",
         "Success! Integrating...",
@@ -52,111 +48,76 @@ const LoadingIndicator: React.FC = () => {
             </div>
             <div className={styles['pai-dr-content']}>
                 <div className={styles['pai-dr-visualization']}>
-                    {/* Data modules */}
-                    <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-left 1s forwards', animationDelay: '0.1s'}}>
+                    {/* Left column */}
+                    <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Revenue Optimization</div>
                         <div className={styles['pai-dr-bar-chart']}>
-                            <div className={styles['pai-dr-bar']} style={{animation: 'randomized-bar-grow 3s infinite'}}></div>
-                            <div className={styles['pai-dr-bar']} style={{animation: 'randomized-bar-grow 3s infinite', animationDelay: '0.3s'}}></div>
-                            <div className={styles['pai-dr-bar']} style={{animation: 'randomized-bar-grow 3s infinite', animationDelay: '0.6s'}}></div>
-                            <div className={styles['pai-dr-bar']} style={{animation: 'randomized-bar-grow 3s infinite', animationDelay: '0.9s'}}></div>
-                            <div className={styles['pai-dr-bar']} style={{animation: 'randomized-bar-grow 3s infinite', animationDelay: '1.2s'}}></div>
+                            <div className={styles['pai-dr-bar']} style={{height: '75%'}} data-value="75%"></div>
+                            <div className={styles['pai-dr-bar']} style={{height: '45%'}} data-value="45%"></div>
+                            <div className={styles['pai-dr-bar']} style={{height: '60%'}} data-value="60%"></div>
+                            <div className={styles['pai-dr-bar']} style={{height: '85%'}} data-value="85%"></div>
+                            <div className={styles['pai-dr-bar']} style={{height: '40%'}} data-value="40%"></div>
                         </div>
                     </div>
                     
-                    <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-top 1s forwards', animationDelay: '0.3s'}}>
+                    <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Engagement Metrics</div>
                         <div className={styles['pai-dr-line-chart']}>
-                            <div className={styles['pai-dr-line']} style={{top: '60%', left: '10%', animation: 'line-pulse 3.5s infinite'}}></div>
-                            <div className={styles['pai-dr-line-point']} style={{top: '60%', left: '10%', animation: 'point-pulse 2s infinite'}}></div>
-                            <div className={styles['pai-dr-line-point']} style={{top: '50%', left: '90%', animation: 'point-pulse 2s infinite', animationDelay: '1s'}}></div>
+                            <div className={styles['pai-dr-line']} style={{top: '60%', left: '10%', width: '80%', transform: 'rotate(-10deg)'}}></div>
+                            <div className={styles['pai-dr-line-point']} style={{top: '60%', left: '10%'}}></div>
+                            <div className={styles['pai-dr-line-point']} style={{top: '50%', left: '90%'}}></div>
                         </div>
                     </div>
                     
-                    <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-right 1s forwards', animationDelay: '0.5s'}}>
+                    <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Market Fit Analysis</div>
                         <div className={styles['pai-dr-radar-chart']}>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '10%', left: '50%', animation: 'radar-point-blink 2s infinite'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '35%', left: '85%', animation: 'radar-point-blink 2s infinite', animationDelay: '0.4s'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '80%', left: '75%', animation: 'radar-point-blink 2s infinite', animationDelay: '0.8s'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '80%', left: '25%', animation: 'radar-point-blink 2s infinite', animationDelay: '1.2s'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '35%', left: '15%', animation: 'radar-point-blink 2s infinite', animationDelay: '1.6s'}}></div>
-                            <div className={styles['pai-dr-radar-line']} style={{top: '10%', left: '50%', width: '35%', transform: 'rotate(45deg)', animation: 'radar-line-pulse 3s infinite'}}></div>
-                            <div className={styles['pai-dr-radar-line']} style={{top: '35%', left: '85%', width: '35%', transform: 'rotate(110deg)', animation: 'radar-line-pulse 3s infinite', animationDelay: '0.5s'}}></div>
-                            <div className={styles['pai-dr-radar-line']} style={{top: '80%', left: '75%', width: '50%', transform: 'rotate(200deg)', animation: 'radar-line-pulse 3s infinite', animationDelay: '1s'}}></div>
-                            <div className={styles['pai-dr-radar-line']} style={{top: '80%', left: '25%', width: '35%', transform: 'rotate(250deg)', animation: 'radar-line-pulse 3s infinite', animationDelay: '1.5s'}}></div>
-                            <div className={styles['pai-dr-radar-line']} style={{top: '35%', left: '15%', width: '35%', transform: 'rotate(320deg)', animation: 'radar-line-pulse 3s infinite', animationDelay: '2s'}}></div>
-                            <div className={styles['pai-dr-radar-shape']} style={{animation: 'radar-shape-morph 4s infinite'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '10%', left: '50%'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '35%', left: '85%'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '80%', left: '75%'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '80%', left: '25%'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '35%', left: '15%'}}></div>
+                            <div className={styles['pai-dr-radar-line']} style={{top: '10%', left: '50%', width: '35%', transform: 'rotate(45deg)'}}></div>
+                            <div className={styles['pai-dr-radar-line']} style={{top: '35%', left: '85%', width: '35%', transform: 'rotate(110deg)'}}></div>
+                            <div className={styles['pai-dr-radar-line']} style={{top: '80%', left: '75%', width: '50%', transform: 'rotate(200deg)'}}></div>
+                            <div className={styles['pai-dr-radar-line']} style={{top: '80%', left: '25%', width: '35%', transform: 'rotate(250deg)'}}></div>
+                            <div className={styles['pai-dr-radar-line']} style={{top: '35%', left: '15%', width: '35%', transform: 'rotate(320deg)'}}></div>
+                            <div className={styles['pai-dr-radar-shape']} style={{top: '50%', left: '50%'}}></div>
                         </div>
                     </div>
                     
-                    <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-left 1s forwards', animationDelay: '0.7s'}}>
+                    {/* Right column */}
+                    <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Opportunity Mapping</div>
                         <div className={styles['pai-dr-brain-waves']}>
-                            <div className={styles['pai-dr-wave']} style={{top: '20%', animation: 'wave-animate 2s infinite'}}></div>
-                            <div className={styles['pai-dr-wave']} style={{top: '40%', animation: 'wave-animate 2s infinite', animationDelay: '0.5s'}}></div>
-                            <div className={styles['pai-dr-wave']} style={{top: '60%', animation: 'wave-animate 2s infinite', animationDelay: '1s'}}></div>
-                            <div className={styles['pai-dr-wave']} style={{top: '80%', animation: 'wave-animate 2s infinite', animationDelay: '1.5s'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '20%'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '40%'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '60%'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '80%'}}></div>
                         </div>
                     </div>
                     
-                    <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-right 1s forwards', animationDelay: '0.9s'}}>
+                    <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Growth Segments</div>
                         <div className={styles['pai-dr-pie-chart']} style={{width: '60px', height: '60px', margin: '10px auto'}}>
-                            <div className={styles['pai-dr-pie-segment']} style={{animation: 'segment-pulse-1 3.2s infinite'}}></div>
-                            <div className={styles['pai-dr-pie-segment']} style={{animation: 'segment-pulse-2 2.8s infinite'}}></div>
-                            <div className={styles['pai-dr-pie-segment']} style={{animation: 'segment-pulse-3 3.5s infinite'}}></div>
+                            <div className={styles['pai-dr-pie-segment']} style={{transform: 'rotate(0deg) skew(30deg)'}}></div>
+                            <div className={styles['pai-dr-pie-segment']} style={{transform: 'rotate(120deg) skew(50deg)', background: 'rgba(37, 37, 37, 0.6)'}}></div>
+                            <div className={styles['pai-dr-pie-segment']} style={{transform: 'rotate(220deg) skew(80deg)', background: 'rgba(37, 37, 37, 0.3)'}}></div>
                         </div>
                     </div>
                     
-                    <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-top 1s forwards', animationDelay: '1.1s'}}>
-                        <div className={styles['pai-dr-chart-header']}>Market Score</div>
-                        <div className={styles['pai-dr-stat-box']}>
-                            <span className={styles['pai-dr-stat-value']} data-v1="92" data-v2="86" data-v3="94" data-v4="89" style={{animation: 'stat-value-change 4s infinite'}}>92</span>
-                            <span className={styles['pai-dr-stat-label']}>Performance Index</span>
-                        </div>
-                    </div>
-                    
-                    <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-bottom 1s forwards', animationDelay: '1.3s'}}>
-                        <div className={styles['pai-dr-chart-header']}>ROI Projection</div>
-                        <div className={styles['pai-dr-line-chart']}>
-                            <div className={styles['pai-dr-line']} style={{top: '70%', left: '10%', animation: 'line-pulse 3.5s infinite', animationDelay: '0.5s'}}></div>
-                            <div className={styles['pai-dr-line-point']} style={{top: '70%', left: '10%', animation: 'point-pulse 2s infinite'}}></div>
-                            <div className={styles['pai-dr-line-point']} style={{top: '40%', left: '90%', animation: 'point-pulse 2s infinite', animationDelay: '1s'}}></div>
-                        </div>
-                    </div>
-                    
-                    <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-left 1s forwards', animationDelay: '1.5s'}}>
-                        <div className={styles['pai-dr-chart-header']}>Channel Performance</div>
-                        <div className={styles['pai-dr-bar-chart']}>
-                            <div className={styles['pai-dr-bar']} style={{animation: 'randomized-bar-grow 3s infinite', animationDelay: '0.2s'}}></div>
-                            <div className={styles['pai-dr-bar']} style={{animation: 'randomized-bar-grow 3s infinite', animationDelay: '0.5s'}}></div>
-                            <div className={styles['pai-dr-bar']} style={{animation: 'randomized-bar-grow 3s infinite', animationDelay: '0.8s'}}></div>
-                            <div className={styles['pai-dr-bar']} style={{animation: 'randomized-bar-grow 3s infinite', animationDelay: '1.1s'}}></div>
-                        </div>
-                    </div>
-                    
-                    <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-right 1s forwards', animationDelay: '1.7s'}}>
-                        <div className={styles['pai-dr-chart-header']}>Audience Segments</div>
-                        <div className={styles['pai-dr-pie-chart']} style={{width: '60px', height: '60px', margin: '10px auto'}}>
-                            <div className={styles['pai-dr-pie-segment']} style={{animation: 'segment-pulse-1 3.2s infinite', animationDelay: '0.3s'}}></div>
-                            <div className={styles['pai-dr-pie-segment']} style={{animation: 'segment-pulse-2 2.8s infinite', animationDelay: '0.6s'}}></div>
-                            <div className={styles['pai-dr-pie-segment']} style={{animation: 'segment-pulse-3 3.5s infinite', animationDelay: '0.9s'}}></div>
-                        </div>
-                    </div>
-                    
-                    <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-bottom 1s forwards', animationDelay: '1.9s'}}>
+                    <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Strategic Roadmap</div>
                         <div className={styles['pai-dr-tree']}>
-                            <div className={styles['pai-dr-tree-node']} style={{top: '10%', left: '50%', animation: 'tree-node-pulse 3s infinite'}}></div>
-                            <div className={styles['pai-dr-tree-branch']} style={{top: '15%', left: '45%', width: '20%', transform: 'rotate(45deg)', animation: 'tree-branch-grow 3s infinite'}}></div>
-                            <div className={styles['pai-dr-tree-branch']} style={{top: '15%', left: '55%', width: '20%', transform: 'rotate(135deg)', animation: 'tree-branch-grow 3s infinite', animationDelay: '0.5s'}}></div>
-                            <div className={styles['pai-dr-tree-node']} style={{top: '40%', left: '30%', animation: 'tree-node-pulse 3s infinite', animationDelay: '0.7s'}}></div>
-                            <div className={styles['pai-dr-tree-node']} style={{top: '40%', left: '70%', animation: 'tree-node-pulse 3s infinite', animationDelay: '1.0s'}}></div>
+                            <div className={styles['pai-dr-tree-node']} style={{top: '10%', left: '50%'}}></div>
+                            <div className={styles['pai-dr-tree-branch']} style={{top: '15%', left: '45%', width: '20%', transform: 'rotate(45deg)'}}></div>
+                            <div className={styles['pai-dr-tree-branch']} style={{top: '15%', left: '55%', width: '20%', transform: 'rotate(135deg)'}}></div>
+                            <div className={styles['pai-dr-tree-node']} style={{top: '40%', left: '30%'}}></div>
+                            <div className={styles['pai-dr-tree-node']} style={{top: '40%', left: '70%'}}></div>
                         </div>
                     </div>
                     
-                    <div className={styles['pai-dr-grid']} style={{animation: 'grid-pulse 5s infinite'}}></div>
+                    <div className={styles['pai-dr-grid']}></div>
                 </div>
                 
                 <div className={`${styles['pai-dr-message']} ${fade ? styles['fade-in'] : styles['fade-out']}`}>
@@ -167,5 +128,4 @@ const LoadingIndicator: React.FC = () => {
     );
 };
 
-// This is the ONLY export statement in the entire file
 export default LoadingIndicator;
