@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './LoadingCircle.module.css';
 
 const LoadingIndicator: React.FC = () => {
-    // Fade text messages in/out every 8 seconds
+    // Fade-in/fade-out messages every 8s
     const loadingMessages = [
         "Thinking...",
         "Analyzing your parameters...",
@@ -49,26 +49,22 @@ const LoadingIndicator: React.FC = () => {
                 <div className={styles['pai-dr-visualization']}>
                     
                     {/*
-                      24 modules total:
-                      1) The first 8 occupy a 4 columns × 2 rows grid.
-                         - Column1 (left): modules that fly in from left
-                         - Column2, Column3 might also come from left or right
-                         - Column4 (right): fly in from right
-                      2) The next 16 appear after, stacking on top (partial offsets),
-                         each with a bigger delay, also from left or right as appropriate.
-                      3) All have advanced 200s animations inside so they never appear "stopped."
+                      We have 6 "primary" modules in a 2 columns × 3 rows arrangement,
+                      then additional "stacking" modules that appear afterward in an orderly offset,
+                      each with slower timing (~1.2s) so it's not overwhelming.
+                      
+                      Column1 (Left) => modules from left
+                      Column2 (Right) => modules from right
+                      Rows => ~10%, ~40%, ~70% top positions
+                      Container => golden ratio ~1500px wide × ~928px tall
+                      All modules have 200s internal animations so they appear to be "calculating."
                     */}
 
-                    {/* ---------------- 8 Primary Modules (4 columns × 2 rows) --------------- */}
-                    {/* Row 1: Modules 1,2,3,4 => top ~15% */}
-                    {/* Row 2: Modules 5,6,7,8 => top ~55% */}
-                    {/* Each column => col1 ~ left:5%, col2 ~ left:30%, col3 ~ left:55%, col4 ~ left:80% */}
+                    {/* ================ 6 PRIMARY MODULES (2 COLUMNS × 3 ROWS) ================ */}
                     
-                    {/* 1) Bar Chart, column1 row1 */}
+                    {/* 1) Bar Chart – Column1, Row1 */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>
-                            1) Revenue Opportunity
-                        </div>
+                        <div className={styles['pai-dr-chart-header']}>1) Revenue Potential</div>
                         <div className={styles['pai-dr-bar-chart']}>
                             <div className={styles['pai-dr-bar']} style={{height: '70%'}} data-value="70%"></div>
                             <div className={styles['pai-dr-bar']} style={{height: '45%'}} data-value="45%"></div>
@@ -78,23 +74,9 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* 2) Line Chart, column2 row1 */}
+                    {/* 2) Radar Chart – Column2, Row1 */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>
-                            2) Engagement Metrics
-                        </div>
-                        <div className={styles['pai-dr-line-chart']}>
-                            <div className={styles['pai-dr-line']} style={{top: '50%', left: '10%', width: '70%'}}></div>
-                            <div className={styles['pai-dr-line-point']} style={{top: '50%', left: '10%'}}></div>
-                            <div className={styles['pai-dr-line-point']} style={{top: '55%', left: '80%'}}></div>
-                        </div>
-                    </div>
-                    
-                    {/* 3) Radar Chart, column3 row1 */}
-                    <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>
-                            3) Market Fit Analysis
-                        </div>
+                        <div className={styles['pai-dr-chart-header']}>2) Market Fit Analysis</div>
                         <div className={styles['pai-dr-radar-chart']}>
                             <div className={styles['pai-dr-radar-point']} style={{top: '5%', left: '50%'}}></div>
                             <div className={styles['pai-dr-radar-point']} style={{top: '35%', left: '90%'}}></div>
@@ -115,26 +97,9 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* 4) Brain Waves, column4 row1 */}
+                    {/* 3) Thinking Tree – Column1, Row2 */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>
-                            4) Opportunity Mapping
-                        </div>
-                        <div className={styles['pai-dr-brain-waves']}>
-                            <div className={styles['pai-dr-wave']} style={{top: '15%'}}></div>
-                            <div className={styles['pai-dr-wave']} style={{top: '35%'}}></div>
-                            <div className={styles['pai-dr-wave']} style={{top: '55%'}}></div>
-                            <div className={styles['pai-dr-wave']} style={{top: '75%'}}></div>
-                        </div>
-                    </div>
-                    
-                    {/* Row2 => top: 55% for columns 1..4 */}
-                    
-                    {/* 5) Thinking Tree, column1 row2 */}
-                    <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>
-                            5) Strategic Roadmap
-                        </div>
+                        <div className={styles['pai-dr-chart-header']}>3) Strategic Roadmap</div>
                         <div className={styles['pai-dr-tree']}>
                             <div className={styles['pai-dr-tree-node']} style={{top: '10%', left: '50%'}}></div>
                             <div className={styles['pai-dr-tree-branch']} style={{top: '15%', left: '46%', width: '30%', transform: 'rotate(45deg)'}}></div>
@@ -149,25 +114,9 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* 6) Bar Chart, column2 row2 */}
+                    {/* 4) Line Chart – Column2, Row2 */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>
-                            6) Competitive Benchmark
-                        </div>
-                        <div className={styles['pai-dr-bar-chart']}>
-                            <div className={styles['pai-dr-bar']} style={{height: '50%'}} data-value="50%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '70%'}} data-value="70%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '30%'}} data-value="30%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '85%'}} data-value="85%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '65%'}} data-value="65%"></div>
-                        </div>
-                    </div>
-                    
-                    {/* 7) Line Chart, column3 row2 */}
-                    <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>
-                            7) Conversion Funnel
-                        </div>
+                        <div className={styles['pai-dr-chart-header']}>4) Conversion Funnel</div>
                         <div className={styles['pai-dr-line-chart']}>
                             <div className={styles['pai-dr-line']} style={{top: '55%', left: '5%', width: '80%'}}></div>
                             <div className={styles['pai-dr-line-point']} style={{top: '55%', left: '5%'}}></div>
@@ -175,40 +124,20 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* 8) Radar Chart, column4 row2 */}
+                    {/* 5) Brain Waves – Column1, Row3 */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>
-                            8) User Sentiment
-                        </div>
-                        <div className={styles['pai-dr-radar-chart']}>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '10%', left: '50%'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '40%', left: '90%'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '80%', left: '80%'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '85%', left: '20%'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '40%', left: '5%'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '10%', left: '50%', width: '40%', transform: 'rotate(60deg)'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '40%', left: '90%', width: '40%', transform: 'rotate(110deg)'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '80%', left: '80%', width: '55%', transform: 'rotate(200deg)'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '85%', left: '20%', width: '40%', transform: 'rotate(250deg)'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '40%', left: '5%', width: '40%', transform: 'rotate(320deg)'}}></div>
-                            <div className={styles['pai-dr-radar-shape']}></div>
+                        <div className={styles['pai-dr-chart-header']}>5) Opportunity Mapping</div>
+                        <div className={styles['pai-dr-brain-waves']}>
+                            <div className={styles['pai-dr-wave']} style={{top: '15%'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '35%'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '55%'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '75%'}}></div>
                         </div>
                     </div>
                     
-                    {/*
-                      Now the "stacking" modules #9..#24 with partial offsets, bigger delays.
-                      Each has a chart with infinite 200s animation.
-                      We'll list them all so the code is complete.
-                    */}
-                    
-                    {/* 9) Extra Calc: ROI Deep-Dive (Pie) */}
+                    {/* 6) Pie Chart – Column2, Row3 */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>9) Extra Calc: ROI Deep-Dive</div>
+                        <div className={styles['pai-dr-chart-header']}>6) Growth Segments</div>
                         <div className={styles['pai-dr-pie-chart']}>
                             <div className={styles['pai-dr-pie-segment']}></div>
                             <div className={styles['pai-dr-pie-segment']}
@@ -218,33 +147,45 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* 10) Extra Calc: Profit Margins (Bar) */}
+                    {/*
+                      We have 6 main modules above. Next we add multiple "stacking" modules.
+                      Let's do 12 more for a total of 18. Each partially offset, each with bigger delay, 
+                      flying in from left or right depending on the column.
+                    */}
+                    
+                    {/* 7) Extra calc: ROI Analysis (Bar) */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>10) Extra Calc: Profit Margins</div>
+                        <div className={styles['pai-dr-chart-header']}>7) Extra Calc: ROI Analysis</div>
                         <div className={styles['pai-dr-bar-chart']}>
-                            <div className={styles['pai-dr-bar']} style={{height: '60%'}} data-value="60%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '75%'}} data-value="75%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '40%'}} data-value="40%"></div>
+                            <div className={styles['pai-dr-bar']} style={{height: '65%'}} data-value="65%"></div>
                             <div className={styles['pai-dr-bar']} style={{height: '85%'}} data-value="85%"></div>
+                            <div className={styles['pai-dr-bar']} style={{height: '45%'}} data-value="45%"></div>
+                            <div className={styles['pai-dr-bar']} style={{height: '90%'}} data-value="90%"></div>
                             <div className={styles['pai-dr-bar']} style={{height: '50%'}} data-value="50%"></div>
                         </div>
                     </div>
                     
-                    {/* 11) Extra Calc: Seasonal Patterns (Bar) */}
+                    {/* 8) Extra calc: Competitor Benchmark (Radar) */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>11) Extra Calc: Seasonal Patterns</div>
-                        <div className={styles['pai-dr-bar-chart']}>
-                            <div className={styles['pai-dr-bar']} style={{height: '42%'}} data-value="42%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '78%'}} data-value="78%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '55%'}} data-value="55%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '90%'}} data-value="90%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '67%'}} data-value="67%"></div>
+                        <div className={styles['pai-dr-chart-header']}>8) Extra Calc: Competitor Benchmark</div>
+                        <div className={styles['pai-dr-radar-chart']}>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '10%', left: '50%'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '40%', left: '90%'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '85%', left: '75%'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '85%', left: '25%'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '40%', left: '10%'}}></div>
+                            <div className={styles['pai-dr-radar-line']} style={{top: '10%', left: '50%', width: '40%', transform: 'rotate(60deg)'}}></div>
+                            <div className={styles['pai-dr-radar-line']} style={{top: '40%', left: '90%', width: '40%', transform: 'rotate(120deg)'}}></div>
+                            <div className={styles['pai-dr-radar-line']} style={{top: '85%', left: '75%', width: '55%', transform: 'rotate(200deg)'}}></div>
+                            <div className={styles['pai-dr-radar-line']} style={{top: '85%', left: '25%', width: '40%', transform: 'rotate(250deg)'}}></div>
+                            <div className={styles['pai-dr-radar-line']} style={{top: '40%', left: '10%', width: '40%', transform: 'rotate(320deg)'}}></div>
+                            <div className={styles['pai-dr-radar-shape']}></div>
                         </div>
                     </div>
                     
-                    {/* 12) Extra Calc: Traffic Velocity (Line) */}
+                    {/* 9) Extra calc: Seasonal Patterns (Line) */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>12) Extra Calc: Traffic Velocity</div>
+                        <div className={styles['pai-dr-chart-header']}>9) Extra Calc: Seasonal Patterns</div>
                         <div className={styles['pai-dr-line-chart']}>
                             <div className={styles['pai-dr-line']} style={{top: '50%', left: '5%', width: '80%'}}></div>
                             <div className={styles['pai-dr-line-point']} style={{top: '50%', left: '5%'}}></div>
@@ -252,9 +193,20 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* 13) Extra Calc: Referral Sources (Pie) */}
+                    {/* 10) Extra calc: Future Forecast (Brain Waves) */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>13) Extra Calc: Referral Sources</div>
+                        <div className={styles['pai-dr-chart-header']}>10) Extra Calc: Future Forecast</div>
+                        <div className={styles['pai-dr-brain-waves']}>
+                            <div className={styles['pai-dr-wave']} style={{top: '20%'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '40%'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '60%'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '80%'}}></div>
+                        </div>
+                    </div>
+                    
+                    {/* 11) Extra calc: Demographic Pie */}
+                    <div className={styles['pai-dr-data-module']}>
+                        <div className={styles['pai-dr-chart-header']}>11) Extra Calc: Demographic Spread</div>
                         <div className={styles['pai-dr-pie-chart']}>
                             <div className={styles['pai-dr-pie-segment']}></div>
                             <div className={styles['pai-dr-pie-segment']}
@@ -264,32 +216,9 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* 14) Extra Calc: Niche Positioning (Radar) */}
+                    {/* 12) Extra calc: Advanced Tree */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>14) Extra Calc: Niche Positioning</div>
-                        <div className={styles['pai-dr-radar-chart']}>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '5%', left: '50%'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '30%', left: '90%'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '75%', left: '75%'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '78%', left: '25%'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '30%', left: '10%'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '5%', left: '50%', width: '40%', transform: 'rotate(45deg)'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '30%', left: '90%', width: '40%', transform: 'rotate(100deg)'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '75%', left: '75%', width: '55%', transform: 'rotate(200deg)'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '78%', left: '25%', width: '40%', transform: 'rotate(250deg)'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '30%', left: '10%', width: '40%', transform: 'rotate(320deg)'}}></div>
-                            <div className={styles['pai-dr-radar-shape']}></div>
-                        </div>
-                    </div>
-                    
-                    {/* 15) Extra Calc: Spider Strategy (Thinking Tree) */}
-                    <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>15) Extra Calc: Spider Strategy</div>
+                        <div className={styles['pai-dr-chart-header']}>12) Extra Calc: Advanced Tree</div>
                         <div className={styles['pai-dr-tree']}>
                             <div className={styles['pai-dr-tree-node']} style={{top: '14%', left: '50%'}}></div>
                             <div className={styles['pai-dr-tree-branch']} style={{top: '19%', left: '47%', width: '25%', transform: 'rotate(38deg)'}}></div>
@@ -299,26 +228,46 @@ const LoadingIndicator: React.FC = () => {
                             <div className={styles['pai-dr-tree-branch']} style={{top: '24%', left: '25%', width: '30%', transform: 'rotate(-10deg)'}}></div>
                             <div className={styles['pai-dr-tree-node']} style={{top: '31%', left: '42%'}}></div>
                             <div className={styles['pai-dr-tree-branch']} style={{top: '31%', left: '42%', width: '17%', transform: 'rotate(78deg)'}}></div>
-                            <div className={styles['pai-dr-tree-node']} style={{top: '46%', left: '58%'}}></div>
-                            <div className={styles['pai-dr-tree-branch']} style={{top: '46%', left: '58%', width: '22%', transform: 'rotate(102deg)'}}></div>
-                            <div className={styles['pai-dr-tree-node']} style={{top: '60%', left: '65%'}}></div>
                         </div>
                     </div>
                     
-                    {/* 16) Extra Calc: Neurolink Waves (Brain Waves) */}
+                    {/* 13) Extra calc: Niche Radar */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>16) Extra Calc: Neurolink Waves</div>
+                        <div className={styles['pai-dr-chart-header']}>13) Extra Calc: Niche Radar</div>
+                        <div className={styles['pai-dr-radar-chart']}>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '15%', left: '50%'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '45%', left: '90%'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '85%', left: '75%'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '85%', left: '25%'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '45%', left: '10%'}}></div>
+                            <div className={styles['pai-dr-radar-line']}
+                                 style={{top: '15%', left: '50%', width: '40%', transform: 'rotate(45deg)'}}></div>
+                            <div className={styles['pai-dr-radar-line']}
+                                 style={{top: '45%', left: '90%', width: '40%', transform: 'rotate(110deg)'}}></div>
+                            <div className={styles['pai-dr-radar-line']}
+                                 style={{top: '85%', left: '75%', width: '55%', transform: 'rotate(200deg)'}}></div>
+                            <div className={styles['pai-dr-radar-line']}
+                                 style={{top: '85%', left: '25%', width: '40%', transform: 'rotate(250deg)'}}></div>
+                            <div className={styles['pai-dr-radar-line']}
+                                 style={{top: '45%', left: '10%', width: '40%', transform: 'rotate(320deg)'}}></div>
+                            <div className={styles['pai-dr-radar-shape']}></div>
+                        </div>
+                    </div>
+                    
+                    {/* 14) Extra calc: Future Brain Waves */}
+                    <div className={styles['pai-dr-data-module']}>
+                        <div className={styles['pai-dr-chart-header']}>14) Extra Calc: Future Brain Waves</div>
                         <div className={styles['pai-dr-brain-waves']}>
-                            <div className={styles['pai-dr-wave']} style={{top: '15%'}}></div>
-                            <div className={styles['pai-dr-wave']} style={{top: '35%'}}></div>
-                            <div className={styles['pai-dr-wave']} style={{top: '55%'}}></div>
-                            <div className={styles['pai-dr-wave']} style={{top: '75%'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '20%'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '40%'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '60%'}}></div>
+                            <div className={styles['pai-dr-wave']} style={{top: '80%'}}></div>
                         </div>
                     </div>
                     
-                    {/* 17) Extra Calc: Advertising ROI (Pie) */}
+                    {/* 15) Extra calc: Multi-Pie */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>17) Extra Calc: Advertising ROI</div>
+                        <div className={styles['pai-dr-chart-header']}>15) Extra Calc: Multi-Pie Analysis</div>
                         <div className={styles['pai-dr-pie-chart']}>
                             <div className={styles['pai-dr-pie-segment']}></div>
                             <div className={styles['pai-dr-pie-segment']}
@@ -328,88 +277,30 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* 18) Extra Calc: Growth Forecast (Bar) */}
+                    {/* 16) Extra calc: Forecast Tree */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>18) Extra Calc: Growth Forecast</div>
-                        <div className={styles['pai-dr-bar-chart']}>
-                            <div className={styles['pai-dr-bar']} style={{height: '55%'}} data-value="55%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '85%'}} data-value="85%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '40%'}} data-value="40%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '90%'}} data-value="90%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '68%'}} data-value="68%"></div>
-                        </div>
-                    </div>
-                    
-                    {/* 19) Extra Calc: Behavioral Patterns (Radar) */}
-                    <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>19) Extra Calc: Behavioral Patterns</div>
-                        <div className={styles['pai-dr-radar-chart']}>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '15%', left: '50%'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '45%', left: '90%'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '85%', left: '75%'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '85%', left: '25%'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '45%', left: '10%'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '15%', left: '50%', width: '40%', transform: 'rotate(45deg)'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '45%', left: '90%', width: '40%', transform: 'rotate(110deg)'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '85%', left: '75%', width: '55%', transform: 'rotate(200deg)'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '85%', left: '25%', width: '40%', transform: 'rotate(250deg)'}}></div>
-                            <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '45%', left: '10%', width: '40%', transform: 'rotate(320deg)'}}></div>
-                            <div className={styles['pai-dr-radar-shape']}></div>
-                        </div>
-                    </div>
-                    
-                    {/* 20) Extra Calc: Demo Synthesis (Thinking Tree) */}
-                    <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>20) Extra Calc: Demo Synthesis</div>
+                        <div className={styles['pai-dr-chart-header']}>16) Extra Calc: Forecast Tree</div>
                         <div className={styles['pai-dr-tree']}>
-                            <div className={styles['pai-dr-tree-node']} style={{top: '12%', left: '50%'}}></div>
-                            <div className={styles['pai-dr-tree-branch']} style={{top: '17%', left: '46%', width: '30%', transform: 'rotate(45deg)'}}></div>
-                            <div className={styles['pai-dr-tree-branch']} style={{top: '17%', left: '54%', width: '30%', transform: 'rotate(135deg)'}}></div>
-                            <div className={styles['pai-dr-tree-node']} style={{top: '35%', left: '28%'}}></div>
-                            <div className={styles['pai-dr-tree-node']} style={{top: '35%', left: '72%'}}></div>
-                            <div className={styles['pai-dr-tree-branch']} style={{top: '22%', left: '25%', width: '25%', transform: 'rotate(-15deg)'}}></div>
-                            <div className={styles['pai-dr-tree-node']} style={{top: '30%', left: '45%'}}></div>
-                            <div className={styles['pai-dr-tree-branch']} style={{top: '30%', left: '45%', width: '15%', transform: 'rotate(75deg)'}}></div>
-                            <div className={styles['pai-dr-tree-node']} style={{top: '34%', left: '60%'}}></div>
-                            <div className={styles['pai-dr-tree-branch']} style={{top: '34%', left: '60%', width: '20%', transform: 'rotate(100deg)'}}></div>
+                            <div className={styles['pai-dr-tree-node']} style={{top: '14%', left: '50%'}}></div>
+                            <div className={styles['pai-dr-tree-branch']} style={{top: '20%', left: '46%', width: '30%', transform: 'rotate(45deg)'}}></div>
+                            <div className={styles['pai-dr-tree-branch']} style={{top: '20%', left: '54%', width: '30%', transform: 'rotate(135deg)'}}></div>
+                            <div className={styles['pai-dr-tree-node']} style={{top: '38%', left: '30%'}}></div>
+                            <div className={styles['pai-dr-tree-node']} style={{top: '38%', left: '70%'}}></div>
+                            <div className={styles['pai-dr-tree-branch']} style={{top: '26%', left: '28%', width: '25%', transform: 'rotate(-15deg)'}}></div>
+                            <div className={styles['pai-dr-tree-node']} style={{top: '33%', left: '45%'}}></div>
+                            <div className={styles['pai-dr-tree-branch']} style={{top: '33%', left: '45%', width: '15%', transform: 'rotate(75deg)'}}></div>
+                            <div className={styles['pai-dr-tree-node']} style={{top: '35%', left: '60%'}}></div>
+                            <div className={styles['pai-dr-tree-branch']} style={{top: '35%', left: '60%', width: '20%', transform: 'rotate(100deg)'}}></div>
                         </div>
                     </div>
                     
-                    {/* 21) Extra Calc: Visionary Waves (Brain Waves) */}
+                    {/* 17) Extra calc: Final Radar */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>21) Extra Calc: Visionary Waves</div>
-                        <div className={styles['pai-dr-brain-waves']}>
-                            <div className={styles['pai-dr-wave']} style={{top: '15%'}}></div>
-                            <div className={styles['pai-dr-wave']} style={{top: '35%'}}></div>
-                            <div className={styles['pai-dr-wave']} style={{top: '55%'}}></div>
-                            <div className={styles['pai-dr-wave']} style={{top: '75%'}}></div>
-                        </div>
-                    </div>
-                    
-                    {/* 22) Extra Calc: Advanced Growth (Bar) */}
-                    <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>22) Extra Calc: Advanced Growth</div>
-                        <div className={styles['pai-dr-bar-chart']}>
-                            <div className={styles['pai-dr-bar']} style={{height: '44%'}} data-value="44%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '82%'}} data-value="82%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '50%'}} data-value="50%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '93%'}} data-value="93%"></div>
-                            <div className={styles['pai-dr-bar']} style={{height: '77%'}} data-value="77%"></div>
-                        </div>
-                    </div>
-                    
-                    {/* 23) Extra Calc: Deep Behavior (Radar) */}
-                    <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>23) Extra Calc: Deep Behavior</div>
+                        <div className={styles['pai-dr-chart-header']}>17) Extra Calc: Final Radar</div>
                         <div className={styles['pai-dr-radar-chart']}>
                             <div className={styles['pai-dr-radar-point']} style={{top: '15%', left: '50%'}}></div>
                             <div className={styles['pai-dr-radar-point']} style={{top: '45%', left: '90%'}}></div>
-                            <div className={styles['pai-dr-radar-point']} style={{top: '85%', left: '75%'}}></div>
+                            <div className={styles['pai-dr-radar-point']} style={{top: '80%', left: '75%'}}></div>
                             <div className={styles['pai-dr-radar-point']} style={{top: '85%', left: '25%'}}></div>
                             <div className={styles['pai-dr-radar-point']} style={{top: '45%', left: '10%'}}></div>
                             <div className={styles['pai-dr-radar-line']}
@@ -417,7 +308,7 @@ const LoadingIndicator: React.FC = () => {
                             <div className={styles['pai-dr-radar-line']}
                                  style={{top: '45%', left: '90%', width: '40%', transform: 'rotate(110deg)'}}></div>
                             <div className={styles['pai-dr-radar-line']}
-                                 style={{top: '85%', left: '75%', width: '55%', transform: 'rotate(200deg)'}}></div>
+                                 style={{top: '80%', left: '75%', width: '55%', transform: 'rotate(200deg)'}}></div>
                             <div className={styles['pai-dr-radar-line']}
                                  style={{top: '85%', left: '25%', width: '40%', transform: 'rotate(250deg)'}}></div>
                             <div className={styles['pai-dr-radar-line']}
@@ -426,9 +317,9 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* 24) Extra Calc: Final Predictive Index (Bar) */}
+                    {/* 18) Extra calc: Predictive Bar */}
                     <div className={styles['pai-dr-data-module']}>
-                        <div className={styles['pai-dr-chart-header']}>24) Extra Calc: Predictive Index</div>
+                        <div className={styles['pai-dr-chart-header']}>18) Extra Calc: Predictive Index</div>
                         <div className={styles['pai-dr-bar-chart']}>
                             <div className={styles['pai-dr-bar']} style={{height: '62%'}} data-value="62%"></div>
                             <div className={styles['pai-dr-bar']} style={{height: '85%'}} data-value="85%"></div>
@@ -438,11 +329,11 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* Background grid for futuristic effect */}
+                    {/* Futuristic grid background */}
                     <div className={styles['pai-dr-grid']}></div>
                 </div>
                 
-                {/* Fade message (8s cycle) */}
+                {/* Fade-in/fade-out message area */}
                 <div className={`${styles['pai-dr-message']} ${fade ? styles['fade-in'] : styles['fade-out']}`}>
                     {loadingMessages[messageIndex]}
                 </div>
