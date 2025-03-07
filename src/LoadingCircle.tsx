@@ -52,7 +52,7 @@ const LoadingIndicator: React.FC = () => {
             </div>
             <div className={styles['pai-dr-content']}>
                 <div className={styles['pai-dr-visualization']}>
-                    {/* Bar chart visualization */}
+                    {/* Data modules */}
                     <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-left 1s forwards', animationDelay: '0.1s'}}>
                         <div className={styles['pai-dr-chart-header']}>Revenue Optimization</div>
                         <div className={styles['pai-dr-bar-chart']}>
@@ -64,7 +64,6 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* Line chart visualization */}
                     <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-top 1s forwards', animationDelay: '0.3s'}}>
                         <div className={styles['pai-dr-chart-header']}>Engagement Metrics</div>
                         <div className={styles['pai-dr-line-chart']}>
@@ -74,7 +73,6 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* Radar chart visualization */}
                     <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-right 1s forwards', animationDelay: '0.5s'}}>
                         <div className={styles['pai-dr-chart-header']}>Market Fit Analysis</div>
                         <div className={styles['pai-dr-radar-chart']}>
@@ -92,7 +90,6 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* Brain wave visualization */}
                     <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-left 1s forwards', animationDelay: '0.7s'}}>
                         <div className={styles['pai-dr-chart-header']}>Opportunity Mapping</div>
                         <div className={styles['pai-dr-brain-waves']}>
@@ -103,7 +100,6 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* Pie chart visualization */}
                     <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-right 1s forwards', animationDelay: '0.9s'}}>
                         <div className={styles['pai-dr-chart-header']}>Growth Segments</div>
                         <div className={styles['pai-dr-pie-chart']} style={{width: '60px', height: '60px', margin: '10px auto'}}>
@@ -113,7 +109,6 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* Stat box visualization */}
                     <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-top 1s forwards', animationDelay: '1.1s'}}>
                         <div className={styles['pai-dr-chart-header']}>Market Score</div>
                         <div className={styles['pai-dr-stat-box']}>
@@ -122,7 +117,6 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* Line chart - ROI visualization */}
                     <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-bottom 1s forwards', animationDelay: '1.3s'}}>
                         <div className={styles['pai-dr-chart-header']}>ROI Projection</div>
                         <div className={styles['pai-dr-line-chart']}>
@@ -132,7 +126,6 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* Bar chart - channel performance */}
                     <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-left 1s forwards', animationDelay: '1.5s'}}>
                         <div className={styles['pai-dr-chart-header']}>Channel Performance</div>
                         <div className={styles['pai-dr-bar-chart']}>
@@ -143,7 +136,6 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* Audience segments visualization */}
                     <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-right 1s forwards', animationDelay: '1.7s'}}>
                         <div className={styles['pai-dr-chart-header']}>Audience Segments</div>
                         <div className={styles['pai-dr-pie-chart']} style={{width: '60px', height: '60px', margin: '10px auto'}}>
@@ -153,7 +145,6 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* Decision tree visualization */}
                     <div className={styles['pai-dr-data-module']} style={{animation: 'data-module-from-bottom 1s forwards', animationDelay: '1.9s'}}>
                         <div className={styles['pai-dr-chart-header']}>Strategic Roadmap</div>
                         <div className={styles['pai-dr-tree']}>
@@ -162,14 +153,9 @@ const LoadingIndicator: React.FC = () => {
                             <div className={styles['pai-dr-tree-branch']} style={{top: '15%', left: '55%', width: '20%', transform: 'rotate(135deg)', animation: 'tree-branch-grow 3s infinite', animationDelay: '0.5s'}}></div>
                             <div className={styles['pai-dr-tree-node']} style={{top: '40%', left: '30%', animation: 'tree-node-pulse 3s infinite', animationDelay: '0.7s'}}></div>
                             <div className={styles['pai-dr-tree-node']} style={{top: '40%', left: '70%', animation: 'tree-node-pulse 3s infinite', animationDelay: '1.0s'}}></div>
-                            <div className={styles['pai-dr-tree-sub-node']} style={{top: '25%', left: '40%', animation: 'tree-sub-node-appear 2.5s infinite', animationDelay: '1.2s'}}></div>
-                            <div className={styles['pai-dr-tree-sub-branch']} style={{top: '27%', left: '40%', width: '15%', transform: 'rotate(-30deg)', animation: 'tree-sub-branch-appear 2.5s infinite', animationDelay: '1.4s'}}></div>
-                            <div className={styles['pai-dr-tree-sub-node']} style={{top: '20%', left: '65%', animation: 'tree-sub-node-appear 2.5s infinite', animationDelay: '1.6s'}}></div>
-                            <div className={styles['pai-dr-tree-sub-branch']} style={{top: '22%', left: '65%', width: '12%', transform: 'rotate(45deg)', animation: 'tree-sub-branch-appear 2.5s infinite', animationDelay: '1.8s'}}></div>
                         </div>
                     </div>
                     
-                    {/* Background grid */}
                     <div className={styles['pai-dr-grid']} style={{animation: 'grid-pulse 5s infinite'}}></div>
                 </div>
                 
@@ -181,6 +167,5 @@ const LoadingIndicator: React.FC = () => {
     );
 };
 
-export default LoadingIndicator;
-
+// This is the ONLY export statement in the entire file
 export default LoadingIndicator;
