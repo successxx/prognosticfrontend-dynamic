@@ -1,12 +1,12 @@
 /*************************************************************/
-/* Base Container & Header                                   */
+/* Container & Header (Golden Ratio Layout)                  */
 /*************************************************************/
 
 .prognostic-ai-demo-results-container {
     font-family: 'Montserrat', sans-serif;
     background-color: #F0F4F8;
     width: 100%;
-    max-width: 1500px; /* Premium wide container for golden ratio layout */
+    max-width: 1500px; /* Wide container for premium look */
     margin: 20px auto;
     border-radius: 15px;
     overflow: hidden;
@@ -43,7 +43,7 @@
 }
 
 /*************************************************************/
-/* Content & Visualization Container                         */
+/* Content & Visualization (Height ~928 for Golden Ratio)    */
 /*************************************************************/
 
 .pai-dr-content {
@@ -67,8 +67,8 @@
 }
 
 /*************************************************************/
-/* Data Modules: 2 columns × 4 rows => 8 modules, plus 16 more
-   that come in partially offset. Total 24.                  */
+/* Data Modules: 4 columns × 2 rows => 8 primary, plus 16 stacked
+   => 24 total.                                              */
 /*************************************************************/
 
 .pai-dr-data-module {
@@ -76,12 +76,12 @@
     background-color: rgba(255,255,255,0.97);
     border-radius: 4px;
     box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-    opacity: 0; /* invisible until it flies in */
+    opacity: 0;
     transform: scale(0.5);
     overflow: hidden;
     padding: 8px;
     border: 1px solid rgba(37,37,37,0.1);
-    animation-fill-mode: forwards; /* remain after finishing */
+    animation-fill-mode: forwards; /* remains after arrival */
     transition: box-shadow 0.3s ease;
     z-index: 2;
 }
@@ -90,187 +90,213 @@
     box-shadow: 0 3px 15px rgba(37,37,37,0.2);
 }
 
-/* ---------------- 8 Primary Modules (1..8) --------------- */
-/*
-   For a neat 2 columns x 4 rows arrangement,
-   let's place them around left:12% & left:52% for columns,
-   top ~10%,30%,50%,70% for rows.
-*/
+/*************************************************************/
+/* 8 Primary Modules (1..8) arranged in 4 columns x 2 rows   */
+/* We'll do row1 top: 15%, row2 top: 55%, columns at 5%, 30%,
+   55%, 80% from left. Fly from left or right.               */
+/*************************************************************/
 
+/* 1) Column1, row1 => left side => from left */
 .pai-dr-data-module:nth-child(1) {
-    top: 10%; left: 12%;
+    top: 15%; left: 5%;
     width: 220px; height: 150px;
     animation: fly-in-left 0.6s ease-out;
     animation-delay: 0.2s;
 }
+/* 2) Column2, row1 => from left (or top) but let's keep from left for simplicity */
 .pai-dr-data-module:nth-child(2) {
-    top: 10%; left: 52%;
+    top: 15%; left: 30%;
     width: 220px; height: 150px;
     animation: fly-in-left 0.6s ease-out;
     animation-delay: 0.4s;
 }
+/* 3) Column3, row1 => from right */
 .pai-dr-data-module:nth-child(3) {
-    top: 30%; left: 12%;
+    top: 15%; left: 55%;
     width: 220px; height: 150px;
-    animation: fly-in-left 0.6s ease-out;
+    animation: fly-in-right 0.6s ease-out;
     animation-delay: 0.6s;
 }
+/* 4) Column4, row1 => from right */
 .pai-dr-data-module:nth-child(4) {
-    top: 30%; left: 52%;
+    top: 15%; left: 80%;
     width: 220px; height: 150px;
-    animation: fly-in-left 0.6s ease-out;
+    animation: fly-in-right 0.6s ease-out;
     animation-delay: 0.8s;
 }
+
+/* Row2 => top: 55% for columns 1..4 */
+
+/* 5) col1 from left */
 .pai-dr-data-module:nth-child(5) {
-    top: 50%; left: 12%;
+    top: 55%; left: 5%;
     width: 220px; height: 150px;
     animation: fly-in-left 0.6s ease-out;
     animation-delay: 1.0s;
 }
+/* 6) col2 from left */
 .pai-dr-data-module:nth-child(6) {
-    top: 50%; left: 52%;
+    top: 55%; left: 30%;
     width: 220px; height: 150px;
     animation: fly-in-left 0.6s ease-out;
     animation-delay: 1.2s;
 }
+/* 7) col3 from right */
 .pai-dr-data-module:nth-child(7) {
-    top: 70%; left: 12%;
+    top: 55%; left: 55%;
     width: 220px; height: 150px;
-    animation: fly-in-left 0.6s ease-out;
+    animation: fly-in-right 0.6s ease-out;
     animation-delay: 1.4s;
 }
+/* 8) col4 from right */
 .pai-dr-data-module:nth-child(8) {
-    top: 70%; left: 52%;
+    top: 55%; left: 80%;
     width: 220px; height: 150px;
-    animation: fly-in-left 0.6s ease-out;
+    animation: fly-in-right 0.6s ease-out;
     animation-delay: 1.6s;
 }
 
-/* -------------- Next 16 Overlapping Modules (9..24) ------------- */
-/*
-   Each with partial offsets & bigger delays (2.0s+),
-   so they layer on top with a higher z-index if desired.
-   We'll define example positions for each. 
-   Tweak as you wish for 'tasteful offsets.'
+/*************************************************************/
+/* Next 16 Modules (9..24) come with partial offsets and bigger
+   delays. Each from left or right depending on column.       */
+/*************************************************************/
+
+/* We'll define an example offset approach. 
+   Column1 => left ~10%, Column2 => left ~35%, Column3 => left ~60%, Column4 => left ~85%, etc. 
+   We'll place them on different top positions. 
 */
 
 .pai-dr-data-module:nth-child(9) {
-    top: 15%; left: 22%;
+    top: 25%; left: 10%;
     width: 210px; height: 150px;
     animation: fly-in-left 0.5s ease-out;
     animation-delay: 2.0s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(10) {
-    top: 35%; left: 58%;
+    top: 25%; left: 35%;
     width: 210px; height: 150px;
     animation: fly-in-left 0.5s ease-out;
     animation-delay: 2.2s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(11) {
-    top: 25%; left: 35%;
-    width: 220px; height: 150px;
-    animation: fly-in-left 0.5s ease-out;
+    top: 25%; left: 60%;
+    width: 210px; height: 150px;
+    animation: fly-in-right 0.5s ease-out;
     animation-delay: 2.4s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(12) {
-    top: 40%; left: 60%;
-    width: 220px; height: 150px;
-    animation: fly-in-left 0.5s ease-out;
+    top: 25%; left: 85%;
+    width: 210px; height: 150px;
+    animation: fly-in-right 0.5s ease-out;
     animation-delay: 2.6s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(13) {
-    top: 50%; left: 25%;
-    width: 220px; height: 150px;
+    top: 45%; left: 10%;
+    width: 210px; height: 150px;
     animation: fly-in-left 0.5s ease-out;
     animation-delay: 2.8s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(14) {
-    top: 70%; left: 55%;
-    width: 220px; height: 150px;
+    top: 45%; left: 35%;
+    width: 210px; height: 150px;
     animation: fly-in-left 0.5s ease-out;
     animation-delay: 3.0s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(15) {
-    top: 15%; left: 55%;
-    width: 220px; height: 150px;
-    animation: fly-in-left 0.5s ease-out;
+    top: 45%; left: 60%;
+    width: 210px; height: 150px;
+    animation: fly-in-right 0.5s ease-out;
     animation-delay: 3.2s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(16) {
-    top: 35%; left: 20%;
-    width: 220px; height: 150px;
-    animation: fly-in-left 0.5s ease-out;
+    top: 45%; left: 85%;
+    width: 210px; height: 150px;
+    animation: fly-in-right 0.5s ease-out;
     animation-delay: 3.4s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(17) {
-    top: 55%; left: 40%;
-    width: 220px; height: 150px;
+    top: 65%; left: 10%;
+    width: 210px; height: 150px;
     animation: fly-in-left 0.5s ease-out;
     animation-delay: 3.6s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(18) {
-    top: 45%; left: 70%;
-    width: 220px; height: 150px;
+    top: 65%; left: 35%;
+    width: 210px; height: 150px;
     animation: fly-in-left 0.5s ease-out;
     animation-delay: 3.8s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(19) {
-    top: 25%; left: 75%;
-    width: 220px; height: 150px;
-    animation: fly-in-left 0.5s ease-out;
+    top: 65%; left: 60%;
+    width: 210px; height: 150px;
+    animation: fly-in-right 0.5s ease-out;
     animation-delay: 4.0s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(20) {
-    top: 60%; left: 15%;
-    width: 220px; height: 150px;
-    animation: fly-in-left 0.5s ease-out;
+    top: 65%; left: 85%;
+    width: 210px; height: 150px;
+    animation: fly-in-right 0.5s ease-out;
     animation-delay: 4.2s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(21) {
-    top: 80%; left: 40%;
-    width: 220px; height: 150px;
+    top: 80%; left: 10%;
+    width: 210px; height: 150px;
     animation: fly-in-left 0.5s ease-out;
     animation-delay: 4.4s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(22) {
-    top: 20%; left: 50%;
-    width: 220px; height: 150px;
+    top: 80%; left: 35%;
+    width: 210px; height: 150px;
     animation: fly-in-left 0.5s ease-out;
     animation-delay: 4.6s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(23) {
-    top: 35%; left: 72%;
-    width: 220px; height: 150px;
-    animation: fly-in-left 0.5s ease-out;
+    top: 80%; left: 60%;
+    width: 210px; height: 150px;
+    animation: fly-in-right 0.5s ease-out;
     animation-delay: 4.8s;
     z-index: 4;
 }
 .pai-dr-data-module:nth-child(24) {
-    top: 75%; left: 55%;
-    width: 220px; height: 150px;
-    animation: fly-in-left 0.5s ease-out;
+    top: 80%; left: 85%;
+    width: 210px; height: 150px;
+    animation: fly-in-right 0.5s ease-out;
     animation-delay: 5.0s;
     z-index: 4;
 }
 
-/* Fly-in keyframe from the left (fast, no angles) */
+/*************************************************************/
+/* Fly-In Animations (fast snap from left or right)          */
+/*************************************************************/
+
 @keyframes fly-in-left {
     0% {
         transform: translateX(-300px) scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fly-in-right {
+    0% {
+        transform: translateX(300px) scale(0.5);
         opacity: 0;
     }
     100% {
@@ -295,11 +321,11 @@
 }
 
 /*************************************************************/
-/* Extended Animations (200s) for Bars, Lines, Pies, Radar,
-   Trees, Waves—ensuring continuous "calculations."           */
+/* EXTENDED 200s Animations for Bars, Lines, Pies, Radar,
+   Thinking Trees, Brain Waves. (Same approach as previous.)  */
 /*************************************************************/
 
-/* BAR CHART */
+/* BAR CHART (200s) */
 
 .pai-dr-bar-chart {
     display: flex;
@@ -330,7 +356,6 @@
     color: #252525;
 }
 
-/* 200-second cycle with multiple steps—always partial. */
 @keyframes bar-extended-200 {
     0%   { height: 40% !important; }
     4%   { height: 65% !important; }
@@ -360,7 +385,7 @@
     100% { height: 40% !important; }
 }
 
-/* LINE CHART */
+/* LINE CHART (200s) */
 
 .pai-dr-line-chart {
     width: 100%;
@@ -421,7 +446,7 @@
     50% { transform: scale(1.6); }
 }
 
-/* PIE CHART */
+/* PIE CHART (200s) */
 
 .pai-dr-pie-chart {
     width: 50px;
@@ -471,23 +496,20 @@
     100% { transform: rotate(0deg) skew(30deg); }
 }
 
-/* RADAR CHART */
+/* RADAR CHART (200s) */
 
 .pai-dr-radar-chart {
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
 }
 
 .pai-dr-radar-point {
     position: absolute;
-    width: 4px;
-    height: 4px;
+    width: 4px; height: 4px;
     background-color: #252525;
     border-radius: 50%;
     animation: radar-point-entry 2s ease-out forwards;
 }
-
 @keyframes radar-point-entry {
     0%   { opacity: 0; transform: scale(0); }
     50%  { opacity: 1; transform: scale(1.6); }
@@ -502,13 +524,11 @@
     opacity: 0;
     animation: radar-line-entry 2s ease-out forwards;
 }
-
 @keyframes radar-line-entry {
     0% { width: 0; opacity: 0; }
     100% { width: 100%; opacity: 0.6; }
 }
 
-/* Radar shape pulses with 200s for extended effect */
 .pai-dr-radar-shape {
     position: absolute;
     top: 50%; left: 50%;
@@ -518,7 +538,6 @@
     transform: translate(-50%,-50%) scale(0.8);
     animation: radar-shape-pulse-200 200s ease-in-out infinite;
 }
-
 @keyframes radar-shape-pulse-200 {
     0%   { transform: translate(-50%,-50%) scale(0.7) rotate(0deg); }
     5%   { transform: translate(-50%,-50%) scale(0.9) rotate(20deg); }
@@ -536,11 +555,12 @@
     100% { transform: translate(-50%,-50%) scale(0.7) rotate(480deg); }
 }
 
-/* THINKING TREE */
+/* THINKING TREE (200s) */
 
 .pai-dr-tree {
     width: 90%; height: 80%;
-    margin: 5px auto; position: relative;
+    margin: 5px auto;
+    position: relative;
 }
 
 .pai-dr-tree-node {
@@ -552,7 +572,6 @@
     transform-origin: center;
     opacity: 1;
 }
-
 @keyframes tree-node-200 {
     0%   { transform: scale(1); }
     5%   { transform: scale(1.4); }
@@ -585,7 +604,6 @@
     animation: tree-branch-200 200s ease-in-out infinite;
     opacity: 1;
 }
-
 @keyframes tree-branch-200 {
     0%   { width: 30%; }
     5%   { width: 55%; }
@@ -610,11 +628,12 @@
     100% { width: 30%; }
 }
 
-/* BRAIN WAVES */
+/* BRAIN WAVES (200s) */
 
 .pai-dr-brain-waves {
     position: relative;
-    width: 90%; height: 50%;
+    width: 90%;
+    height: 50%;
     margin: 10px auto;
 }
 
@@ -654,7 +673,7 @@
 }
 
 /*************************************************************/
-/* Background Grid Overlay                                   */
+/* Grid Overlay                                              */
 /*************************************************************/
 
 .pai-dr-grid {
@@ -669,7 +688,7 @@
 }
 
 /*************************************************************/
-/* Optional data-label inside modules                        */
+/* Floating data-label (optional codes)                      */
 /*************************************************************/
 
 .pai-dr-data-module::after {
@@ -682,7 +701,7 @@
 }
 
 /*************************************************************/
-/* Message (fade in/out)                                     */
+/* Fade-in/out message (8s cycle)                            */
 /*************************************************************/
 
 .pai-dr-message {
@@ -696,6 +715,7 @@
     z-index: 99;
     opacity: 1;
 }
+
 .fade-out {
     opacity: 0;
     transform: translateY(20px);
@@ -706,7 +726,7 @@
 }
 
 /*************************************************************/
-/* Media Queries (Mobile)                                    */
+/* Responsive Adjustments                                    */
 /*************************************************************/
 
 @media (max-width: 600px) {
