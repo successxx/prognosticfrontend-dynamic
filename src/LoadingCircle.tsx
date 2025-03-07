@@ -48,10 +48,12 @@ const LoadingIndicator: React.FC = () => {
             </div>
             <div className={styles['pai-dr-content']}>
                 <div className={styles['pai-dr-visualization']}>
-                    {/* LEFT COLUMN */}
+                    
+                    {/* Left column modules (1,2,3) */}
                     <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Revenue Optimization</div>
                         <div className={styles['pai-dr-bar-chart']}>
+                            {/* bars keep building with 40s random patterns */}
                             <div className={styles['pai-dr-bar']} style={{height: '75%'}} data-value="75%"></div>
                             <div className={styles['pai-dr-bar']} style={{height: '45%'}} data-value="45%"></div>
                             <div className={styles['pai-dr-bar']} style={{height: '60%'}} data-value="60%"></div>
@@ -63,6 +65,7 @@ const LoadingIndicator: React.FC = () => {
                     <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Engagement Metrics</div>
                         <div className={styles['pai-dr-line-chart']}>
+                            {/* lines keep adjusting over 40s */}
                             <div className={styles['pai-dr-line']} style={{top: '60%', left: '10%', width: '80%', transform: 'rotate(-10deg)'}}></div>
                             <div className={styles['pai-dr-line-point']} style={{top: '60%', left: '10%'}}></div>
                             <div className={styles['pai-dr-line-point']} style={{top: '50%', left: '90%'}}></div>
@@ -82,11 +85,12 @@ const LoadingIndicator: React.FC = () => {
                             <div className={styles['pai-dr-radar-line']} style={{top: '80%', left: '75%', width: '50%', transform: 'rotate(200deg)'}}></div>
                             <div className={styles['pai-dr-radar-line']} style={{top: '80%', left: '25%', width: '35%', transform: 'rotate(250deg)'}}></div>
                             <div className={styles['pai-dr-radar-line']} style={{top: '35%', left: '15%', width: '35%', transform: 'rotate(320deg)'}}></div>
+                            {/* shape in middle, also pulsing over 40s */}
                             <div className={styles['pai-dr-radar-shape']} style={{top: '50%', left: '50%'}}></div>
                         </div>
                     </div>
                     
-                    {/* MIDDLE-LEFT */}
+                    {/* Middle-left (4,5) */}
                     <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Opportunity Mapping</div>
                         <div className={styles['pai-dr-brain-waves']}>
@@ -106,11 +110,11 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* CENTER COLUMN */}
+                    {/* Center (6,7) */}
                     <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Strategic Roadmap</div>
                         <div className={styles['pai-dr-tree']}>
-                            {/* Add more nodes/branches for more complexity */}
+                            {/* multiple nodes & branches, extended further with sub-nodes */}
                             <div className={styles['pai-dr-tree-node']} style={{top: '10%', left: '50%'}}></div>
                             <div className={styles['pai-dr-tree-branch']} style={{top: '15%', left: '45%', width: '20%', transform: 'rotate(45deg)'}}></div>
                             <div className={styles['pai-dr-tree-branch']} style={{top: '15%', left: '55%', width: '20%', transform: 'rotate(135deg)'}}></div>
@@ -118,7 +122,7 @@ const LoadingIndicator: React.FC = () => {
                             <div className={styles['pai-dr-tree-node']} style={{top: '40%', left: '30%'}}></div>
                             <div className={styles['pai-dr-tree-node']} style={{top: '40%', left: '70%'}}></div>
                             
-                            {/* Extra branches */}
+                            {/* More sub-branches */}
                             <div className={styles['pai-dr-tree-branch']} style={{top: '20%', left: '30%', width: '15%', transform: 'rotate(-20deg)'}}></div>
                             <div className={styles['pai-dr-tree-node']} style={{top: '28%', left: '45%'}}></div>
                             <div className={styles['pai-dr-tree-branch']} style={{top: '28%', left: '45%', width: '10%', transform: 'rotate(70deg)'}}></div>
@@ -137,7 +141,7 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* MIDDLE-RIGHT */}
+                    {/* Middle-right (8,9) */}
                     <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Conversion Funnel</div>
                         <div className={styles['pai-dr-line-chart']}>
@@ -164,7 +168,7 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* RIGHT COLUMN */}
+                    {/* Right column (10,11,12) */}
                     <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Sales Forecasting</div>
                         <div className={styles['pai-dr-brain-waves']}>
@@ -195,10 +199,12 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* BACKGROUND GRID */}
+                    {/* Additional modules for demonstration (13,14,15, etc.) 
+                        Already placed in the CSS with unique positions if desired */}
                     <div className={styles['pai-dr-grid']}></div>
                 </div>
                 
+                {/* Loading message that cycles every 8 seconds */}
                 <div className={`${styles['pai-dr-message']} ${fade ? styles['fade-in'] : styles['fade-out']}`}>
                     {loadingMessages[messageIndex]}
                 </div>
