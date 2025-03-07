@@ -1,4 +1,83 @@
-/* Base container styles */
+/* Specific chart modules positioning and sizing */
+/* Bar chart - top left */
+.pai-dr-data-module:nth-child(1) {
+    top: 15%;
+    left: -150px;
+    width: 120px;
+    height: 80px;
+    animation: data-module-from-left 10s ease-out infinite;
+    animation-delay: 0.5s;
+}
+
+/* Line chart - bottom left */
+.pai-dr-data-module:nth-child(2) {
+    top: 65%;
+    left: -150px;
+    width: 130px;
+    height: 90px;
+    animation: data-module-from-left 10s ease-out infinite;
+    animation-delay: 2.5s;
+}
+
+/* Stat box 1 - middle left */
+.pai-dr-data-module:nth-child(3) {
+    top: 40%;
+    left: -100px;
+    width: 70px;
+    height: 70px;
+    animation: data-module-from-left 10s ease-out infinite;
+    animation-delay: 4.5s;
+}
+
+/* Pie chart - bottom left */
+.pai-dr-data-module:nth-child(4) {
+    top: 80%;
+    left: -120px;
+    width: 90px;
+    height: 80px;
+    animation: data-module-from-left 10s ease-out infinite;
+    animation-delay: 6.5s;
+}
+
+/* Bar chart 2 - top right */
+.pai-dr-data-module:nth-child(5) {
+    top: 20%;
+    right: -150px;
+    width: 120px;
+    height: 80px;
+    animation: data-module-from-right 10s ease-out infinite;
+    animation-delay: 1.5s;
+}
+
+/* Line chart 2 - middle right */
+.pai-dr-data-module:nth-child(6) {
+    top: 45%;
+    right: -150px;
+    width: 130px;
+    height: 90px;
+    animation: data-module-from-right 10s ease-out infinite;
+    animation-delay: 3.5s;
+}
+
+/* Stat box 2 - middle right */
+.pai-dr-data-module:nth-child(7) {
+    top: 25%;
+    right: -80px;
+    width: 70px;
+    height: 70px;
+    animation: data-module-from-right 10s ease-out infinite;
+    animation-delay: 5.5s;
+}
+
+/* Pie chart 2 - bottom right */
+.pai-dr-data-module:nth-child(8) {
+    top: 70%;
+    right: -120px;
+    width: 90px;
+    height: 80px;
+    animation: data-module-from-right 10s ease-out infinite;
+    animation-delay: 7.5s;
+}/* Base container styles */
 .prognostic-ai-demo-results-container {
     font-family: 'Montserrat', sans-serif;
     background-color: #F0F4F8;
@@ -64,9 +143,9 @@
 .pai-dr-visualization {
     position: relative;
     width: 100%;
-    height: 220px;
+    height: 350px;
     margin-bottom: 30px;
-    perspective: 800px;
+    perspective: 1000px;
 }
 
 /* Central analysis hub */
@@ -75,8 +154,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     background-color: #252525;
     border-radius: 4px;
     z-index: 5;
@@ -90,120 +169,148 @@
     50% { transform: translate(-50%, -50%) scale(1.05); }
 }
 
-/* Data modules flying in from left and right */
+/* Data visualization modules (charts & graphs) */
 .pai-dr-data-module {
     position: absolute;
-    background-color: rgba(37, 37, 37, 0.9);
+    background-color: rgba(255, 255, 255, 0.97);
     border-radius: 4px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
     opacity: 0;
     z-index: 4;
     transform: scale(0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
     overflow: hidden;
+    padding: 5px;
+    border: 1px solid rgba(37, 37, 37, 0.1);
 }
 
-/* Module grid pattern */
-.pai-dr-data-module::before {
-    content: '';
+/* Chart header styling */
+.pai-dr-chart-header {
+    font-size: 7px;
+    font-weight: bold;
+    color: #252525;
+    padding: 2px 4px;
+    border-bottom: 1px solid rgba(37, 37, 37, 0.1);
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Bar chart specific styling */
+.pai-dr-bar-chart {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 70%;
+    padding-top: 5px;
+}
+
+.pai-dr-bar {
+    background-color: #252525;
+    width: 6px;
+    margin: 0 2px;
+    border-radius: 1px 1px 0 0;
+    position: relative;
+}
+
+.pai-dr-bar::after {
+    content: attr(data-value);
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 8px 8px;
-    z-index: 1;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 5px;
+    color: #252525;
 }
 
-/* Module inner glow */
-.pai-dr-data-module::after {
-    content: '';
+/* Bar chart animation */
+@keyframes bar-grow {
+    0%, 100% { height: 0; }
+    20% { height: 20%; }
+    40% { height: 40%; }
+    60% { height: 80%; }
+    80% { height: 60%; }
+}
+
+/* Line chart specific styling */
+.pai-dr-line-chart {
+    height: 70%;
+    width: 100%;
+    position: relative;
+}
+
+.pai-dr-line {
     position: absolute;
-    top: 2px;
-    left: 2px;
-    right: 2px;
-    bottom: 2px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    z-index: 2;
+    height: 1px;
+    background-color: #252525;
+    transform-origin: 0 0;
 }
 
-/* Data module from left */
-.pai-dr-data-module:nth-child(1) {
-    top: 20%;
-    left: -100px;
-    width: 80px;
-    height: 50px;
-    animation: data-module-from-left 10s ease-out infinite;
-    animation-delay: 0.5s;
+.pai-dr-line-point {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background-color: #252525;
+    border-radius: 50%;
 }
 
-.pai-dr-data-module:nth-child(2) {
-    top: 60%;
-    left: -100px;
-    width: 90px;
-    height: 60px;
-    animation: data-module-from-left 10s ease-out infinite;
-    animation-delay: 1.5s;
+/* Line chart animation */
+@keyframes line-draw {
+    0% { width: 0; }
+    100% { width: 100%; }
 }
 
-.pai-dr-data-module:nth-child(3) {
-    top: 30%;
-    left: -100px;
-    width: 70px;
-    height: 45px;
-    animation: data-module-from-left 10s ease-out infinite;
-    animation-delay: 3.5s;
-}
-
-.pai-dr-data-module:nth-child(4) {
-    top: 75%;
-    left: -100px;
-    width: 60px;
+/* Pie chart specific styling */
+.pai-dr-pie-chart {
+    width: 40px;
     height: 40px;
-    animation: data-module-from-left 10s ease-out infinite;
-    animation-delay: 5.5s;
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 5px auto;
 }
 
-/* Data module from right */
-.pai-dr-data-module:nth-child(5) {
-    top: 25%;
-    right: -100px;
-    width: 75px;
-    height: 50px;
-    animation: data-module-from-right 10s ease-out infinite;
-    animation-delay: 1s;
+.pai-dr-pie-segment {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-origin: 50% 50%;
+    background-color: #252525;
+    opacity: 0.8;
 }
 
-.pai-dr-data-module:nth-child(6) {
-    top: 65%;
-    right: -100px;
-    width: 85px;
-    height: 55px;
-    animation: data-module-from-right 10s ease-out infinite;
-    animation-delay: 2s;
+/* Pie chart animation */
+@keyframes pie-grow {
+    0% { transform: rotate(0deg) skew(90deg); }
+    100% { transform: rotate(360deg) skew(0deg); }
 }
 
-.pai-dr-data-module:nth-child(7) {
-    top: 40%;
-    right: -100px;
-    width: 65px;
-    height: 45px;
-    animation: data-module-from-right 10s ease-out infinite;
-    animation-delay: 4s;
+/* Stat box styling */
+.pai-dr-stat-box {
+    text-align: center;
+    padding: 8px 4px;
 }
 
-.pai-dr-data-module:nth-child(8) {
-    top: 85%;
-    right: -100px;
-    width: 80px;
-    height: 50px;
-    animation: data-module-from-right 10s ease-out infinite;
-    animation-delay: 6s;
+.pai-dr-stat-value {
+    font-size: 14px;
+    font-weight: bold;
+    color: #252525;
+    display: block;
+}
+
+.pai-dr-stat-label {
+    font-size: 6px;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+}
+
+/* Stat animation */
+@keyframes count-up {
+    0% { content: "0"; }
+    20% { content: attr(data-min); }
+    100% { content: attr(data-value); }
 }
 
 /* Animation for modules coming from left */
@@ -213,15 +320,15 @@
         opacity: 0;
     }
     10% { 
-        transform: translateX(50px) scale(0.7) rotateY(-15deg); 
+        transform: translateX(100px) scale(0.7) rotateY(-15deg); 
         opacity: 0.9;
     }
     20%, 90% { 
-        transform: translateX(150px) scale(1) rotateY(0deg); 
+        transform: translateX(180px) scale(1) rotateY(0deg); 
         opacity: 1;
     }
     95% {
-        transform: translateX(150px) scale(1) rotateY(0deg);
+        transform: translateX(180px) scale(1) rotateY(0deg);
         opacity: 0.5;
     }
 }
@@ -233,15 +340,15 @@
         opacity: 0;
     }
     10% { 
-        transform: translateX(-50px) scale(0.7) rotateY(15deg); 
+        transform: translateX(-100px) scale(0.7) rotateY(15deg); 
         opacity: 0.9;
     }
     20%, 90% { 
-        transform: translateX(-150px) scale(1) rotateY(0deg); 
+        transform: translateX(-180px) scale(1) rotateY(0deg); 
         opacity: 1;
     }
     95% {
-        transform: translateX(-150px) scale(1) rotateY(0deg);
+        transform: translateX(-180px) scale(1) rotateY(0deg);
         opacity: 0.5;
     }
 }
@@ -413,14 +520,32 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Animation for data ping effect, used in modules */
-@keyframes data-ping {
-    0%, 100% { 
-        box-shadow: 0 0 0 0 rgba(37, 37, 37, 0.2);
-    }
-    50% { 
-        box-shadow: 0 0 0 10px rgba(37, 37, 37, 0);
-    }
+/* Chart-specific animations */
+.pai-dr-bar {
+    animation: bar-grow 4s ease-in-out infinite;
+}
+
+.pai-dr-line {
+    animation: line-draw 3s ease-in-out infinite;
+}
+
+.pai-dr-pie-segment {
+    animation: pie-grow 5s ease-in-out infinite;
+}
+
+.pai-dr-stat-value {
+    position: relative;
+}
+
+.pai-dr-stat-value::before {
+    content: attr(data-min);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    animation: count-up 4s ease-out forwards;
+    animation-delay: 0.5s;
 }
 
 /* Data pulse animations inside modules */
