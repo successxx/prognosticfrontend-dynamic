@@ -50,49 +50,33 @@ const LoadingIndicator: React.FC = () => {
                 Clients.ai Quantum Analysis In Process
             </div>
             <div className={styles['pai-dr-content']}>
-                {/* Futuristic visualization replaces simple spinner */}
+                {/* Futuristic data module visualization */}
                 <div className={styles['pai-dr-visualization']}>
-                    {/* Core center circle */}
+                    {/* Central core analyzer */}
                     <div className={styles['pai-dr-core']}></div>
                     
-                    {/* Rotating rings */}
-                    <div className={styles['pai-dr-ring-inner']}></div>
-                    <div className={styles['pai-dr-ring-middle']}></div>
-                    <div className={styles['pai-dr-ring-outer']}></div>
+                    {/* Data modules flying in from left and right */}
+                    <div className={styles['pai-dr-data-module']}></div>
+                    <div className={styles['pai-dr-data-module']}></div>
+                    <div className={styles['pai-dr-data-module']}></div>
+                    <div className={styles['pai-dr-data-module']}></div>
+                    <div className={styles['pai-dr-data-module']}></div>
+                    <div className={styles['pai-dr-data-module']}></div>
+                    <div className={styles['pai-dr-data-module']}></div>
+                    <div className={styles['pai-dr-data-module']}></div>
                     
-                    {/* Data points that appear and disappear */}
-                    <div className={styles['pai-dr-data-points']}>
-                        <div className={styles['pai-dr-data-point']}></div>
-                        <div className={styles['pai-dr-data-point']}></div>
-                        <div className={styles['pai-dr-data-point']}></div>
-                        <div className={styles['pai-dr-data-point']}></div>
-                        <div className={styles['pai-dr-data-point']}></div>
-                        <div className={styles['pai-dr-data-point']}></div>
-                    </div>
-                    
-                    {/* Connection lines between data points */}
-                    <div className={styles['pai-dr-data-connection']}></div>
-                    <div className={styles['pai-dr-data-connection']}></div>
-                    <div className={styles['pai-dr-data-connection']}></div>
-                    <div className={styles['pai-dr-data-connection']}></div>
-                    
-                    {/* Scan effect */}
-                    <div className={styles['pai-dr-scan']}></div>
+                    {/* Connection lines between modules and core */}
+                    <div className={styles['pai-dr-connection']}></div>
+                    <div className={styles['pai-dr-connection']}></div>
+                    <div className={styles['pai-dr-connection']}></div>
+                    <div className={styles['pai-dr-connection']}></div>
+                    <div className={styles['pai-dr-connection']}></div>
+                    <div className={styles['pai-dr-connection']}></div>
+                    <div className={styles['pai-dr-connection']}></div>
+                    <div className={styles['pai-dr-connection']}></div>
                     
                     {/* Background grid */}
                     <div className={styles['pai-dr-grid']}></div>
-                </div>
-                
-                {/* Flying particles in background */}
-                <div className={styles['pai-dr-particles-container']}>
-                    <div className={styles['pai-dr-particle']}></div>
-                    <div className={styles['pai-dr-particle']}></div>
-                    <div className={styles['pai-dr-particle']}></div>
-                    <div className={styles['pai-dr-particle']}></div>
-                    <div className={styles['pai-dr-particle']}></div>
-                    <div className={styles['pai-dr-particle']}></div>
-                    <div className={styles['pai-dr-particle']}></div>
-                    <div className={styles['pai-dr-particle']}></div>
                 </div>
                 
                 {/* Message with fade transition */}
