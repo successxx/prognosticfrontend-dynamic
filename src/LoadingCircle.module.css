@@ -3,7 +3,7 @@
     font-family: 'Montserrat', sans-serif;
     background-color: #F0F4F8;
     width: 100%;
-    max-width: 1200px; /* Double the original width */
+    max-width: 1400px; /* Increase max-width to hold more modules */
     margin: 20px auto;
     border-radius: 15px;
     overflow: hidden;
@@ -49,7 +49,7 @@
 .pai-dr-content {
     background-color: white;
     padding: 30px;
-    min-height: 350px;
+    min-height: 450px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -64,13 +64,13 @@
 .pai-dr-visualization {
     position: relative;
     width: 100%;
-    height: 500px;
+    height: 600px; /* Increase height to fit more modules */
     margin-bottom: 30px;
     perspective: 1000px;
-    padding: 0 40px; /* Add padding */
+    padding: 0 40px; /* Add horizontal padding */
 }
 
-/* We remove the .pai-dr-core display: we don't need it here */
+/* .pai-dr-core is still not used */
 .pai-dr-core {
     display: none;
 }
@@ -85,10 +85,9 @@
     z-index: 4;
     transform: scale(0.5);
     overflow: hidden;
-    padding: 10px; /* Slightly more internal padding */
+    padding: 10px;
     border: 1px solid rgba(37, 37, 37, 0.1);
-    /* Modules all stay in final position after flying in */
-    animation-fill-mode: forwards;
+    animation-fill-mode: forwards; /* Remain once flown in */
 }
 
 /* Chart header styling */
@@ -131,56 +130,26 @@
     color: #252525;
 }
 
-/* Bar chart animation: keep looping but never fully vanish */
+/* Bar chart animation: never vanish completely */
 @keyframes randomized-bar-grow {
-    0% {
-        height: 20% !important;
-        opacity: 0.7;
-    }
-    15% {
-        height: 60% !important;
-        opacity: 1;
-    }
-    25% {
-        height: 45% !important;
-        opacity: 1;
-    }
-    35% {
-        height: 75% !important;
-        opacity: 1;
-    }
-    45% {
-        height: 55% !important;
-        opacity: 1;
-    }
-    55% {
-        height: 80% !important;
-        opacity: 1;
-    }
-    65% {
-        height: 60% !important;
-        opacity: 1;
-    }
-    75% {
-        height: 70% !important;
-        opacity: 1;
-    }
-    85% {
-        height: 50% !important;
-        opacity: 1;
-    }
-    100% {
-        height: 40% !important;
-        opacity: 0.9;
-    }
+    0%   { height: 20% !important; opacity: 0.7; }
+    15%  { height: 60% !important; opacity: 1; }
+    25%  { height: 45% !important; opacity: 1; }
+    35%  { height: 75% !important; opacity: 1; }
+    45%  { height: 55% !important; opacity: 1; }
+    55%  { height: 80% !important; opacity: 1; }
+    65%  { height: 60% !important; opacity: 1; }
+    75%  { height: 70% !important; opacity: 1; }
+    85%  { height: 50% !important; opacity: 1; }
+    100% { height: 40% !important; opacity: 0.9; }
 }
 
 /* Force each bar to animate continuously */
 .pai-dr-bar {
     transform-origin: bottom;
     opacity: 0;
-    height: 0 !important; /* override inline */
-    animation: randomized-bar-grow 8s ease-out infinite;
+    height: 0 !important; /* override inline height */
+    animation: randomized-bar-grow 7s ease-out infinite;
 }
 
 /* Stagger bar animations slightly */
@@ -189,23 +158,23 @@
 }
 
 .pai-dr-bar:nth-child(2) {
-    animation-delay: 0.6s;
-    animation-duration: 7.5s;
+    animation-delay: 0.5s;
+    animation-duration: 6.5s;
 }
 
 .pai-dr-bar:nth-child(3) {
-    animation-delay: 1.0s;
-    animation-duration: 8.2s;
+    animation-delay: 0.8s;
+    animation-duration: 7.2s;
 }
 
 .pai-dr-bar:nth-child(4) {
-    animation-delay: 1.4s;
-    animation-duration: 7.8s;
+    animation-delay: 1.1s;
+    animation-duration: 6.8s;
 }
 
 .pai-dr-bar:nth-child(5) {
-    animation-delay: 1.8s;
-    animation-duration: 8.5s;
+    animation-delay: 1.4s;
+    animation-duration: 7.5s;
 }
 
 /* Line chart specific styling */
@@ -222,51 +191,20 @@
     transform-origin: 0 0;
     opacity: 0;
     width: 0 !important; /* override inline width so animation sets it */
-    animation: line-pulse 8s ease-out infinite;
+    animation: line-pulse 7s ease-out infinite;
 }
 
 @keyframes line-pulse {
-    0% {
-        width: 20% !important;
-        opacity: 0.7;
-        transform: rotate(0deg);
-    }
-    15% {
-        width: 60% !important;
-        opacity: 1;
-    }
-    25% {
-        width: 40% !important;
-        opacity: 1;
-    }
-    35% {
-        width: 90% !important;
-        opacity: 1;
-    }
-    45% {
-        width: 70% !important;
-        opacity: 1;
-    }
-    55% {
-        width: 100% !important;
-        opacity: 1;
-    }
-    65% {
-        width: 80% !important;
-        opacity: 1;
-    }
-    75% {
-        width: 90% !important;
-        opacity: 1;
-    }
-    85% {
-        width: 60% !important;
-        opacity: 1;
-    }
-    100% {
-        width: 40% !important;
-        opacity: 0.9;
-    }
+    0%   { width: 20% !important; opacity: 0.7; transform: rotate(0deg); }
+    15%  { width: 60% !important; opacity: 1; }
+    25%  { width: 40% !important; opacity: 1; }
+    35%  { width: 90% !important; opacity: 1; }
+    45%  { width: 70% !important; opacity: 1; }
+    55%  { width: 100% !important; opacity: 1; }
+    65%  { width: 80% !important; opacity: 1; }
+    75%  { width: 90% !important; opacity: 1; }
+    85%  { width: 60% !important; opacity: 1; }
+    100% { width: 40% !important; opacity: 0.9; }
 }
 
 /* Points remain visible */
@@ -295,64 +233,34 @@
     transform-origin: 50% 50%;
     background-color: #252525;
     opacity: 0.8;
-    animation: pie-segment-change 8s ease-out infinite;
+    animation: pie-segment-change 7s ease-out infinite;
 }
 
 @keyframes pie-segment-change {
-    0% {
-        transform: rotate(60deg) skew(60deg);
-        opacity: 0.7;
-    }
-    15% {
-        transform: rotate(120deg) skew(30deg);
-        opacity: 1;
-    }
-    25% {
-        transform: rotate(180deg) skew(45deg);
-        opacity: 1;
-    }
-    35% {
-        transform: rotate(240deg) skew(20deg);
-        opacity: 1;
-    }
-    45% {
-        transform: rotate(300deg) skew(40deg);
-        opacity: 1;
-    }
-    55% {
-        transform: rotate(360deg) skew(10deg);
-        opacity: 1;
-    }
-    65% {
-        transform: rotate(300deg) skew(25deg);
-        opacity: 1;
-    }
-    75% {
-        transform: rotate(240deg) skew(35deg);
-        opacity: 1;
-    }
-    85% {
-        transform: rotate(180deg) skew(50deg);
-        opacity: 1;
-    }
-    100% {
-        transform: rotate(120deg) skew(60deg);
-        opacity: 0.8;
-    }
+    0%   { transform: rotate(60deg) skew(60deg); opacity: 0.7; }
+    15%  { transform: rotate(120deg) skew(30deg); opacity: 1; }
+    25%  { transform: rotate(180deg) skew(45deg); opacity: 1; }
+    35%  { transform: rotate(240deg) skew(20deg); opacity: 1; }
+    45%  { transform: rotate(300deg) skew(40deg); opacity: 1; }
+    55%  { transform: rotate(360deg) skew(10deg); opacity: 1; }
+    65%  { transform: rotate(300deg) skew(25deg); opacity: 1; }
+    75%  { transform: rotate(240deg) skew(35deg); opacity: 1; }
+    85%  { transform: rotate(180deg) skew(50deg); opacity: 1; }
+    100% { transform: rotate(120deg) skew(60deg); opacity: 0.8; }
 }
 
 .pai-dr-pie-segment:nth-child(1) {
-    animation-delay: 0.5s;
+    animation-delay: 0.4s;
 }
 
 .pai-dr-pie-segment:nth-child(2) {
-    animation-delay: 1.2s;
-    animation-duration: 7.6s;
+    animation-delay: 1.0s;
+    animation-duration: 6.6s;
 }
 
 .pai-dr-pie-segment:nth-child(3) {
-    animation-delay: 1.9s;
-    animation-duration: 8.3s;
+    animation-delay: 1.6s;
+    animation-duration: 7.3s;
 }
 
 /* Radar chart styling */
@@ -373,8 +281,8 @@
 }
 
 @keyframes radar-point-appear {
-    0% { opacity: 0; transform: scale(0); }
-    50% { opacity: 1; transform: scale(1.5); }
+    0%   { opacity: 0; transform: scale(0); }
+    50%  { opacity: 1; transform: scale(1.5); }
     100% { opacity: 1; transform: scale(1); }
 }
 
@@ -388,7 +296,7 @@
 }
 
 @keyframes radar-line-appear {
-    0% { opacity: 0; width: 0; }
+    0%   { opacity: 0; width: 0; }
     100% { opacity: 0.6; width: 100%; }
 }
 
@@ -405,15 +313,9 @@
 }
 
 @keyframes radar-shape-appear {
-    0% {
-        transform: translate(-50%, -50%) scale(0) rotate(-30deg);
-    }
-    60% {
-        transform: translate(-50%, -50%) scale(1.1) rotate(10deg);
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(1) rotate(0deg);
-    }
+    0%   { transform: translate(-50%, -50%) scale(0) rotate(-30deg); }
+    60%  { transform: translate(-50%, -50%) scale(1.1) rotate(10deg); }
+    100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
 }
 
 /* Enhanced decision tree styling for more dynamic branching */
@@ -436,11 +338,11 @@
 }
 
 @keyframes tree-node-pulse {
-    0% { opacity: 0; transform: scale(0); }
-    10% { opacity: 1; transform: scale(1.5); }
-    20% { opacity: 1; transform: scale(1); }
-    70% { opacity: 1; transform: scale(1); }
-    90% { opacity: 0.3; transform: scale(0.8); }
+    0%   { opacity: 0; transform: scale(0); }
+    10%  { opacity: 1; transform: scale(1.5); }
+    20%  { opacity: 1; transform: scale(1); }
+    70%  { opacity: 1; transform: scale(1); }
+    90%  { opacity: 0.3; transform: scale(0.8); }
     100% { opacity: 0; transform: scale(0); }
 }
 
@@ -454,11 +356,11 @@
 }
 
 @keyframes tree-branch-grow {
-    0% { opacity: 0; width: 0; }
-    15% { opacity: 0.8; width: 0; }
-    40% { opacity: 0.8; width: 100%; }
-    80% { opacity: 0.8; width: 100%; }
-    100% { opacity: 0; width: 100%; }
+    0%   { opacity: 0; width: 0; }
+    15%  { opacity: 0.8; width: 0; }
+    40%  { opacity: 0.8; width: 100%; }
+    80%  { opacity: 0.8; width: 100%; }
+    100% { opacity: 0;   width: 100%; }
 }
 
 /* Brain wave pattern for psychoanalysis */
@@ -473,24 +375,24 @@
     position: absolute;
     height: 1px;
     width: 100%;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        #252525 10%, 
-        transparent 20%, 
-        #252525 30%, 
-        transparent 40%, 
-        #252525 50%, 
-        transparent 60%, 
-        #252525 70%, 
-        transparent 80%, 
-        #252525 90%, 
+    background: linear-gradient(90deg,
+        transparent 0%,
+        #252525 10%,
+        transparent 20%,
+        #252525 30%,
+        transparent 40%,
+        #252525 50%,
+        transparent 60%,
+        #252525 70%,
+        transparent 80%,
+        #252525 90%,
         transparent 100%);
     opacity: 0;
     animation: wave-animate 2s ease-out forwards;
 }
 
 @keyframes wave-animate {
-    0% { opacity: 0; transform: scaleX(0); }
+    0%   { opacity: 0; transform: scaleX(0); }
     100% { opacity: 0.7; transform: scaleX(1); }
 }
 
@@ -507,135 +409,165 @@
     z-index: 1;
 }
 
-/* Left column (faster fly-in, no infinite) */
+/* ANIMATIONS FOR MODULES FLYING IN FASTER & STAYING */
+
+/* (We have 14+ modules; let's define positions more specifically) */
+
+/* 1) LEFT COLUMN: Modules 1, 2, 3 */
 .pai-dr-data-module:nth-child(1) {
-    top: 15%;
-    left: 5%;
+    top: 12%;
+    left: 4%;
     width: 180px;
     height: 120px;
-    animation: data-module-from-left 3.5s ease-out forwards;
+    animation: data-module-from-left 2.5s ease-out forwards;
     animation-delay: 0.2s;
 }
 
 .pai-dr-data-module:nth-child(2) {
-    top: 45%;
-    left: 5%;
+    top: 42%;
+    left: 4%;
     width: 200px;
     height: 130px;
-    animation: data-module-from-left 3.5s ease-out forwards;
-    animation-delay: 0.8s;
+    animation: data-module-from-left 2.5s ease-out forwards;
+    animation-delay: 0.6s;
 }
 
 .pai-dr-data-module:nth-child(3) {
-    top: 75%;
-    left: 5%;
+    top: 72%;
+    left: 4%;
     width: 160px;
     height: 110px;
-    animation: data-module-from-left 3.5s ease-out forwards;
-    animation-delay: 1.4s;
+    animation: data-module-from-left 2.5s ease-out forwards;
+    animation-delay: 1.0s;
 }
 
-/* Middle-left column */
+/* 2) MIDDLE-LEFT: Modules 4, 5 */
 .pai-dr-data-module:nth-child(4) {
-    top: 20%;
-    left: 25%;
+    top: 15%;
+    left: 20%;
     width: 170px;
     height: 100px;
-    animation: data-module-from-left 3.5s ease-out forwards;
-    animation-delay: 0.5s;
+    animation: data-module-from-left 2.5s ease-out forwards;
+    animation-delay: 0.4s;
 }
 
 .pai-dr-data-module:nth-child(5) {
-    top: 55%;
-    left: 25%;
+    top: 50%;
+    left: 20%;
     width: 180px;
     height: 120px;
-    animation: data-module-from-left 3.5s ease-out forwards;
-    animation-delay: 1.1s;
+    animation: data-module-from-left 2.5s ease-out forwards;
+    animation-delay: 0.8s;
 }
 
-/* Center column (new) */
+/* 3) CENTER: Modules 6, 7 */
 .pai-dr-data-module:nth-child(6) {
     top: 15%;
-    left: 50%;
+    left: 44%;
     transform: translateX(-50%) scale(0.5);
     width: 220px;
-    height: 140px;
-    animation: data-module-from-top 3.5s ease-out forwards;
+    height: 160px;
+    animation: data-module-from-top 2.5s ease-out forwards;
     animation-delay: 0.3s;
     z-index: 3;
 }
 
 .pai-dr-data-module:nth-child(7) {
     top: 50%;
-    left: 50%;
+    left: 44%;
     transform: translateX(-50%) scale(0.5);
     width: 180px;
-    height: 180px;
-    animation: data-module-from-top 3.5s ease-out forwards;
-    animation-delay: 0.9s;
+    height: 140px;
+    animation: data-module-from-top 2.5s ease-out forwards;
+    animation-delay: 0.7s;
     z-index: 3;
 }
 
+/* 4) MIDDLE-RIGHT: Modules 8, 9 */
 .pai-dr-data-module:nth-child(8) {
-    top: 80%;
-    left: 50%;
-    transform: translateX(-50%) scale(0.5);
-    width: 200px;
-    height: 120px;
-    animation: data-module-from-bottom 3.5s ease-out forwards;
-    animation-delay: 1.5s;
-    z-index: 3;
-}
-
-/* Middle-right column */
-.pai-dr-data-module:nth-child(9) {
-    top: 25%;
-    right: 25%;
-    width: 170px;
-    height: 110px;
-    animation: data-module-from-right 3.5s ease-out forwards;
-    animation-delay: 0.6s;
-}
-
-.pai-dr-data-module:nth-child(10) {
-    top: 60%;
-    right: 25%;
+    top: 12%;
+    left: 68%;
     width: 180px;
-    height: 120px;
-    animation: data-module-from-right 3.5s ease-out forwards;
-    animation-delay: 1.2s;
+    height: 110px;
+    animation: data-module-from-right 2.5s ease-out forwards;
+    animation-delay: 0.5s;
 }
 
-/* Right column */
-.pai-dr-data-module:nth-child(11) {
+.pai-dr-data-module:nth-child(9) {
+    top: 45%;
+    left: 68%;
+    width: 180px;
+    height: 130px;
+    animation: data-module-from-right 2.5s ease-out forwards;
+    animation-delay: 0.9s;
+}
+
+/* 5) RIGHT COLUMN: Modules 10, 11, 12 */
+.pai-dr-data-module:nth-child(10) {
     top: 15%;
-    right: 5%;
+    left: 85%;
     width: 190px;
     height: 120px;
-    animation: data-module-from-right 3.5s ease-out forwards;
+    animation: data-module-from-right 2.5s ease-out forwards;
     animation-delay: 0.4s;
 }
 
-.pai-dr-data-module:nth-child(12) {
+.pai-dr-data-module:nth-child(11) {
     top: 45%;
-    right: 5%;
+    left: 85%;
     width: 180px;
     height: 130px;
-    animation: data-module-from-right 3.5s ease-out forwards;
-    animation-delay: 1.0s;
+    animation: data-module-from-right 2.5s ease-out forwards;
+    animation-delay: 0.8s;
 }
 
-.pai-dr-data-module:nth-child(13) {
+.pai-dr-data-module:nth-child(12) {
     top: 75%;
-    right: 5%;
+    left: 85%;
     width: 170px;
     height: 110px;
-    animation: data-module-from-right 3.5s ease-out forwards;
-    animation-delay: 1.6s;
+    animation: data-module-from-right 2.5s ease-out forwards;
+    animation-delay: 1.2s;
 }
 
-/* Animation for modules coming from top, no final fade-out, fill-mode used */
+/* Additional modules might appear in the same columns but different nth-child positions.
+   We'll add them below based on actual child order:
+   13, 14, 15, etc.
+*/
+
+/* 6) Additional Modules: 13 (center), 14 (middle-right?), 15 (right?), etc. */
+.pai-dr-data-module:nth-child(13) {
+    top: 70%;
+    left: 44%;
+    transform: translateX(-50%) scale(0.5);
+    width: 200px;
+    height: 110px;
+    animation: data-module-from-bottom 2.5s ease-out forwards;
+    animation-delay: 1.0s;
+    z-index: 3;
+}
+
+.pai-dr-data-module:nth-child(14) {
+    top: 72%;
+    left: 68%;
+    width: 180px;
+    height: 100px;
+    animation: data-module-from-right 2.5s ease-out forwards;
+    animation-delay: 1.2s;
+}
+
+.pai-dr-data-module:nth-child(15) {
+    top: 82%;
+    left: 85%;
+    width: 180px;
+    height: 110px;
+    animation: data-module-from-right 2.5s ease-out forwards;
+    animation-delay: 1.4s;
+}
+
+/* If your final modules exceed 15, continue similarly for nth-child(16), etc. */
+
+/* Keyframes for modules (faster, no final fade-out) */
 @keyframes data-module-from-top {
     0% {
         transform: translateX(-50%) translateY(-50px) scale(0.5);
@@ -651,7 +583,6 @@
     }
 }
 
-/* Animation for modules coming from bottom, no final fade-out */
 @keyframes data-module-from-bottom {
     0% {
         transform: translateX(-50%) translateY(50px) scale(0.5);
@@ -667,7 +598,6 @@
     }
 }
 
-/* Animation for modules coming from left, no final fade-out */
 @keyframes data-module-from-left {
     0% {
         transform: translateX(0) scale(0.5) rotateY(-20deg);
@@ -683,7 +613,6 @@
     }
 }
 
-/* Animation for modules coming from right, no final fade-out */
 @keyframes data-module-from-right {
     0% {
         transform: translateX(0) scale(0.5) rotateY(20deg);
@@ -699,19 +628,41 @@
     }
 }
 
-/* Connection lines (unused for the new design, but left intact) */
-.pai-dr-connection {
+/* Floating number/code text effect inside modules */
+.pai-dr-data-module::after {
+    content: attr(data-label);
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background-color: rgba(37, 37, 37, 0.5);
-    z-index: 3;
-    transform-origin: 0 0;
+    font-family: monospace;
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    pointer-events: none;
 }
 
-/* Background grid for futuristic effect (already above) */
+/* Each module uses unique data-label */
+.pai-dr-data-module:nth-child(1)::after { content: "01101"; }
+.pai-dr-data-module:nth-child(2)::after { content: "10011"; }
+.pai-dr-data-module:nth-child(3)::after { content: "11010"; }
+.pai-dr-data-module:nth-child(4)::after { content: "00101"; }
+.pai-dr-data-module:nth-child(5)::after { content: "10110"; }
+.pai-dr-data-module:nth-child(6)::after { content: "01011"; }
+.pai-dr-data-module:nth-child(7)::after { content: "11100"; }
+.pai-dr-data-module:nth-child(8)::after { content: "10001"; }
+.pai-dr-data-module:nth-child(9)::after { content: "01100"; }
+.pai-dr-data-module:nth-child(10)::after { content: "11001"; }
+.pai-dr-data-module:nth-child(11)::after { content: "00110"; }
+.pai-dr-data-module:nth-child(12)::after { content: "10101"; }
+.pai-dr-data-module:nth-child(13)::after { content: "11110"; }
+.pai-dr-data-module:nth-child(14)::after { content: "01010"; }
+.pai-dr-data-module:nth-child(15)::after { content: "10010"; }
+
+/* Hover highlight for modules */
+.pai-dr-data-module {
+    transition: box-shadow 0.3s ease;
+}
+
+.pai-dr-data-module:hover {
+    box-shadow: 0 3px 15px rgba(37,37,37,0.2);
+}
 
 /* Message display */
 .pai-dr-message {
@@ -766,43 +717,15 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Data pulse animations inside modules */
-.pai-dr-data-module::before {
-    animation: data-ping 3s infinite;
-}
-
-/* (Keeping placeholders - can define if needed) */
+/* Data pulse animations inside modules (optional stub) */
 @keyframes data-ping {
     0%, 100% { }
     50% { }
 }
 
-/* Floating number/code text effect inside modules */
-.pai-dr-data-module::after {
-    content: attr(data-label);
-    position: absolute;
-    font-family: monospace;
-    font-size: 8px;
-    color: rgba(255, 255, 255, 0.6);
-    pointer-events: none;
+.pai-dr-data-module::before {
+    animation: data-ping 3s infinite;
 }
-
-/* Add data labels to modules */
-.pai-dr-data-module:nth-child(1)::after { content: "01101"; }
-.pai-dr-data-module:nth-child(2)::after { content: "10011"; }
-.pai-dr-data-module:nth-child(3)::after { content: "11010"; }
-.pai-dr-data-module:nth-child(4)::after { content: "00101"; }
-.pai-dr-data-module:nth-child(5)::after { content: "10110"; }
-.pai-dr-data-module:nth-child(6)::after { content: "01011"; }
-.pai-dr-data-module:nth-child(7)::after { content: "11100"; }
-.pai-dr-data-module:nth-child(8)::after { content: "10001"; }
-
-/* Subtle highlight on hover */
-.pai-dr-data-module {
-    transition: box-shadow 0.3s ease;
-}
-
-/* Delays for modules (already embedded in the nth-child) */
 
 /* Media queries for responsive design */
 @media (max-width: 600px) {
