@@ -14,6 +14,10 @@ const LoadingIndicator: React.FC = () => {
         "Running market simulations...",
         "Crafting your success blueprint...",
         "Refining strategies...",
+        "Mapping customer journeys...",
+        "Identifying growth levers...",
+        "Calculating ROI potential...",
+        "Launching AI agents...",
         "Success! Processing...",
         "Success! Finalizing...",
         "Success! Integrating...",
@@ -48,7 +52,7 @@ const LoadingIndicator: React.FC = () => {
             </div>
             <div className={styles['pai-dr-content']}>
                 <div className={styles['pai-dr-visualization']}>
-                    {/* Left column */}
+                    {/* Bar chart visualization */}
                     <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Revenue Optimization</div>
                         <div className={styles['pai-dr-bar-chart']}>
@@ -60,6 +64,7 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
+                    {/* Line chart visualization */}
                     <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Engagement Metrics</div>
                         <div className={styles['pai-dr-line-chart']}>
@@ -69,6 +74,7 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
+                    {/* Radar chart visualization */}
                     <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Market Fit Analysis</div>
                         <div className={styles['pai-dr-radar-chart']}>
@@ -82,11 +88,11 @@ const LoadingIndicator: React.FC = () => {
                             <div className={styles['pai-dr-radar-line']} style={{top: '80%', left: '75%', width: '50%', transform: 'rotate(200deg)'}}></div>
                             <div className={styles['pai-dr-radar-line']} style={{top: '80%', left: '25%', width: '35%', transform: 'rotate(250deg)'}}></div>
                             <div className={styles['pai-dr-radar-line']} style={{top: '35%', left: '15%', width: '35%', transform: 'rotate(320deg)'}}></div>
-                            <div className={styles['pai-dr-radar-shape']} style={{top: '50%', left: '50%'}}></div>
+                            <div className={styles['pai-dr-radar-shape']}></div>
                         </div>
                     </div>
                     
-                    {/* Right column */}
+                    {/* Brain wave visualization */}
                     <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Opportunity Mapping</div>
                         <div className={styles['pai-dr-brain-waves']}>
@@ -97,15 +103,57 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
+                    {/* Pie chart visualization */}
                     <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Growth Segments</div>
                         <div className={styles['pai-dr-pie-chart']} style={{width: '60px', height: '60px', margin: '10px auto'}}>
                             <div className={styles['pai-dr-pie-segment']} style={{transform: 'rotate(0deg) skew(30deg)'}}></div>
-                            <div className={styles['pai-dr-pie-segment']} style={{transform: 'rotate(120deg) skew(50deg)', background: 'rgba(37, 37, 37, 0.6)'}}></div>
-                            <div className={styles['pai-dr-pie-segment']} style={{transform: 'rotate(220deg) skew(80deg)', background: 'rgba(37, 37, 37, 0.3)'}}></div>
+                            <div className={styles['pai-dr-pie-segment']} style={{transform: 'rotate(120deg) skew(50deg)'}}></div>
+                            <div className={styles['pai-dr-pie-segment']} style={{transform: 'rotate(220deg) skew(80deg)'}}></div>
                         </div>
                     </div>
                     
+                    {/* Stat box visualization */}
+                    <div className={styles['pai-dr-data-module']}>
+                        <div className={styles['pai-dr-chart-header']}>Market Score</div>
+                        <div className={styles['pai-dr-stat-box']}>
+                            <span className={styles['pai-dr-stat-value']} data-v1="92" data-v2="86" data-v3="94" data-v4="89">92</span>
+                            <span className={styles['pai-dr-stat-label']}>Performance Index</span>
+                        </div>
+                    </div>
+                    
+                    {/* Line chart - ROI visualization */}
+                    <div className={styles['pai-dr-data-module']}>
+                        <div className={styles['pai-dr-chart-header']}>ROI Projection</div>
+                        <div className={styles['pai-dr-line-chart']}>
+                            <div className={styles['pai-dr-line']} style={{top: '70%', left: '10%', width: '80%', transform: 'rotate(-20deg)'}}></div>
+                            <div className={styles['pai-dr-line-point']} style={{top: '70%', left: '10%'}}></div>
+                            <div className={styles['pai-dr-line-point']} style={{top: '40%', left: '90%'}}></div>
+                        </div>
+                    </div>
+                    
+                    {/* Bar chart - channel performance */}
+                    <div className={styles['pai-dr-data-module']}>
+                        <div className={styles['pai-dr-chart-header']}>Channel Performance</div>
+                        <div className={styles['pai-dr-bar-chart']}>
+                            <div className={styles['pai-dr-bar']} style={{height: '65%'}} data-value="65%"></div>
+                            <div className={styles['pai-dr-bar']} style={{height: '35%'}} data-value="35%"></div>
+                            <div className={styles['pai-dr-bar']} style={{height: '80%'}} data-value="80%"></div>
+                            <div className={styles['pai-dr-bar']} style={{height: '55%'}} data-value="55%"></div>
+                        </div>
+                    </div>
+                    
+                    {/* Audience segments visualization */}
+                    <div className={styles['pai-dr-data-module']}>
+                        <div className={styles['pai-dr-chart-header']}>Audience Segments</div>
+                        <div className={styles['pai-dr-pie-chart']} style={{width: '60px', height: '60px', margin: '10px auto'}}>
+                            <div className={styles['pai-dr-pie-segment']} style={{transform: 'rotate(0deg) skew(45deg)'}}></div>
+                            <div className={styles['pai-dr-pie-segment']} style={{transform: 'rotate(135deg) skew(60deg)'}}></div>
+                            <div className={styles['pai-dr-pie-segment']} style={{transform: 'rotate(240deg) skew(30deg)'}}></div>
+                        </div>
+                    </div>
+                    
+                    {/* Decision tree visualization */}
                     <div className={styles['pai-dr-data-module']}>
                         <div className={styles['pai-dr-chart-header']}>Strategic Roadmap</div>
                         <div className={styles['pai-dr-tree']}>
@@ -117,6 +165,7 @@ const LoadingIndicator: React.FC = () => {
                         </div>
                     </div>
                     
+                    {/* Background grid */}
                     <div className={styles['pai-dr-grid']}></div>
                 </div>
                 
@@ -127,5 +176,7 @@ const LoadingIndicator: React.FC = () => {
         </div>
     );
 };
+
+export default LoadingIndicator;
 
 export default LoadingIndicator;
