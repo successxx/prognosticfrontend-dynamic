@@ -4,33 +4,23 @@
 
 /********************************************************
   BASE CONTAINER & HEADER
+  - Mimics your home page container style
 ********************************************************/
 .container {
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont,
-               'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  /* Match hero: white with subtle purple accent wave */
-  background-color: #F8F9FB;
-  position: relative;
-  max-width: 1500px;
-  margin: 20px auto;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-}
-
-/* Example: add a “wave” shape in the bottom-right.
-   Adjust the background/wave as needed to match your actual hero. */
-.container::before {
-  content: "";
-  position: absolute;
-  bottom: -100px;
-  right: -100px;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle at center, #9552D3 0%, transparent 70%);
-  opacity: 0.12;
-  transform: rotate(-15deg);
-  z-index: 0;
+  /* Full width container, up to 1500px, background #F8F8F8 */
+  width: 100% !important;
+  max-width: 1500px !important;
+  background: #F8F8F8 !important;
+  border: 1px solid #ECECEC !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  margin: 8px auto !important;
+  position: relative !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+               Roboto, Helvetica, Arial, sans-serif;
 }
 
 .header {
@@ -42,8 +32,6 @@
   text-align: center;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  position: relative;
-  z-index: 1; /* above the wave shape */
 }
 
 /********************************************************
@@ -55,7 +43,6 @@
   background-color: #E8EAF0;
   position: relative;
   overflow: hidden;
-  z-index: 1;
 }
 
 .progressBar {
@@ -86,29 +73,27 @@
 
 /********************************************************
   CONTENT AREA
+  - We remove fixed heights to allow auto expansion
 ********************************************************/
 .content {
-  background-color: white; /* keep white content area */
-  padding: 30px 15px;
-  height: 1400px; 
+  background-color: #FFF !important; /* White inner area */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   position: relative;
   overflow: hidden;
-  z-index: 1;
+  padding: 30px 15px;
 }
 
 .visualization {
   position: relative;
   width: 100%;
-  height: 1300px; 
   margin-bottom: 20px;
+  /* Let the modules define total height instead of forcing it */
 }
 
 /********************************************************
   MODULE LAYOUT (3 x 4)
-   - Rectangular windows: e.g., 42% width × 18% height
+   - Rectangular windows
 ********************************************************/
 .module {
   position: absolute;
@@ -120,10 +105,10 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   overflow: hidden;
   opacity: 0; /* hidden until animation completes */
-  z-index: 2; /* above wave */
 }
 
-/* Example 3 columns, 4 rows (positions are approximate) */
+/* 3 columns, 4 rows
+   Adjust the top/left to suit your preference */
 .module:nth-of-type(1)  { top: 0%;   left: 0%;   }
 .module:nth-of-type(2)  { top: 0%;   left: 50%;  }
 .module:nth-of-type(3)  { top: 0%;   left: 100%; }
@@ -142,7 +127,6 @@
 
 /********************************************************
   RANDOM FLY-IN ANIMATIONS
-  - Modules come from outside container at random speeds
 ********************************************************/
 @keyframes fromLeft {
   0%   { transform: translateX(-300px); opacity: 0; }
@@ -260,7 +244,6 @@
 
 /********************************************************
   1) REAL-TIME FUNNEL
-     - Purple bars that animate up & down
 ********************************************************/
 .funnelContainer {
   position: relative;
@@ -286,7 +269,6 @@
 
 /********************************************************
   2) OPPORTUNITY RADAR
-     - Radar shape in purple
 ********************************************************/
 .radarContainer {
   position: relative;
@@ -335,7 +317,6 @@
 
 /********************************************************
   3) PREDICTIVE AREAS
-     - Stacked area with purple expansions
 ********************************************************/
 .predictiveArea {
   position: relative;
@@ -368,7 +349,6 @@
 
 /********************************************************
   4) COMPARATIVE CHORD
-     - Chord arcs in purple
 ********************************************************/
 .chordContainer {
   position: relative;
@@ -408,7 +388,6 @@
 
 /********************************************************
   5) MULTI-VARIABLE SCATTER
-     - Points shift around, in purple scheme
 ********************************************************/
 .scatterContainer {
   position: relative;
@@ -435,7 +414,6 @@
 
 /********************************************************
   6) CORRELATION HEATMAP
-     - NxN grid in purple transitions
 ********************************************************/
 .heatmapContainer {
   position: relative;
@@ -463,7 +441,6 @@
 
 /********************************************************
   7) RESOURCE DONUT
-     - Purple donut slices
 ********************************************************/
 .donutContainer {
   position: relative;
@@ -510,7 +487,6 @@
 
 /********************************************************
   8) STABILITY GAUGE
-     - Speedometer with needle vibrating in purple
 ********************************************************/
 .gaugeContainer {
   position: relative;
@@ -546,7 +522,6 @@
 
 /********************************************************
   9) PERFORMANCE STACKS
-     - More bars in a purple-based animation
 ********************************************************/
 .performanceStacks {
   position: relative;
@@ -607,7 +582,6 @@
 
 /********************************************************
   11) FORECAST LINES
-     - Lines in purple, shifting
 ********************************************************/
 .forecastContainer {
   position: relative;
@@ -631,7 +605,6 @@
 
 /********************************************************
   12) PATTERN NETWORK
-     - Node & link structure in purple
 ********************************************************/
 .networkContainer {
   position: relative;
@@ -708,19 +681,22 @@
   RESPONSIVE
 ********************************************************/
 @media (max-width: 1200px) {
+  /* Let content and visualization expand naturally */
   .content {
-    height: auto;
+    padding: 15px;
   }
   .visualization {
+    position: relative;
     height: auto;
   }
+  /* Modules get repositioned or stacked if you wish */
 }
+
 @media (max-width: 768px) {
   .header {
     font-size: 18px;
   }
   .content {
-    height: auto;
     padding: 15px 10px;
   }
   .module {
@@ -735,6 +711,7 @@
     font-size: 16px;
   }
 }
+
 @media (max-width: 480px) {
   .header {
     font-size: 16px;
