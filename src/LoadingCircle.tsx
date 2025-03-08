@@ -74,7 +74,6 @@ const LoadingCircle: React.FC = () => {
   ];
 
   // We'll use an array of 12 so each module can have a stable "random" assignment
-  const moduleIndexes = Array.from({ length: 12 }, (_, i) => i);
 
   return (
     <div className={styles.container}>
