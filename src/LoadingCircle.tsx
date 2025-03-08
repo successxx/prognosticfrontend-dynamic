@@ -266,7 +266,7 @@ const LoadingCircle: React.FC = () => {
   // -------------------------------------------
   return (
     <div className={styles.container}>
-      <div className={styles.header}>Comprehensive Insight Dashboard</div>
+      <div className={styles.header}>Your Quantum Analysis In Process...</div>
 
       {/* Progress Bar */}
       <div className={styles.progressContainer}>
