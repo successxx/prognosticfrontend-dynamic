@@ -8,18 +8,20 @@ function clamp(value: number, min: number, max: number) {
 
 // We'll run a single requestAnimationFrame loop. Over ~20 seconds, everything 
 // smoothly goes from 0% or minimal states to near 100% or final states, 
-// with random micro-disturbances to appear "live."
+// with small random micro-disturbances to appear "live."
 
 const TOTAL_MODULES = 12;
 const FULL_DURATION = 20; // seconds to go from 0 to 100
 
-// Additional random factor for micro-jitter
-function randomNoise() {
-  return (Math.random() - 0.5) * 5; // -2.5..+2.5
+// Reduced random amplitude to avoid large jitter
+function smallRandom() {
+  // range ~ -1..+1
+  return (Math.random() - 0.5) * 2;
 }
 
+// Main loading component
 const LoadingCircle: React.FC = () => {
-  // ============== NEW: THE MISSING MESSAGES ==============
+  // ================== Big rotating messages ==================
   const loadingMessages = [
     "Initializing cross-domain analysis...",
     "Collecting multi-layer inputs...",
@@ -34,22 +36,22 @@ const LoadingCircle: React.FC = () => {
     "Analysis complete—preparing output..."
   ];
 
-  // ============== LOGIC STATES ==============
+  // ================== UI States ==================
   const [progressPercent, setProgressPercent] = useState(0);
-  const [timeElapsed, setTimeElapsed] = useState(0); // for top loader
-  const totalDuration = 10;
+  const [timeElapsed, setTimeElapsed] = useState(0); // for top progress bar
+  const totalDuration = 10; // resets every 10s
   const topLoaderDuration = 8;
   const progressIntervalRef = useRef<number | null>(null);
 
-  // Rotating messages
+  // For rotating big message
   const [messageIndex, setMessageIndex] = useState(0);
   const [fade, setFade] = useState(true);
 
-  // Log
+  // For live log
   const [logMessages, setLogMessages] = useState<string[]>([]);
   const logRef = useRef<HTMLDivElement | null>(null);
 
-  // VM loaded states
+  // Each module has a “VM loading” screen
   const [moduleLoaded, setModuleLoaded] = useState<boolean[]>(
     Array(TOTAL_MODULES).fill(false)
   );
@@ -57,10 +59,10 @@ const LoadingCircle: React.FC = () => {
   // Hover for tooltips
   const [hoveredModuleIndex, setHoveredModuleIndex] = useState<number | null>(null);
 
-  // Master-time for continuous fluid animations
-  const [masterTime, setMasterTime] = useState(0); // 0..20 seconds, then loops or just keeps going
+  // Master-time for continuous fluid animations (0..FULL_DURATION)
+  const [masterTime, setMasterTime] = useState(0);
 
-  // We'll store large sets of log lines to appear extremely sophisticated:
+  // Large log lines for sophistication
   const extensiveLogLines = [
     "[System] Initializing advanced synergy core...",
     "[Data] Pre-fetching metadata from cross-nodes...",
@@ -95,7 +97,7 @@ const LoadingCircle: React.FC = () => {
     "[AI] High-level emergent pattern recognized, continuing deeper analysis..."
   ];
 
-  // "Module" tooltips, focusing on curiosity/benefit
+  // Tooltips for each module
   const moduleTooltips = [
     "Observational Data: Constantly refining key insights for you.",
     "Radar Engine: Pinpoints subtle patterns across multiple contexts.",
@@ -111,14 +113,12 @@ const LoadingCircle: React.FC = () => {
     "Network Synthesis: Visualizes connections for comprehensive oversight."
   ];
 
-  // ============== LIFECYCLE ==============
-  // 1) VM BOOT LOGIC
+  // ================== 1) VM BOOT LOGIC ==================
   useEffect(() => {
     moduleLoaded.forEach((loaded, i) => {
       if (!loaded) {
-        const startDelay = Math.random() * 3000; // up to 3s
+        const startDelay = Math.random() * 3000;
         setTimeout(() => {
-          // Boot logs
           setLogMessages((prev) => [
             ...prev,
             `[VM] Environment ${i + 1} initiating advanced subsystem...`,
@@ -142,9 +142,8 @@ const LoadingCircle: React.FC = () => {
     });
   }, [moduleLoaded]);
 
-  // 2) Large Log Sequence
+  // ================== 2) LARGE LOG MESSAGES ==================
   useEffect(() => {
-    // We'll keep appending lines from extensiveLogLines, plus auto-scroll
     let idx = 0;
     const logTimer = setInterval(() => {
       setLogMessages((prev) => [...prev, extensiveLogLines[idx]]);
@@ -158,31 +157,28 @@ const LoadingCircle: React.FC = () => {
       }
     }, 1500);
     return () => clearInterval(logTimer);
-  }, []);
+  }, [extensiveLogLines]);
 
-  // 3) Master Time for continuous fluid animations
-  // We'll increment ~60fps with rAF, looping from 0..FULL_DURATION
+  // ================== 3) MASTER TIME (rAF) ==================
   const rAFRef = useRef<number | null>(null);
-  const previousTimestamp = useRef<number | null>(null);
+  const prevTimestamp = useRef<number | null>(null);
 
   const animateFrame = useCallback((timestamp: number) => {
-    if (!previousTimestamp.current) {
-      previousTimestamp.current = timestamp;
+    if (!prevTimestamp.current) {
+      prevTimestamp.current = timestamp;
     }
-    const delta = (timestamp - previousTimestamp.current) / 1000; // in seconds
-    previousTimestamp.current = timestamp;
+    const delta = (timestamp - prevTimestamp.current) / 1000;
+    prevTimestamp.current = timestamp;
 
-    // increment masterTime
     setMasterTime((prev) => {
       const newVal = prev + delta;
+      // loop after FULL_DURATION
       if (newVal > FULL_DURATION) {
-        // loop back to 0 to keep everything in motion
         return newVal - FULL_DURATION;
       }
       return newVal;
     });
 
-    // schedule next
     rAFRef.current = requestAnimationFrame(animateFrame);
   }, []);
 
@@ -193,7 +189,7 @@ const LoadingCircle: React.FC = () => {
     };
   }, [animateFrame]);
 
-  // 4) Top progress bar timer (we can keep it at 10s repeating)
+  // ================== 4) PROGRESS BAR ==================
   useEffect(() => {
     if (progressIntervalRef.current) {
       window.clearInterval(progressIntervalRef.current);
@@ -225,53 +221,46 @@ const LoadingCircle: React.FC = () => {
     };
   }, [timeElapsed, totalDuration, topLoaderDuration]);
 
-  // 5) Rotating big messages
+  // ================== 5) ROTATING BIG MESSAGES ==================
   useEffect(() => {
     const intervalId = setInterval(() => {
       setFade(false);
       setTimeout(() => {
-        setMessageIndex((prevIdx) => (prevIdx + 1) % loadingMessages.length);
+        setMessageIndex((prev) => (prev + 1) % loadingMessages.length);
         setFade(true);
       }, 300);
     }, 4000);
     return () => clearInterval(intervalId);
   }, [loadingMessages.length]);
 
-  // ============== HELPER: GET SMOOTH FRACTION 0..1 = masterTime / FULL_DURATION
+  // ================== HELPER: 0..1 FRACTION ==================
   function getFraction() {
     return clamp(masterTime / FULL_DURATION, 0, 1);
   }
 
-  // ============== RENDER MODULES ==============
-  const animationClasses = [
-    styles.animation1,
-    styles.animation2,
-    styles.animation3,
-    styles.animation4
-  ];
-  function getAnimationClass(i: number) {
-    return animationClasses[i % animationClasses.length];
-  }
+  // ================== RENDER MODULE ==================
+  const animationClasses = [styles.animation1, styles.animation2, styles.animation3, styles.animation4];
   const delayClasses = [
     styles.delay1, styles.delay2, styles.delay3, styles.delay4,
     styles.delay5, styles.delay6, styles.delay7, styles.delay8,
     styles.delay9, styles.delay10, styles.delay11, styles.delay12
   ];
 
-  const handleMouseEnter = (i: number) => {
-    setHoveredModuleIndex(i);
-  };
-  const handleMouseLeave = () => {
-    setHoveredModuleIndex(null);
-  };
+  function getAnimationClass(i: number) {
+    return animationClasses[i % animationClasses.length];
+  }
 
   function renderModule(content: JSX.Element, moduleIndex: number) {
+    const onMouseEnter = () => setHoveredModuleIndex(moduleIndex);
+    const onMouseLeave = () => setHoveredModuleIndex(null);
+
     return (
       <div
         className={`${styles.module} ${getAnimationClass(moduleIndex)} ${delayClasses[moduleIndex]}`}
-        onMouseEnter={() => handleMouseEnter(moduleIndex)}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       >
+        {/* VM loading overlay if not loaded */}
         {!moduleLoaded[moduleIndex] && (
           <div className={styles.vmLoadingOverlay}>
             <div className={styles.vmBootLines}>
@@ -283,8 +272,11 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Actual content if loaded */}
         {moduleLoaded[moduleIndex] && content}
 
+        {/* Hover tooltip */}
         {hoveredModuleIndex === moduleIndex && (
           <div className={styles.hoverTooltip}>
             {moduleTooltips[moduleIndex]}
@@ -294,24 +286,20 @@ const LoadingCircle: React.FC = () => {
     );
   }
 
-  // ============== CHART-SPECIFIC CALCULATIONS ==============
-  // 1) Observational Data – Funnel
-  // We want bars to build from 0..(some final) with random minor offsets
+  // ================== CHART EXAMPLES ==================
+  // 1) Funnel
   const funnelData = [
-    { label: "Data Points", base: 100, offset: 0 },
-    { label: "Key Observations", base: 85, offset: 0 },
-    { label: "Potential Patterns", base: 65, offset: 0 },
-    { label: "Core Insights", base: 40, offset: 0 }
+    { label: "Data Points", base: 100 },
+    { label: "Key Observations", base: 85 },
+    { label: "Potential Patterns", base: 65 },
+    { label: "Core Insights", base: 40 }
   ];
-
-  // Just an example of how each module is configured
-  // Additional modules (Radar, Future Mapping, etc.) follow the same pattern
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>Comprehensive Insight Dashboard</div>
 
-      {/* Top progress bar */}
+      {/* Progress Bar */}
       <div className={styles.progressContainer}>
         <div
           className={`${styles.progressBar} ${progressPercent >= 100 ? styles.progressComplete : ""}`}
@@ -324,33 +312,29 @@ const LoadingCircle: React.FC = () => {
       <div className={styles.content}>
         <div className={styles.visualization}>
 
-          {/* 1) FUNNEL */}
+          {/* 1) FUNNEL (Observational Data) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Observational Data – Funnel
-                </div>
+                <div className={styles.windowTitle}>Observational Data – Funnel</div>
                 <div className={styles.windowStatus}>Live</div>
               </div>
               <div className={styles.moduleBody}>
                 <div className={styles.funnelContainer}>
                   {funnelData.map((item, i) => {
-                    // fraction from 0..1
                     const frac = getFraction();
-                    // fill 0..(base + small noise)
-                    const barWidth = clamp(item.base * frac + randomNoise(), 0, 100);
-                    // numeric from 0..(some max)
-                    const displayedNumber = Math.floor(item.base * 200 * frac + 500 + randomNoise() * 100);
-                    const topPos = [ "10%", "35%", "60%", "85%" ][i];
+                    // minimal random offset
+                    const width = clamp(item.base * frac + smallRandom(), 0, 100);
+                    const count = Math.floor(item.base * 200 * frac + 500 + smallRandom() * 10);
+                    const tops = ["10%", "35%", "60%", "85%"];
                     return (
-                      <div key={i} className={styles.funnelMetric} style={{ top: topPos }}>
+                      <div key={i} className={styles.funnelMetric} style={{ top: tops[i] }}>
                         <span className={styles.label}>{item.label}</span>
-                        <span className={styles.value}>{displayedNumber}</span>
-                        <div className={styles.bar} style={{ width: `${barWidth}%` }}></div>
+                        <span className={styles.value}>{count}</span>
+                        <div className={styles.bar} style={{ width: `${width}%` }}></div>
                       </div>
                     );
                   })}
@@ -360,24 +344,17 @@ const LoadingCircle: React.FC = () => {
             0
           )}
 
-          {/* 2) MULTI-FACETED RADAR */}
+          {/* 2) RADAR (Multi-Faceted) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Multi-Faceted Radar – Insight Engine
-                </div>
+                <div className={styles.windowTitle}>Multi-Faceted Radar – Insight Engine</div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `scale(${0.5 + getFraction() * 0.7 + randomNoise() * 0.005})`
-                }}
-              >
+              <div className={styles.moduleBody}>
                 <div className={styles.radarContainer}>
                   <div className={styles.radarChart}>
                     <div className={styles.radarAxis}></div>
@@ -390,6 +367,7 @@ const LoadingCircle: React.FC = () => {
                     <div className={styles.radarCircle}></div>
                     <div className={styles.radarCircle}></div>
                     <div className={styles.radarCircle}></div>
+                    {/* 6 radarValue dots + the area fill */}
                     <div className={styles.radarValue}></div>
                     <div className={styles.radarValue}></div>
                     <div className={styles.radarValue}></div>
@@ -404,24 +382,17 @@ const LoadingCircle: React.FC = () => {
             1
           )}
 
-          {/* 3) FUTURE MAPPING - PREDICTIVE VIEW */}
+          {/* 3) FUTURE MAPPING - Predictive View */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Future Mapping – Predictive View
-                </div>
+                <div className={styles.windowTitle}>Future Mapping – Predictive View</div>
                 <div className={styles.windowStatus}>Analyzing</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `scale(${0.8 + getFraction() * 0.2 + randomNoise() * 0.003})`
-                }}
-              >
+              <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
@@ -429,6 +400,7 @@ const LoadingCircle: React.FC = () => {
                   <div className={styles.areaPath}>
                     <div className={styles.area}></div>
                     <div className={styles.areaLine}></div>
+                    {/* 9 data points */}
                     {[...Array(9)].map((_, idx) => (
                       <div key={idx} className={styles.dataPoint}></div>
                     ))}
@@ -439,22 +411,17 @@ const LoadingCircle: React.FC = () => {
             2
           )}
 
-          {/* 4) COMPARATIVE MARKERS - MATRIX */}
+          {/* 4) COMPARATIVE MARKERS - Matrix */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Comparative Markers – Matrix
-                </div>
+                <div className={styles.windowTitle}>Comparative Markers – Matrix</div>
                 <div className={styles.windowStatus}>Computing</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{ transform: `translateY(${randomNoise() * 0.5}px)` }}
-              >
+              <div className={styles.moduleBody}>
                 <div className={styles.chordContainer}>
                   <div className={styles.chordCircle}></div>
                   <div className={styles.chordArc}></div>
@@ -468,27 +435,21 @@ const LoadingCircle: React.FC = () => {
             3
           )}
 
-          {/* 5) MULTI-VARIABLE ANALYSIS – FACTOR EXPLORER */}
+          {/* 5) MULTI-VARIABLE ANALYSIS – Factor Explorer */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Multi-Variable Analysis – Factor Explorer
-                </div>
+                <div className={styles.windowTitle}>Multi-Variable Analysis – Factor Explorer</div>
                 <div className={styles.windowStatus}>Active</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `rotate(${randomNoise() * 0.5}deg)`
-                }}
-              >
+              <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
+                {/* Example scatter container - 8 random points */}
                 <div style={{ position: "absolute", top: "15%", left: "10%", width: "80%", height: "70%" }}>
                   {[...Array(8)].map((_, idx) => {
                     const frac = getFraction();
@@ -516,27 +477,22 @@ const LoadingCircle: React.FC = () => {
             4
           )}
 
-          {/* 6) ASSOCIATION MAPPING – CONNECTION GRID */}
+          {/* 6) ASSOCIATION MAPPING – Connection Grid */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Association Mapping – Connection Grid
-                </div>
+                <div className={styles.windowTitle}>Association Mapping – Connection Grid</div>
                 <div className={styles.windowStatus}>Calculating</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{ transform: `scale(${1 + randomNoise() * 0.01})` }}
-              >
+              <div className={styles.moduleBody}>
                 <div className={styles.heatmapContainer}>
                   <div className={styles.heatmapGrid}>
                     {[...Array(25)].map((_, idx) => {
-                      const classes = [styles.low, styles.medium, styles.high, styles["very-high"]];
-                      const pick = classes[Math.floor(Math.random() * classes.length)];
+                      const choices = [styles.low, styles.medium, styles.high, styles["very-high"]];
+                      const pick = choices[Math.floor(Math.random() * choices.length)];
                       return <div key={idx} className={`${styles.heatCell} ${pick}`}></div>;
                     })}
                   </div>
@@ -560,24 +516,17 @@ const LoadingCircle: React.FC = () => {
             5
           )}
 
-          {/* 7) RESOURCE INDEX – EFFICIENCY PULSE */}
+          {/* 7) RESOURCE INDEX – Efficiency Pulse */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Resource Index – Efficiency Pulse
-                </div>
+                <div className={styles.windowTitle}>Resource Index – Efficiency Pulse</div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `rotate(${randomNoise() * 0.5}deg)`
-                }}
-              >
+              <div className={styles.moduleBody}>
                 <div className={styles.donutContainer}>
                   <div className={styles.donutRing}></div>
                   <div className={`${styles.donutSegment} ${styles.segment1}`}></div>
@@ -603,16 +552,14 @@ const LoadingCircle: React.FC = () => {
             6
           )}
 
-          {/* 8) ROBUSTNESS OVERVIEW – RISK EVALUATOR */}
+          {/* 8) ROBUSTNESS OVERVIEW – Risk Evaluator */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Robustness Overview – Risk Evaluator
-                </div>
+                <div className={styles.windowTitle}>Robustness Overview – Risk Evaluator</div>
                 <div className={styles.windowStatus}>Measuring</div>
               </div>
               <div className={styles.moduleBody}>
@@ -631,7 +578,8 @@ const LoadingCircle: React.FC = () => {
                   <div
                     className={styles.gaugeNeedle}
                     style={{
-                      transform: `rotate(${clamp(30 + getFraction() * 60 + randomNoise() * 2, 0, 90)}deg)`
+                      // from 30 to 90 deg
+                      transform: `rotate(${clamp(30 + getFraction() * 60 + smallRandom() * 1, 0, 90)}deg)`
                     }}
                   ></div>
                   <div className={styles.gaugeValue}>
@@ -643,16 +591,14 @@ const LoadingCircle: React.FC = () => {
             7
           )}
 
-          {/* 9) PERFORMANCE TIERS – EFFICIENCY REVIEW */}
+          {/* 9) PERFORMANCE TIERS – Efficiency Review */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Performance Tiers – Efficiency Review
-                </div>
+                <div className={styles.windowTitle}>Performance Tiers – Efficiency Review</div>
                 <div className={styles.windowStatus}>Calculating</div>
               </div>
               <div className={styles.moduleBody}>
@@ -663,17 +609,12 @@ const LoadingCircle: React.FC = () => {
                   <div className={styles.barGroup}>
                     {[...Array(6)].map((_, idx) => {
                       const fraction = getFraction() * 100;
-                      const height = clamp(fraction + randomNoise() * 2, 0, 100);
+                      const height = clamp(fraction + smallRandom() * 3, 0, 100);
                       return (
                         <div key={idx} className={styles.barWrapper}>
-                          <div
-                            className={styles.bar}
-                            style={{ height: `${height}%` }}
-                          ></div>
+                          <div className={styles.bar} style={{ height: `${height}%` }}></div>
                           <div className={styles.barLabel}>Cat {String.fromCharCode(65 + idx)}</div>
-                          <div className={styles.barValue}>
-                            {Math.round(height)}%
-                          </div>
+                          <div className={styles.barValue}>{Math.round(height)}%</div>
                         </div>
                       );
                     })}
@@ -684,28 +625,22 @@ const LoadingCircle: React.FC = () => {
             8
           )}
 
-          {/* 10) CLUSTERING – MULTI-GROUP NAVIGATOR */}
+          {/* 10) CLUSTERING – Multi-Group Navigator */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Clustering – Multi-Group Navigator
-                </div>
+                <div className={styles.windowTitle}>Clustering – Multi-Group Navigator</div>
                 <div className={styles.windowStatus}>Mapping</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `scale(${0.8 + getFraction() * 0.2})`
-                }}
-              >
+              <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
                 <div className={styles.bubbleContainer}>
+                  {/* 3 Bubbles, expand based on fraction */}
                   <div
                     className={styles.bubble}
                     style={{
@@ -734,15 +669,9 @@ const LoadingCircle: React.FC = () => {
                     }}
                   ></div>
 
-                  <div className={styles.bubbleLabel} style={{ left: "20%", top: "40%" }}>
-                    Group 1
-                  </div>
-                  <div className={styles.bubbleLabel} style={{ left: "60%", top: "50%" }}>
-                    Group 2
-                  </div>
-                  <div className={styles.bubbleLabel} style={{ left: "45%", top: "25%" }}>
-                    Group 3
-                  </div>
+                  <div className={styles.bubbleLabel} style={{ left: "20%", top: "40%" }}>Group 1</div>
+                  <div className={styles.bubbleLabel} style={{ left: "60%", top: "50%" }}>Group 2</div>
+                  <div className={styles.bubbleLabel} style={{ left: "45%", top: "25%" }}>Group 3</div>
 
                   <div className={styles.bubbleValue} style={{ left: "20%", top: "calc(40% + 10px)" }}>
                     {Math.round(10 + getFraction() * 10)}.2
@@ -759,24 +688,17 @@ const LoadingCircle: React.FC = () => {
             9
           )}
 
-          {/* 11) FORECASTING – TREND PROJECTIONS */}
+          {/* 11) FORECASTING – Trend Projections */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Forecasting – Trend Projections
-                </div>
+                <div className={styles.windowTitle}>Forecasting – Trend Projections</div>
                 <div className={styles.windowStatus}>Predicting</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `translateX(${randomNoise() * 0.8}px)`
-                }}
-              >
+              <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
@@ -795,36 +717,29 @@ const LoadingCircle: React.FC = () => {
             10
           )}
 
-          {/* 12) TOPOLOGY ANALYSIS – NETWORK SYNTHESIS */}
+          {/* 12) TOPOLOGY ANALYSIS – Network Synthesis */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Topology Analysis – Network Synthesis
-                </div>
+                <div className={styles.windowTitle}>Topology Analysis – Network Synthesis</div>
                 <div className={styles.windowStatus}>Running</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `rotate(${randomNoise() * 1}deg)`
-                }}
-              >
+              <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.networkContainer}>
                   {[...Array(5)].map((_, idx) => {
-                    const left = [25, 70, 20, 65, 45][idx];
-                    const top = [30, 25, 65, 70, 45][idx];
+                    const lefts = [25, 70, 20, 65, 45];
+                    const tops = [30, 25, 65, 70, 45];
                     return (
                       <div
                         key={idx}
                         className={styles.networkNode}
                         style={{
-                          left: `${left + randomNoise() * 0.2}%`,
-                          top: `${top + randomNoise() * 0.2}%`
+                          left: `${lefts[idx]}%`,
+                          top: `${tops[idx]}%`
                         }}
                       ></div>
                     );
@@ -859,7 +774,7 @@ const LoadingCircle: React.FC = () => {
           {loadingMessages[messageIndex]}
         </div>
 
-        {/* Live log area - auto-scrolled */}
+        {/* Live log area */}
         <div className={styles.analysisLog} ref={logRef}>
           {logMessages.map((line, idx) => (
             <div key={idx} className={styles.logLine}>
