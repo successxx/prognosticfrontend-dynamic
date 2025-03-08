@@ -77,7 +77,7 @@ const LoadingCircle: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>Deep-Dive Data Analysis</div>
+      <div className={styles.header}>Comprehensive Insight Dashboard</div>
 
       {/* Progress Bar */}
       <div className={styles.progressContainer}>
@@ -92,14 +92,14 @@ const LoadingCircle: React.FC = () => {
       <div className={styles.content}>
         <div className={styles.visualization}>
 
-          {/* 1) REAL-TIME FUNNEL */}
+          {/* 1) CORE METRICS */}
           <div className={`${styles.module} ${getRandomSnapClass(0)} ${delayClasses[0]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                System Diagnostics – Real-Time Funnel
+                Core Metrics – Data Navigator
               </div>
             </div>
             <div className={styles.moduleBody}>
@@ -116,14 +116,14 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
 
-          {/* 2) OPPORTUNITY RADAR */}
+          {/* 2) OPPORTUNITY MATRIX */}
           <div className={`${styles.module} ${getRandomSnapClass(1)} ${delayClasses[1]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                System Diagnostics – Opportunity Radar
+                Opportunity Matrix – Insight Engine
               </div>
             </div>
             <div className={styles.moduleBody}>
@@ -135,14 +135,14 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
 
-          {/* 3) PREDICTIVE AREAS */}
+          {/* 3) PREDICTIVE TRENDS */}
           <div className={`${styles.module} ${getRandomSnapClass(2)} ${delayClasses[2]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                System Diagnostics – Predictive Areas
+                Predictive Trends – Future Mapper
               </div>
             </div>
             <div className={styles.moduleBody}>
@@ -158,14 +158,14 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
 
-          {/* 4) COMPARATIVE CHORD */}
+          {/* 4) COMPARATIVE BENCHMARKS */}
           <div className={`${styles.module} ${getRandomSnapClass(3)} ${delayClasses[3]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                System Diagnostics – Comparative Chord
+                Comparative Benchmarks – Performance Spectrum
               </div>
             </div>
             <div className={styles.moduleBody}>
@@ -179,14 +179,14 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
 
-          {/* 5) MULTI-VARIABLE SCATTER */}
+          {/* 5) MULTI-FACTOR ANALYSIS */}
           <div className={`${styles.module} ${getRandomSnapClass(4)} ${delayClasses[4]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                System Diagnostics – Multi-Variable Scatter
+                Multi-Factor Analysis – Variable Insights
               </div>
             </div>
             <div className={styles.moduleBody}>
@@ -205,14 +205,14 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
 
-          {/* 6) CORRELATION HEATMAP */}
+          {/* 6) CORRELATION MAPPING */}
           <div className={`${styles.module} ${getRandomSnapClass(5)} ${delayClasses[5]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                System Diagnostics – Correlation Heatmap
+                Correlation Mapping – Connection Grid
               </div>
             </div>
             <div className={styles.moduleBody}>
@@ -227,14 +227,14 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
 
-          {/* 7) RESOURCE DONUT */}
+          {/* 7) RESOURCE EFFICIENCY */}
           <div className={`${styles.module} ${getRandomSnapClass(6)} ${delayClasses[6]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                System Diagnostics – Resource Donut
+                Resource Efficiency – Optimization Pulse
               </div>
             </div>
             <div className={styles.moduleBody}>
@@ -247,14 +247,14 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
 
-          {/* 8) STABILITY GAUGE */}
+          {/* 8) STABILITY OVERVIEW */}
           <div className={`${styles.module} ${getRandomSnapClass(7)} ${delayClasses[7]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                System Diagnostics – Stability Gauge
+                Stability Overview – Risk Evaluator
               </div>
             </div>
             <div className={styles.moduleBody}>
@@ -265,14 +265,14 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
 
-          {/* 9) PERFORMANCE STACKS */}
+          {/* 9) PERFORMANCE LAYERS */}
           <div className={`${styles.module} ${getRandomSnapClass(8)} ${delayClasses[8]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                System Diagnostics – Performance Stacks
+                Performance Layers – Efficiency Review
               </div>
             </div>
             <div className={styles.moduleBody}>
@@ -291,14 +291,14 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
 
-          {/* 10) MARKET CLUSTERS */}
+          {/* 10) MARKET INTELLIGENCE */}
           <div className={`${styles.module} ${getRandomSnapClass(9)} ${delayClasses[9]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                System Diagnostics – Market Clusters
+                Market Intelligence – Cluster Navigator
               </div>
             </div>
             <div className={styles.moduleBody}>
@@ -314,14 +314,14 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
 
-          {/* 11) FORECAST LINES */}
+          {/* 11) FORECAST MODELING */}
           <div className={`${styles.module} ${getRandomSnapClass(10)} ${delayClasses[10]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                System Diagnostics – Forecast Lines
+                Forecast Modeling – Trend Projections
               </div>
             </div>
             <div className={styles.moduleBody}>
@@ -337,14 +337,14 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
 
-          {/* 12) PATTERN NETWORK */}
+          {/* 12) PATTERN DISCOVERY */}
           <div className={`${styles.module} ${getRandomSnapClass(11)} ${delayClasses[11]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                System Diagnostics – Pattern Network
+                Pattern Discovery – Network Synthesis
               </div>
             </div>
             <div className={styles.moduleBody}>
