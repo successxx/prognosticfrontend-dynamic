@@ -1,9 +1,7 @@
-/* ===========================
-   LoadingCircle.module.css
-   =========================== */
-
-/* Base container */
-.prognostic-ai-demo-results-container {
+/**************************
+  Container & Header
+**************************/
+.container {
   font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background-color: #F8F9FB;
   width: 100%;
@@ -15,56 +13,22 @@
   color: #202124;
 }
 
-.prognostic-ai-demo-results-container * {
-  box-sizing: border-box;
-}
-
-/* Header */
-.pai-dr-header {
+.header {
   background-color: #1E1E1E;
   color: white;
   padding: 20px;
   font-size: 22px;
   font-weight: 600;
   text-align: center;
-  width: 100%;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   position: relative;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
 }
 
-/* Pulsing circles in header */
-.pai-dr-logo-pulse {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.8);
-  position: relative;
-  display: inline-block;
-}
-
-.pai-dr-logo-pulse::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.8);
-  animation: logo-pulse 2s ease-out infinite;
-}
-
-@keyframes logo-pulse {
-  0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(3); opacity: 0; }
-}
-
-/* Progress bar */
-.pai-dr-progress-container {
+/**************************
+  Progress Bar
+**************************/
+.progress-container {
   width: 100%;
   height: 4px;
   background-color: #E8EAF0;
@@ -72,20 +36,24 @@
   overflow: hidden;
 }
 
-.pai-dr-progress-bar {
+.progress-bar {
   height: 100%;
   background: linear-gradient(90deg, #1E1E1E, #4A4A4A);
   transition: width 0.3s ease-out;
   position: relative;
 }
 
-.pai-dr-progress-glow {
+.progress-glow {
   position: absolute;
   top: 0;
   right: 0;
   height: 100%;
   width: 20px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+  background: linear-gradient(90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0)
+  );
   animation: progress-glow 2s ease-out infinite;
 }
 
@@ -94,112 +62,100 @@
   100% { transform: translateX(100px); }
 }
 
-/* Content area */
-.pai-dr-content {
+/**************************
+  Content
+**************************/
+.content {
   background-color: white;
   padding: 30px 15px;
   height: 600px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03);
   position: relative;
   overflow: hidden;
 }
 
-/* Visualization container */
-.pai-dr-visualization {
+.visualization {
   position: relative;
   width: 100%;
   height: 500px;
   margin-bottom: 20px;
 }
 
-/* =============== Module layout =============== */
-/* We'll arrange 12 modules in a 3×4 grid with absolute or grid-based layout. Using absolute carefully. */
-.pai-dr-data-module {
+/**************************
+  Modules Layout (3×4 Grid)
+**************************/
+.module {
   position: absolute;
-  background-color: white;
+  background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  padding: 10px;
   width: 32%;
   height: 23%;
-  opacity: 0; /* Start hidden, will animate in */
-  transform: translateY(15px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-  overflow: hidden;
   border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+
+  /* Start off invisible & slightly translated */
+  opacity: 0;
+  transform: translateY(20px);
+  /* We'll handle the actual fly-in with custom keyframes + nth-of-type delays */
 }
 
-/* Common hover effect */
-.pai-dr-data-module:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  z-index: 10;
-}
+/* 3 columns × 4 rows positioning using nth-of-type */
+.module:nth-of-type(1) { top: 0%; left: 0%; }
+.module:nth-of-type(2) { top: 0%; left: 34%; }
+.module:nth-of-type(3) { top: 0%; left: 68%; }
 
-/* 3 columns x 4 rows in percentages:
-   Row height is 25% minus some margin; column width is 32% with spacing.
-   We'll place them explicitly by row & column index. */
+.module:nth-of-type(4) { top: 25%; left: 0%; }
+.module:nth-of-type(5) { top: 25%; left: 34%; }
+.module:nth-of-type(6) { top: 25%; left: 68%; }
 
-/* Row 1: top: 0% => 0, Row 2: top ~ 25%, Row 3: top ~ 50%, Row 4: top ~ 75% */
-.pai-dr-data-module:nth-of-type(1) {
-  top: 0%; left: 0%;
-}
-.pai-dr-data-module:nth-of-type(2) {
-  top: 0%; left: 34%;
-}
-.pai-dr-data-module:nth-of-type(3) {
-  top: 0%; left: 68%;
-}
+.module:nth-of-type(7) { top: 50%; left: 0%; }
+.module:nth-of-type(8) { top: 50%; left: 34%; }
+.module:nth-of-type(9) { top: 50%; left: 68%; }
 
-.pai-dr-data-module:nth-of-type(4) {
-  top: 25%; left: 0%;
-}
-.pai-dr-data-module:nth-of-type(5) {
-  top: 25%; left: 34%;
-}
-.pai-dr-data-module:nth-of-type(6) {
-  top: 25%; left: 68%;
-}
+.module:nth-of-type(10) { top: 75%; left: 0%; }
+.module:nth-of-type(11) { top: 75%; left: 34%; }
+.module:nth-of-type(12) { top: 75%; left: 68%; }
 
-.pai-dr-data-module:nth-of-type(7) {
-  top: 50%; left: 0%;
-}
-.pai-dr-data-module:nth-of-type(8) {
-  top: 50%; left: 34%;
-}
-.pai-dr-data-module:nth-of-type(9) {
-  top: 50%; left: 68%;
-}
-
-.pai-dr-data-module:nth-of-type(10) {
-  top: 75%; left: 0%;
-}
-.pai-dr-data-module:nth-of-type(11) {
-  top: 75%; left: 34%;
-}
-.pai-dr-data-module:nth-of-type(12) {
-  top: 75%; left: 68%;
-}
-
-/* Fly-in from left/center/right with slight stagger */
+/**************************
+  Fly-in Animations
+**************************/
 .fly-in-left {
-  animation: fly-left 0.8s forwards;
+  animation: flyLeft 0.7s forwards;
 }
 .fly-in-center {
-  animation: fly-center 0.8s forwards;
+  animation: flyCenter 0.7s forwards;
 }
 .fly-in-right {
-  animation: fly-right 0.8s forwards;
+  animation: flyRight 0.7s forwards;
 }
 
-@keyframes fly-left {
+@keyframes flyLeft {
   0% {
     opacity: 0;
-    transform: translateX(-80px);
+    transform: translateX(-60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes flyCenter {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes flyRight {
+  0% {
+    opacity: 0;
+    transform: translateX(60px);
   }
   100% {
     opacity: 1;
@@ -207,395 +163,151 @@
   }
 }
 
-@keyframes fly-center {
-  0% {
-    opacity: 0;
-    transform: scale(0.8) translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+/**************************
+  Mac Window Bar
+**************************/
+.mac-window-bar {
+  height: 20px;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
 }
 
-@keyframes fly-right {
-  0% {
-    opacity: 0;
-    transform: translateX(80px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.traffic-light {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 6px;
 }
 
-/* Chart header styling */
-.pai-dr-chart-header {
+.traffic-light[data-color="red"] {
+  background-color: #ff5f56;
+}
+.traffic-light[data-color="yellow"] {
+  background-color: #ffbd2e;
+}
+.traffic-light[data-color="green"] {
+  background-color: #27c93f;
+}
+
+/**************************
+  Module Header
+**************************/
+.module-header {
   font-size: 11px;
   font-weight: 600;
   color: #202124;
-  padding-bottom: 6px;
+  padding: 6px 10px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  position: relative;
 }
 
-/* Activity indicator - blinking dot top-right */
-.pai-dr-activity-indicator {
-  position: absolute;
-  top: 9px;
-  right: 8px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #1E1E1E;
-  animation: blink 1.5s infinite;
-  z-index: 2;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 1; }
-}
-
-/* =============== Unique Chart Animations =============== */
-
-/* ---------- 1) Bar Chart ---------- */
-.chart-bar {
+/**************************
+  1) System Diagnostics (Bars)
+**************************/
+.chart-bars {
   display: flex;
+  justify-content: space-evenly;
   align-items: flex-end;
-  justify-content: space-between;
-  height: 65%;
-  margin: 5px 5px 0 5px;
+  height: calc(100% - 40px);
+  padding: 0 5px 5px 5px;
 }
-
-.chart-bar-item {
+.bar {
   width: 8px;
-  background: #1E1E1E;
+  background-color: #1E1E1E;
   border-radius: 3px 3px 0 0;
-  animation: barGrow 2s infinite ease-in-out alternate;
+  animation: barGrow 2s ease-in-out infinite alternate;
   position: relative;
 }
 
-.chart-bar-item::after {
-  content: attr(data-barval) '%';
+.bar::after {
+  content: attr(data-val) '%';
   position: absolute;
   top: -16px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 7px;
-  color: #555;
-  opacity: 0.8;
+  color: #444;
+  opacity: 0.7;
 }
 
 @keyframes barGrow {
-  0% { height: 10%; background-color: #1E1E1E; }
-  100% {
-    height: calc(var(--height-percent, 80%) + 10%);
-    background-color: #9552D3; /* minimal purple */
-  }
+  0%   { height: 10%; }
+  100% { height: calc(var(--height) * 1% + 10%); }
 }
 
-/* We'll use the data attribute to scale each bar. */
-.chart-bar-item[data-barval="60"] { --height-percent: 60%; }
-.chart-bar-item[data-barval="40"] { --height-percent: 40%; }
-.chart-bar-item[data-barval="80"] { --height-percent: 80%; }
-.chart-bar-item[data-barval="30"] { --height-percent: 30%; }
-.chart-bar-item[data-barval="90"] { --height-percent: 90%; }
+.bar[data-val="65"] { --height: 65; animation-delay: 0.1s; }
+.bar[data-val="40"] { --height: 40; animation-delay: 0.3s; }
+.bar[data-val="80"] { --height: 80; animation-delay: 0.5s; }
+.bar[data-val="50"] { --height: 50; animation-delay: 0.7s; }
 
-/* ---------- 2) Bubble Chart ---------- */
-.chart-bubble {
-  position: relative;
-  width: 100%;
+/**************************
+  2) Opportunity Analysis (Line w/ moving indicator)
+**************************/
+.chart-line-opportunity {
+  width: 90%;
   height: 70%;
-}
-
-.bubble {
-  position: absolute;
-  border-radius: 50%;
-  background-color: rgba(30, 30, 30, 0.4);
-  animation: bubbleFloat 3s infinite ease-in-out alternate;
-}
-
-.bubble[data-size="small"] {
-  width: 15px; height: 15px;
-  top: 60%; left: 20%;
-  animation-delay: 0.2s;
-}
-
-.bubble[data-size="medium"] {
-  width: 25px; height: 25px;
-  top: 30%; left: 50%;
-  animation-delay: 0.5s;
-}
-
-.bubble[data-size="large"] {
-  width: 35px; height: 35px;
-  top: 40%; left: 70%;
-  animation-delay: 1s;
-}
-
-.bubble[data-size="xlarge"] {
-  width: 50px; height: 50px;
-  top: 15%; left: 15%;
-  animation-delay: 1.5s;
-  background-color: rgba(149, 82, 211, 0.3); /* subtle purple */
-}
-
-@keyframes bubbleFloat {
-  0% { transform: translateY(0) scale(1); }
-  100% { transform: translateY(-20px) scale(1.1); }
-}
-
-/* ---------- 3) Line Chart ---------- */
-.chart-line {
-  width: 95%;
-  height: 70%;
+  margin: 10px auto;
   position: relative;
-  margin: 0 auto;
+  top: 10px;
 }
-
-.chart-line-path {
+.opportunity-line {
   position: absolute;
   top: 50%;
   left: 5%;
   width: 0;
   height: 2px;
-  background: linear-gradient(90deg, #BC73ED, #1E1E1E);
-  animation: lineDraw 3s infinite alternate;
+  background: linear-gradient(90deg, #1E1E1E, #BC73ED);
+  animation: oppLineAnim 3s infinite alternate;
 }
 
-@keyframes lineDraw {
-  0% { width: 0; }
-  100% { width: 90%; }
+@keyframes oppLineAnim {
+  0%   { width: 10%; }
+  100% { width: 85%; }
 }
 
-.chart-line-point {
+.opportunity-indicator {
   position: absolute;
-  width: 7px;
-  height: 7px;
-  background-color: #1E1E1E;
+  top: 50%;
+  left: 5%;
+  width: 10px; height: 10px;
   border-radius: 50%;
-  opacity: 0;
-  animation: pointAppear 3s infinite;
-}
-
-.chart-line-point[data-point="1"] { top: 48%; left: 5%; animation-delay: 0.5s; }
-.chart-line-point[data-point="2"] { top: 30%; left: 30%; animation-delay: 1s; }
-.chart-line-point[data-point="3"] { top: 60%; left: 55%; animation-delay: 1.5s; }
-.chart-line-point[data-point="4"] { top: 40%; left: 85%; animation-delay: 2s; }
-
-@keyframes pointAppear {
-  0%, 10% { opacity: 0; transform: scale(0); }
-  20%, 80% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: scale(0); }
-}
-
-/* ---------- 4) Funnel Chart ---------- */
-.chart-funnel {
-  position: relative;
-  width: 80%;
-  height: 70%;
-  margin: 0 auto;
-}
-
-.funnel-level {
-  position: absolute;
-  left: 10%;
-  right: 10%;
-  height: 15%;
-  background-color: #1E1E1E;
-  opacity: 0.9;
-  animation: funnelFlash 3s infinite ease-in-out alternate;
-}
-
-.funnel-level[data-level="1"] { top: 0%; transform: scaleX(1); }
-.funnel-level[data-level="2"] { top: 20%; transform: scaleX(0.8); }
-.funnel-level[data-level="3"] { top: 40%; transform: scaleX(0.6); background-color: #9552D3; }
-.funnel-level[data-level="4"] { top: 60%; transform: scaleX(0.4); }
-
-@keyframes funnelFlash {
-  0% { filter: brightness(1); }
-  100% { filter: brightness(1.4); }
-}
-
-/* ---------- 5) Radar Chart ---------- */
-.chart-radar {
-  width: 80%;
-  height: 70%;
-  margin: 0 auto;
-  position: relative;
-}
-
-.radar-area {
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 80px; height: 80px;
+  background-color: #9552D3;
   transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(188,115,237,0.2), rgba(0,0,0,0));
-  animation: radarPulse 4s infinite;
+  animation: oppIndicatorAnim 3s infinite alternate;
 }
 
-@keyframes radarPulse {
-  0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.4; }
-  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+@keyframes oppIndicatorAnim {
+  0%   { left: 5%; }
+  100% { left: 90%; }
 }
 
-.radar-dot {
-  position: absolute;
-  width: 6px; height: 6px;
-  background-color: #1E1E1E;
-  border-radius: 50%;
-  opacity: 0;
-  animation: radarDot 4s infinite;
-}
-
-.radar-dot[data-dot="1"] { top: 10%; left: 48%; animation-delay: 0.5s; }
-.radar-dot[data-dot="2"] { top: 30%; left: 75%; animation-delay: 1s; }
-.radar-dot[data-dot="3"] { top: 65%; left: 70%; animation-delay: 1.5s; }
-.radar-dot[data-dot="4"] { top: 70%; left: 25%; animation-delay: 2s; }
-.radar-dot[data-dot="5"] { top: 35%; left: 10%; animation-delay: 2.5s; }
-
-@keyframes radarDot {
-  0%, 10% { opacity: 0; transform: scale(0); }
-  20%, 80% { opacity: 1; transform: scale(1.1); }
-  100% { opacity: 0; transform: scale(0); }
-}
-
-/* ---------- 6) Donut Chart ---------- */
-.chart-donut {
-  width: 60px; height: 60px;
-  margin: 0 auto;
-  border-radius: 50%;
-  position: relative;
-  animation: donutSpin 6s linear infinite;
-}
-
-@keyframes donutSpin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.donut-slice {
-  position: absolute;
-  width: 100%; height: 100%;
-  border-radius: 50%;
-  clip: rect(0px, 60px, 60px, 30px);
-}
-
-.donut-slice[data-slice="1"] {
-  background: #1E1E1E;
-  animation: sliceChange1 4s infinite alternate;
-}
-.donut-slice[data-slice="2"] {
-  background: #9552D3; /* subtle purple slice */
-  animation: sliceChange2 4s infinite alternate;
-}
-.donut-slice[data-slice="3"] {
-  background: #BC73ED; /* subtle purple slice */
-  animation: sliceChange3 4s infinite alternate;
-}
-
-@keyframes sliceChange1 {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(120deg); }
-}
-@keyframes sliceChange2 {
-  0% { transform: rotate(120deg); }
-  100% { transform: rotate(240deg); }
-}
-@keyframes sliceChange3 {
-  0% { transform: rotate(240deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* ---------- 7) Stacked Bar ---------- */
-.chart-stacked-bar {
-  position: relative;
-  width: 80%; height: 60%;
-  margin: 5px auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-}
-
-.stacked-bar {
-  height: 20%;
-  background: linear-gradient(90deg, #1E1E1E, #9552D3);
-  width: 0;
-  animation: stackedGrow 3s infinite alternate;
-}
-
-.stacked-bar[data-stack="1"] { animation-delay: 0.5s; }
-.stacked-bar[data-stack="2"] { animation-delay: 1s; }
-.stacked-bar[data-stack="3"] { animation-delay: 1.5s; }
-
-@keyframes stackedGrow {
-  0% { width: 10%; }
-  100% { width: 100%; }
-}
-
-/* ---------- 8) Chord Diagram ---------- */
-.chart-chord {
-  position: relative;
-  width: 70px; height: 70px;
-  margin: 0 auto;
-  animation: chordSpin 8s linear infinite;
-}
-
-@keyframes chordSpin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(-360deg); }
-}
-
-.chord-ring {
-  border: 6px solid #BC73ED;
-  border-radius: 50%;
-  width: 100%; height: 100%;
-  position: absolute;
-  top: 0; left: 0;
-  box-sizing: border-box;
-}
-
-.chord-line {
-  position: absolute;
-  width: 2px; height: 70px;
-  left: 34px; top: 0;
-  background-color: #1E1E1E;
-  animation: chordLine 4s infinite alternate;
-}
-
-.chord-line[data-chord="1"] { transform: rotate(30deg); }
-.chord-line[data-chord="2"] { transform: rotate(90deg); }
-.chord-line[data-chord="3"] { transform: rotate(210deg); }
-
-@keyframes chordLine {
-  0% { opacity: 0.4; }
-  100% { opacity: 1; background-color: #9552D3; }
-}
-
-/* ---------- 9) Gauge Chart ---------- */
+/**************************
+  3) Predictive Forecast (Gauge)
+**************************/
 .chart-gauge {
   position: relative;
-  width: 80px; height: 40px;
-  margin: 0 auto;
+  width: 80px;
+  height: 40px;
+  margin: 20px auto;
+  top: 15px;
   overflow: hidden;
 }
-
-.gauge-arc {
+.gauge-base {
   position: absolute;
   width: 80px; height: 80px;
   border: 6px solid #1E1E1E;
+  border-bottom-color: transparent;
   border-radius: 50%;
-  bottom: 0; left: 0;
   box-sizing: border-box;
-  animation: gaugeArc 4s infinite alternate;
+  top: 0; left: 0;
+  animation: gaugeBase 4s infinite alternate;
 }
 
-@keyframes gaugeArc {
+@keyframes gaugeBase {
   0% { border-color: #1E1E1E; }
   100% { border-color: #BC73ED; }
 }
@@ -606,146 +318,354 @@
   background-color: #1E1E1E;
   left: 39px; bottom: 0;
   transform-origin: bottom;
-  animation: gaugeSpin 4s infinite alternate;
+  animation: gaugeNeedle 4s infinite alternate;
 }
 
-@keyframes gaugeSpin {
-  0% { transform: rotate(0deg); }
+@keyframes gaugeNeedle {
+  0%   { transform: rotate(0deg); }
   100% { transform: rotate(180deg); background-color: #9552D3; }
 }
 
-/* ---------- 10) Heatmap ---------- */
-.chart-heatmap {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 4px;
-  width: 80%; height: 60%;
-  margin: 0 auto;
-}
-
-.heatmap-cell {
-  width: 100%; height: 100%;
-  background-color: #E8EAF0;
-  animation: heatFlash 3s infinite alternate;
-}
-
-@keyframes heatFlash {
-  0% { background-color: #E8EAF0; }
-  100% { background-color: #BC73ED; }
-}
-
-/* ---------- 11) Scatter Plot ---------- */
-.chart-scatter {
+/**************************
+  4) Resource Allocation (Stacked bar)
+**************************/
+.chart-stacked-bar {
   position: relative;
-  width: 90%; height: 70%;
-  margin: 0 auto;
+  width: 80%;
+  height: 60%;
+  margin: 10% auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
-.scatter-point {
+.stack {
+  width: 100%;
+  background: linear-gradient(90deg, #1E1E1E, #1E1E1E);
+  margin-top: 5px;
+  animation: stackGrow 3s infinite alternate;
+}
+
+@keyframes stackGrow {
+  0% { height: 5%; }
+  100% { height: calc(var(--val) * 1% + 5%); }
+}
+
+.stack[data-stack="30"] { --val: 30; animation-delay: 0.2s; }
+.stack[data-stack="60"] { --val: 60; animation-delay: 0.6s; }
+.stack[data-stack="85"] { --val: 85; animation-delay: 1s; }
+
+/**************************
+  5) Factor Correlation (Radar)
+**************************/
+.chart-radar {
+  position: relative;
+  width: 90px; height: 90px;
+  margin: 10px auto;
+  top: 10px;
+}
+
+.radar-area {
+  position: absolute;
+  top: 0; left: 0;
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(188,115,237,0.2), transparent);
+  animation: radarPulse 3s infinite;
+}
+
+@keyframes radarPulse {
+  0%   { transform: scale(0.8); opacity: 0.6; }
+  100% { transform: scale(1);   opacity: 1;   }
+}
+
+.radar-point {
   position: absolute;
   width: 6px; height: 6px;
+  background-color: #1E1E1E;
+  border-radius: 50%;
+  animation: radarPoint 3s infinite alternate;
+}
+@keyframes radarPoint {
+  0%   { transform: scale(0.5); opacity: 0.3; }
+  100% { transform: scale(1.2); opacity: 1;   }
+}
+
+.radar-point:nth-child(2) { top: 10%; left: 45%; }
+.radar-point:nth-child(3) { top: 50%; left: 85%; }
+.radar-point:nth-child(4) { top: 80%; left: 60%; }
+.radar-point:nth-child(5) { top: 70%; left: 10%; }
+.radar-point:nth-child(6) { top: 30%; left: 5%; }
+
+/**************************
+  6) Behavior Mapping (Scatter)
+**************************/
+.chart-scatter {
+  width: 100%;
+  height: 70%;
+  position: relative;
+  margin: 5% auto;
+}
+
+.scatter-dot {
+  position: absolute;
+  width: 8px; height: 8px;
   background-color: #1E1E1E;
   border-radius: 50%;
   animation: scatterWiggle 4s infinite alternate;
 }
 
-.scatter-point[data-pt="1"] { top: 20%; left: 15%; animation-delay: 0.3s; }
-.scatter-point[data-pt="2"] { top: 40%; left: 45%; animation-delay: 0.6s; }
-.scatter-point[data-pt="3"] { top: 60%; left: 35%; animation-delay: 0.9s; }
-.scatter-point[data-pt="4"] { top: 50%; left: 75%; animation-delay: 1.2s; }
-.scatter-point[data-pt="5"] { top: 25%; left: 70%; animation-delay: 1.5s; }
+.scatter-dot[data-x="10"] { left: 10%; }
+.scatter-dot[data-x="40"] { left: 40%; }
+.scatter-dot[data-x="60"] { left: 60%; }
+.scatter-dot[data-x="80"] { left: 80%; }
+
+.scatter-dot[data-y="70"] { top: 70%; }
+.scatter-dot[data-y="30"] { top: 30%; }
+.scatter-dot[data-y="50"] { top: 50%; }
+.scatter-dot[data-y="20"] { top: 20%; }
 
 @keyframes scatterWiggle {
-  0% { transform: scale(1) translateX(0); background-color: #1E1E1E; }
-  100% { transform: scale(1.3) translateX(5px); background-color: #9552D3; }
+  0% { transform: translate(0, 0) scale(1); background-color: #1E1E1E; }
+  100% { transform: translate(-5px, -5px) scale(1.2); background-color: #9552D3; }
 }
 
-/* ---------- 12) Sankey Diagram ---------- */
-.chart-sankey {
+/**************************
+  7) Trend Highlights (Chord)
+**************************/
+.chart-chord {
   position: relative;
-  width: 90%; height: 70%;
-  margin: 0 auto;
+  width: 60px; height: 60px;
+  margin: 15% auto;
+}
+.chord-ring {
+  position: absolute;
+  width: 60px; height: 60px;
+  border: 6px solid #1E1E1E;
+  border-radius: 50%;
+  animation: chordSpin 5s linear infinite;
+}
+@keyframes chordSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.chord-link {
+  position: absolute;
+  width: 2px; height: 60px;
+  top: 0; left: 29px;
+  background-color: #9552D3;
+  transform-origin: bottom;
+  animation: chordBlink 3s infinite alternate;
+}
+@keyframes chordBlink {
+  0% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+.chord-link[data-rot="45"] { transform: rotate(45deg); }
+.chord-link[data-rot="135"] { transform: rotate(135deg); }
+.chord-link[data-rot="225"] { transform: rotate(225deg); }
+
+/**************************
+  8) Anomaly Detection (Heatmap)
+**************************/
+.chart-heatmap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 4px;
+  width: 80%; height: 60%;
+  margin: 8% auto;
 }
 
-.sankey-node {
+.heatmap-cell {
+  width: 100%;
+  background-color: #E8EAF0;
+  animation: heatFlash 3s infinite alternate;
+}
+@keyframes heatFlash {
+  0% { background-color: #E8EAF0; }
+  100% { background-color: #BC73ED; }
+}
+
+/**************************
+  9) Multi-Variable Insights (Bubble)
+**************************/
+.chart-bubble {
+  position: relative;
+  width: 100%;
+  height: 70%;
+  margin-top: 10px;
+}
+
+.bubble {
   position: absolute;
-  width: 40px; height: 20px;
+  border-radius: 50%;
+  background-color: rgba(30, 30, 30, 0.4);
+  animation: bubbleFloat 3s infinite alternate ease-in-out;
+}
+
+.bubble[data-size="small"] {
+  width: 20px; height: 20px;
+  top: 60%; left: 20%;
+}
+.bubble[data-size="medium"] {
+  width: 30px; height: 30px;
+  top: 30%; left: 50%;
+}
+.bubble[data-size="large"] {
+  width: 40px; height: 40px;
+  top: 45%; left: 70%;
+  background-color: rgba(149,82,211,0.4);
+}
+
+@keyframes bubbleFloat {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-20px) scale(1.1); }
+}
+
+/**************************
+  10) Performance Gauge (Donut)
+**************************/
+.chart-donut {
+  width: 60px; height: 60px;
+  position: relative;
+  margin: 10% auto;
+  animation: donutSpin 6s linear infinite;
+}
+@keyframes donutSpin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.donut-segment {
+  position: absolute;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  clip: rect(0, 60px, 60px, 30px);
+}
+.donut-segment[data-segment="1"] {
   background-color: #1E1E1E;
-  animation: sankeyNodeGlow 4s infinite;
+  animation: donut1 3s infinite alternate;
+}
+@keyframes donut1 {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(120deg); }
+}
+.donut-segment[data-segment="2"] {
+  background-color: #9552D3;
+  animation: donut2 3s infinite alternate;
+}
+@keyframes donut2 {
+  0%   { transform: rotate(120deg); }
+  100% { transform: rotate(240deg); }
+}
+.donut-segment[data-segment="3"] {
+  background-color: #BC73ED;
+  animation: donut3 3s infinite alternate;
+}
+@keyframes donut3 {
+  0%   { transform: rotate(240deg); }
+  100% { transform: rotate(360deg); }
 }
 
-.sankey-node[data-node="source"] { top: 30%; left: 0; }
-.sankey-node[data-node="mid"] { top: 50%; left: 40%; }
-.sankey-node[data-node="target"] { top: 30%; right: 0; }
-
-@keyframes sankeyNodeGlow {
-  0% { box-shadow: 0 0 0 rgba(149,82,211,0); }
-  100% { box-shadow: 0 0 10px 2px rgba(149,82,211,0.4); }
+/**************************
+  11) Stability Projections (Line w/ pulse)
+**************************/
+.chart-line-stability {
+  position: relative;
+  width: 90%;
+  height: 60%;
+  margin: 10% auto;
 }
-
-.sankey-flow {
+.stability-line {
   position: absolute;
-  top: 38%;
-  left: 40px;
-  width: calc(100% - 80px);
-  height: 4px;
-  background: linear-gradient(90deg, #1E1E1E, #9552D3);
-  animation: sankeyFlow 3s infinite alternate;
-}
-
-@keyframes sankeyFlow {
-  0% { transform: scaleX(0.5); }
-  100% { transform: scaleX(1); }
-}
-
-/* =============== Background/Connections =============== */
-.pai-dr-grid {
-  position: absolute;
-  top: 0;
+  top: 50%;
   left: 0;
   width: 100%;
-  height: 100%;
-  background-size: 20px 20px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
-  z-index: 1;
+  height: 2px;
+  background-color: #1E1E1E;
+  animation: stabilityWave 3s infinite alternate;
 }
 
-.pai-dr-data-pulses {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 2;
+@keyframes stabilityWave {
+  0% { transform: translateY(-2px); }
+  100% { transform: translateY(2px); }
 }
 
-.pai-dr-pulse {
+.stability-pulse {
   position: absolute;
-  width: 6px; height: 6px;
+  top: 50%;
+  left: 50%;
+  width: 10px; height: 10px;
+  background-color: #9552D3;
   border-radius: 50%;
-  background-color: rgba(30, 30, 30, 0.3);
-  opacity: 0;
-  animation: pulse-ripple 6s linear infinite;
+  transform: translate(-50%, -50%);
+  animation: stabilityPulse 2s infinite;
 }
 
-.pai-dr-pulse[data-pulse="1"] { top: 30%; left: 40%; animation-delay: 1s; }
-.pai-dr-pulse[data-pulse="2"] { top: 60%; left: 60%; animation-delay: 2s; }
-.pai-dr-pulse[data-pulse="3"] { top: 40%; left: 70%; animation-delay: 3s; }
-
-@keyframes pulse-ripple {
-  0%, 5% {
-    transform: scale(0.5);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(35);
-    opacity: 0;
-  }
+@keyframes stabilityPulse {
+  0%   { transform: scale(0.5) translate(-50%, -50%); opacity: 1; }
+  100% { transform: scale(2.5) translate(-50%, -50%); opacity: 0; }
 }
 
-/* =============== Message display =============== */
-.pai-dr-message {
-  font-size: 20px;
+/**************************
+  12) Pattern Recognition (Network)
+**************************/
+.chart-network {
+  position: relative;
+  width: 100%; height: 70%;
+  margin: 10px auto;
+}
+.network-node {
+  position: absolute;
+  width: 10px; height: 10px;
+  background-color: #1E1E1E;
+  border-radius: 50%;
+  animation: nodePulse 3s infinite alternate;
+}
+@keyframes nodePulse {
+  0% { transform: scale(0.7); }
+  100% { transform: scale(1.3); }
+}
+.network-node[data-loc="1"] { top: 20%; left: 30%; }
+.network-node[data-loc="2"] { top: 50%; left: 60%; }
+.network-node[data-loc="3"] { top: 70%; left: 20%; }
+
+.network-link {
+  position: absolute;
+  height: 1px;
+  background: #9552D3;
+  animation: linkFlash 2s infinite alternate;
+}
+@keyframes linkFlash {
+  0% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* For quick positioning:
+   data-link="12" means from loc1 to loc2,
+   data-link="23" means from loc2 to loc3, etc.
+   We'll do approximate lines here. */
+.network-link[data-link="12"] {
+  top: 35%; left: 30%;
+  width: 30%;
+  transform: rotate(20deg);
+}
+.network-link[data-link="23"] {
+  top: 60%; left: 40%;
+  width: 45%;
+  transform: rotate(135deg);
+}
+.network-link[data-link="13"] {
+  top: 45%; left: 30%;
+  width: 30%;
+  transform: rotate(70deg);
+}
+
+/**************************
+  Rotating Messages
+**************************/
+.message {
+  font-size: 18px;
   color: #333;
   text-align: center;
   opacity: 1;
@@ -753,8 +673,7 @@
   font-weight: 500;
   letter-spacing: 0.3px;
   position: relative;
-  z-index: 10;
-  margin-top: 20px;
+  margin-top: 10px;
   background: -webkit-linear-gradient(45deg, #1E1E1E, #555);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -762,7 +681,7 @@
 
 .fade-out {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(10px);
 }
 
 .fade-in {
@@ -770,49 +689,44 @@
   transform: translateY(0);
 }
 
-/* =============== Responsive =============== */
+/**************************
+  Responsive
+**************************/
 @media (max-width: 1024px) {
-  .pai-dr-content {
+  .content {
     height: 500px;
   }
 }
 @media (max-width: 768px) {
-  .pai-dr-header {
+  .header {
     font-size: 18px;
   }
-  .pai-dr-content {
+  .content {
     height: auto;
     padding: 15px 10px;
   }
-  .pai-dr-visualization {
+  .visualization {
     height: auto;
   }
-  .pai-dr-data-module {
+  .module {
     position: static;
     width: 100%;
     height: auto;
     margin-bottom: 15px;
-  }
-  .fly-in-left,
-  .fly-in-center,
-  .fly-in-right {
-    animation: none;
     opacity: 1;
     transform: none;
+    animation: none;
   }
-  .pai-dr-message {
+  .message {
     font-size: 16px;
   }
 }
 @media (max-width: 480px) {
-  .pai-dr-header {
+  .header {
     font-size: 16px;
     padding: 15px 10px;
   }
-  .pai-dr-chart-header {
-    font-size: 10px;
-  }
-  .pai-dr-message {
+  .message {
     font-size: 14px;
   }
 }
