@@ -7,8 +7,6 @@ import styles from "./LoadingCircle.module.css";
  * We do not remove or alter the original import line;
  * instead, we assign React to a variable so TS sees it as used.
  */
-const fixReactUnusedError = React;
-
 /* 
   ---------------
   OLD LOADER COMPONENT
