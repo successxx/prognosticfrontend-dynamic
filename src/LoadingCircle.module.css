@@ -2,6 +2,11 @@
   LOADING CIRCLE MODULE STYLES
 ******************************************************/
 
+/* 
+   Renamed classes to lc... to prevent collisions. 
+   Added a min-height for .lcVisualization near the bottom.
+*/
+
 /********************************************************
   BASE CONTAINER & HEADER
 ********************************************************/
@@ -81,10 +86,15 @@
   overflow: hidden;
 }
 
+/* 
+   The crucial fix: force a minimum height so the 
+   absolutely positioned modules have space to appear.
+*/
 .lcVisualization {
   position: relative;
   width: 100%;
   margin-bottom: 20px;
+  min-height: 1200px; /* <-- ADDED THIS LINE */
 }
 
 /********************************************************
@@ -102,7 +112,7 @@
   opacity: 0;
 }
 
-/* 3 columns, 4 rows. */
+/* 3 columns, 4 rows */
 .lcModule:nth-of-type(1)  { top: 0%;   left: 0%;   }
 .lcModule:nth-of-type(2)  { top: 0%;   left: 50%;  }
 .lcModule:nth-of-type(3)  { top: 0%;   left: 100%; }
@@ -151,7 +161,6 @@
   animation: fromBottom 0.7s forwards ease-out;
 }
 
-/* random delays */
 .lcDelay0  { animation-delay: 0.0s; }
 .lcDelay1  { animation-delay: 0.3s; }
 .lcDelay2  { animation-delay: 0.7s; }
@@ -525,11 +534,6 @@
 /********************************************************
   RESPONSIVE
 ********************************************************/
-@media (max-width: 1200px) {
-  .lcModule {
-    /* Adjust if needed for narrower screens */
-  }
-}
 @media (max-width: 768px) {
   .lcModule {
     position: static;
