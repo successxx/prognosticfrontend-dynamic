@@ -24,6 +24,7 @@ const LoadingCircle: React.FC = () => {
 
   // Handle progress bar + rotating messages
   useEffect(() => {
+    // Clear interval if any
     if (progressIntervalRef.current) {
       window.clearInterval(progressIntervalRef.current);
     }
@@ -72,8 +73,6 @@ const LoadingCircle: React.FC = () => {
     styles.delay4, styles.delay5, styles.delay6, styles.delay7,
     styles.delay8, styles.delay9, styles.delay10, styles.delay11
   ];
-
-  // We'll use an array of 12 so each module can have a stable "random" assignment
 
   return (
     <div className={styles.container}>
