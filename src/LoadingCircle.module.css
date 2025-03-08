@@ -24,7 +24,7 @@
   z-index: 999 !important;
 }
 
-.header {
+.headerzoom {
   /* remove black bar, make it subtle or white */
   background-color: transparent;
   color: #555;
