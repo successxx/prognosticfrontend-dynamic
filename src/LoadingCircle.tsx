@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
+// Small helper for clamping values (0 to 100 for widths)
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
 const LoadingCircle: React.FC = () => {
   // -------------------------------------------
   //               LOADING MESSAGES
@@ -70,27 +75,26 @@ const LoadingCircle: React.FC = () => {
   //          PROGRESS BAR + MAIN TIMING
   // -------------------------------------------
   useEffect(() => {
-    // Clear any previous intervals if re-rendered
     if (progressIntervalRef.current) {
       window.clearInterval(progressIntervalRef.current);
     }
 
     // We update timeElapsed every 1 second up to totalDuration (30s).
     const masterTimer = window.setInterval(() => {
-      setTimeElapsed(prev => {
-        if (prev >= totalDuration) {
+      setTimeElapsed((previousTime) => {
+        if (previousTime >= totalDuration) {
           return 0; // loop it after 30s (or you could keep going)
         }
-        return prev + 1;
+        return previousTime + 1;
       });
     }, 1000);
 
-    // Grow the progress bar up to 100% within topLoaderDuration (~8s)
-    // Then keep it at 100% and let it blink via CSS
+    // Grow the progress bar up to 100% within topLoaderDuration (~8s),
+    // Then keep it at 100% and let it blink via CSS.
     progressIntervalRef.current = window.setInterval(() => {
-      setProgressPercent(prev => {
+      setProgressPercent((prev) => {
         if (timeElapsed < topLoaderDuration) {
-          // Fill up from 0% to 100% over topLoaderDuration seconds
+          // Fill from 0% to 100% over topLoaderDuration seconds
           const newVal = Math.min((timeElapsed / topLoaderDuration) * 100, 100);
           return newVal;
         } else {
@@ -128,7 +132,7 @@ const LoadingCircle: React.FC = () => {
   //       ANALYSIS LOG (live “VM” lines)
   // -------------------------------------------
   useEffect(() => {
-    // We want to add a new line to the "analysis log" every ~1.5-2s or so.
+    // We want to add a new line to the "analysis log" every ~1.5s or so.
     // Then after 30s, reset for the loop effect.
     const logTimer = setInterval(() => {
       setLogIndex((prev) => {
@@ -163,11 +167,11 @@ const LoadingCircle: React.FC = () => {
   useEffect(() => {
     // Slight random changes every 2 seconds
     const microAdjustTimer = setInterval(() => {
-      // e.g., funnel changes
-      setFunnelAdjust(Math.random() * 10 - 5); // random between -5 and 5
-      // e.g., bar changes
+      // funnel changes
+      setFunnelAdjust(Math.random() * 10 - 5); // random between -5 and +5
+      // bar changes
       setBarAdjust(Math.random() * 10 - 5);
-      // e.g., gauge changes
+      // gauge changes
       setGaugeAdjust(Math.random() * 3 - 1.5); // small angle shift
     }, 2000);
 
@@ -176,19 +180,11 @@ const LoadingCircle: React.FC = () => {
     };
   }, []);
 
-  // We'll define a small helper to clamp or map the micro adjustments
-  function getWidthPercent(basePercent: number, adjust: number) {
-    // Add a small offset in a safe range
-    const val = basePercent + adjust;
-    // clamp between 0 and 100
-    return Math.max(0, Math.min(100, val));
-  }
-
-  // Likewise for a gauge angle, for example
+  // Likewise for the gauge angle
   function getGaugeAngle(baseAngle: number, adjustDeg: number) {
     const val = baseAngle + adjustDeg;
-    // clamp the gauge angle between some range, say 0 to 90
-    return Math.max(0, Math.min(90, val));
+    // clamp gauge angle between 0 and 90
+    return clamp(val, 0, 90);
   }
 
   // -------------------------------------------
@@ -200,6 +196,7 @@ const LoadingCircle: React.FC = () => {
     styles.animation3,
     styles.animation4
   ];
+
   function getAnimationClass(i: number) {
     return animationClasses[i % animationClasses.length];
   }
@@ -221,7 +218,9 @@ const LoadingCircle: React.FC = () => {
       {/* Progress Bar */}
       <div className={styles.progressContainer}>
         <div
-          className={`${styles.progressBar} ${progressPercent >= 100 ? styles.progressComplete : ""}`}
+          className={`${styles.progressBar} ${
+            progressPercent >= 100 ? styles.progressComplete : ""
+          }`}
           style={{ width: `${progressPercent}%` }}
         >
           <div className={styles.progressGlow}></div>
@@ -244,44 +243,47 @@ const LoadingCircle: React.FC = () => {
             <div className={styles.moduleBody}>
               {/* Funnel-like chart */}
               <div className={styles.funnelContainer}>
+                {/* 1) Traffic Volume */}
                 <div className={styles.funnelMetric} style={{ top: "10%" }}>
                   <span className={styles.label}>Traffic Volume</span>
                   <span className={styles.value}>14,982</span>
                   <div
                     className={styles.bar}
                     style={{
-                      width: `100%`,
-                      transform: "scaleX(1)"
+                      width: `${clamp(100 + funnelAdjust, 0, 100)}%`
                     }}
                   ></div>
                 </div>
+                {/* 2) Qualified Leads */}
                 <div className={styles.funnelMetric} style={{ top: "35%" }}>
                   <span className={styles.label}>Qualified Leads</span>
                   <span className={styles.value}>8,439</span>
                   <div
                     className={styles.bar}
                     style={{
-                      width: `85%`
+                      width: `${clamp(85 + funnelAdjust, 0, 100)}%`
                     }}
                   ></div>
                 </div>
+                {/* 3) Sales Opportunities */}
                 <div className={styles.funnelMetric} style={{ top: "60%" }}>
                   <span className={styles.label}>Sales Opportunities</span>
                   <span className={styles.value}>3,214</span>
                   <div
                     className={styles.bar}
                     style={{
-                      width: `64%`
+                      width: `${clamp(64 + funnelAdjust, 0, 100)}%`
                     }}
                   ></div>
                 </div>
+                {/* 4) Closed Deals */}
                 <div className={styles.funnelMetric} style={{ top: "85%" }}>
                   <span className={styles.label}>Closed Deals</span>
                   <span className={styles.value}>1,897</span>
                   <div
                     className={styles.bar}
                     style={{
-                      width: `37%`
+                      width: `${clamp(37 + funnelAdjust, 0, 100)}%`
                     }}
                   ></div>
                 </div>
@@ -303,9 +305,7 @@ const LoadingCircle: React.FC = () => {
             <div className={styles.moduleBody}>
               {/* Radar Chart */}
               <div className={styles.radarContainer}>
-                {/* ...existing radar elements... */}
                 <div className={styles.radarChart}>
-                  {/* axes, circles, etc. are all animated by CSS */}
                   <div className={styles.radarAxis}></div>
                   <div className={styles.radarAxis}></div>
                   <div className={styles.radarAxis}></div>
@@ -348,7 +348,6 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.areaPath}>
                   <div className={styles.area}></div>
                   <div className={styles.areaLine}></div>
-                  {/* data points... */}
                   <div className={styles.dataPoint}></div>
                   <div className={styles.dataPoint}></div>
                   <div className={styles.dataPoint}></div>
@@ -534,12 +533,11 @@ const LoadingCircle: React.FC = () => {
                 <div
                   className={styles.gaugeMeter}
                   style={{
-                    transform: `scale(${1}) rotate(-90deg)` 
+                    transform: `scale(1) rotate(-90deg)`
                   }}
                 ></div>
                 <div className={styles.gaugeCover}></div>
                 <div className={styles.gaugeTicks}>
-                  {/* ticks */}
                   <div className={styles.gaugeTick}></div>
                   <div className={styles.gaugeTick}></div>
                   <div className={styles.gaugeTick}></div>
@@ -653,7 +651,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.chartAxisX}></div>
               <div className={styles.chartAxisY}></div>
               <div className={styles.bubbleContainer}>
-                {/* Bubbles */}
                 <div className={styles.bubble}></div>
                 <div className={styles.bubble}></div>
                 <div className={styles.bubble}></div>
