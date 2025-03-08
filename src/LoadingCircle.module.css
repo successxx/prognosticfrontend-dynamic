@@ -1,6 +1,6 @@
-/* -------------------------------------------------------------------
+/* ======================================================================
    OLD LOADER (Prognostic AI) STYLES
-   ------------------------------------------------------------------- */
+====================================================================== */
 
 /* Base container styles */
 .prognostic-ai-demo-results-container {
@@ -17,11 +17,7 @@
     box-sizing: border-box;
 }
 
-/* 
-   We have intentionally kept .pai-dr-header in the CSS to ensure
-   "no lines lost," but we will NOT use it in our markup so the black
-   header is effectively removed from the UI.
-*/
+/* Header styles */
 .pai-dr-header {
     background-color: #252525;
     color: white;
@@ -257,6 +253,11 @@
     animation: scan-pulse 4s ease-in-out infinite;
 }
 
+@keyframes scan-pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.7; }
+}
+
 /* Background grid for futuristic effect */
 .pai-dr-grid {
     position: absolute;
@@ -323,7 +324,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Animation keyframes */
+/* Animation keyframes for old loader */
 @keyframes pai-dr-spin-inner {
     0% { transform: translate(-50%, -50%) rotate(0deg); }
     100% { transform: translate(-50%, -50%) rotate(360deg); }
@@ -350,11 +351,6 @@
 @keyframes connection-appear {
     0%, 100% { opacity: 0; }
     30%, 70% { opacity: 0.7; }
-}
-
-@keyframes scan-pulse {
-    0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; }
-    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.7; }
 }
 
 /* Flying data particles effect */
@@ -427,63 +423,54 @@
         transform: translateX(0) translateY(0); 
         opacity: 0;
     }
-    10% {
-        opacity: 0.4;
-    }
-    90% {
-        opacity: 0.4;
-    }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.4; }
     100% { 
         transform: translateX(105vw) translateY(20px); 
         opacity: 0;
     }
 }
 
-/* Media queries for responsive design */
+/* Responsive adjustments for old loader */
 @media (max-width: 600px) {
     .pai-dr-header {
         font-size: 20px;
         padding: 15px;
     }
-
+    
     .pai-dr-content {
         padding: 20px;
         min-height: 300px;
     }
-
+    
     .pai-dr-visualization {
         width: 150px;
         height: 150px;
     }
-
+    
     .pai-dr-ring-outer {
         width: 130px;
         height: 130px;
     }
-
+    
     .pai-dr-ring-middle {
         width: 100px;
         height: 100px;
     }
-
+    
     .pai-dr-ring-inner {
         width: 70px;
         height: 70px;
     }
-
+    
     .pai-dr-message {
         font-size: 18px;
     }
 }
 
-
-/* -------------------------------------------------------------------
+/* ======================================================================
    NEW ADVANCED ANALYSIS MODULE STYLES (COMBINED FINAL)
-   ------------------------------------------------------------------- */
-
-/******************************************************
-  ENHANCED DATA ANALYSIS MODULE STYLES (COMBINED FINAL)
-******************************************************/
+====================================================================== */
 
 /********************************************************
   BASE CONTAINER & LAYOUT
@@ -725,7 +712,7 @@
 }
 
 .trafficLight {
-  width: 12px;
+  width: 12px; 
   height: 12px;
   border-radius: 50%;
   margin-right: 5px;
@@ -739,9 +726,9 @@
   background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 50%);
 }
 
-.trafficLight[data-color="red"]    { background-color: #ff5f56; box-shadow: 0 0 1px rgba(0,0,0,0.2);}
-.trafficLight[data-color="yellow"] { background-color: #ffbd2e; box-shadow: 0 0 1px rgba(0,0,0,0.2);}
-.trafficLight[data-color="green"]  { background-color: #27c93f; box-shadow: 0 0 1px rgba(0,0,0,0.2);}
+.trafficLight[data-color="red"]    { background-color: #ff5f56; box-shadow: 0 0 1px rgba(0,0,0,0.2); }
+.trafficLight[data-color="yellow"] { background-color: #ffbd2e; box-shadow: 0 0 1px rgba(0,0,0,0.2); }
+.trafficLight[data-color="green"]  { background-color: #27c93f; box-shadow: 0 0 1px rgba(0,0,0,0.2); }
 
 .windowTitle {
   font-size: 11px;
@@ -826,7 +813,7 @@
   border-color: transparent transparent transparent rgba(0,0,0,0.2);
 }
 .chartAxisY::after {
-  left: -3px;
+  left: -3px; 
   top: -6px;
   border-width: 0 3px 6px 3px;
   border-color: transparent transparent rgba(0,0,0,0.2) transparent;
@@ -888,7 +875,7 @@
 ********************************************************/
 .radarContainer {
   position: relative;
-  width: 100%;
+  width: 100%; 
   height: 100%;
 }
 
@@ -1582,7 +1569,7 @@
 ********************************************************/
 .bubbleContainer {
   position: relative;
-  width: 100%;
+  width: 100%; 
   height: 100%;
 }
 .bubble {
@@ -1681,7 +1668,7 @@
 ********************************************************/
 .lineChartContainer {
   position: relative;
-  width: 100%;
+  width: 100%; 
   height: 100%;
 }
 .lineChart {
@@ -1791,7 +1778,7 @@
 ********************************************************/
 .networkContainer {
   position: relative;
-  width: 100%;
+  width: 100%; 
   height: 100%;
 }
 .networkNode {
