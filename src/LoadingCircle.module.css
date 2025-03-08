@@ -5,8 +5,7 @@
 /********************************************************
   BASE CONTAINER & HEADER
 ********************************************************/
-.container {
-  /* Force it to use up to 1500px but not shrink to parent's smaller width */
+.lcContainer {
   width: 100% !important;
   max-width: 1500px !important;
   margin: 0 auto !important;
@@ -16,16 +15,13 @@
   border-radius: 6px;
   overflow: hidden;
 
-  background-color: #F8F9FB; /* hero-like background */
-  /* minimal shadow for a premium look */
+  background-color: #F8F9FB;
   box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 
-  /* ensure we appear on top if there's another container overlapping */
   z-index: 999 !important;
 }
 
-.headerzoom {
-  /* remove black bar, make it subtle or white */
+.lcHeader {
   background-color: transparent;
   color: #555;
   padding: 20px;
@@ -39,7 +35,7 @@
 /********************************************************
   PROGRESS BAR
 ********************************************************/
-.progressContainer {
+.lcProgressContainer {
   width: 100%;
   height: 4px;
   background-color: #E8EAF0;
@@ -47,15 +43,14 @@
   overflow: hidden;
 }
 
-.progressBar {
+.lcProgressBar {
   height: 100%;
-  /* faster transition so it visually updates quickly */
   background: linear-gradient(90deg, #555, #999);
-  transition: width 0.1s linear; 
+  transition: width 0.1s linear;
   position: relative;
 }
 
-.progressGlow {
+.lcProgressGlow {
   position: absolute;
   top: 0;
   right: 0;
@@ -77,8 +72,8 @@
 /********************************************************
   CONTENT AREA
 ********************************************************/
-.content {
-  background-color: #FFF; /* white content area */
+.lcContent {
+  background-color: #FFF;
   padding: 20px 15px;
   display: flex;
   flex-direction: column;
@@ -86,45 +81,43 @@
   overflow: hidden;
 }
 
-.visualization {
+.lcVisualization {
   position: relative;
   width: 100%;
   margin-bottom: 20px;
-  /* let the modules define total height, so no forced height */
 }
 
 /********************************************************
   MODULE LAYOUT (3 x 4)
-   - Rectangular windows
 ********************************************************/
-.module {
+.lcModule {
   position: absolute;
-  width: 42%;  /* wider rectangles */
+  width: 42%;
   height: 20%;
   background: #fff;
   border-radius: 8px;
   border: 1px solid rgba(0,0,0,0.08);
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   overflow: hidden;
-  opacity: 0; /* hidden until animation completes */
+  opacity: 0;
 }
 
-/* 3 columns, 4 rows. Adjust top offsets as needed. */
-.module:nth-of-type(1)  { top: 0%;   left: 0%;   }
-.module:nth-of-type(2)  { top: 0%;   left: 50%;  }
-.module:nth-of-type(3)  { top: 0%;   left: 100%; }
+/* 3 columns, 4 rows. */
+.lcModule:nth-of-type(1)  { top: 0%;   left: 0%;   }
+.lcModule:nth-of-type(2)  { top: 0%;   left: 50%;  }
+.lcModule:nth-of-type(3)  { top: 0%;   left: 100%; }
 
-.module:nth-of-type(4)  { top: 25%;  left: 0%;   }
-.module:nth-of-type(5)  { top: 25%;  left: 50%;  }
-.module:nth-of-type(6)  { top: 25%;  left: 100%; }
+.lcModule:nth-of-type(4)  { top: 25%;  left: 0%;   }
+.lcModule:nth-of-type(5)  { top: 25%;  left: 50%;  }
+.lcModule:nth-of-type(6)  { top: 25%;  left: 100%; }
 
-.module:nth-of-type(7)  { top: 50%;  left: 0%;   }
-.module:nth-of-type(8)  { top: 50%;  left: 50%;  }
-.module:nth-of-type(9)  { top: 50%;  left: 100%; }
+.lcModule:nth-of-type(7)  { top: 50%;  left: 0%;   }
+.lcModule:nth-of-type(8)  { top: 50%;  left: 50%;  }
+.lcModule:nth-of-type(9)  { top: 50%;  left: 100%; }
 
-.module:nth-of-type(10) { top: 75%;  left: 0%;   }
-.module:nth-of-type(11) { top: 75%;  left: 50%;  }
-.module:nth-of-type(12) { top: 75%;  left: 100%; }
+.lcModule:nth-of-type(10) { top: 75%;  left: 0%;   }
+.lcModule:nth-of-type(11) { top: 75%;  left: 50%;  }
+.lcModule:nth-of-type(12) { top: 75%;  left: 100%; }
 
 /********************************************************
   RANDOM FLY-IN ANIMATIONS
@@ -145,54 +138,54 @@
   0%   { transform: translateY(300px); opacity: 0; }
   100% { transform: translateY(0);     opacity: 1; }
 }
-.snapIn1 {
+.lcSnapIn1 {
   animation: fromLeft 0.6s forwards ease-out;
 }
-.snapIn2 {
+.lcSnapIn2 {
   animation: fromRight 0.6s forwards ease-out;
 }
-.snapIn3 {
+.lcSnapIn3 {
   animation: fromTop 0.5s forwards ease-out;
 }
-.snapIn4 {
+.lcSnapIn4 {
   animation: fromBottom 0.7s forwards ease-out;
 }
 
 /* random delays */
-.delay0  { animation-delay: 0.0s; }
-.delay1  { animation-delay: 0.3s; }
-.delay2  { animation-delay: 0.7s; }
-.delay3  { animation-delay: 1.2s; }
-.delay4  { animation-delay: 0.5s; }
-.delay5  { animation-delay: 1.5s; }
-.delay6  { animation-delay: 1.0s; }
-.delay7  { animation-delay: 2.0s; }
-.delay8  { animation-delay: 1.8s; }
-.delay9  { animation-delay: 2.6s; }
-.delay10 { animation-delay: 1.4s; }
-.delay11 { animation-delay: 2.9s; }
+.lcDelay0  { animation-delay: 0.0s; }
+.lcDelay1  { animation-delay: 0.3s; }
+.lcDelay2  { animation-delay: 0.7s; }
+.lcDelay3  { animation-delay: 1.2s; }
+.lcDelay4  { animation-delay: 0.5s; }
+.lcDelay5  { animation-delay: 1.5s; }
+.lcDelay6  { animation-delay: 1.0s; }
+.lcDelay7  { animation-delay: 2.0s; }
+.lcDelay8  { animation-delay: 1.8s; }
+.lcDelay9  { animation-delay: 2.6s; }
+.lcDelay10 { animation-delay: 1.4s; }
+.lcDelay11 { animation-delay: 2.9s; }
 
 /********************************************************
   MAC WINDOW BAR
 ********************************************************/
-.macWindowBar {
+.lcMacWindowBar {
   height: 24px;
   background-color: #eee;
   display: flex;
   align-items: center;
   padding-left: 8px;
 }
-.trafficLight {
+.lcTrafficLight {
   width: 12px; 
   height: 12px;
   border-radius: 50%;
   margin-right: 4px;
 }
-.trafficLight[data-color="red"]    { background-color: #ff5f56; }
-.trafficLight[data-color="yellow"] { background-color: #ffbd2e; }
-.trafficLight[data-color="green"]  { background-color: #27c93f; }
+.lcTrafficLight[data-color="red"]    { background-color: #ff5f56; }
+.lcTrafficLight[data-color="yellow"] { background-color: #ffbd2e; }
+.lcTrafficLight[data-color="green"]  { background-color: #27c93f; }
 
-.windowTitle {
+.lcWindowTitle {
   font-size: 11px;
   font-weight: 600;
   margin-left: 6px;
@@ -200,7 +193,7 @@
   font-family: "SF Pro Display", sans-serif;
 }
 
-.moduleBody {
+.lcModuleBody {
   width: 100%;
   height: calc(100% - 24px);
   position: relative;
@@ -211,7 +204,7 @@
 /********************************************************
   BASIC CHART GRID + AXIS
 ********************************************************/
-.chartGrid {
+.lcChartGrid {
   position: absolute;
   top: 8%;
   left: 8%;
@@ -222,18 +215,18 @@
     linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
   background-size: 30px 30px;
 }
-.chartAxisX,
-.chartAxisY {
+.lcChartAxisX,
+.lcChartAxisY {
   position: absolute;
   background-color: #444;
 }
-.chartAxisX {
+.lcChartAxisX {
   bottom: 0;
   left: 0;
   width: 100%;
   height: 1px;
 }
-.chartAxisY {
+.lcChartAxisY {
   bottom: 0;
   left: 0;
   width: 1px;
@@ -243,7 +236,7 @@
 /********************************************************
   1) REAL-TIME FUNNEL
 ********************************************************/
-.funnelContainer {
+.lcFunnelContainer {
   position: relative;
   width: 100%;
   height: 100%;
@@ -262,7 +255,7 @@
   80%  { height: 90%; }
   100% { height: 50%; }
 }
-.funnelBar {
+.lcFunnelBar {
   position: absolute;
   bottom: 0;
   width: 20px;
@@ -273,10 +266,10 @@
   animation-timing-function: ease-in-out;
   animation-direction: alternate;
 }
-.funnelBar[data-step="1"] { left: 10%; animation-name: funnelDynamic1; animation-delay: 0.2s; }
-.funnelBar[data-step="2"] { left: 30%; animation-name: funnelDynamic2; animation-delay: 0.6s; }
-.funnelBar[data-step="3"] { left: 50%; animation-name: funnelDynamic1; animation-delay: 1.0s; }
-.funnelBar[data-step="4"] { left: 70%; animation-name: funnelDynamic2; animation-delay: 1.4s; }
+.lcFunnelBar[data-step="1"] { left: 10%; animation-name: funnelDynamic1; animation-delay: 0.2s; }
+.lcFunnelBar[data-step="2"] { left: 30%; animation-name: funnelDynamic2; animation-delay: 0.6s; }
+.lcFunnelBar[data-step="3"] { left: 50%; animation-name: funnelDynamic1; animation-delay: 1.0s; }
+.lcFunnelBar[data-step="4"] { left: 70%; animation-name: funnelDynamic2; animation-delay: 1.4s; }
 
 /********************************************************
   2) OPPORTUNITY RADAR
@@ -288,7 +281,7 @@
   75%  { clip-path: polygon(55% 2%, 83% 33%, 68% 78%, 18% 88%, 12% 37%); }
   100% { clip-path: polygon(50% 0%, 80% 30%, 70% 70%, 20% 80%, 10% 40%); }
 }
-.radarShape {
+.lcRadarShape {
   animation: radarVertexPulse 6s infinite ease-in-out;
 }
 
@@ -309,16 +302,16 @@
   60%  { transform: translateY(-14%);}
   100% { transform: translateY(-8%); }
 }
-.predictiveLayer[data-layer="1"] {
+.lcPredictiveLayer[data-layer="1"] {
   bottom: 0; height: 30%;
   animation: predictive1 5s infinite alternate;
 }
-.predictiveLayer[data-layer="2"] {
+.lcPredictiveLayer[data-layer="2"] {
   bottom: 30%; height: 25%;
   animation: predictive2 5s infinite alternate;
   animation-delay: 0.5s;
 }
-.predictiveLayer[data-layer="3"] {
+.lcPredictiveLayer[data-layer="3"] {
   bottom: 55%; height: 20%;
   animation: predictive1 5s infinite alternate;
   animation-delay: 1s;
@@ -334,7 +327,7 @@
   75%  { transform: rotate(90deg)  scaleX(1.4); }
   100% { transform: rotate(30deg)  scaleX(1.2); }
 }
-.chordArc {
+.lcChordArc {
   animation: chordArcShift 6s infinite ease-in-out alternate;
 }
 
@@ -355,18 +348,18 @@
   75%  { transform: translate(-5px, -3px); }
   100% { transform: translate(0,0); }
 }
-.scatterPoint {
+.lcScatterPoint {
   animation-duration: 4s;
   animation-iteration-count: infinite;
   animation-timing-function: ease-in-out;
   animation-direction: alternate;
 }
-.scatterPoint[data-id="1"] { animation-name: scatterRand1; }
-.scatterPoint[data-id="2"] { animation-name: scatterRand2; animation-delay: 0.5s; }
-.scatterPoint[data-id="3"] { animation-name: scatterRand1; animation-delay: 1s; }
-.scatterPoint[data-id="4"] { animation-name: scatterRand2; animation-delay: 1.5s;}
-.scatterPoint[data-id="5"] { animation-name: scatterRand1; animation-delay: 0.8s; }
-.scatterPoint[data-id="6"] { animation-name: scatterRand2; animation-delay: 1.2s; }
+.lcScatterPoint[data-id="1"] { animation-name: scatterRand1; }
+.lcScatterPoint[data-id="2"] { animation-name: scatterRand2; animation-delay: 0.5s; }
+.lcScatterPoint[data-id="3"] { animation-name: scatterRand1; animation-delay: 1s; }
+.lcScatterPoint[data-id="4"] { animation-name: scatterRand2; animation-delay: 1.5s;}
+.lcScatterPoint[data-id="5"] { animation-name: scatterRand1; animation-delay: 0.8s; }
+.lcScatterPoint[data-id="6"] { animation-name: scatterRand2; animation-delay: 1.2s; }
 
 /********************************************************
   6) CORRELATION HEATMAP
@@ -379,7 +372,7 @@
   70%  { background-color: #BC73ED; }
   100% { background-color: #9552D3; }
 }
-.heatCell {
+.lcHeatCell {
   animation: heatRandom 5s infinite ease-in-out;
 }
 
@@ -404,9 +397,9 @@
   66%  { transform: rotate(200deg); }
   100% { transform: rotate(360deg); }
 }
-.donutSlice[data-slice="1"] { animation: sliceShift1 4s infinite; }
-.donutSlice[data-slice="2"] { animation: sliceShift2 4s infinite; }
-.donutSlice[data-slice="3"] { animation: sliceShift3 4s infinite; }
+.lcDonutSlice[data-slice="1"] { animation: sliceShift1 4s infinite; }
+.lcDonutSlice[data-slice="2"] { animation: sliceShift2 4s infinite; }
+.lcDonutSlice[data-slice="3"] { animation: sliceShift3 4s infinite; }
 
 /********************************************************
   8) STABILITY GAUGE
@@ -418,7 +411,7 @@
   75%  { transform: rotate(100deg); }
   100% { transform: rotate(90deg);  }
 }
-.gaugeNeedle {
+.lcGaugeNeedle {
   animation: gaugeRandom 2s infinite ease-in-out;
 }
 
@@ -438,12 +431,12 @@
   60%  { height: 50%; }
   100% { height: 75%; }
 }
-.perfBar[data-bar="1"] { animation: perfVar1 4s infinite alternate; }
-.perfBar[data-bar="2"] { animation: perfVar2 4s infinite alternate; animation-delay: 0.3s; }
-.perfBar[data-bar="3"] { animation: perfVar1 4s infinite alternate; animation-delay: 0.6s; }
-.perfBar[data-bar="4"] { animation: perfVar2 4s infinite alternate; animation-delay: 0.9s; }
-.perfBar[data-bar="5"] { animation: perfVar1 4s infinite alternate; animation-delay: 1.2s; }
-.perfBar[data-bar="6"] { animation: perfVar2 4s infinite alternate; animation-delay: 1.5s; }
+.lcPerfBar[data-bar="1"] { animation: perfVar1 4s infinite alternate; }
+.lcPerfBar[data-bar="2"] { animation: perfVar2 4s infinite alternate; animation-delay: 0.3s; }
+.lcPerfBar[data-bar="3"] { animation: perfVar1 4s infinite alternate; animation-delay: 0.6s; }
+.lcPerfBar[data-bar="4"] { animation: perfVar2 4s infinite alternate; animation-delay: 0.9s; }
+.lcPerfBar[data-bar="5"] { animation: perfVar1 4s infinite alternate; animation-delay: 1.2s; }
+.lcPerfBar[data-bar="6"] { animation: perfVar2 4s infinite alternate; animation-delay: 1.5s; }
 
 /********************************************************
   10) MARKET CLUSTERS
@@ -455,14 +448,14 @@
   75%  { transform: translate(5px, 5px); }
   100% { transform: translate(0,0); }
 }
-.clusterBubble[data-bub="1"] {
+.lcClusterBubble[data-bub="1"] {
   animation: clusterShift2 4s infinite ease-in-out;
 }
-.clusterBubble[data-bub="2"] {
+.lcClusterBubble[data-bub="2"] {
   animation: clusterShift2 5s infinite ease-in-out;
   animation-delay: 0.8s;
 }
-.clusterBubble[data-bub="3"] {
+.lcClusterBubble[data-bub="3"] {
   animation: clusterShift2 4.5s infinite ease-in-out;
   animation-delay: 1.2s;
 }
@@ -478,7 +471,7 @@
   80%  { transform: translateY(3px)  scaleX(0.9); }
   100% { transform: translateY(0)    scaleX(0.5); }
 }
-.forecastLine {
+.lcForecastLine {
   animation: forecastShiftComplex 5s infinite ease-in-out;
 }
 
@@ -492,7 +485,7 @@
   75%  { transform: scale(1.5); background-color: #BC73ED; }
   100% { transform: scale(1);   background-color: #333; }
 }
-.netNode {
+.lcNetNode {
   animation: nodeRandomPulse 4s infinite ease-in-out;
 }
 @keyframes linkRandom {
@@ -500,14 +493,14 @@
   50%  { opacity: 1;   }
   100% { opacity: 0.5; }
 }
-.netLink {
+.lcNetLink {
   animation: linkRandom 3s infinite ease-in-out;
 }
 
 /********************************************************
   ROTATING MESSAGES
 ********************************************************/
-.message {
+.lcMessage {
   font-size: 18px;
   color: #333;
   text-align: center;
@@ -520,11 +513,11 @@
   -webkit-text-fill-color: transparent;
 }
 
-.fadeIn {
+.lcFadeIn {
   opacity: 1;
   transform: translateY(0);
 }
-.fadeOut {
+.lcFadeOut {
   opacity: 0;
   transform: translateY(10px);
 }
@@ -533,13 +526,12 @@
   RESPONSIVE
 ********************************************************/
 @media (max-width: 1200px) {
-  .module {
-    /* Possibly reduce sizes/positions for narrower screens if you want */
+  .lcModule {
+    /* Adjust if needed for narrower screens */
   }
 }
 @media (max-width: 768px) {
-  /* Stack modules */
-  .module {
+  .lcModule {
     position: static;
     width: 100%;
     height: auto;
@@ -547,18 +539,18 @@
     opacity: 1;
     animation: none;
   }
-  .header {
+  .lcHeader {
     font-size: 18px;
   }
-  .message {
+  .lcMessage {
     font-size: 16px;
   }
 }
 @media (max-width: 480px) {
-  .header {
+  .lcHeader {
     font-size: 16px;
   }
-  .message {
+  .lcMessage {
     font-size: 14px;
   }
 }
