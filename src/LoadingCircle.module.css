@@ -3,29 +3,22 @@
 ******************************************************/
 
 /********************************************************
-  BASE CONTAINER & HEADER
+  RENAMED CLASSES TO AVOID CONFLICTS WITH GLOBAL CSS
 ********************************************************/
-.container {
-  /* Force it to use up to 1500px but not shrink to parent's smaller width */
+.loaderContainer {
   width: 100% !important;
   max-width: 1500px !important;
   margin: 0 auto !important;
-
   position: relative;
   border: 1px solid #ECECEC;
   border-radius: 6px;
   overflow: hidden;
-
   background-color: #F8F9FB; /* hero-like background */
-  /* minimal shadow for a premium look */
   box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-
-  /* ensure we appear on top if there's another container overlapping */
   z-index: 999 !important;
 }
 
-.header {
-  /* remove black bar, make it subtle or white */
+.loaderHeader {
   background-color: transparent;
   color: #555;
   padding: 20px;
@@ -36,10 +29,7 @@
   margin-bottom: 10px;
 }
 
-/********************************************************
-  PROGRESS BAR
-********************************************************/
-.progressContainer {
+.loaderProgressContainer {
   width: 100%;
   height: 4px;
   background-color: #E8EAF0;
@@ -47,15 +37,14 @@
   overflow: hidden;
 }
 
-.progressBar {
+.loaderProgressBar {
   height: 100%;
-  /* faster transition so it visually updates quickly */
   background: linear-gradient(90deg, #555, #999);
   transition: width 0.1s linear; 
   position: relative;
 }
 
-.progressGlow {
+.loaderProgressGlow {
   position: absolute;
   top: 0;
   right: 0;
@@ -74,11 +63,8 @@
   100% { transform: translateX(80px); }
 }
 
-/********************************************************
-  CONTENT AREA
-********************************************************/
-.content {
-  background-color: #FFF; /* white content area */
+.loaderContent {
+  background-color: #FFF;
   padding: 20px 15px;
   display: flex;
   flex-direction: column;
@@ -86,20 +72,17 @@
   overflow: hidden;
 }
 
-.visualization {
+.loaderVisualization {
   position: relative;
   width: 100%;
   margin-bottom: 20px;
-  /* let the modules define total height, so no forced height */
 }
 
 /********************************************************
   MODULE LAYOUT (3 x 4)
-   - Rectangular windows
 ********************************************************/
 .module {
   position: absolute;
-  /* FIX: reduce width so that 3 columns fit within 100% */
   width: 33.3333%;
   height: 20%; 
   background: #fff;
@@ -107,10 +90,9 @@
   border: 1px solid rgba(0,0,0,0.08);
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   overflow: hidden;
-  opacity: 0; /* hidden until animation completes */
+  opacity: 0;
 }
 
-/* Adjust the columns so all modules fit within 100% */
 .module:nth-of-type(1)  { top: 0%;   left: 0%;         }
 .module:nth-of-type(2)  { top: 0%;   left: 33.3333%;   }
 .module:nth-of-type(3)  { top: 0%;   left: 66.6667%;   }
@@ -128,7 +110,7 @@
 .module:nth-of-type(12) { top: 75%;  left: 66.6667%;   }
 
 /********************************************************
-  RANDOM FLY-IN ANIMATIONS
+  FLY-IN ANIMATIONS
 ********************************************************/
 @keyframes fromLeft {
   0%   { transform: translateX(-300px); opacity: 0; }
@@ -506,9 +488,9 @@
 }
 
 /********************************************************
-  ROTATING MESSAGES
+  LOADER MESSAGES
 ********************************************************/
-.message {
+.loaderMessage {
   font-size: 18px;
   color: #333;
   text-align: center;
@@ -535,11 +517,10 @@
 ********************************************************/
 @media (max-width: 1200px) {
   .module {
-    /* Possibly reduce sizes/positions for narrower screens if you want */
+    /* Adjust as needed for narrower screens */
   }
 }
 @media (max-width: 768px) {
-  /* Stack modules */
   .module {
     position: static;
     width: 100%;
@@ -548,18 +529,18 @@
     opacity: 1;
     animation: none;
   }
-  .header {
+  .loaderHeader {
     font-size: 18px;
   }
-  .message {
+  .loaderMessage {
     font-size: 16px;
   }
 }
 @media (max-width: 480px) {
-  .header {
+  .loaderHeader {
     font-size: 16px;
   }
-  .message {
+  .loaderMessage {
     font-size: 14px;
   }
 }
