@@ -26,7 +26,7 @@ const LoadingCircle: React.FC = () => {
     if (progressIntervalRef.current) {
       window.clearInterval(progressIntervalRef.current);
     }
-    // increment by 1.5 every 70ms for a faster look
+    // increment by 1.5 every 70ms
     progressIntervalRef.current = window.setInterval(() => {
       setProgressPercent((prev) => {
         const target = (messageIndex / (loadingMessages.length - 1)) * 100;
@@ -72,22 +72,22 @@ const LoadingCircle: React.FC = () => {
   ];
 
   return (
-    <div className={styles.container}>
-      {/* No black bar—just a subtle heading */}
-      <div className={styles.header}>Deep-Dive Data Analysis</div>
+    <div className={styles.loaderContainer}>
+      {/* Subtle heading */}
+      <div className={styles.loaderHeader}>Deep-Dive Data Analysis</div>
 
       {/* Progress Bar */}
-      <div className={styles.progressContainer}>
-        <div 
-          className={styles.progressBar}
+      <div className={styles.loaderProgressContainer}>
+        <div
+          className={styles.loaderProgressBar}
           style={{ width: `${progressPercent}%` }}
         >
-          <div className={styles.progressGlow}></div>
+          <div className={styles.loaderProgressGlow}></div>
         </div>
       </div>
 
-      <div className={styles.content}>
-        <div className={styles.visualization}>
+      <div className={styles.loaderContent}>
+        <div className={styles.loaderVisualization}>
 
           {/* 1) REAL-TIME FUNNEL */}
           <div className={`${styles.module} ${getRandomSnapClass(0)} ${delayClasses[0]}`}>
@@ -359,7 +359,7 @@ const LoadingCircle: React.FC = () => {
         </div>
 
         {/* Rotating messages */}
-        <div className={`${styles.message} ${fade ? styles.fadeIn : styles.fadeOut}`}>
+        <div className={`${styles.loaderMessage} ${fade ? styles.fadeIn : styles.fadeOut}`}>
           {loadingMessages[messageIndex]}
         </div>
       </div>
