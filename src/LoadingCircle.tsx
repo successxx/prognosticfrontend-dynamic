@@ -1,12 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
 /* 
   OLD LOADER (Prognostic AI) 
-  EXACT copy/paste from the original, BUT we remove the black header container
-  <div className={styles['pai-dr-header']}>…</div>
-  to meet the requirement. 
-  Everything else remains the same.
+  EXACT copy/paste from the original, BUT we remove the black header container.
 */
 function OldLoader() {
   const loadingMessages = [
@@ -53,11 +50,10 @@ function OldLoader() {
 
   return (
     <div className={styles["prognostic-ai-demo-results-container"]}>
-      {/* 
-        Removed the black #252525 header block: 
+      {/*
+        Removed the black header container:
         <div className={styles["pai-dr-header"]}>Clients.ai Quantum Analysis In Process</div>
       */}
-
       <div className={styles["pai-dr-content"]}>
         {/* Futuristic visualization replaces simple spinner */}
         <div className={styles["pai-dr-visualization"]}>
@@ -121,10 +117,10 @@ function OldLoader() {
 
 /* 
   NEW ADVANCED ANALYSIS 
-  (unchanged from user’s final code, except we rename the component)
+  (Exact copy/paste from the original new module code)
 */
 function NewAnalysis() {
-  // Helper to clamp
+  // Helper to clamp a numeric value between min & max
   function clamp(value: number, min: number, max: number) {
     return Math.max(min, Math.min(max, value));
   }
@@ -311,11 +307,6 @@ function NewAnalysis() {
     };
   }, []);
 
-  // Helper for gauge angle
-  function getGaugeAngle(baseAngle: number, adjustDeg: number) {
-    return clamp(baseAngle + adjustDeg, 0, 90);
-  }
-
   // Module animation classes
   const animationClasses = [
     styles.animation1,
@@ -384,6 +375,7 @@ function NewAnalysis() {
 
       <div className={styles.content}>
         <div className={styles.visualization}>
+
           {/* 1) FUNNEL */}
           {renderModule(
             <>
@@ -990,23 +982,16 @@ function NewAnalysis() {
   );
 }
 
-
 /* 
   COMBINED LOADER
-  - Renders OldLoader on top (with black bar removed)
-  - Adds some vertical space
-  - Renders NewAnalysis below
+  - Renders OldLoader (spinner) above with tasteful spacing,
+    then NewAnalysis below.
 */
 export default function CombinedLoader() {
   return (
     <div>
-      {/* Old loader (spinner) above */}
       <OldLoader />
-
-      {/* "Tasteful spacing" */}
       <div style={{ margin: "60px 0" }} />
-
-      {/* New advanced analysis below */}
       <NewAnalysis />
     </div>
   );
