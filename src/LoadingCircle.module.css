@@ -4,34 +4,36 @@
 
 /********************************************************
   BASE CONTAINER & HEADER
-  - Mimics your home page container style
 ********************************************************/
 .container {
-  /* Full width container, up to 1500px, background #F8F8F8 */
+  /* Force it to use up to 1500px but not shrink to parent's smaller width */
   width: 100% !important;
   max-width: 1500px !important;
-  background: #F8F8F8 !important;
-  border: 1px solid #ECECEC !important;
-  border-radius: 6px !important;
-  box-shadow: none !important;
-  margin: 8px auto !important;
-  position: relative !important;
-  overflow: hidden !important;
-  display: flex !important;
-  flex-direction: column !important;
-  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-               Roboto, Helvetica, Arial, sans-serif;
+  margin: 0 auto !important;
+
+  position: relative;
+  border: 1px solid #ECECEC;
+  border-radius: 6px;
+  overflow: hidden;
+
+  background-color: #F8F9FB; /* hero-like background */
+  /* minimal shadow for a premium look */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+
+  /* ensure we appear on top if there's another container overlapping */
+  z-index: 999 !important;
 }
 
 .header {
-  background-color: #1E1E1E;
-  color: white;
+  /* remove black bar, make it subtle or white */
+  background-color: transparent;
+  color: #555;
   padding: 20px;
-  font-size: 22px;
-  font-weight: 600;
   text-align: center;
+  font-size: 22px;
+  font-weight: 500;
   letter-spacing: 0.5px;
-  text-transform: uppercase;
+  margin-bottom: 10px;
 }
 
 /********************************************************
@@ -47,8 +49,9 @@
 
 .progressBar {
   height: 100%;
-  background: linear-gradient(90deg, #1E1E1E, #4A4A4A);
-  transition: width 0.3s ease-out;
+  /* faster transition so it visually updates quickly */
+  background: linear-gradient(90deg, #555, #999);
+  transition: width 0.1s linear; 
   position: relative;
 }
 
@@ -64,31 +67,30 @@
     rgba(255,255,255,0.6),
     rgba(255,255,255,0)
   );
-  animation: glowLoop 2s ease-out infinite;
+  animation: glowLoop 1s ease-out infinite;
 }
 @keyframes glowLoop {
   0%   { transform: translateX(0); }
-  100% { transform: translateX(100px); }
+  100% { transform: translateX(80px); }
 }
 
 /********************************************************
   CONTENT AREA
-  - We remove fixed heights to allow auto expansion
 ********************************************************/
 .content {
-  background-color: #FFF !important; /* White inner area */
+  background-color: #FFF; /* white content area */
+  padding: 20px 15px;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  padding: 30px 15px;
 }
 
 .visualization {
   position: relative;
   width: 100%;
   margin-bottom: 20px;
-  /* Let the modules define total height instead of forcing it */
+  /* let the modules define total height, so no forced height */
 }
 
 /********************************************************
@@ -97,18 +99,17 @@
 ********************************************************/
 .module {
   position: absolute;
-  width: 42%;
-  height: 18%;
+  width: 42%;  /* wider rectangles */
+  height: 20%; 
   background: #fff;
   border-radius: 8px;
   border: 1px solid rgba(0,0,0,0.08);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   overflow: hidden;
   opacity: 0; /* hidden until animation completes */
 }
 
-/* 3 columns, 4 rows
-   Adjust the top/left to suit your preference */
+/* 3 columns, 4 rows. Adjust top offsets as needed. */
 .module:nth-of-type(1)  { top: 0%;   left: 0%;   }
 .module:nth-of-type(2)  { top: 0%;   left: 50%;  }
 .module:nth-of-type(3)  { top: 0%;   left: 100%; }
@@ -144,42 +145,39 @@
   0%   { transform: translateY(300px); opacity: 0; }
   100% { transform: translateY(0);     opacity: 1; }
 }
-
 .snapIn1 {
   animation: fromLeft 0.6s forwards ease-out;
 }
 .snapIn2 {
-  animation: fromRight 0.7s forwards ease-out;
+  animation: fromRight 0.6s forwards ease-out;
 }
 .snapIn3 {
   animation: fromTop 0.5s forwards ease-out;
 }
 .snapIn4 {
-  animation: fromBottom 0.8s forwards ease-out;
+  animation: fromBottom 0.7s forwards ease-out;
 }
 
-/********************************************************
-  RANDOM DELAYS (not so orderly)
-********************************************************/
+/* random delays */
 .delay0  { animation-delay: 0.0s; }
-.delay1  { animation-delay: 0.4s; }
-.delay2  { animation-delay: 0.9s; }
+.delay1  { animation-delay: 0.3s; }
+.delay2  { animation-delay: 0.7s; }
 .delay3  { animation-delay: 1.2s; }
-.delay4  { animation-delay: 0.6s; }
-.delay5  { animation-delay: 1.7s; }
+.delay4  { animation-delay: 0.5s; }
+.delay5  { animation-delay: 1.5s; }
 .delay6  { animation-delay: 1.0s; }
-.delay7  { animation-delay: 2.2s; }
-.delay8  { animation-delay: 1.4s; }
-.delay9  { animation-delay: 2.7s; }
-.delay10 { animation-delay: 1.9s; }
-.delay11 { animation-delay: 3.1s; }
+.delay7  { animation-delay: 2.0s; }
+.delay8  { animation-delay: 1.8s; }
+.delay9  { animation-delay: 2.6s; }
+.delay10 { animation-delay: 1.4s; }
+.delay11 { animation-delay: 2.9s; }
 
 /********************************************************
   MAC WINDOW BAR
 ********************************************************/
 .macWindowBar {
   height: 24px;
-  background-color: #e0e0e0;
+  background-color: #eee;
   display: flex;
   align-items: center;
   padding-left: 8px;
@@ -188,7 +186,7 @@
   width: 12px; 
   height: 12px;
   border-radius: 50%;
-  margin-right: 5px;
+  margin-right: 4px;
 }
 .trafficLight[data-color="red"]    { background-color: #ff5f56; }
 .trafficLight[data-color="yellow"] { background-color: #ffbd2e; }
@@ -197,28 +195,28 @@
 .windowTitle {
   font-size: 11px;
   font-weight: 600;
-  margin-left: 10px;
+  margin-left: 6px;
   color: #333;
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "SF Pro Display", sans-serif;
 }
 
 .moduleBody {
   width: 100%;
   height: calc(100% - 24px);
   position: relative;
-  padding: 6px;
+  padding: 8px;
   overflow: hidden;
 }
 
 /********************************************************
-  BASIC CHART GRID + AXIS (Subtle realism)
+  BASIC CHART GRID + AXIS
 ********************************************************/
 .chartGrid {
   position: absolute;
-  top: 6%;
-  left: 6%;
-  right: 6%;
-  bottom: 12%;
+  top: 8%;
+  left: 8%;
+  right: 8%;
+  bottom: 14%;
   background-image:
     linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
@@ -244,412 +242,275 @@
 
 /********************************************************
   1) REAL-TIME FUNNEL
+     - More "live" pattern (multi-step keyframe)
 ********************************************************/
 .funnelContainer {
   position: relative;
   width: 100%;
   height: 100%;
 }
+@keyframes funnelDynamic1 {
+  0%   { height: 30%; }
+  20%  { height: 60%; }
+  40%  { height: 85%; }
+  70%  { height: 45%; }
+  100% { height: 75%; }
+}
+@keyframes funnelDynamic2 {
+  0%   { height: 40%; }
+  25%  { height: 75%; }
+  50%  { height: 35%; }
+  80%  { height: 90%; }
+  100% { height: 50%; }
+}
+/* each bar picks 1 of these multi-step animations */
 .funnelBar {
   position: absolute;
   bottom: 0;
   width: 20px;
   background-color: #9552D3;
   transform-origin: bottom;
-  animation: funnelGrow 3s infinite ease-in-out alternate;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
 }
-@keyframes funnelGrow {
-  0%   { height: 20%; }
-  100% { height: 85%; }
-}
-.funnelBar[data-step="1"] { left: 10%; }
-.funnelBar[data-step="2"] { left: 30%; animation-delay: 0.5s; }
-.funnelBar[data-step="3"] { left: 50%; animation-delay: 1s;   }
-.funnelBar[data-step="4"] { left: 70%; animation-delay: 1.5s; }
+.funnelBar[data-step="1"] { left: 10%; animation-name: funnelDynamic1; animation-delay: 0.2s; }
+.funnelBar[data-step="2"] { left: 30%; animation-name: funnelDynamic2; animation-delay: 0.6s; }
+.funnelBar[data-step="3"] { left: 50%; animation-name: funnelDynamic1; animation-delay: 1.0s; }
+.funnelBar[data-step="4"] { left: 70%; animation-name: funnelDynamic2; animation-delay: 1.4s; }
 
 /********************************************************
   2) OPPORTUNITY RADAR
+     - Each vertex changes individually
 ********************************************************/
-.radarContainer {
-  position: relative;
-  width: 100%; 
-  height: 100%;
-}
-.radarGrid {
-  position: absolute;
-  top: 10%; left: 10%;
-  width: 80%; height: 80%;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at center,
-      transparent 0,       transparent 15%,
-      rgba(0,0,0,0.05) 15%, rgba(0,0,0,0.05) 16%,
-      transparent 16%,     transparent 30%,
-      rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.05) 31%,
-      transparent 31%,     transparent 45%,
-      rgba(0,0,0,0.05) 45%, rgba(0,0,0,0.05) 46%,
-      transparent 46%,     transparent 60%,
-      rgba(0,0,0,0.05) 60%, rgba(0,0,0,0.05) 61%,
-      transparent 61%,     transparent 75%,
-      rgba(0,0,0,0.05) 75%, rgba(0,0,0,0.05) 76%,
-      transparent 76%,     transparent 100%
-    );
+@keyframes radarVertexPulse {
+  0%   { clip-path: polygon(50% 0%, 80% 30%, 70% 70%, 20% 80%, 10% 40%); }
+  25%  { clip-path: polygon(45% 5%, 85% 25%, 65% 75%, 30% 85%, 15% 35%); }
+  50%  { clip-path: polygon(52% 0%, 76% 25%, 75% 66%, 25% 82%, 8% 45%); }
+  75%  { clip-path: polygon(55% 2%, 83% 33%, 68% 78%, 18% 88%, 12% 37%); }
+  100% { clip-path: polygon(50% 0%, 80% 30%, 70% 70%, 20% 80%, 10% 40%); }
 }
 .radarShape {
-  position: absolute;
-  top: 10%; left: 10%;
-  width: 80%; height: 80%;
-  border-radius: 50%;
-  clip-path: polygon(50% 0%, 80% 30%, 70% 70%, 20% 80%, 10% 40%);
-  background-color: rgba(149,82,211,0.2);
-  animation: radarShapePulse 4s infinite alternate;
-}
-@keyframes radarShapePulse {
-  0% {
-    transform: scale(0.8);
-    background-color: rgba(149,82,211,0.15);
-  }
-  100% {
-    transform: scale(1);
-    background-color: rgba(149,82,211,0.3);
-  }
+  animation: radarVertexPulse 6s infinite ease-in-out;
 }
 
 /********************************************************
   3) PREDICTIVE AREAS
+     - each layer with multi-step vertical shifts
 ********************************************************/
-.predictiveArea {
-  position: relative;
-  width: 100%; 
-  height: 100%;
+@keyframes predictive1 {
+  0%   { transform: translateY(0);   }
+  25%  { transform: translateY(-5%); }
+  50%  { transform: translateY(-15%);}
+  75%  { transform: translateY(-8%); }
+  100% { transform: translateY(-12%);}
 }
-.predictiveLayer {
-  position: absolute;
-  left: 0; 
-  width: 100%;
-  border-bottom: 2px solid #9552D3;
-  background-color: rgba(149,82,211,0.15);
-  animation: predictiveWobble 5s infinite alternate;
-}
-@keyframes predictiveWobble {
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(-10%); }
+@keyframes predictive2 {
+  0%   { transform: translateY(0);   }
+  20%  { transform: translateY(-10%);}
+  40%  { transform: translateY(-4%); }
+  60%  { transform: translateY(-14%);}
+  100% { transform: translateY(-8%); }
 }
 .predictiveLayer[data-layer="1"] {
   bottom: 0; height: 30%;
+  animation: predictive1 5s infinite alternate;
 }
 .predictiveLayer[data-layer="2"] {
   bottom: 30%; height: 25%;
+  animation: predictive2 5s infinite alternate;
   animation-delay: 0.5s;
 }
 .predictiveLayer[data-layer="3"] {
   bottom: 55%; height: 20%;
+  animation: predictive1 5s infinite alternate;
   animation-delay: 1s;
 }
 
 /********************************************************
   4) COMPARATIVE CHORD
+     - arcs vary angles
 ********************************************************/
-.chordContainer {
-  position: relative;
-  width: 100%; 
-  height: 100%;
-}
-.chordRing {
-  position: absolute;
-  top: 10%; left: 25%;
-  width: 50%; height: 50%;
-  border: 2px solid #ccc;
-  border-radius: 50%;
+@keyframes chordArcShift {
+  0%   { transform: rotate(30deg)  scaleX(1.2); }
+  25%  { transform: rotate(70deg)  scaleX(1.5); }
+  50%  { transform: rotate(130deg) scaleX(2.0); }
+  75%  { transform: rotate(90deg)  scaleX(1.4); }
+  100% { transform: rotate(30deg)  scaleX(1.2); }
 }
 .chordArc {
-  position: absolute;
-  width: 50%; height: 2px;
-  top: 50%; left: 50%;
-  background-color: #9552D3;
-  transform-origin: left center;
-  animation: chordArcPulse 5s infinite alternate;
-}
-@keyframes chordArcPulse {
-  0%   { opacity: 0.3; }
-  100% { opacity: 1; }
-}
-.chordArc[data-arc="1"] {
-  transform: rotate(30deg) scaleX(1.3);
-}
-.chordArc[data-arc="2"] {
-  transform: rotate(100deg) scaleX(1.8);
-  animation-delay: 1s;
-}
-.chordArc[data-arc="3"] {
-  transform: rotate(220deg) scaleX(1.5);
-  animation-delay: 2s;
+  animation: chordArcShift 6s infinite ease-in-out alternate;
 }
 
 /********************************************************
   5) MULTI-VARIABLE SCATTER
+     - random drift in multiple directions
 ********************************************************/
-.scatterContainer {
-  position: relative;
-  width: 100%;
-  height: 100%;
+@keyframes scatterRand1 {
+  0%   { transform: translate(0,0); }
+  20%  { transform: translate(5px, -3px); }
+  50%  { transform: translate(-8px, 6px); }
+  80%  { transform: translate(10px, 4px); }
+  100% { transform: translate(0,0); }
+}
+@keyframes scatterRand2 {
+  0%   { transform: translate(0,0); }
+  25%  { transform: translate(-6px, 4px); }
+  50%  { transform: translate(9px, -5px); }
+  75%  { transform: translate(-5px, -3px); }
+  100% { transform: translate(0,0); }
 }
 .scatterPoint {
-  position: absolute;
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background-color: #555;
-  animation: scatterDrift 3s infinite alternate;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
 }
-@keyframes scatterDrift {
-  0%   { transform: translate(0,0); }
-  100% { transform: translate(10px,-8px); }
-}
-.scatterPoint[data-id="1"] { left: 20%; top: 40%; }
-.scatterPoint[data-id="2"] { left: 50%; top: 70%; animation-delay: 0.5s; }
-.scatterPoint[data-id="3"] { left: 70%; top: 20%; animation-delay: 1s;   }
-.scatterPoint[data-id="4"] { left: 30%; top: 60%; animation-delay: 1.5s; }
-.scatterPoint[data-id="5"] { left: 65%; top: 50%; animation-delay: 0.8s; }
-.scatterPoint[data-id="6"] { left: 40%; top: 30%; animation-delay: 1.2s; }
+.scatterPoint[data-id="1"] { animation-name: scatterRand1; }
+.scatterPoint[data-id="2"] { animation-name: scatterRand2; animation-delay: 0.5s; }
+.scatterPoint[data-id="3"] { animation-name: scatterRand1; animation-delay: 1s; }
+.scatterPoint[data-id="4"] { animation-name: scatterRand2; animation-delay: 1.5s;}
+.scatterPoint[data-id="5"] { animation-name: scatterRand1; animation-delay: 0.8s; }
+.scatterPoint[data-id="6"] { animation-name: scatterRand2; animation-delay: 1.2s; }
 
 /********************************************************
   6) CORRELATION HEATMAP
+     - random color transitions
 ********************************************************/
-.heatmapContainer {
-  position: relative;
-  width: 100%; 
-  height: 100%;
-}
-.heatmapGrid {
-  position: absolute;
-  top: 10%; left: 10%;
-  width: 80%; height: 80%;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  gap: 4px;
+@keyframes heatRandom {
+  0%   { background-color: #d4cce3; }
+  15%  { background-color: #BC73ED; }
+  30%  { background-color: #9552D3; }
+  50%  { background-color: #E8EAF0; }
+  70%  { background-color: #BC73ED; }
+  100% { background-color: #9552D3; }
 }
 .heatCell {
-  background-color: #E8EAF0;
-  animation: heatCycle 4s infinite alternate;
-}
-@keyframes heatCycle {
-  0%   { background-color: #d4cce3; }
-  50%  { background-color: #9552D3; }
-  100% { background-color: #BC73ED; }
+  animation: heatRandom 5s infinite ease-in-out;
 }
 
 /********************************************************
   7) RESOURCE DONUT
 ********************************************************/
-.donutContainer {
-  position: relative;
-  width: 60px; 
-  height: 60px;
-  margin: 15% auto;
-  animation: donutRotate 6s linear infinite;
+@keyframes sliceShift1 {
+  0%   { transform: rotate(0deg);   }
+  33%  { transform: rotate(80deg);  }
+  66%  { transform: rotate(150deg); }
+  100% { transform: rotate(120deg); }
 }
-@keyframes donutRotate {
-  0%   { transform: rotate(0deg); }
+@keyframes sliceShift2 {
+  0%   { transform: rotate(120deg); }
+  33%  { transform: rotate(220deg); }
+  66%  { transform: rotate(160deg); }
+  100% { transform: rotate(240deg); }
+}
+@keyframes sliceShift3 {
+  0%   { transform: rotate(240deg); }
+  33%  { transform: rotate(320deg); }
+  66%  { transform: rotate(200deg); }
   100% { transform: rotate(360deg); }
 }
-.donutSlice {
-  position: absolute;
-  width: 60px; 
-  height: 60px;
-  border-radius: 50%;
-  clip: rect(0px, 60px, 60px, 30px);
-}
-.donutSlice[data-slice="1"] {
-  background-color: #555;
-  animation: slice1Anim 4s infinite alternate;
-}
-@keyframes slice1Anim {
-  0%   { transform: rotate(0deg); }
-  100% { transform: rotate(100deg); }
-}
-.donutSlice[data-slice="2"] {
-  background-color: #9552D3;
-  animation: slice2Anim 4s infinite alternate;
-}
-@keyframes slice2Anim {
-  0%   { transform: rotate(100deg); }
-  100% { transform: rotate(200deg); }
-}
-.donutSlice[data-slice="3"] {
-  background-color: #BC73ED;
-  animation: slice3Anim 4s infinite alternate;
-}
-@keyframes slice3Anim {
-  0%   { transform: rotate(200deg); }
-  100% { transform: rotate(360deg); }
-}
+.donutSlice[data-slice="1"] { animation: sliceShift1 4s infinite; }
+.donutSlice[data-slice="2"] { animation: sliceShift2 4s infinite; }
+.donutSlice[data-slice="3"] { animation: sliceShift3 4s infinite; }
 
 /********************************************************
   8) STABILITY GAUGE
+     - more random needle motion
 ********************************************************/
-.gaugeContainer {
-  position: relative;
-  width: 80px; 
-  height: 40px;
-  margin: 10% auto;
-  overflow: hidden;
-}
-.gaugeArc {
-  position: absolute;
-  width: 80px; 
-  height: 80px;
-  border: 6px solid #666;
-  border-bottom-color: transparent;
-  border-radius: 50%;
+@keyframes gaugeRandom {
+  0%   { transform: rotate(90deg);  }
+  25%  { transform: rotate(105deg); }
+  50%  { transform: rotate(115deg); }
+  75%  { transform: rotate(100deg); }
+  100% { transform: rotate(90deg);  }
 }
 .gaugeNeedle {
-  position: absolute;
-  width: 2px; height: 40px;
-  left: 39px; bottom: 0;
-  background-color: #9552D3;
-  transform-origin: bottom;
-  animation: gaugeVibrate 1s infinite;
-}
-@keyframes gaugeVibrate {
-  0%   { transform: rotate(100deg); }
-  20%  { transform: rotate(110deg); }
-  40%  { transform: rotate(105deg); }
-  60%  { transform: rotate(115deg); }
-  80%  { transform: rotate(107deg); }
-  100% { transform: rotate(100deg); }
+  animation: gaugeRandom 2s infinite ease-in-out;
 }
 
 /********************************************************
   9) PERFORMANCE STACKS
+     - varied bar expansions
 ********************************************************/
-.performanceStacks {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-.perfBar {
-  position: absolute;
-  bottom: 0;
-  width: 8%;
-  background-color: #555;
-  animation: perfGrow 4s infinite alternate;
-}
-@keyframes perfGrow {
+@keyframes perfVar1 {
   0%   { height: 20%; }
-  100% { height: 95%; }
+  25%  { height: 60%; }
+  50%  { height: 95%; }
+  75%  { height: 40%; }
+  100% { height: 80%; }
 }
-.perfBar[data-bar="1"] { left: 5%;  animation-delay: 0.2s; }
-.perfBar[data-bar="2"] { left: 18%; animation-delay: 0.6s; }
-.perfBar[data-bar="3"] { left: 31%; animation-delay: 1s;   }
-.perfBar[data-bar="4"] { left: 44%; animation-delay: 0.4s; }
-.perfBar[data-bar="5"] { left: 57%; animation-delay: 1.2s; }
-.perfBar[data-bar="6"] { left: 70%; animation-delay: 0.8s; }
+@keyframes perfVar2 {
+  0%   { height: 30%; }
+  30%  { height: 90%; }
+  60%  { height: 50%; }
+  100% { height: 75%; }
+}
+.perfBar[data-bar="1"] { animation: perfVar1 4s infinite alternate; }
+.perfBar[data-bar="2"] { animation: perfVar2 4s infinite alternate; animation-delay: 0.3s; }
+.perfBar[data-bar="3"] { animation: perfVar1 4s infinite alternate; animation-delay: 0.6s; }
+.perfBar[data-bar="4"] { animation: perfVar2 4s infinite alternate; animation-delay: 0.9s; }
+.perfBar[data-bar="5"] { animation: perfVar1 4s infinite alternate; animation-delay: 1.2s; }
+.perfBar[data-bar="6"] { animation: perfVar2 4s infinite alternate; animation-delay: 1.5s; }
 
 /********************************************************
-  10) MARKET CLUSTERS (Bubble Chart w/ axes)
+  10) MARKET CLUSTERS
 ********************************************************/
-.clusterContainer {
-  position: relative;
-  width: 100%; 
-  height: 100%;
-}
-.clusterBubble {
-  position: absolute;
-  border-radius: 50%;
-  background-color: #666;
-  animation: clusterShift 4s infinite alternate;
-}
-@keyframes clusterShift {
+@keyframes clusterShift2 {
   0%   { transform: translate(0,0); }
-  100% { transform: translate(10px, -5px); }
+  25%  { transform: translate(12px, -4px); }
+  50%  { transform: translate(-8px, 8px); }
+  75%  { transform: translate(5px, 5px); }
+  100% { transform: translate(0,0); }
 }
 .clusterBubble[data-bub="1"] {
-  width: 40px; height: 40px;
-  top: 40%; left: 20%;
-  animation-delay: 0.3s;
+  animation: clusterShift2 4s infinite ease-in-out;
 }
 .clusterBubble[data-bub="2"] {
-  width: 60px; height: 60px;
-  top: 30%; left: 50%;
-  animation-delay: 1s;
+  animation: clusterShift2 5s infinite ease-in-out;
+  animation-delay: 0.8s;
 }
 .clusterBubble[data-bub="3"] {
-  width: 45px; height: 45px;
-  top: 60%; left: 35%;
-  animation-delay: 0.6s;
+  animation: clusterShift2 4.5s infinite ease-in-out;
+  animation-delay: 1.2s;
 }
 
 /********************************************************
   11) FORECAST LINES
 ********************************************************/
-.forecastContainer {
-  position: relative;
-  width: 100%; 
-  height: 100%;
+@keyframes forecastShiftComplex {
+  0%   { transform: translateY(0) scaleX(0.4); }
+  20%  { transform: translateY(-5px) scaleX(0.7); }
+  40%  { transform: translateY(8px)  scaleX(1.0); }
+  60%  { transform: translateY(-4px) scaleX(0.6); }
+  80%  { transform: translateY(3px)  scaleX(0.9); }
+  100% { transform: translateY(0)    scaleX(0.5); }
 }
 .forecastLine {
-  position: absolute;
-  height: 2px;
-  background-color: #9552D3;
-  animation: forecastShift 4s infinite alternate;
-  transform-origin: left center;
+  animation: forecastShiftComplex 5s infinite ease-in-out;
 }
-@keyframes forecastShift {
-  0%   { transform: translateY(0) scaleX(0.5); }
-  100% { transform: translateY(-10px) scaleX(1.0); }
-}
-.forecastLine[data-line="a"] { top: 30%; left: 5%; width: 80%; }
-.forecastLine[data-line="b"] { top: 50%; left: 5%; width: 90%; animation-delay: 0.5s; }
-.forecastLine[data-line="c"] { top: 70%; left: 5%; width: 70%; animation-delay: 1s; }
 
 /********************************************************
   12) PATTERN NETWORK
 ********************************************************/
-.networkContainer {
-  position: relative;
-  width: 100%; 
-  height: 100%;
+@keyframes nodeRandomPulse {
+  0%   { transform: scale(1);   background-color: #333; }
+  25%  { transform: scale(1.4); background-color: #7A4AC9; }
+  50%  { transform: scale(1.2); background-color: #9552D3; }
+  75%  { transform: scale(1.5); background-color: #BC73ED; }
+  100% { transform: scale(1);   background-color: #333; }
 }
 .netNode {
-  position: absolute;
-  width: 12px; 
-  height: 12px;
-  background-color: #333;
-  border-radius: 50%;
-  animation: nodePulse 3s infinite alternate;
+  animation: nodeRandomPulse 4s infinite ease-in-out;
 }
-@keyframes nodePulse {
-  0%   { transform: scale(1);   background-color: #333; }
-  100% { transform: scale(1.3); background-color: #9552D3; }
+@keyframes linkRandom {
+  0%   { opacity: 0.3; }
+  50%  { opacity: 1;   }
+  100% { opacity: 0.5; }
 }
-.netNode[data-n="1"] { top: 40%; left: 30%; }
-.netNode[data-n="2"] { top: 60%; left: 60%; animation-delay: 0.5s; }
-.netNode[data-n="3"] { top: 25%; left: 50%; animation-delay: 1s; }
 .netLink {
-  position: absolute;
-  height: 2px;
-  background-color: #BC73ED;
-  animation: linkFlicker 2s infinite alternate;
-}
-@keyframes linkFlicker {
-  0%   { opacity: 0.4; }
-  100% { opacity: 1; }
-}
-.netLink[data-link="12"] {
-  top: 51%; left: 32%;
-  width: 30%;
-  transform: rotate(20deg);
-}
-.netLink[data-link="23"] {
-  top: 43%; left: 50%;
-  width: 22%;
-  transform: rotate(60deg);
-}
-.netLink[data-link="13"] {
-  top: 33%; left: 40%;
-  width: 14%;
-  transform: rotate(-10deg);
+  animation: linkRandom 3s infinite ease-in-out;
 }
 
 /********************************************************
@@ -663,7 +524,7 @@
   font-weight: 500;
   letter-spacing: 0.3px;
   margin-top: 10px;
-  background: -webkit-linear-gradient(45deg, #1E1E1E, #555);
+  background: -webkit-linear-gradient(45deg, #333, #555);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -681,24 +542,13 @@
   RESPONSIVE
 ********************************************************/
 @media (max-width: 1200px) {
-  /* Let content and visualization expand naturally */
-  .content {
-    padding: 15px;
+  .module {
+    /* Possibly reduce sizes/positions for narrower screens if you want */
   }
-  .visualization {
-    position: relative;
-    height: auto;
-  }
-  /* Modules get repositioned or stacked if you wish */
+  /* auto-wrap? optional */
 }
-
 @media (max-width: 768px) {
-  .header {
-    font-size: 18px;
-  }
-  .content {
-    padding: 15px 10px;
-  }
+  /* Stack modules */
   .module {
     position: static;
     width: 100%;
@@ -707,15 +557,16 @@
     opacity: 1;
     animation: none;
   }
+  .header {
+    font-size: 18px;
+  }
   .message {
     font-size: 16px;
   }
 }
-
 @media (max-width: 480px) {
   .header {
     font-size: 16px;
-    padding: 15px 10px;
   }
   .message {
     font-size: 14px;
