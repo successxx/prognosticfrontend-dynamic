@@ -2,19 +2,19 @@ import React, { useEffect, useState, useRef } from 'react';
 import styles from './LoadingCircle.module.css';
 
 const LoadingIndicator: React.FC = () => {
-  // Updated, generic loading messages
+  // Generic messages
   const loadingMessages = [
-    "Gathering global parameters...",
-    "Processing data streams...",
-    "Analyzing correlation factors...",
-    "Running advanced heuristics...",
-    "Evaluating multi-layered patterns...",
-    "Extracting potential anomalies...",
-    "Synthesizing predictive signals...",
-    "Assessing volatility thresholds...",
-    "Refining system parameters...",
-    "Compiling final intelligence...",
-    "Finalizing deep-dive insights..."
+    "Initializing multi-factor analysis...",
+    "Integrating relevant data points...",
+    "Correlating cross-domain variables...",
+    "Identifying key trends and patterns...",
+    "Refining advanced heuristics...",
+    "Detecting hidden opportunity signals...",
+    "Prioritizing emerging insights...",
+    "Projecting outcomes under constraints...",
+    "Synthesizing multi-layer strategy...",
+    "Finalizing deeper-level forecasts...",
+    "Deep analysis complete—compiling results..."
   ];
 
   const [messageIndex, setMessageIndex] = useState<number>(0);
@@ -23,7 +23,7 @@ const LoadingIndicator: React.FC = () => {
   const progressIntervalRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Animate the progress bar toward current message index
+    // Animate progress bar toward current index
     if (progressIntervalRef.current) {
       window.clearInterval(progressIntervalRef.current);
     }
@@ -41,7 +41,7 @@ const LoadingIndicator: React.FC = () => {
     const updateMessage = () => {
       setFade(false);
       setTimeout(() => {
-        setMessageIndex(prevIndex => (prevIndex + 1) % loadingMessages.length);
+        setMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
         setFade(true);
       }, 500);
     };
@@ -56,215 +56,244 @@ const LoadingIndicator: React.FC = () => {
   }, [messageIndex, loadingMessages.length]);
 
   return (
-    <div className={styles['container']}>
-      {/* Header - no blinking dots */}
-      <div className={styles['header']}>
-        Deep-Dive System Analysis
+    <div className={styles.container}>
+      {/* Header (no blinking dots) */}
+      <div className={styles.header}>
+        Deep-Dive Data Analysis
       </div>
 
       {/* Progress Bar */}
-      <div className={styles['progress-container']}>
+      <div className={styles["progress-container"]}>
         <div
-          className={styles['progress-bar']}
+          className={styles["progress-bar"]}
           style={{ width: `${progressPercent}%` }}
         >
-          <div className={styles['progress-glow']}></div>
+          <div className={styles["progress-glow"]}></div>
         </div>
       </div>
 
-      <div className={styles['content']}>
-        <div className={styles['visualization']}>
-          {/* 12 Modules, each with distinct chart & Mac window bar */}
+      <div className={styles.content}>
+        <div className={styles.visualization}>
+          {/* 12 Modules, each with a Mac window bar & a distinct “analysis” chart */}
 
-          {/* 1) System Diagnostics */}
-          <div className={`${styles['module']} ${styles['fly-in-left']}`}>
-            <div className={styles['mac-window-bar']}>
-              <span className={styles['traffic-light']} data-color="red"></span>
-              <span className={styles['traffic-light']} data-color="yellow"></span>
-              <span className={styles['traffic-light']} data-color="green"></span>
+          {/* 1 */}
+          <div className={`${styles.module} ${styles.flyIn} ${styles.delay0}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Data Diagnostics</div>
             </div>
-            <div className={styles['module-header']}>System Diagnostics</div>
-            <div className={styles['chart-bars']}>
-              <div className={styles['bar']} data-val="65"></div>
-              <div className={styles['bar']} data-val="40"></div>
-              <div className={styles['bar']} data-val="80"></div>
-              <div className={styles['bar']} data-val="50"></div>
+            <div className={styles.moduleBody}>
+              {/* A multi-stage bar chart */}
+              <div className={styles.multiBarChart}>
+                <div className={styles.barSegment} data-seq="1"></div>
+                <div className={styles.barSegment} data-seq="2"></div>
+                <div className={styles.barSegment} data-seq="3"></div>
+                <div className={styles.barSegment} data-seq="4"></div>
+              </div>
             </div>
           </div>
 
-          {/* 2) Opportunity Analysis */}
-          <div className={`${styles['module']} ${styles['fly-in-center']}`}>
-            <div className={styles['mac-window-bar']}>
-              <span className={styles['traffic-light']} data-color="red"></span>
-              <span className={styles['traffic-light']} data-color="yellow"></span>
-              <span className={styles['traffic-light']} data-color="green"></span>
+          {/* 2 */}
+          <div className={`${styles.module} ${styles.flyIn} ${styles.delay1}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Opportunity Insights</div>
             </div>
-            <div className={styles['module-header']}>Opportunity Analysis</div>
-            <div className={styles['chart-line-opportunity']}>
-              <div className={styles['opportunity-line']}></div>
-              <div className={styles['opportunity-indicator']}></div>
-            </div>
-          </div>
-
-          {/* 3) Predictive Forecast */}
-          <div className={`${styles['module']} ${styles['fly-in-right']}`}>
-            <div className={styles['mac-window-bar']}>
-              <span className={styles['traffic-light']} data-color="red"></span>
-              <span className={styles['traffic-light']} data-color="yellow"></span>
-              <span className={styles['traffic-light']} data-color="green"></span>
-            </div>
-            <div className={styles['module-header']}>Predictive Forecast</div>
-            <div className={styles['chart-gauge']}>
-              <div className={styles['gauge-base']}></div>
-              <div className={styles['gauge-needle']}></div>
+            <div className={styles.moduleBody}>
+              {/* Slightly more complex line chart with random dips/climbs */}
+              <div className={styles.opportunityLineChart}>
+                <div className={styles.linePath}></div>
+                <div className={styles.lineDot} data-loc="0"></div>
+                <div className={styles.lineDot} data-loc="1"></div>
+                <div className={styles.lineDot} data-loc="2"></div>
+                <div className={styles.lineDot} data-loc="3"></div>
+                <div className={styles.lineDot} data-loc="4"></div>
+              </div>
             </div>
           </div>
 
-          {/* 4) Resource Allocation */}
-          <div className={`${styles['module']} ${styles['fly-in-left']}`}>
-            <div className={styles['mac-window-bar']}>
-              <span className={styles['traffic-light']} data-color="red"></span>
-              <span className={styles['traffic-light']} data-color="yellow"></span>
-              <span className={styles['traffic-light']} data-color="green"></span>
+          {/* 3 */}
+          <div className={`${styles.module} ${styles.flyIn} ${styles.delay2}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Predictive Forecast</div>
             </div>
-            <div className={styles['module-header']}>Resource Allocation</div>
-            <div className={styles['chart-stacked-bar']}>
-              <div className={styles['stack']} data-stack="30"></div>
-              <div className={styles['stack']} data-stack="60"></div>
-              <div className={styles['stack']} data-stack="85"></div>
-            </div>
-          </div>
-
-          {/* 5) Factor Correlation */}
-          <div className={`${styles['module']} ${styles['fly-in-center']}`}>
-            <div className={styles['mac-window-bar']}>
-              <span className={styles['traffic-light']} data-color="red"></span>
-              <span className={styles['traffic-light']} data-color="yellow"></span>
-              <span className={styles['traffic-light']} data-color="green"></span>
-            </div>
-            <div className={styles['module-header']}>Factor Correlation</div>
-            <div className={styles['chart-radar']}>
-              <div className={styles['radar-area']}></div>
-              <div className={styles['radar-point']} data-delay="0.3"></div>
-              <div className={styles['radar-point']} data-delay="0.6"></div>
-              <div className={styles['radar-point']} data-delay="0.9"></div>
-              <div className={styles['radar-point']} data-delay="1.2"></div>
-              <div className={styles['radar-point']} data-delay="1.5"></div>
+            <div className={styles.moduleBody}>
+              <div className={styles.chartGauge}>
+                <div className={styles.gaugeArc}></div>
+                <div className={styles.gaugeNeedle}></div>
+              </div>
             </div>
           </div>
 
-          {/* 6) Behavior Mapping */}
-          <div className={`${styles['module']} ${styles['fly-in-right']}`}>
-            <div className={styles['mac-window-bar']}>
-              <span className={styles['traffic-light']} data-color="red"></span>
-              <span className={styles['traffic-light']} data-color="yellow"></span>
-              <span className={styles['traffic-light']} data-color="green"></span>
+          {/* 4 */}
+          <div className={`${styles.module} ${styles.flyIn} ${styles.delay3}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Correlation Mapping</div>
             </div>
-            <div className={styles['module-header']}>Behavior Mapping</div>
-            <div className={styles['chart-scatter']}>
-              <div className={styles['scatter-dot']} data-x="10" data-y="70"></div>
-              <div className={styles['scatter-dot']} data-x="40" data-y="30"></div>
-              <div className={styles['scatter-dot']} data-x="60" data-y="50"></div>
-              <div className={styles['scatter-dot']} data-x="80" data-y="20"></div>
-            </div>
-          </div>
-
-          {/* 7) Trend Highlights */}
-          <div className={`${styles['module']} ${styles['fly-in-left']}`}>
-            <div className={styles['mac-window-bar']}>
-              <span className={styles['traffic-light']} data-color="red"></span>
-              <span className={styles['traffic-light']} data-color="yellow"></span>
-              <span className={styles['traffic-light']} data-color="green"></span>
-            </div>
-            <div className={styles['module-header']}>Trend Highlights</div>
-            <div className={styles['chart-chord']}>
-              <div className={styles['chord-ring']}></div>
-              <div className={styles['chord-link']} data-rot="45"></div>
-              <div className={styles['chord-link']} data-rot="135"></div>
-              <div className={styles['chord-link']} data-rot="225"></div>
+            <div className={styles.moduleBody}>
+              <div className={styles.radarChart}>
+                <div className={styles.radarScan}></div>
+                <div className={styles.radarDot} data-pos="1"></div>
+                <div className={styles.radarDot} data-pos="2"></div>
+                <div className={styles.radarDot} data-pos="3"></div>
+                <div className={styles.radarDot} data-pos="4"></div>
+              </div>
             </div>
           </div>
 
-          {/* 8) Anomaly Detection */}
-          <div className={`${styles['module']} ${styles['fly-in-center']}`}>
-            <div className={styles['mac-window-bar']}>
-              <span className={styles['traffic-light']} data-color="red"></span>
-              <span className={styles['traffic-light']} data-color="yellow"></span>
-              <span className={styles['traffic-light']} data-color="green"></span>
+          {/* 5 */}
+          <div className={`${styles.module} ${styles.flyIn} ${styles.delay4}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Trend Overview</div>
             </div>
-            <div className={styles['module-header']}>Anomaly Detection</div>
-            <div className={styles['chart-heatmap']}>
-              {Array.from({ length: 9 }).map((_, i) => (
-                <div key={i} className={styles['heatmap-cell']} data-index={i}></div>
-              ))}
-            </div>
-          </div>
-
-          {/* 9) Multi-Variable Insights */}
-          <div className={`${styles['module']} ${styles['fly-in-right']}`}>
-            <div className={styles['mac-window-bar']}>
-              <span className={styles['traffic-light']} data-color="red"></span>
-              <span className={styles['traffic-light']} data-color="yellow"></span>
-              <span className={styles['traffic-light']} data-color="green"></span>
-            </div>
-            <div className={styles['module-header']}>Multi-Variable Insights</div>
-            <div className={styles['chart-bubble']}>
-              <span className={styles['bubble']} data-size="small"></span>
-              <span className={styles['bubble']} data-size="medium"></span>
-              <span className={styles['bubble']} data-size="large"></span>
+            <div className={styles.moduleBody}>
+              <div className={styles.trendChord}>
+                <div className={styles.chordRing}></div>
+                <div className={styles.chordLink} data-angle="1"></div>
+                <div className={styles.chordLink} data-angle="2"></div>
+                <div className={styles.chordLink} data-angle="3"></div>
+              </div>
             </div>
           </div>
 
-          {/* 10) Performance Gauge */}
-          <div className={`${styles['module']} ${styles['fly-in-left']}`}>
-            <div className={styles['mac-window-bar']}>
-              <span className={styles['traffic-light']} data-color="red"></span>
-              <span className={styles['traffic-light']} data-color="yellow"></span>
-              <span className={styles['traffic-light']} data-color="green"></span>
+          {/* 6 */}
+          <div className={`${styles.module} ${styles.flyIn} ${styles.delay5}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Behavior Model</div>
             </div>
-            <div className={styles['module-header']}>Performance Gauge</div>
-            <div className={styles['chart-donut']}>
-              <div className={styles['donut-segment']} data-segment="1"></div>
-              <div className={styles['donut-segment']} data-segment="2"></div>
-              <div className={styles['donut-segment']} data-segment="3"></div>
-            </div>
-          </div>
-
-          {/* 11) Stability Projections */}
-          <div className={`${styles['module']} ${styles['fly-in-center']}`}>
-            <div className={styles['mac-window-bar']}>
-              <span className={styles['traffic-light']} data-color="red"></span>
-              <span className={styles['traffic-light']} data-color="yellow"></span>
-              <span className={styles['traffic-light']} data-color="green"></span>
-            </div>
-            <div className={styles['module-header']}>Stability Projections</div>
-            <div className={styles['chart-line-stability']}>
-              <div className={styles['stability-line']}></div>
-              <div className={styles['stability-pulse']}></div>
+            <div className={styles.moduleBody}>
+              <div className={styles.scatterCloud}>
+                <div className={styles.scatterPoint} data-seed="0"></div>
+                <div className={styles.scatterPoint} data-seed="1"></div>
+                <div className={styles.scatterPoint} data-seed="2"></div>
+                <div className={styles.scatterPoint} data-seed="3"></div>
+                <div className={styles.scatterPoint} data-seed="4"></div>
+              </div>
             </div>
           </div>
 
-          {/* 12) Pattern Recognition */}
-          <div className={`${styles['module']} ${styles['fly-in-right']}`}>
-            <div className={styles['mac-window-bar']}>
-              <span className={styles['traffic-light']} data-color="red"></span>
-              <span className={styles['traffic-light']} data-color="yellow"></span>
-              <span className={styles['traffic-light']} data-color="green"></span>
+          {/* 7 */}
+          <div className={`${styles.module} ${styles.flyIn} ${styles.delay6}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Resource Trends</div>
             </div>
-            <div className={styles['module-header']}>Pattern Recognition</div>
-            <div className={styles['chart-network']}>
-              <div className={styles['network-node']} data-loc="1"></div>
-              <div className={styles['network-node']} data-loc="2"></div>
-              <div className={styles['network-node']} data-loc="3"></div>
-              <div className={styles['network-link']} data-link="12"></div>
-              <div className={styles['network-link']} data-link="23"></div>
-              <div className={styles['network-link']} data-link="13"></div>
+            <div className={styles.moduleBody}>
+              <div className={styles.complexBars}>
+                <div className={styles.complexBar} data-stagger="1"></div>
+                <div className={styles.complexBar} data-stagger="2"></div>
+                <div className={styles.complexBar} data-stagger="3"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* 8 */}
+          <div className={`${styles.module} ${styles.flyIn} ${styles.delay7}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Anomaly Detection</div>
+            </div>
+            <div className={styles.moduleBody}>
+              <div className={styles.heatmapMatrix}>
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <div key={i} className={styles.heatCell} data-index={i}></div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 9 */}
+          <div className={`${styles.module} ${styles.flyIn} ${styles.delay8}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Multi-Variable Scan</div>
+            </div>
+            <div className={styles.moduleBody}>
+              <div className={styles.bubbleFlow}>
+                <span className={styles.bubble} data-size="sm"></span>
+                <span className={styles.bubble} data-size="md"></span>
+                <span className={styles.bubble} data-size="lg"></span>
+              </div>
+            </div>
+          </div>
+
+          {/* 10 */}
+          <div className={`${styles.module} ${styles.flyIn} ${styles.delay9}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Performance Index</div>
+            </div>
+            <div className={styles.moduleBody}>
+              <div className={styles.donutGauge}>
+                <div className={styles.donutSlice} data-slice="1"></div>
+                <div className={styles.donutSlice} data-slice="2"></div>
+                <div className={styles.donutSlice} data-slice="3"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* 11 */}
+          <div className={`${styles.module} ${styles.flyIn} ${styles.delay10}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Stability Projection</div>
+            </div>
+            <div className={styles.moduleBody}>
+              <div className={styles.sineLine}>
+                <div className={styles.sineWave}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* 12 */}
+          <div className={`${styles.module} ${styles.flyIn} ${styles.delay11}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Pattern Recognition</div>
+            </div>
+            <div className={styles.moduleBody}>
+              <div className={styles.networkAnalysis}>
+                <div className={styles.netNode} data-node="1"></div>
+                <div className={styles.netNode} data-node="2"></div>
+                <div className={styles.netNode} data-node="3"></div>
+                <div className={styles.netLink} data-link="12"></div>
+                <div className={styles.netLink} data-link="23"></div>
+                <div className={styles.netLink} data-link="13"></div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Rotating messages */}
-        <div className={`${styles['message']} ${fade ? styles['fade-in'] : styles['fade-out']}`}>
+        {/* Rotating status message */}
+        <div className={`${styles.message} ${fade ? styles['fade-in'] : styles['fade-out']}`}>
           {loadingMessages[messageIndex]}
         </div>
       </div>
