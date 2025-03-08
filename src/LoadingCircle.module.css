@@ -11,7 +11,8 @@
   /* Match hero: white with subtle purple accent wave */
   background-color: #F8F9FB;
   position: relative;
-  max-width: 1500px;
+  /* Changed here: replaced max-width with width: 1500px !important */
+  width: 1500px !important;
   margin: 20px auto;
   border-radius: 12px;
   overflow: hidden;
