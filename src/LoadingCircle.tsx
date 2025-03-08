@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
 /* 
-  We keep the OLD LOADER code in its own component: 
-  - EXACT copy/paste from original (except we rename the component to OldLoader, 
-    but no logic or lines are lost) 
+  We keep the OLD LOADER code in its own component:
+  - EXACT copy/paste from the original (renamed to OldLoader) 
+  - No logic or lines are lost, except removing direct "React" references if unused
 */
 function OldLoader() {
   const loadingMessages = [
@@ -113,11 +113,10 @@ function OldLoader() {
   );
 }
 
-/* 
-  We keep the NEW code in its own component: 
-  - EXACT copy/paste from original (except rename it to NewAnalysis for clarity, 
-    or keep LoadingCircle if you prefer). 
-  - No lines removed.
+/*
+  We keep the NEW code in its own component:
+  - EXACT copy/paste from original (renamed to NewAnalysis),
+  - No lines removed except removing direct default React import if not used.
 */
 function NewAnalysis() {
   const TOTAL_MODULES = 12;
@@ -325,9 +324,18 @@ function NewAnalysis() {
 
   // 12 staggered delay classes
   const delayClasses = [
-    styles.delay1, styles.delay2, styles.delay3, styles.delay4,
-    styles.delay5, styles.delay6, styles.delay7, styles.delay8,
-    styles.delay9, styles.delay10, styles.delay11, styles.delay12
+    styles.delay1,
+    styles.delay2,
+    styles.delay3,
+    styles.delay4,
+    styles.delay5,
+    styles.delay6,
+    styles.delay7,
+    styles.delay8,
+    styles.delay9,
+    styles.delay10,
+    styles.delay11,
+    styles.delay12
   ];
 
   function renderModule(content: JSX.Element, moduleIndex: number) {
@@ -608,6 +616,7 @@ function NewAnalysis() {
               >
                 <div className={styles.heatmapContainer}>
                   <div className={styles.heatmapGrid}>
+                    {/* 25 cells */}
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
@@ -674,14 +683,21 @@ function NewAnalysis() {
               >
                 <div className={styles.donutContainer}>
                   <div className={styles.donutRing}></div>
-                  <div className={`${styles.donutSegment} ${styles.segment1}`}></div>
-                  <div className={`${styles.donutSegment} ${styles.segment2}`}></div>
-                  <div className={`${styles.donutSegment} ${styles.segment3}`}></div>
+                  <div
+                    className={`${styles.donutSegment} ${styles.segment1}`}
+                  ></div>
+                  <div
+                    className={`${styles.donutSegment} ${styles.segment2}`}
+                  ></div>
+                  <div
+                    className={`${styles.donutSegment} ${styles.segment3}`}
+                  ></div>
                   <div className={styles.donutHole}></div>
                   <div className={styles.donutLabel}>
                     <div className={styles.value}>72%</div>
                     <div className={styles.text}>Utilization</div>
                   </div>
+                  {/* Shifted these legend items up so none overflow */}
                   <div className={styles.legendItem} style={{ bottom: "25%" }}>
                     <span></span>Group A
                   </div>
@@ -766,7 +782,9 @@ function NewAnalysis() {
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{ height: `${clamp(55 + liveRandom.bar, 0, 100)}%` }}
+                        style={{
+                          height: `${clamp(55 + liveRandom.bar, 0, 100)}%`
+                        }}
                       ></div>
                       <div className={styles.barLabel}>Cat A</div>
                       <div className={styles.barValue}>58%</div>
@@ -774,7 +792,9 @@ function NewAnalysis() {
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{ height: `${clamp(80 + liveRandom.bar, 0, 100)}%` }}
+                        style={{
+                          height: `${clamp(80 + liveRandom.bar, 0, 100)}%`
+                        }}
                       ></div>
                       <div className={styles.barLabel}>Cat B</div>
                       <div className={styles.barValue}>82%</div>
@@ -782,7 +802,9 @@ function NewAnalysis() {
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{ height: `${clamp(68 + liveRandom.bar, 0, 100)}%` }}
+                        style={{
+                          height: `${clamp(68 + liveRandom.bar, 0, 100)}%`
+                        }}
                       ></div>
                       <div className={styles.barLabel}>Cat C</div>
                       <div className={styles.barValue}>71%</div>
@@ -790,7 +812,9 @@ function NewAnalysis() {
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{ height: `${clamp(90 + liveRandom.bar, 0, 100)}%` }}
+                        style={{
+                          height: `${clamp(90 + liveRandom.bar, 0, 100)}%`
+                        }}
                       ></div>
                       <div className={styles.barLabel}>Cat D</div>
                       <div className={styles.barValue}>93%</div>
@@ -798,7 +822,9 @@ function NewAnalysis() {
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{ height: `${clamp(77 + liveRandom.bar, 0, 100)}%` }}
+                        style={{
+                          height: `${clamp(77 + liveRandom.bar, 0, 100)}%`
+                        }}
                       ></div>
                       <div className={styles.barLabel}>Cat E</div>
                       <div className={styles.barValue}>79%</div>
@@ -806,7 +832,9 @@ function NewAnalysis() {
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{ height: `${clamp(42 + liveRandom.bar, 0, 100)}%` }}
+                        style={{
+                          height: `${clamp(42 + liveRandom.bar, 0, 100)}%`
+                        }}
                       ></div>
                       <div className={styles.barLabel}>Cat F</div>
                       <div className={styles.barValue}>46%</div>
@@ -962,11 +990,11 @@ function NewAnalysis() {
   );
 }
 
-/* 
-  Finally, we export ONE top-level component that:
-  1) Renders the OLD LOADER on top
-  2) Adds tasteful spacing
-  3) Renders the NEW ADVANCED CODE below
+/*
+  Finally, export ONE top-level component that:
+   1) Renders the OLD LOADER on top
+   2) Adds tasteful spacing
+   3) Renders the NEW ANALYSIS below
 */
 export default function CombinedLoader() {
   return (
