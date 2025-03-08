@@ -74,7 +74,7 @@ const LoadingCircle: React.FC = () => {
   return (
     <div className={styles.container}>
       {/* No black bar—just a subtle heading */}
-      <div className={styles.header}>Deep-Dive Data Analysis</div>
+      <div className={styles.headerzoom}>Deep-Dive Data Analysis</div>
 
       {/* Progress Bar */}
       <div className={styles.progressContainer}>
