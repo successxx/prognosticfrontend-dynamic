@@ -120,16 +120,16 @@ const LoadingCircle: React.FC = () => {
     }, 1000);
 
     // Fill progress bar from 0% to 100% in topLoaderDuration seconds
-    progressIntervalRef.current = window.setInterval(() => {
-      setProgressPercent((prev) => {
-        // Once we hit 100% we do not revert
-        if (timeElapsed < topLoaderDuration) {
-          return Math.min((timeElapsed / topLoaderDuration) * 100, 100);
-        } else {
-          return 100; // done
-        }
-      });
-    }, 300);
+   progressIntervalRef.current = window.setInterval(() => {
+  setProgressPercent(() => {
+    // Once we hit 100% we do not revert
+    if (timeElapsed < topLoaderDuration) {
+      return Math.min((timeElapsed / topLoaderDuration) * 100, 100);
+    } else {
+      return 100; // done
+    }
+  });
+}, 300);
 
     return () => {
       window.clearInterval(masterTimer);
