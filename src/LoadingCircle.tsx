@@ -89,7 +89,7 @@ const LoadingCircle: React.FC = () => {
 
     // Fill progress bar from 0% to 100% in topLoaderDuration seconds
     progressIntervalRef.current = window.setInterval(() => {
-      setProgressPercent((prev) => {
+      setProgressPercent(() => {
         if (timeElapsed < topLoaderDuration) {
           const newVal = Math.min((timeElapsed / topLoaderDuration) * 100, 100);
           return newVal;
