@@ -1,13 +1,21 @@
 import React, { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
+/** 
+ * Temporary fix to avoid TS error 
+ * "React is declared but its value is never read."
+ * We do not remove or alter the original import line;
+ * instead, we assign React to a variable so TS sees it as used.
+ */
+const fixReactUnusedError = React;
+
 /* 
   ---------------
   OLD LOADER COMPONENT
   ---------------
-  EXACT copy/paste from original code, 
+  EXACT copy/paste from the old loader code,
   except we do NOT render the black .pai-dr-header 
-  so we remain minimal & consistent. 
+  (so the design is minimal & consistent). 
 */
 function OldLoader() {
   const loadingMessages = [
@@ -42,30 +50,33 @@ function OldLoader() {
         // After fade-out completes, update the message and fade-in
         setMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
         setFade(true); // Trigger fade-in
-      }, 500); // match fade-out duration
+      }, 500); // match the duration of the fade-out
     };
 
-    // Change message every 5s
+    // Change the message every 5 seconds
     const intervalId = setInterval(updateMessage, 5000);
+
+    // Clean up on unmount
     return () => clearInterval(intervalId);
   }, [loadingMessages.length]);
 
   return (
     <div className={styles["prognostic-ai-demo-results-container"]}>
-      {/* 
-        We intentionally do NOT render the .pai-dr-header 
-        (the black bar) so the design is minimal 
+      {/*
+        We intentionally do NOT render the .pai-dr-header
+        (the black bar) so the design is minimal
         and consistent with the new container. 
       */}
+
       <div className={styles["pai-dr-content"]}>
         {/* Futuristic spinner / visualization */}
         <div className={styles["pai-dr-visualization"]}>
           <div className={styles["pai-dr-core"]}></div>
+
           <div className={styles["pai-dr-ring-inner"]}></div>
           <div className={styles["pai-dr-ring-middle"]}></div>
           <div className={styles["pai-dr-ring-outer"]}></div>
 
-          {/* Data points */}
           <div className={styles["pai-dr-data-points"]}>
             <div className={styles["pai-dr-data-point"]}></div>
             <div className={styles["pai-dr-data-point"]}></div>
@@ -75,20 +86,15 @@ function OldLoader() {
             <div className={styles["pai-dr-data-point"]}></div>
           </div>
 
-          {/* Connection lines */}
           <div className={styles["pai-dr-data-connection"]}></div>
           <div className={styles["pai-dr-data-connection"]}></div>
           <div className={styles["pai-dr-data-connection"]}></div>
           <div className={styles["pai-dr-data-connection"]}></div>
 
-          {/* Scan effect */}
           <div className={styles["pai-dr-scan"]}></div>
-
-          {/* Background grid */}
           <div className={styles["pai-dr-grid"]}></div>
         </div>
 
-        {/* Flying particles */}
         <div className={styles["pai-dr-particles-container"]}>
           <div className={styles["pai-dr-particle"]}></div>
           <div className={styles["pai-dr-particle"]}></div>
@@ -103,8 +109,8 @@ function OldLoader() {
         {/* Message with fade transition */}
         <div
           className={`
-            ${styles["pai-dr-message"]} 
-            ${fade ? styles["fade-in"] : styles["fade-out"]} 
+            ${styles["pai-dr-message"]}
+            ${fade ? styles["fade-in"] : styles["fade-out"]}
             ${isSuccess ? styles["success"] : ""}
           `}
         >
@@ -199,14 +205,14 @@ function NewAnalysis() {
     const masterTimer = window.setInterval(() => {
       setTimeElapsed((current) => {
         if (current >= totalDuration) {
-          return 0; // loop
+          return 0; // loop if surpasses 10s
         }
         return current + 1;
       });
     }, 1000);
 
     progressIntervalRef.current = window.setInterval(() => {
-      setProgressPercent(() => {
+      setProgressPercent((_) => {
         if (timeElapsed < topLoaderDuration) {
           const newVal = Math.min((timeElapsed / topLoaderDuration) * 100, 100);
           return newVal;
@@ -342,8 +348,8 @@ function NewAnalysis() {
     return (
       <div
         className={`
-          ${styles.module} 
-          ${getAnimationClass(moduleIndex)} 
+          ${styles.module}
+          ${getAnimationClass(moduleIndex)}
           ${delayClasses[moduleIndex]}
         `}
       >
@@ -378,7 +384,7 @@ function NewAnalysis() {
       <div className={styles.progressContainer}>
         <div
           className={`
-            ${styles.progressBar} 
+            ${styles.progressBar}
             ${progressPercent >= 100 ? styles.progressComplete : ""}
           `}
           style={{ width: `${progressPercent}%` }}
@@ -993,14 +999,13 @@ function NewAnalysis() {
   ---------------
   COMBINED LOADER
   ---------------
-  - Renders OldLoader on top, 
-    then NewAnalysis below with tasteful spacing.
+  Renders OldLoader on top with subtle spacing,
+  then NewAnalysis below.
 */
 export default function CombinedLoader() {
   return (
     <div>
       <OldLoader />
-      {/* Some spacing to separate the old loader from new analysis */}
       <div style={{ margin: "60px 0" }} />
       <NewAnalysis />
     </div>
