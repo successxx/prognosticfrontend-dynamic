@@ -1,120 +1,17 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
-/************************************************************
-   1) The OLD LOADER – we keep it intact as 'OldLoader'
-************************************************************/
-function OldLoader() {
-  const loadingMessages = [
-    "Thinking...",
-    "Looking at your site...",
-    "Finding immediate opportunities...",
-    "Tailoring value...",
-    "Identifying your target audience...",
-    "Split-testing potential setbacks...",
-    "Analyzing test results...",
-    "Refining for immediate impact...",
-    "Running new A/B tests based on synthesized results...",
-    "Crafting your blueprint for maximum success...",
-    "Refining...",
-    "Success! Processing...",
-    "Success! Finalizing...",
-    "Success! Integrating...",
-    "Success! Validating...",
-    "Success! Completing..."
-  ];
-
-  const [messageIndex, setMessageIndex] = useState<number>(0);
-  const [fade, setFade] = useState<boolean>(true); // True for fade-in, false for fade-out
-
-  // Check if the message includes "Success!" to apply special styling
-  const isSuccess = loadingMessages[messageIndex].includes("Success!");
-
-  useEffect(() => {
-    const updateMessage = () => {
-      setFade(false); // Start fade-out
-      setTimeout(() => {
-        // After fade-out completes, update the message and fade-in
-        setMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
-        setFade(true); // Trigger fade-in
-      }, 500); // Match the duration of the fade-out
-    };
-
-    // Change the message every 5 seconds
-    const intervalId = setInterval(updateMessage, 5000);
-
-    return () => clearInterval(intervalId);
-  }, [loadingMessages.length]);
-
-  return (
-    <div className={styles["pai-dr-content"]} style={{ marginBottom: "20px" }}>
-      {/* Futuristic visualization */}
-      <div className={styles["pai-dr-visualization"]}>
-        <div className={styles["pai-dr-core"]}></div>
-        <div className={styles["pai-dr-ring-inner"]}></div>
-        <div className={styles["pai-dr-ring-middle"]}></div>
-        <div className={styles["pai-dr-ring-outer"]}></div>
-
-        {/* Data points */}
-        <div className={styles["pai-dr-data-points"]}>
-          <div className={styles["pai-dr-data-point"]}></div>
-          <div className={styles["pai-dr-data-point"]}></div>
-          <div className={styles["pai-dr-data-point"]}></div>
-          <div className={styles["pai-dr-data-point"]}></div>
-          <div className={styles["pai-dr-data-point"]}></div>
-          <div className={styles["pai-dr-data-point"]}></div>
-        </div>
-
-        {/* Connections */}
-        <div className={styles["pai-dr-data-connection"]}></div>
-        <div className={styles["pai-dr-data-connection"]}></div>
-        <div className={styles["pai-dr-data-connection"]}></div>
-        <div className={styles["pai-dr-data-connection"]}></div>
-
-        {/* Scan effect */}
-        <div className={styles["pai-dr-scan"]}></div>
-
-        {/* Background grid */}
-        <div className={styles["pai-dr-grid"]}></div>
-      </div>
-
-      {/* Flying particles */}
-      <div className={styles["pai-dr-particles-container"]}>
-        <div className={styles["pai-dr-particle"]}></div>
-        <div className={styles["pai-dr-particle"]}></div>
-        <div className={styles["pai-dr-particle"]}></div>
-        <div className={styles["pai-dr-particle"]}></div>
-        <div className={styles["pai-dr-particle"]}></div>
-        <div className={styles["pai-dr-particle"]}></div>
-        <div className={styles["pai-dr-particle"]}></div>
-        <div className={styles["pai-dr-particle"]}></div>
-      </div>
-
-      {/* Message */}
-      <div
-        className={`
-          ${styles["pai-dr-message"]} 
-          ${fade ? styles["fade-in"] : styles["fade-out"]} 
-          ${isSuccess ? styles["success"] : ""}
-        `}
-      >
-        {loadingMessages[messageIndex]}
-      </div>
-    </div>
-  );
-}
-
-/************************************************************
-   2) The NEW ADVANCED ANALYSIS – we keep it as 'NewAnalysis'
-************************************************************/
+// Helper to clamp a numeric value between min & max
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
 const TOTAL_MODULES = 12;
 
-function NewAnalysis() {
-  // Rotating messages
+const LoadingCircle: React.FC = () => {
+  // -------------------------------------------
+  //               LOADING MESSAGES
+  // -------------------------------------------
   const loadingMessages = [
     "Initializing cross-domain analysis...",
     "Collecting multi-layer inputs...",
@@ -129,6 +26,7 @@ function NewAnalysis() {
     "Analysis complete—preparing output..."
   ];
 
+  // Base log lines
   const baseAnalysisLogLines = [
     "[Data] Real-time aggregator is standing by...",
     "[Data] Cross-checking system readiness...",
@@ -141,21 +39,28 @@ function NewAnalysis() {
     "[Data] Gathering final summary metrics..."
   ];
 
-  // States
+  // -------------------------------------------
+  //                 REACT STATES
+  // -------------------------------------------
   const [messageIndex, setMessageIndex] = useState<number>(0);
   const [fade, setFade] = useState<boolean>(true);
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const progressIntervalRef = useRef<number | null>(null);
 
+  // For analysis log
   const [logMessages, setLogMessages] = useState<string[]>([]);
+
+  // Keep track of time for the master progress (optimized for ~10s but can run longer)
   const totalDuration = 10;
   const topLoaderDuration = 8;
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
 
+  // Each module loading state
   const [moduleLoaded, setModuleLoaded] = useState<boolean[]>(
     Array(TOTAL_MODULES).fill(false)
   );
 
+  // Ongoing “live” updates: we’ll store random seeds for each chart
   const [liveRandom, setLiveRandom] = useState({
     funnel: 0,
     bar: 0,
@@ -171,23 +76,27 @@ function NewAnalysis() {
     donut: 0
   });
 
-  // Master progress + timing
+  // -------------------------------------------
+  //          PROGRESS BAR + MAIN TIMING
+  // -------------------------------------------
   useEffect(() => {
     if (progressIntervalRef.current) {
       window.clearInterval(progressIntervalRef.current);
     }
 
+    // Master timer updates every second
     const masterTimer = window.setInterval(() => {
       setTimeElapsed((current) => {
         if (current >= totalDuration) {
-          return 0; // loop
+          return 0; // loop if surpasses 10s
         }
         return current + 1;
       });
     }, 1000);
 
+    // Fill progress bar from 0% to 100% in topLoaderDuration seconds
     progressIntervalRef.current = window.setInterval(() => {
-      setProgressPercent(() => {
+      setProgressPercent((_) => {
         if (timeElapsed < topLoaderDuration) {
           const newVal = Math.min((timeElapsed / topLoaderDuration) * 100, 100);
           return newVal;
@@ -205,7 +114,9 @@ function NewAnalysis() {
     };
   }, [timeElapsed, topLoaderDuration, totalDuration]);
 
-  // Rotating messages (4s interval)
+  // -------------------------------------------
+  //         ROTATING MESSAGES (4s intervals)
+  // -------------------------------------------
   useEffect(() => {
     const intervalId = setInterval(() => {
       setFade(false);
@@ -220,24 +131,29 @@ function NewAnalysis() {
     };
   }, [loadingMessages.length]);
 
-  // VM startup logic
+  // -------------------------------------------
+  //  LOGIC FOR RANDOM VM STARTUP (12 modules)
+  // -------------------------------------------
   useEffect(() => {
     moduleLoaded.forEach((loaded, i) => {
       if (!loaded) {
-        const startDelay = Math.random() * 4000;
+        const startDelay = Math.random() * 4000; // up to 4s
         setTimeout(() => {
+          // Log advanced boot text to mimic real OS messages
           setLogMessages((prev) => [
             ...prev,
-            `[VM] Initializing advanced subsystem for environment ${i + 1}...`,
-            `[VM] Loading dynamic libraries...`,
-            `[VM] Starting Virtual Machine environment ${i + 1}...`
+            [VM] Initializing advanced subsystem for environment ${i + 1}...,
+            [VM] Loading dynamic libraries...,
+            [VM] Starting Virtual Machine environment ${i + 1}...
           ]);
-          const finishDelay = 1000 + Math.random() * 1500;
+          // Another short random time to finish boot
+          const finishDelay = 1000 + Math.random() * 1500; // 1.0s - 2.5s
           setTimeout(() => {
             setLogMessages((prev) => [
               ...prev,
-              `[VM] Environment ${i + 1} is operational.`
+              [VM] Environment ${i + 1} is operational.
             ]);
+            // Mark module as loaded
             setModuleLoaded((prevStates) => {
               const updated = [...prevStates];
               updated[i] = true;
@@ -247,9 +163,12 @@ function NewAnalysis() {
         }, startDelay);
       }
     });
-  }, [moduleLoaded]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Additional periodic logs
+  // -------------------------------------------
+  //  ADDITIONAL PERIODIC LOGS
+  // -------------------------------------------
   useEffect(() => {
     let currentIndex = 0;
     const analysisTimer = setInterval(() => {
@@ -264,10 +183,14 @@ function NewAnalysis() {
     return () => {
       clearInterval(analysisTimer);
     };
-  }, [baseAnalysisLogLines]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Continuous "live" data changes
+  // -------------------------------------------
+  //  CONTINUOUS “LIVE” DATA CHANGES
+  // -------------------------------------------
   useEffect(() => {
+    // Update random offsets more frequently to simulate real-time data changes
     const liveUpdateTimer = setInterval(() => {
       setLiveRandom({
         funnel: Math.random() * 10 - 5,
@@ -283,14 +206,21 @@ function NewAnalysis() {
         heatmap: Math.random() * 2 - 1,
         donut: Math.random() * 2 - 1
       });
-    }, 1500);
+    }, 1500); // every 1.5 seconds
 
     return () => {
       clearInterval(liveUpdateTimer);
     };
   }, []);
 
-  // Animations
+  // Helper for gauge angle
+  function getGaugeAngle(baseAngle: number, adjustDeg: number) {
+    return clamp(baseAngle + adjustDeg, 0, 90);
+  }
+
+  // -------------------------------------------
+  //        MODULE ANIMATION CLASSES
+  // -------------------------------------------
   const animationClasses = [
     styles.animation1,
     styles.animation2,
@@ -300,30 +230,20 @@ function NewAnalysis() {
   function getAnimationClass(i: number) {
     return animationClasses[i % animationClasses.length];
   }
+
+  // 12 staggered delay classes
   const delayClasses = [
-    styles.delay1,
-    styles.delay2,
-    styles.delay3,
-    styles.delay4,
-    styles.delay5,
-    styles.delay6,
-    styles.delay7,
-    styles.delay8,
-    styles.delay9,
-    styles.delay10,
-    styles.delay11,
-    styles.delay12
+    styles.delay1, styles.delay2, styles.delay3, styles.delay4,
+    styles.delay5, styles.delay6, styles.delay7, styles.delay8,
+    styles.delay9, styles.delay10, styles.delay11, styles.delay12
   ];
 
+  // Render each module with advanced overlay if not loaded
   function renderModule(content: JSX.Element, moduleIndex: number) {
     const loaded = moduleLoaded[moduleIndex];
     return (
       <div
-        className={`
-          ${styles.module} 
-          ${getAnimationClass(moduleIndex)} 
-          ${delayClasses[moduleIndex]}
-        `}
+        className={${styles.module} ${getAnimationClass(moduleIndex)} ${delayClasses[moduleIndex]}}
       >
         {!loaded && (
           <div className={styles.vmLoadingOverlay}>
@@ -341,40 +261,38 @@ function NewAnalysis() {
     );
   }
 
-  // Gauge angle helper
-  function getGaugeAngle(baseAngle: number, adjustDeg: number) {
-    const angle = baseAngle + adjustDeg;
-    return Math.max(0, Math.min(angle, 90));
-  }
-
+  // -------------------------------------------
+  //                 RENDER
+  // -------------------------------------------
   return (
     <div className={styles.container}>
       <div className={styles.header}>Your Quantum Analysis In Process...</div>
 
-      {/* Purple progress bar at the top */}
+      {/* Progress Bar */}
       <div className={styles.progressContainer}>
         <div
-          className={`
-            ${styles.progressBar} 
-            ${progressPercent >= 100 ? styles.progressComplete : ""}
-          `}
-          style={{ width: `${progressPercent}%` }}
+          className={${styles.progressBar} ${
+            progressPercent >= 100 ? styles.progressComplete : ""
+          }}
+          style={{ width: ${progressPercent}% }}
         >
           <div className={styles.progressGlow}></div>
         </div>
       </div>
 
       <div className={styles.content}>
-        {/* Our 12 modules in a grid */}
         <div className={styles.visualization}>
-          {/* FUNNEL */}
+
+          {/* 1) FUNNEL */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Observational Data – Funnel</div>
+                <div className={styles.windowTitle}>
+                  Observational Data – Funnel
+                </div>
                 <div className={styles.windowStatus}>Live</div>
               </div>
               <div className={styles.moduleBody}>
@@ -385,9 +303,9 @@ function NewAnalysis() {
                     <div
                       className={styles.bar}
                       style={{
-                        width: `${clamp(100 + liveRandom.funnel, 0, 100)}%`
+                        width: ${clamp(100 + liveRandom.funnel, 0, 100)}%
                       }}
-                    />
+                    ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "35%" }}>
                     <span className={styles.label}>Key Observations</span>
@@ -395,9 +313,9 @@ function NewAnalysis() {
                     <div
                       className={styles.bar}
                       style={{
-                        width: `${clamp(85 + liveRandom.funnel, 0, 100)}%`
+                        width: ${clamp(85 + liveRandom.funnel, 0, 100)}%
                       }}
-                    />
+                    ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "60%" }}>
                     <span className={styles.label}>Potential Patterns</span>
@@ -405,9 +323,9 @@ function NewAnalysis() {
                     <div
                       className={styles.bar}
                       style={{
-                        width: `${clamp(65 + liveRandom.funnel, 0, 100)}%`
+                        width: ${clamp(65 + liveRandom.funnel, 0, 100)}%
                       }}
-                    />
+                    ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "85%" }}>
                     <span className={styles.label}>Core Insights</span>
@@ -415,9 +333,9 @@ function NewAnalysis() {
                     <div
                       className={styles.bar}
                       style={{
-                        width: `${clamp(40 + liveRandom.funnel, 0, 100)}%`
+                        width: ${clamp(40 + liveRandom.funnel, 0, 100)}%
                       }}
-                    />
+                    ></div>
                   </div>
                 </div>
               </div>
@@ -425,7 +343,7 @@ function NewAnalysis() {
             0
           )}
 
-          {/* RADAR */}
+          {/* 2) RADAR */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -440,7 +358,7 @@ function NewAnalysis() {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `scale(${1 + liveRandom.radar * 0.01})`
+                  transform: scale(${1 + liveRandom.radar * 0.01})
                 }}
               >
                 <div className={styles.radarContainer}>
@@ -469,7 +387,7 @@ function NewAnalysis() {
             1
           )}
 
-          {/* AREA CHART */}
+          {/* 3) AREA CHART */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -484,7 +402,7 @@ function NewAnalysis() {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `scale(${1 + liveRandom.area * 0.01})`
+                  transform: scale(${1 + liveRandom.area * 0.01})
                 }}
               >
                 <div className={styles.chartGrid}></div>
@@ -512,7 +430,7 @@ function NewAnalysis() {
             2
           )}
 
-          {/* CHORD */}
+          {/* 4) CHORD */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -527,7 +445,7 @@ function NewAnalysis() {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `translateY(${liveRandom.chord * 0.5}px)`
+                  transform: translateY(${liveRandom.chord * 0.5}px)
                 }}
               >
                 <div className={styles.chordContainer}>
@@ -543,7 +461,7 @@ function NewAnalysis() {
             3
           )}
 
-          {/* SCATTER */}
+          {/* 5) SCATTER */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -558,7 +476,7 @@ function NewAnalysis() {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `rotate(${liveRandom.scatter * 0.5}deg)`
+                  transform: rotate(${liveRandom.scatter * 0.5}deg)
                 }}
               >
                 <div className={styles.chartGrid}></div>
@@ -581,7 +499,7 @@ function NewAnalysis() {
             4
           )}
 
-          {/* HEATMAP */}
+          {/* 6) HEATMAP (Association Mapping) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -596,37 +514,37 @@ function NewAnalysis() {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `scale(${1 + liveRandom.heatmap * 0.01})`
+                  transform: scale(${1 + liveRandom.heatmap * 0.01})
                 }}
               >
                 <div className={styles.heatmapContainer}>
                   <div className={styles.heatmapGrid}>
                     {/* 25 cells */}
-                    <div className={`${styles.heatCell} ${styles.low}`}></div>
-                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div className={`${styles.heatCell} ${styles.low}`}></div>
-                    <div className={`${styles.heatCell} ${styles.high}`}></div>
-                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
-                    <div className={`${styles.heatCell} ${styles.high}`}></div>
-                    <div className={`${styles.heatCell} ${styles.low}`}></div>
-                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div className={`${styles.heatCell} ${styles.low}`}></div>
-                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
-                    <div className={`${styles.heatCell} ${styles.high}`}></div>
-                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div className={`${styles.heatCell} ${styles.high}`}></div>
-                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div className={`${styles.heatCell} ${styles.low}`}></div>
-                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
-                    <div className={`${styles.heatCell} ${styles.high}`}></div>
-                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
-                    <div className={`${styles.heatCell} ${styles.high}`}></div>
-                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div className={`${styles.heatCell} ${styles.low}`}></div>
+                    <div className={${styles.heatCell} ${styles.low}}></div>
+                    <div className={${styles.heatCell} ${styles.medium}}></div>
+                    <div className={${styles.heatCell} ${styles.low}}></div>
+                    <div className={${styles.heatCell} ${styles.high}}></div>
+                    <div className={${styles.heatCell} ${styles.medium}}></div>
+                    <div className={${styles.heatCell} ${styles.medium}}></div>
+                    <div className={${styles.heatCell} ${styles["very-high"]}}></div>
+                    <div className={${styles.heatCell} ${styles.high}}></div>
+                    <div className={${styles.heatCell} ${styles.low}}></div>
+                    <div className={${styles.heatCell} ${styles.medium}}></div>
+                    <div className={${styles.heatCell} ${styles.low}}></div>
+                    <div className={${styles.heatCell} ${styles.medium}}></div>
+                    <div className={${styles.heatCell} ${styles["very-high"]}}></div>
+                    <div className={${styles.heatCell} ${styles.high}}></div>
+                    <div className={${styles.heatCell} ${styles.medium}}></div>
+                    <div className={${styles.heatCell} ${styles.high}}></div>
+                    <div className={${styles.heatCell} ${styles.medium}}></div>
+                    <div className={${styles.heatCell} ${styles.low}}></div>
+                    <div className={${styles.heatCell} ${styles["very-high"]}}></div>
+                    <div className={${styles.heatCell} ${styles.high}}></div>
+                    <div className={${styles.heatCell} ${styles.medium}}></div>
+                    <div className={${styles.heatCell} ${styles["very-high"]}}></div>
+                    <div className={${styles.heatCell} ${styles.high}}></div>
+                    <div className={${styles.heatCell} ${styles.medium}}></div>
+                    <div className={${styles.heatCell} ${styles.low}}></div>
                   </div>
                   <div className={styles.xLabels}>
                     <span>Channel 1</span>
@@ -636,6 +554,7 @@ function NewAnalysis() {
                     <span>Channel 5</span>
                   </div>
                   <div className={styles.yLabels} style={{ left: "13%" }}>
+                    {/* Renamed to just A, B, C, D, E */}
                     <span>A</span>
                     <span>B</span>
                     <span>C</span>
@@ -648,7 +567,7 @@ function NewAnalysis() {
             5
           )}
 
-          {/* DONUT */}
+          {/* 7) DONUT (Resource Index) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -663,19 +582,20 @@ function NewAnalysis() {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `rotate(${liveRandom.donut * 0.5}deg)`
+                  transform: rotate(${liveRandom.donut * 0.5}deg)
                 }}
               >
                 <div className={styles.donutContainer}>
                   <div className={styles.donutRing}></div>
-                  <div className={`${styles.donutSegment} ${styles.segment1}`}></div>
-                  <div className={`${styles.donutSegment} ${styles.segment2}`}></div>
-                  <div className={`${styles.donutSegment} ${styles.segment3}`}></div>
+                  <div className={${styles.donutSegment} ${styles.segment1}}></div>
+                  <div className={${styles.donutSegment} ${styles.segment2}}></div>
+                  <div className={${styles.donutSegment} ${styles.segment3}}></div>
                   <div className={styles.donutHole}></div>
                   <div className={styles.donutLabel}>
                     <div className={styles.value}>72%</div>
                     <div className={styles.text}>Utilization</div>
                   </div>
+                  {/* Shifted these legend items up so none overflow */}
                   <div className={styles.legendItem} style={{ bottom: "25%" }}>
                     <span></span>Group A
                   </div>
@@ -691,7 +611,7 @@ function NewAnalysis() {
             6
           )}
 
-          {/* GAUGE */}
+          {/* 8) GAUGE (Robustness Overview) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -709,7 +629,7 @@ function NewAnalysis() {
                   <div
                     className={styles.gaugeMeter}
                     style={{ transform: "scale(1) rotate(-90deg)" }}
-                  />
+                  ></div>
                   <div className={styles.gaugeCover}></div>
                   <div className={styles.gaugeTicks}>
                     <div className={styles.gaugeTick}></div>
@@ -729,9 +649,9 @@ function NewAnalysis() {
                   <div
                     className={styles.gaugeNeedle}
                     style={{
-                      transform: `rotate(${getGaugeAngle(53, liveRandom.gauge)}deg)`
+                      transform: rotate(${getGaugeAngle(53, liveRandom.gauge)}deg)
                     }}
-                  />
+                  ></div>
                   <div className={styles.gaugeValue}>81% Stable</div>
                 </div>
               </div>
@@ -739,7 +659,7 @@ function NewAnalysis() {
             7
           )}
 
-          {/* BAR CHART */}
+          {/* 9) BAR CHART */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -760,60 +680,48 @@ function NewAnalysis() {
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{
-                          height: `${Math.max(0, Math.min(100, 55 + liveRandom.bar))}%`
-                        }}
-                      />
+                        style={{ height: ${clamp(55 + liveRandom.bar, 0, 100)}% }}
+                      ></div>
                       <div className={styles.barLabel}>Cat A</div>
                       <div className={styles.barValue}>58%</div>
                     </div>
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{
-                          height: `${Math.max(0, Math.min(100, 80 + liveRandom.bar))}%`
-                        }}
-                      />
+                        style={{ height: ${clamp(80 + liveRandom.bar, 0, 100)}% }}
+                      ></div>
                       <div className={styles.barLabel}>Cat B</div>
                       <div className={styles.barValue}>82%</div>
                     </div>
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{
-                          height: `${Math.max(0, Math.min(100, 68 + liveRandom.bar))}%`
-                        }}
-                      />
+                        style={{ height: ${clamp(68 + liveRandom.bar, 0, 100)}% }}
+                      ></div>
                       <div className={styles.barLabel}>Cat C</div>
                       <div className={styles.barValue}>71%</div>
                     </div>
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{
-                          height: `${Math.max(0, Math.min(100, 90 + liveRandom.bar))}%`
-                        }}
-                      />
+                        style={{ height: ${clamp(90 + liveRandom.bar, 0, 100)}% }}
+                      ></div>
                       <div className={styles.barLabel}>Cat D</div>
                       <div className={styles.barValue}>93%</div>
                     </div>
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{
-                          height: `${Math.max(0, Math.min(100, 77 + liveRandom.bar))}%`
-                        }}
-                      />
+                        style={{ height: ${clamp(77 + liveRandom.bar, 0, 100)}% }}
+                      ></div>
                       <div className={styles.barLabel}>Cat E</div>
                       <div className={styles.barValue}>79%</div>
                     </div>
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{
-                          height: `${Math.max(0, Math.min(100, 42 + liveRandom.bar))}%`
-                        }}
-                      />
+                        style={{ height: ${clamp(42 + liveRandom.bar, 0, 100)}% }}
+                      ></div>
                       <div className={styles.barLabel}>Cat F</div>
                       <div className={styles.barValue}>46%</div>
                     </div>
@@ -824,7 +732,7 @@ function NewAnalysis() {
             8
           )}
 
-          {/* BUBBLE */}
+          {/* 10) BUBBLE (Clustering) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -839,7 +747,7 @@ function NewAnalysis() {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `scale(${1 + liveRandom.bubble * 0.01})`
+                  transform: scale(${1 + liveRandom.bubble * 0.01})
                 }}
               >
                 <div className={styles.chartGrid}></div>
@@ -861,7 +769,7 @@ function NewAnalysis() {
             9
           )}
 
-          {/* LINE */}
+          {/* 11) LINE (Forecasting) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -876,7 +784,7 @@ function NewAnalysis() {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `translateX(${liveRandom.line * 0.5}px)`
+                  transform: translateX(${liveRandom.line * 0.5}px)
                 }}
               >
                 <div className={styles.chartGrid}></div>
@@ -905,7 +813,7 @@ function NewAnalysis() {
             10
           )}
 
-          {/* NETWORK */}
+          {/* 12) NETWORK (Topology Analysis) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -920,7 +828,7 @@ function NewAnalysis() {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `rotate(${liveRandom.network * 0.5}deg)`
+                  transform: rotate(${liveRandom.network * 0.5}deg)
                 }}
               >
                 <div className={styles.chartGrid}></div>
@@ -950,8 +858,8 @@ function NewAnalysis() {
           )}
         </div>
 
-        {/* Single rotating message */}
-        <div className={`${styles.message} ${fade ? styles.fadeIn : styles.fadeOut}`}>
+        {/* Single-line rotating message */}
+        <div className={${styles.message} ${fade ? styles.fadeIn : styles.fadeOut}}>
           {loadingMessages[messageIndex]}
         </div>
 
@@ -966,21 +874,6 @@ function NewAnalysis() {
       </div>
     </div>
   );
-}
+};
 
-/************************************************************
-   3) The COMBINED COMPONENT – places OldLoader on top,
-      then spacing, then the NewAnalysis container.
-************************************************************/
-export default function CombinedLoader() {
-  return (
-    <div>
-      {/* 1) We can place the old loader at the top of our page */}
-      <OldLoader />
-
-      {/* 2) Then we show the “NewAnalysis” container below it */}
-      <div style={{ marginTop: "20px" }}></div>
-      <NewAnalysis />
-    </div>
-  );
-}
+export default LoadingCircle;
