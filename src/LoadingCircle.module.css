@@ -429,7 +429,6 @@
   transform: scaleX(0);
 }
 
-/* You can manually control top% in your React inline style to avoid overlap */
 @keyframes metricPopulate {
   0% { transform: translateX(-30px); opacity: 0; }
   100% { transform: translateX(0); opacity: 1; }
@@ -913,7 +912,7 @@
 /* Tweaked left for yLabels to avoid overlap */
 .yLabels {
   top: 15%;
-  left: 7%; /* adjust for better visibility */
+  left: 7%;
   height: 70%;
   flex-direction: column;
 }
@@ -1581,7 +1580,7 @@
   z-index: 2;
 }
 
-/* Each link can have a custom position or transform in inline styles, but these are your placeholder examples */
+/* Placeholder animations for these links */
 .networkLink:nth-child(6)  { animation: linkGrow 1s forwards ease-out 2.0s; }
 .networkLink:nth-child(7)  { animation: linkGrow 1s forwards ease-out 2.2s; }
 .networkLink:nth-child(8)  { animation: linkGrow 1s forwards ease-out 2.4s; }
@@ -1729,7 +1728,6 @@
     gap: 12px;
   }
   
-  /* All modules use the single column */
   .module:nth-of-type(n) {
     grid-column: 1;
   }
