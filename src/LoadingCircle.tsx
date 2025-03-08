@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
-// Small helper for clamping values (0 to 100 for widths)
+// Helper to clamp a numeric value between min & max
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
@@ -24,8 +24,7 @@ const LoadingCircle: React.FC = () => {
     "Analysis complete—preparing output..."
   ];
 
-  // We'll add additional "log" lines to show under the rotating messages
-  // to give that "live VM log" impression.
+  // Additional lines to show in the “live log” as the analysis runs
   const analysisLogLines = [
     "[VM] Starting Virtual Machine environment 1...",
     "[VM] Checking resource pool allocation...",
@@ -56,17 +55,16 @@ const LoadingCircle: React.FC = () => {
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const progressIntervalRef = useRef<number | null>(null);
 
-  // For the analysis log lines
+  // For analysis log
   const [logIndex, setLogIndex] = useState<number>(0);
   const [logMessages, setLogMessages] = useState<string[]>([]);
 
-  // We'll keep a 30s timer to reset or cycle everything
+  // 30s timer to cycle everything
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
-  const totalDuration = 30; // seconds
-  const topLoaderDuration = 8; // seconds for the top loader
+  const totalDuration = 30; 
+  const topLoaderDuration = 8; // seconds to fill the top loader
 
-  // For subtle "micro adjustments" we'll keep track of some random offsets
-  // (for demonstration, funnel and bar chart data changes).
+  // Subtle "micro adjustments" for funnel, bar chart, gauge
   const [funnelAdjust, setFunnelAdjust] = useState<number>(0);
   const [barAdjust, setBarAdjust] = useState<number>(0);
   const [gaugeAdjust, setGaugeAdjust] = useState<number>(0);
@@ -79,26 +77,24 @@ const LoadingCircle: React.FC = () => {
       window.clearInterval(progressIntervalRef.current);
     }
 
-    // We update timeElapsed every 1 second up to totalDuration (30s).
+    // Updates timeElapsed every 1 second up to totalDuration
     const masterTimer = window.setInterval(() => {
-      setTimeElapsed((previousTime) => {
-        if (previousTime >= totalDuration) {
-          return 0; // loop it after 30s (or you could keep going)
+      setTimeElapsed((currentTime) => {
+        if (currentTime >= totalDuration) {
+          return 0; // loop after 30s
         }
-        return previousTime + 1;
+        return currentTime + 1;
       });
     }, 1000);
 
-    // Grow the progress bar up to 100% within topLoaderDuration (~8s),
-    // Then keep it at 100% and let it blink via CSS.
+    // Fill progress bar from 0% to 100% in topLoaderDuration seconds
     progressIntervalRef.current = window.setInterval(() => {
       setProgressPercent((prev) => {
         if (timeElapsed < topLoaderDuration) {
-          // Fill from 0% to 100% over topLoaderDuration seconds
           const newVal = Math.min((timeElapsed / topLoaderDuration) * 100, 100);
           return newVal;
         } else {
-          return 100; // stay at 100% after 8s
+          return 100;
         }
       });
     }, 300);
@@ -112,13 +108,13 @@ const LoadingCircle: React.FC = () => {
   }, [timeElapsed]);
 
   // -------------------------------------------
-  //         ROTATING MESSAGES (every 4s)
+  //         ROTATING MESSAGES (4s intervals)
   // -------------------------------------------
   useEffect(() => {
     const intervalId = setInterval(() => {
       setFade(false);
       setTimeout(() => {
-        setMessageIndex((prev) => (prev + 1) % loadingMessages.length);
+        setMessageIndex((prevIdx) => (prevIdx + 1) % loadingMessages.length);
         setFade(true);
       }, 300);
     }, 4000);
@@ -132,25 +128,29 @@ const LoadingCircle: React.FC = () => {
   //       ANALYSIS LOG (live “VM” lines)
   // -------------------------------------------
   useEffect(() => {
-    // We want to add a new line to the "analysis log" every ~1.5s or so.
-    // Then after 30s, reset for the loop effect.
     const logTimer = setInterval(() => {
-      setLogIndex((prev) => {
-        const next = prev + 1;
-        if (next >= analysisLogLines.length) {
+      // Increment logIndex
+      setLogIndex((prevIndex) => {
+        const nextIndex = prevIndex + 1;
+        // If we hit the end of analysisLogLines, loop back to 0
+        if (nextIndex >= analysisLogLines.length) {
           return 0;
         }
-        return next;
+        return nextIndex;
       });
 
-      // Add a new message
-      setLogMessages((prev) => {
-        const newMsg = analysisLogLines[logIndex % analysisLogLines.length];
-        return [...prev, newMsg];
+      // Add one new message based on the *updated* logIndex
+      setLogMessages((prevMsgs) => {
+        // We'll read the NEW index from the updater callback above
+        // Easiest approach: the new index will appear in the next effect cycle,
+        // so we can just use the old index + 1
+        const next = (logIndex + 1) % analysisLogLines.length;
+        const newMsg = analysisLogLines[next];
+        return [...prevMsgs, newMsg];
       });
     }, 1500);
 
-    // Reset the log after 30s
+    // Reset the log after timeElapsed hits 0 again (every 30s)
     if (timeElapsed === 0) {
       setLogIndex(0);
       setLogMessages([]);
@@ -159,20 +159,17 @@ const LoadingCircle: React.FC = () => {
     return () => {
       clearInterval(logTimer);
     };
+    // We also depend on "logIndex" and "analysisLogLines" to figure out the next line
   }, [logIndex, timeElapsed, analysisLogLines]);
 
   // -------------------------------------------
   //     MICRO-ADJUSTMENTS FOR REALISM
   // -------------------------------------------
   useEffect(() => {
-    // Slight random changes every 2 seconds
     const microAdjustTimer = setInterval(() => {
-      // funnel changes
-      setFunnelAdjust(Math.random() * 10 - 5); // random between -5 and +5
-      // bar changes
+      setFunnelAdjust(Math.random() * 10 - 5);
       setBarAdjust(Math.random() * 10 - 5);
-      // gauge changes
-      setGaugeAdjust(Math.random() * 3 - 1.5); // small angle shift
+      setGaugeAdjust(Math.random() * 3 - 1.5);
     }, 2000);
 
     return () => {
@@ -180,15 +177,13 @@ const LoadingCircle: React.FC = () => {
     };
   }, []);
 
-  // Likewise for the gauge angle
+  // Helper for gauge angle
   function getGaugeAngle(baseAngle: number, adjustDeg: number) {
-    const val = baseAngle + adjustDeg;
-    // clamp gauge angle between 0 and 90
-    return clamp(val, 0, 90);
+    return clamp(baseAngle + adjustDeg, 0, 90);
   }
 
   // -------------------------------------------
-  //       GET ANIMATION CLASS PER MODULE
+  //        MODULE ANIMATION CLASSES
   // -------------------------------------------
   const animationClasses = [
     styles.animation1,
@@ -196,12 +191,11 @@ const LoadingCircle: React.FC = () => {
     styles.animation3,
     styles.animation4
   ];
-
   function getAnimationClass(i: number) {
     return animationClasses[i % animationClasses.length];
   }
 
-  // 12 different delay classes for more natural staggering
+  // 12 staggered delay classes
   const delayClasses = [
     styles.delay1, styles.delay2, styles.delay3, styles.delay4,
     styles.delay5, styles.delay6, styles.delay7, styles.delay8,
@@ -229,6 +223,7 @@ const LoadingCircle: React.FC = () => {
 
       <div className={styles.content}>
         <div className={styles.visualization}>
+
           {/* 1) KPI NAVIGATOR */}
           <div className={`${styles.module} ${getAnimationClass(0)} ${delayClasses[0]}`}>
             <div className={styles.macWindowBar}>
@@ -241,9 +236,8 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowStatus}>Live</div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Funnel-like chart */}
               <div className={styles.funnelContainer}>
-                {/* 1) Traffic Volume */}
+                {/* (1) Traffic Volume */}
                 <div className={styles.funnelMetric} style={{ top: "10%" }}>
                   <span className={styles.label}>Traffic Volume</span>
                   <span className={styles.value}>14,982</span>
@@ -254,7 +248,7 @@ const LoadingCircle: React.FC = () => {
                     }}
                   ></div>
                 </div>
-                {/* 2) Qualified Leads */}
+                {/* (2) Qualified Leads */}
                 <div className={styles.funnelMetric} style={{ top: "35%" }}>
                   <span className={styles.label}>Qualified Leads</span>
                   <span className={styles.value}>8,439</span>
@@ -265,7 +259,7 @@ const LoadingCircle: React.FC = () => {
                     }}
                   ></div>
                 </div>
-                {/* 3) Sales Opportunities */}
+                {/* (3) Sales Opportunities */}
                 <div className={styles.funnelMetric} style={{ top: "60%" }}>
                   <span className={styles.label}>Sales Opportunities</span>
                   <span className={styles.value}>3,214</span>
@@ -276,7 +270,7 @@ const LoadingCircle: React.FC = () => {
                     }}
                   ></div>
                 </div>
-                {/* 4) Closed Deals */}
+                {/* (4) Closed Deals */}
                 <div className={styles.funnelMetric} style={{ top: "85%" }}>
                   <span className={styles.label}>Closed Deals</span>
                   <span className={styles.value}>1,897</span>
@@ -340,7 +334,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowStatus}>Analyzing</div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Area Chart */}
               <div className={styles.chartGrid}></div>
               <div className={styles.chartAxisX}></div>
               <div className={styles.chartAxisY}></div>
@@ -376,7 +369,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowStatus}>Computing</div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Chord Diagram */}
               <div className={styles.chordContainer}>
                 <div className={styles.chordCircle}></div>
                 <div className={styles.chordArc}></div>
@@ -400,7 +392,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowStatus}>Active</div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Scatter Plot */}
               <div className={styles.chartGrid}></div>
               <div className={styles.chartAxisX}></div>
               <div className={styles.chartAxisY}></div>
@@ -431,7 +422,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowStatus}>Calculating</div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Heatmap */}
               <div className={styles.heatmapContainer}>
                 <div className={styles.heatmapGrid}>
                   {/* 25 cells */}
@@ -491,7 +481,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowStatus}>Processing</div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Donut Chart */}
               <div className={styles.donutContainer}>
                 <div className={styles.donutRing}></div>
                 <div className={`${styles.donutSegment} ${styles.segment1}`}></div>
@@ -527,14 +516,11 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowStatus}>Measuring</div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Gauge Chart */}
               <div className={styles.gaugeContainer}>
                 <div className={styles.gaugeBackground}></div>
                 <div
                   className={styles.gaugeMeter}
-                  style={{
-                    transform: `scale(1) rotate(-90deg)`
-                  }}
+                  style={{ transform: "scale(1) rotate(-90deg)" }}
                 ></div>
                 <div className={styles.gaugeCover}></div>
                 <div className={styles.gaugeTicks}>
@@ -575,7 +561,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowStatus}>Calculating</div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Bar Chart */}
               <div className={styles.chartGrid}></div>
               <div className={styles.chartAxisX}></div>
               <div className={styles.chartAxisY}></div>
@@ -646,7 +631,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowStatus}>Mapping</div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Bubble Chart */}
               <div className={styles.chartGrid}></div>
               <div className={styles.chartAxisX}></div>
               <div className={styles.chartAxisY}></div>
@@ -676,7 +660,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowStatus}>Predicting</div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Line Chart */}
               <div className={styles.chartGrid}></div>
               <div className={styles.chartAxisX}></div>
               <div className={styles.chartAxisY}></div>
@@ -713,7 +696,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowStatus}>Running</div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Network Diagram */}
               <div className={styles.chartGrid}></div>
               <div className={styles.networkContainer}>
                 <div className={styles.networkNode}></div>
@@ -739,12 +721,12 @@ const LoadingCircle: React.FC = () => {
           </div>
         </div>
 
-        {/* Rotating single-line status message */}
+        {/* Single-line rotating message */}
         <div className={`${styles.message} ${fade ? styles.fadeIn : styles.fadeOut}`}>
           {loadingMessages[messageIndex]}
         </div>
 
-        {/* Analysis Log Area */}
+        {/* Live log area */}
         <div className={styles.analysisLog}>
           {logMessages.map((line, idx) => (
             <div key={idx} className={styles.logLine}>
