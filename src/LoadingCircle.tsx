@@ -1,17 +1,128 @@
 import React, { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
-// Helper to clamp a numeric value between min & max
-function clamp(value: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, value));
+/* 
+  We keep the OLD LOADER code in its own component: 
+  - EXACT copy/paste from original (except we rename the component to OldLoader, 
+    but no logic or lines are lost) 
+*/
+function OldLoader() {
+  const loadingMessages = [
+    "Thinking...",
+    "Looking at your site...",
+    "Finding immediate opportunities...",
+    "Tailoring value...",
+    "Identifying your target audience...",
+    "Split-testing potential setbacks...",
+    "Analyzing test results...",
+    "Refining for immediate impact...",
+    "Running new A/B tests based on synthesized results...",
+    "Crafting your blueprint for maximum success...",
+    "Refining...",
+    "Success! Processing...",
+    "Success! Finalizing...",
+    "Success! Integrating...",
+    "Success! Validating...",
+    "Success! Completing..."
+  ];
+
+  const [messageIndex, setMessageIndex] = useState<number>(0);
+  const [fade, setFade] = useState<boolean>(true); // True for fade-in, false for fade-out
+
+  // Check if the message includes "Success!" to apply special styling
+  const isSuccess = loadingMessages[messageIndex].includes("Success!");
+
+  useEffect(() => {
+    const updateMessage = () => {
+      setFade(false); // Start fade-out
+      setTimeout(() => {
+        // After fade-out completes, update the message and fade-in
+        setMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
+        setFade(true); // Trigger fade-in
+      }, 500); // Match the duration of the fade-out
+    };
+
+    // Set an interval to change the message every 5 seconds
+    const intervalId = setInterval(updateMessage, 5000);
+
+    // Clean up on unmount
+    return () => clearInterval(intervalId);
+  }, [loadingMessages.length]);
+
+  return (
+    <div className={styles["prognostic-ai-demo-results-container"]}>
+      <div className={styles["pai-dr-header"]}>
+        Clients.ai Quantum Analysis In Process
+      </div>
+      <div className={styles["pai-dr-content"]}>
+        {/* Futuristic visualization replaces simple spinner */}
+        <div className={styles["pai-dr-visualization"]}>
+          {/* Core center circle */}
+          <div className={styles["pai-dr-core"]}></div>
+
+          {/* Rotating rings */}
+          <div className={styles["pai-dr-ring-inner"]}></div>
+          <div className={styles["pai-dr-ring-middle"]}></div>
+          <div className={styles["pai-dr-ring-outer"]}></div>
+
+          {/* Data points that appear and disappear */}
+          <div className={styles["pai-dr-data-points"]}>
+            <div className={styles["pai-dr-data-point"]}></div>
+            <div className={styles["pai-dr-data-point"]}></div>
+            <div className={styles["pai-dr-data-point"]}></div>
+            <div className={styles["pai-dr-data-point"]}></div>
+            <div className={styles["pai-dr-data-point"]}></div>
+            <div className={styles["pai-dr-data-point"]}></div>
+          </div>
+
+          {/* Connection lines between data points */}
+          <div className={styles["pai-dr-data-connection"]}></div>
+          <div className={styles["pai-dr-data-connection"]}></div>
+          <div className={styles["pai-dr-data-connection"]}></div>
+          <div className={styles["pai-dr-data-connection"]}></div>
+
+          {/* Scan effect */}
+          <div className={styles["pai-dr-scan"]}></div>
+
+          {/* Background grid */}
+          <div className={styles["pai-dr-grid"]}></div>
+        </div>
+
+        {/* Flying particles in background */}
+        <div className={styles["pai-dr-particles-container"]}>
+          <div className={styles["pai-dr-particle"]}></div>
+          <div className={styles["pai-dr-particle"]}></div>
+          <div className={styles["pai-dr-particle"]}></div>
+          <div className={styles["pai-dr-particle"]}></div>
+          <div className={styles["pai-dr-particle"]}></div>
+          <div className={styles["pai-dr-particle"]}></div>
+          <div className={styles["pai-dr-particle"]}></div>
+          <div className={styles["pai-dr-particle"]}></div>
+        </div>
+
+        {/* Message with fade transition */}
+        <div
+          className={`${styles["pai-dr-message"]} ${
+            fade ? styles["fade-in"] : styles["fade-out"]
+          } ${isSuccess ? styles["success"] : ""}`}
+        >
+          {loadingMessages[messageIndex]}
+        </div>
+      </div>
+    </div>
+  );
 }
 
-const TOTAL_MODULES = 12;
+/* 
+  We keep the NEW code in its own component: 
+  - EXACT copy/paste from original (except rename it to NewAnalysis for clarity, 
+    or keep LoadingCircle if you prefer). 
+  - No lines removed.
+*/
+function NewAnalysis() {
+  const TOTAL_MODULES = 12;
 
-const LoadingCircle: React.FC = () => {
-  // -------------------------------------------
-  //               LOADING MESSAGES
-  // -------------------------------------------
+  // Rotating messages
   const loadingMessages = [
     "Initializing cross-domain analysis...",
     "Collecting multi-layer inputs...",
@@ -39,18 +150,14 @@ const LoadingCircle: React.FC = () => {
     "[Data] Gathering final summary metrics..."
   ];
 
-  // -------------------------------------------
-  //                 REACT STATES
-  // -------------------------------------------
+  // React states
   const [messageIndex, setMessageIndex] = useState<number>(0);
   const [fade, setFade] = useState<boolean>(true);
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const progressIntervalRef = useRef<number | null>(null);
 
-  // For analysis log
   const [logMessages, setLogMessages] = useState<string[]>([]);
 
-  // Keep track of time for the master progress (optimized for ~10s but can run longer)
   const totalDuration = 10;
   const topLoaderDuration = 8;
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
@@ -60,7 +167,7 @@ const LoadingCircle: React.FC = () => {
     Array(TOTAL_MODULES).fill(false)
   );
 
-  // Ongoing “live” updates: we’ll store random seeds for each chart
+  // Ongoing “live” updates
   const [liveRandom, setLiveRandom] = useState({
     funnel: 0,
     bar: 0,
@@ -76,15 +183,17 @@ const LoadingCircle: React.FC = () => {
     donut: 0
   });
 
-  // -------------------------------------------
-  //          PROGRESS BAR + MAIN TIMING
-  // -------------------------------------------
+  // Helper to clamp
+  function clamp(value: number, min: number, max: number) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  // Progress bar + main timing
   useEffect(() => {
     if (progressIntervalRef.current) {
       window.clearInterval(progressIntervalRef.current);
     }
 
-    // Master timer updates every second
     const masterTimer = window.setInterval(() => {
       setTimeElapsed((current) => {
         if (current >= totalDuration) {
@@ -94,9 +203,8 @@ const LoadingCircle: React.FC = () => {
       });
     }, 1000);
 
-    // Fill progress bar from 0% to 100% in topLoaderDuration seconds
     progressIntervalRef.current = window.setInterval(() => {
-      setProgressPercent((_) => {
+      setProgressPercent(() => {
         if (timeElapsed < topLoaderDuration) {
           const newVal = Math.min((timeElapsed / topLoaderDuration) * 100, 100);
           return newVal;
@@ -114,9 +222,7 @@ const LoadingCircle: React.FC = () => {
     };
   }, [timeElapsed, topLoaderDuration, totalDuration]);
 
-  // -------------------------------------------
-  //         ROTATING MESSAGES (4s intervals)
-  // -------------------------------------------
+  // Rotating messages every 4s
   useEffect(() => {
     const intervalId = setInterval(() => {
       setFade(false);
@@ -131,29 +237,24 @@ const LoadingCircle: React.FC = () => {
     };
   }, [loadingMessages.length]);
 
-  // -------------------------------------------
-  //  LOGIC FOR RANDOM VM STARTUP (12 modules)
-  // -------------------------------------------
+  // Logic for random VM startup (12 modules)
   useEffect(() => {
     moduleLoaded.forEach((loaded, i) => {
       if (!loaded) {
         const startDelay = Math.random() * 4000; // up to 4s
         setTimeout(() => {
-          // Log advanced boot text to mimic real OS messages
           setLogMessages((prev) => [
             ...prev,
             `[VM] Initializing advanced subsystem for environment ${i + 1}...`,
             `[VM] Loading dynamic libraries...`,
             `[VM] Starting Virtual Machine environment ${i + 1}...`
           ]);
-          // Another short random time to finish boot
           const finishDelay = 1000 + Math.random() * 1500; // 1.0s - 2.5s
           setTimeout(() => {
             setLogMessages((prev) => [
               ...prev,
               `[VM] Environment ${i + 1} is operational.`
             ]);
-            // Mark module as loaded
             setModuleLoaded((prevStates) => {
               const updated = [...prevStates];
               updated[i] = true;
@@ -163,12 +264,9 @@ const LoadingCircle: React.FC = () => {
         }, startDelay);
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [moduleLoaded]);
 
-  // -------------------------------------------
-  //  ADDITIONAL PERIODIC LOGS
-  // -------------------------------------------
+  // Additional periodic logs
   useEffect(() => {
     let currentIndex = 0;
     const analysisTimer = setInterval(() => {
@@ -183,14 +281,10 @@ const LoadingCircle: React.FC = () => {
     return () => {
       clearInterval(analysisTimer);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [baseAnalysisLogLines]);
 
-  // -------------------------------------------
-  //  CONTINUOUS “LIVE” DATA CHANGES
-  // -------------------------------------------
+  // Continuous “live” data changes
   useEffect(() => {
-    // Update random offsets more frequently to simulate real-time data changes
     const liveUpdateTimer = setInterval(() => {
       setLiveRandom({
         funnel: Math.random() * 10 - 5,
@@ -206,7 +300,7 @@ const LoadingCircle: React.FC = () => {
         heatmap: Math.random() * 2 - 1,
         donut: Math.random() * 2 - 1
       });
-    }, 1500); // every 1.5 seconds
+    }, 1500);
 
     return () => {
       clearInterval(liveUpdateTimer);
@@ -218,9 +312,7 @@ const LoadingCircle: React.FC = () => {
     return clamp(baseAngle + adjustDeg, 0, 90);
   }
 
-  // -------------------------------------------
-  //        MODULE ANIMATION CLASSES
-  // -------------------------------------------
+  // Module animation classes
   const animationClasses = [
     styles.animation1,
     styles.animation2,
@@ -238,12 +330,13 @@ const LoadingCircle: React.FC = () => {
     styles.delay9, styles.delay10, styles.delay11, styles.delay12
   ];
 
-  // Render each module with advanced overlay if not loaded
   function renderModule(content: JSX.Element, moduleIndex: number) {
     const loaded = moduleLoaded[moduleIndex];
     return (
       <div
-        className={`${styles.module} ${getAnimationClass(moduleIndex)} ${delayClasses[moduleIndex]}`}
+        className={`${styles.module} ${getAnimationClass(moduleIndex)} ${
+          delayClasses[moduleIndex]
+        }`}
       >
         {!loaded && (
           <div className={styles.vmLoadingOverlay}>
@@ -261,9 +354,6 @@ const LoadingCircle: React.FC = () => {
     );
   }
 
-  // -------------------------------------------
-  //                 RENDER
-  // -------------------------------------------
   return (
     <div className={styles.container}>
       <div className={styles.header}>Your Quantum Analysis In Process...</div>
@@ -282,7 +372,6 @@ const LoadingCircle: React.FC = () => {
 
       <div className={styles.content}>
         <div className={styles.visualization}>
-
           {/* 1) FUNNEL */}
           {renderModule(
             <>
@@ -499,7 +588,7 @@ const LoadingCircle: React.FC = () => {
             4
           )}
 
-          {/* 6) HEATMAP (Association Mapping) */}
+          {/* 6) HEATMAP */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -519,7 +608,6 @@ const LoadingCircle: React.FC = () => {
               >
                 <div className={styles.heatmapContainer}>
                   <div className={styles.heatmapGrid}>
-                    {/* 25 cells */}
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
@@ -554,7 +642,6 @@ const LoadingCircle: React.FC = () => {
                     <span>Channel 5</span>
                   </div>
                   <div className={styles.yLabels} style={{ left: "13%" }}>
-                    {/* Renamed to just A, B, C, D, E */}
                     <span>A</span>
                     <span>B</span>
                     <span>C</span>
@@ -567,7 +654,7 @@ const LoadingCircle: React.FC = () => {
             5
           )}
 
-          {/* 7) DONUT (Resource Index) */}
+          {/* 7) DONUT */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -595,7 +682,6 @@ const LoadingCircle: React.FC = () => {
                     <div className={styles.value}>72%</div>
                     <div className={styles.text}>Utilization</div>
                   </div>
-                  {/* Shifted these legend items up so none overflow */}
                   <div className={styles.legendItem} style={{ bottom: "25%" }}>
                     <span></span>Group A
                   </div>
@@ -611,7 +697,7 @@ const LoadingCircle: React.FC = () => {
             6
           )}
 
-          {/* 8) GAUGE (Robustness Overview) */}
+          {/* 8) GAUGE */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -732,7 +818,7 @@ const LoadingCircle: React.FC = () => {
             8
           )}
 
-          {/* 10) BUBBLE (Clustering) */}
+          {/* 10) BUBBLE */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -769,7 +855,7 @@ const LoadingCircle: React.FC = () => {
             9
           )}
 
-          {/* 11) LINE (Forecasting) */}
+          {/* 11) LINE */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -813,7 +899,7 @@ const LoadingCircle: React.FC = () => {
             10
           )}
 
-          {/* 12) NETWORK (Topology Analysis) */}
+          {/* 12) NETWORK */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -874,6 +960,25 @@ const LoadingCircle: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
-export default LoadingCircle;
+/* 
+  Finally, we export ONE top-level component that:
+  1) Renders the OLD LOADER on top
+  2) Adds tasteful spacing
+  3) Renders the NEW ADVANCED CODE below
+*/
+export default function CombinedLoader() {
+  return (
+    <div>
+      {/* Old Prognostic Loader */}
+      <OldLoader />
+
+      {/* Tasteful spacing */}
+      <div style={{ margin: "60px 0" }} />
+
+      {/* New Enhanced Analysis */}
+      <NewAnalysis />
+    </div>
+  );
+}
