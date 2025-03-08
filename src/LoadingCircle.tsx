@@ -1,12 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import styles from "./LoadingCircle.module.css";
 
-// Helper to clamp a numeric value between min & max
+// Clamps a numeric value between min & max
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
+// For each of the 12 modules
 const TOTAL_MODULES = 12;
+
+// Interpolation speed factor – higher = faster transitions, lower = slower
+const SMOOTH_FACTOR = 0.08; // tweak as needed for desired smoothness
 
 const LoadingCircle: React.FC = () => {
   // -------------------------------------------
@@ -26,7 +30,7 @@ const LoadingCircle: React.FC = () => {
     "Analysis complete—preparing output..."
   ];
 
-  // Base log lines
+  // Additional lines for the live log
   const baseAnalysisLogLines = [
     "[Data] Real-time aggregator is standing by...",
     "[Data] Cross-checking system readiness...",
@@ -40,41 +44,129 @@ const LoadingCircle: React.FC = () => {
   ];
 
   // -------------------------------------------
-  //                 REACT STATES
+  //               REACT STATES
   // -------------------------------------------
-  const [messageIndex, setMessageIndex] = useState<number>(0);
-  const [fade, setFade] = useState<boolean>(true);
+  // Overall progress
   const [progressPercent, setProgressPercent] = useState<number>(0);
+  const [timeElapsed, setTimeElapsed] = useState<number>(0);
+  const totalDuration = 10; // ~10s
+  const topLoaderDuration = 8;
   const progressIntervalRef = useRef<number | null>(null);
 
-  // For analysis log
+  // Rotating messages
+  const [messageIndex, setMessageIndex] = useState<number>(0);
+  const [fade, setFade] = useState<boolean>(true);
+
+  // Log messages
   const [logMessages, setLogMessages] = useState<string[]>([]);
 
-  // Keep track of time for the master progress (optimized for ~10s but can run longer)
-  const totalDuration = 10;
-  const topLoaderDuration = 8;
-  const [timeElapsed, setTimeElapsed] = useState<number>(0);
-
-  // Each module loading state
+  // Whether each module is loaded
   const [moduleLoaded, setModuleLoaded] = useState<boolean[]>(
     Array(TOTAL_MODULES).fill(false)
   );
 
-  // Ongoing “live” updates: we’ll store random seeds for each chart
-  const [liveRandom, setLiveRandom] = useState({
-    funnel: 0,
-    bar: 0,
-    gauge: 0,
-    radar: 0,
-    chord: 0,
-    scatter: 0,
-    bubble: 0,
-    area: 0,
-    line: 0,
-    network: 0,
-    heatmap: 0,
-    donut: 0
+  // Hovered module index for tooltips
+  const [hoveredModuleIndex, setHoveredModuleIndex] = useState<number | null>(null);
+
+  // Tooltip text for each module
+  const moduleTooltips = [
+    "Module 1: Observational Data calculations in progress...",
+    "Module 2: Radar analysis scanning multiple dimensions...",
+    "Module 3: Predictive area chart updating real-time forecasts...",
+    "Module 4: Matrix comparisons balancing new data...",
+    "Module 5: Factor analysis cross-checking multi-variables...",
+    "Module 6: Heatmap synergy detection across channels...",
+    "Module 7: Resource index scanning usage efficiency...",
+    "Module 8: Risk gauge analyzing real-time stability metrics...",
+    "Module 9: Bar chart performance tiers adjusting dynamically...",
+    "Module 10: Bubble clustering updating group patterns...",
+    "Module 11: Line forecasting refining near-term trends...",
+    "Module 12: Topology network analyzing node connectivity..."
+  ];
+
+  // -------------------------------------------
+  //    SMOOTH LIVE UPDATES (current vs. target)
+  // -------------------------------------------
+
+  // We store *two* sets of data: current (display) and target (random).
+  // We'll continuously interpolate current -> target each frame.
+  
+  // (1) For micro transforms
+  const [transformCurrent, setTransformCurrent] = useState({
+    funnel: 0, bar: 0, gauge: 0, radar: 0,
+    chord: 0, scatter: 0, bubble: 0, area: 0,
+    line: 0, network: 0, heatmap: 0, donut: 0
   });
+  const [transformTarget, setTransformTarget] = useState({
+    funnel: 0, bar: 0, gauge: 0, radar: 0,
+    chord: 0, scatter: 0, bubble: 0, area: 0,
+    line: 0, network: 0, heatmap: 0, donut: 0
+  });
+
+  // (2) Funnel numeric
+  const [funnelCurrent, setFunnelCurrent] = useState([15000, 9300, 4200, 2500]);
+  const [funnelTarget, setFunnelTarget] = useState([15000, 9300, 4200, 2500]);
+
+  // (3) Bar numeric (6 categories)
+  const [barCurrent, setBarCurrent] = useState([58, 82, 71, 93, 79, 46]);
+  const [barTarget, setBarTarget] = useState([58, 82, 71, 93, 79, 46]);
+
+  // (4) Donut numeric
+  const [donutCurrent, setDonutCurrent] = useState(72);
+  const [donutTarget, setDonutTarget] = useState(72);
+
+  // (5) Gauge numeric
+  const [gaugeCurrent, setGaugeCurrent] = useState(81);
+  const [gaugeTarget, setGaugeTarget] = useState(81);
+
+  // -------------------------------------------
+  //         RANDOM VM STARTUP LOGIC
+  // -------------------------------------------
+  useEffect(() => {
+    // Each module randomly starts
+    moduleLoaded.forEach((loaded, i) => {
+      if (!loaded) {
+        const startDelay = Math.random() * 4000; // up to 4s
+        setTimeout(() => {
+          setLogMessages((prev) => [
+            ...prev,
+            `[VM] Initializing advanced subsystem for environment ${i + 1}...`,
+            `[VM] Loading dynamic libraries...`,
+            `[VM] Starting Virtual Machine environment ${i + 1}...`
+          ]);
+          // Another short random time to finish boot
+          const finishDelay = 1000 + Math.random() * 1500;
+          setTimeout(() => {
+            setLogMessages((prev) => [
+              ...prev,
+              `[VM] Environment ${i + 1} is operational.`
+            ]);
+            setModuleLoaded((prevStates) => {
+              const updated = [...prevStates];
+              updated[i] = true;
+              return updated;
+            });
+          }, finishDelay);
+        }, startDelay);
+      }
+    });
+  }, [moduleLoaded]);
+
+  // -------------------------------------------
+  //       BASE PERIODIC LOGS
+  // -------------------------------------------
+  useEffect(() => {
+    let currentIndex = 0;
+    const analysisTimer = setInterval(() => {
+      if (currentIndex < baseAnalysisLogLines.length) {
+        setLogMessages((prev) => [...prev, baseAnalysisLogLines[currentIndex]]);
+        currentIndex++;
+      } else {
+        clearInterval(analysisTimer);
+      }
+    }, 2000);
+    return () => clearInterval(analysisTimer);
+  }, [baseAnalysisLogLines]);
 
   // -------------------------------------------
   //          PROGRESS BAR + MAIN TIMING
@@ -83,23 +175,17 @@ const LoadingCircle: React.FC = () => {
     if (progressIntervalRef.current) {
       window.clearInterval(progressIntervalRef.current);
     }
-
-    // Master timer updates every second
     const masterTimer = window.setInterval(() => {
-      setTimeElapsed((current) => {
-        if (current >= totalDuration) {
-          return 0; // loop if surpasses 10s
-        }
-        return current + 1;
+      setTimeElapsed((curr) => {
+        if (curr >= totalDuration) return 0;
+        return curr + 1;
       });
     }, 1000);
 
-    // Fill progress bar from 0% to 100% in topLoaderDuration seconds
     progressIntervalRef.current = window.setInterval(() => {
-      setProgressPercent((_) => {
+      setProgressPercent(() => {
         if (timeElapsed < topLoaderDuration) {
-          const newVal = Math.min((timeElapsed / topLoaderDuration) * 100, 100);
-          return newVal;
+          return Math.min((timeElapsed / topLoaderDuration) * 100, 100);
         } else {
           return 100;
         }
@@ -115,7 +201,7 @@ const LoadingCircle: React.FC = () => {
   }, [timeElapsed, topLoaderDuration, totalDuration]);
 
   // -------------------------------------------
-  //         ROTATING MESSAGES (4s intervals)
+  //    ROTATING MESSAGES (4s intervals)
   // -------------------------------------------
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -125,74 +211,18 @@ const LoadingCircle: React.FC = () => {
         setFade(true);
       }, 300);
     }, 4000);
-
-    return () => {
-      clearInterval(intervalId);
-    };
+    return () => clearInterval(intervalId);
   }, [loadingMessages.length]);
 
   // -------------------------------------------
-  //  LOGIC FOR RANDOM VM STARTUP (12 modules)
+  //   SMOOTH TARGET UPDATES (RANDOM GOALS)
   // -------------------------------------------
+  // We'll pick new random target values every 1.5-2 seconds,
+  // but the actual display is interpolated via requestAnimationFrame.
   useEffect(() => {
-    moduleLoaded.forEach((loaded, i) => {
-      if (!loaded) {
-        const startDelay = Math.random() * 4000; // up to 4s
-        setTimeout(() => {
-          // Log advanced boot text to mimic real OS messages
-          setLogMessages((prev) => [
-            ...prev,
-            `[VM] Initializing advanced subsystem for environment ${i + 1}...`,
-            `[VM] Loading dynamic libraries...`,
-            `[VM] Starting Virtual Machine environment ${i + 1}...`
-          ]);
-          // Another short random time to finish boot
-          const finishDelay = 1000 + Math.random() * 1500; // 1.0s - 2.5s
-          setTimeout(() => {
-            setLogMessages((prev) => [
-              ...prev,
-              `[VM] Environment ${i + 1} is operational.`
-            ]);
-            // Mark module as loaded
-            setModuleLoaded((prevStates) => {
-              const updated = [...prevStates];
-              updated[i] = true;
-              return updated;
-            });
-          }, finishDelay);
-        }, startDelay);
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // -------------------------------------------
-  //  ADDITIONAL PERIODIC LOGS
-  // -------------------------------------------
-  useEffect(() => {
-    let currentIndex = 0;
-    const analysisTimer = setInterval(() => {
-      if (currentIndex < baseAnalysisLogLines.length) {
-        setLogMessages((prev) => [...prev, baseAnalysisLogLines[currentIndex]]);
-        currentIndex++;
-      } else {
-        clearInterval(analysisTimer);
-      }
-    }, 2000);
-
-    return () => {
-      clearInterval(analysisTimer);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // -------------------------------------------
-  //  CONTINUOUS “LIVE” DATA CHANGES
-  // -------------------------------------------
-  useEffect(() => {
-    // Update random offsets more frequently to simulate real-time data changes
-    const liveUpdateTimer = setInterval(() => {
-      setLiveRandom({
+    const randomTargetTimer = setInterval(() => {
+      // Update transformTarget with new randoms
+      setTransformTarget({
         funnel: Math.random() * 10 - 5,
         bar: Math.random() * 10 - 5,
         gauge: Math.random() * 3 - 1.5,
@@ -206,20 +236,95 @@ const LoadingCircle: React.FC = () => {
         heatmap: Math.random() * 2 - 1,
         donut: Math.random() * 2 - 1
       });
-    }, 1500); // every 1.5 seconds
 
-    return () => {
-      clearInterval(liveUpdateTimer);
-    };
+      // funnel
+      setFunnelTarget((prev) => {
+        return [
+          clamp(prev[0] + (Math.random() * 500 - 250), 10000, 20000),
+          clamp(prev[1] + (Math.random() * 400 - 200), 6000, 15000),
+          clamp(prev[2] + (Math.random() * 300 - 150), 1000, 8000),
+          clamp(prev[3] + (Math.random() * 200 - 100), 500, 5000)
+        ];
+      });
+
+      // bar
+      setBarTarget((prev) => {
+        return prev.map((v) => clamp(v + (Math.random() * 6 - 3), 0, 100));
+      }) as any;
+
+      // donut
+      setDonutTarget((prev) => clamp(prev + (Math.random() * 4 - 2), 50, 95));
+
+      // gauge
+      setGaugeTarget((prev) => clamp(prev + (Math.random() * 3 - 1.5), 50, 99));
+
+    }, 1800 + Math.random() * 400); // ~1.8-2.2s
+    return () => clearInterval(randomTargetTimer);
   }, []);
 
-  // Helper for gauge angle
+  // -------------------------------------------
+  //   SMOOTH INTERPOLATION WITH requestAnimationFrame
+  // -------------------------------------------
+  const rAFRef = useRef<number | null>(null);
+
+  const animateFrame = useCallback(() => {
+    // 1) transform
+    setTransformCurrent((curr) => {
+      const next = { ...curr };
+      Object.keys(curr).forEach((key) => {
+        const k = key as keyof typeof curr;
+        // e.g. next.funnel = ...
+        next[k] = curr[k] + (transformTarget[k] - curr[k]) * SMOOTH_FACTOR;
+      });
+      return next;
+    });
+
+    // 2) funnel
+    setFunnelCurrent((curr) => {
+      return curr.map((val, i) => {
+        const diff = funnelTarget[i] - val;
+        return val + diff * SMOOTH_FACTOR;
+      }) as number[];
+    });
+
+    // 3) bar
+    setBarCurrent((curr) => {
+      return curr.map((val, i) => {
+        const diff = barTarget[i] - val;
+        return val + diff * SMOOTH_FACTOR;
+      });
+    });
+
+    // 4) donut
+    setDonutCurrent((val) => {
+      const diff = donutTarget - val;
+      return val + diff * SMOOTH_FACTOR;
+    });
+
+    // 5) gauge
+    setGaugeCurrent((val) => {
+      const diff = gaugeTarget - val;
+      return val + diff * SMOOTH_FACTOR;
+    });
+
+    // schedule next frame
+    rAFRef.current = requestAnimationFrame(animateFrame);
+  }, [barTarget, donutTarget, funnelTarget, gaugeTarget, transformTarget]);
+
+  useEffect(() => {
+    rAFRef.current = requestAnimationFrame(animateFrame);
+    return () => {
+      if (rAFRef.current) cancelAnimationFrame(rAFRef.current);
+    };
+  }, [animateFrame]);
+
+  // Gauge angle helper
   function getGaugeAngle(baseAngle: number, adjustDeg: number) {
     return clamp(baseAngle + adjustDeg, 0, 90);
   }
 
   // -------------------------------------------
-  //        MODULE ANIMATION CLASSES
+  //   MODULES + HOVER TOOLTIP
   // -------------------------------------------
   const animationClasses = [
     styles.animation1,
@@ -231,20 +336,28 @@ const LoadingCircle: React.FC = () => {
     return animationClasses[i % animationClasses.length];
   }
 
-  // 12 staggered delay classes
   const delayClasses = [
     styles.delay1, styles.delay2, styles.delay3, styles.delay4,
     styles.delay5, styles.delay6, styles.delay7, styles.delay8,
     styles.delay9, styles.delay10, styles.delay11, styles.delay12
   ];
 
-  // Render each module with advanced overlay if not loaded
+  function handleMouseEnter(idx: number) {
+    setHoveredModuleIndex(idx);
+  }
+  function handleMouseLeave() {
+    setHoveredModuleIndex(null);
+  }
+
   function renderModule(content: JSX.Element, moduleIndex: number) {
     const loaded = moduleLoaded[moduleIndex];
     return (
       <div
         className={`${styles.module} ${getAnimationClass(moduleIndex)} ${delayClasses[moduleIndex]}`}
+        onMouseEnter={() => handleMouseEnter(moduleIndex)}
+        onMouseLeave={handleMouseLeave}
       >
+        {/* Boot overlay if not loaded */}
         {!loaded && (
           <div className={styles.vmLoadingOverlay}>
             <div className={styles.vmBootLines}>
@@ -256,17 +369,26 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Actual content if loaded */}
         {loaded && content}
+
+        {/* Hover tooltip */}
+        {hoveredModuleIndex === moduleIndex && (
+          <div className={styles.hoverTooltip}>
+            {moduleTooltips[moduleIndex]}
+          </div>
+        )}
       </div>
     );
   }
 
   // -------------------------------------------
-  //                 RENDER
+  //                RENDER
   // -------------------------------------------
   return (
     <div className={styles.container}>
-      <div className={styles.header}>Your Quantum Analysis In Process...</div>
+      <div className={styles.header}>Comprehensive Insight Dashboard</div>
 
       {/* Progress Bar */}
       <div className={styles.progressContainer}>
@@ -299,41 +421,49 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.funnelContainer}>
                   <div className={styles.funnelMetric} style={{ top: "10%" }}>
                     <span className={styles.label}>Data Points</span>
-                    <span className={styles.value}>15,120</span>
+                    <span className={styles.value}>
+                      {Math.round(funnelCurrent[0])}
+                    </span>
                     <div
                       className={styles.bar}
                       style={{
-                        width: `${clamp(100 + liveRandom.funnel, 0, 100)}%`
+                        width: `${clamp(100 + transformCurrent.funnel, 0, 100)}%`
                       }}
                     ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "35%" }}>
                     <span className={styles.label}>Key Observations</span>
-                    <span className={styles.value}>9,304</span>
+                    <span className={styles.value}>
+                      {Math.round(funnelCurrent[1])}
+                    </span>
                     <div
                       className={styles.bar}
                       style={{
-                        width: `${clamp(85 + liveRandom.funnel, 0, 100)}%`
+                        width: `${clamp(85 + transformCurrent.funnel, 0, 100)}%`
                       }}
                     ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "60%" }}>
                     <span className={styles.label}>Potential Patterns</span>
-                    <span className={styles.value}>4,189</span>
+                    <span className={styles.value}>
+                      {Math.round(funnelCurrent[2])}
+                    </span>
                     <div
                       className={styles.bar}
                       style={{
-                        width: `${clamp(65 + liveRandom.funnel, 0, 100)}%`
+                        width: `${clamp(65 + transformCurrent.funnel, 0, 100)}%`
                       }}
                     ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "85%" }}>
                     <span className={styles.label}>Core Insights</span>
-                    <span className={styles.value}>2,532</span>
+                    <span className={styles.value}>
+                      {Math.round(funnelCurrent[3])}
+                    </span>
                     <div
                       className={styles.bar}
                       style={{
-                        width: `${clamp(40 + liveRandom.funnel, 0, 100)}%`
+                        width: `${clamp(40 + transformCurrent.funnel, 0, 100)}%`
                       }}
                     ></div>
                   </div>
@@ -358,7 +488,7 @@ const LoadingCircle: React.FC = () => {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `scale(${1 + liveRandom.radar * 0.01})`
+                  transform: `scale(${1 + transformCurrent.radar * 0.01})`
                 }}
               >
                 <div className={styles.radarContainer}>
@@ -402,7 +532,7 @@ const LoadingCircle: React.FC = () => {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `scale(${1 + liveRandom.area * 0.01})`
+                  transform: `scale(${1 + transformCurrent.area * 0.01})`
                 }}
               >
                 <div className={styles.chartGrid}></div>
@@ -445,7 +575,7 @@ const LoadingCircle: React.FC = () => {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `translateY(${liveRandom.chord * 0.5}px)`
+                  transform: `translateY(${transformCurrent.chord * 0.5}px)`
                 }}
               >
                 <div className={styles.chordContainer}>
@@ -476,7 +606,7 @@ const LoadingCircle: React.FC = () => {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `rotate(${liveRandom.scatter * 0.5}deg)`
+                  transform: `rotate(${transformCurrent.scatter * 0.5}deg)`
                 }}
               >
                 <div className={styles.chartGrid}></div>
@@ -499,7 +629,7 @@ const LoadingCircle: React.FC = () => {
             4
           )}
 
-          {/* 6) HEATMAP (Association Mapping) */}
+          {/* 6) HEATMAP */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -514,7 +644,7 @@ const LoadingCircle: React.FC = () => {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `scale(${1 + liveRandom.heatmap * 0.01})`
+                  transform: `scale(${1 + transformCurrent.heatmap * 0.01})`
                 }}
               >
                 <div className={styles.heatmapContainer}>
@@ -554,7 +684,6 @@ const LoadingCircle: React.FC = () => {
                     <span>Channel 5</span>
                   </div>
                   <div className={styles.yLabels} style={{ left: "13%" }}>
-                    {/* Renamed to just A, B, C, D, E */}
                     <span>A</span>
                     <span>B</span>
                     <span>C</span>
@@ -582,7 +711,7 @@ const LoadingCircle: React.FC = () => {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `rotate(${liveRandom.donut * 0.5}deg)`
+                  transform: `rotate(${transformCurrent.donut * 0.5}deg)`
                 }}
               >
                 <div className={styles.donutContainer}>
@@ -592,10 +721,9 @@ const LoadingCircle: React.FC = () => {
                   <div className={`${styles.donutSegment} ${styles.segment3}`}></div>
                   <div className={styles.donutHole}></div>
                   <div className={styles.donutLabel}>
-                    <div className={styles.value}>72%</div>
+                    <div className={styles.value}>{Math.round(donutCurrent)}%</div>
                     <div className={styles.text}>Utilization</div>
                   </div>
-                  {/* Shifted these legend items up so none overflow */}
                   <div className={styles.legendItem} style={{ bottom: "25%" }}>
                     <span></span>Group A
                   </div>
@@ -649,10 +777,12 @@ const LoadingCircle: React.FC = () => {
                   <div
                     className={styles.gaugeNeedle}
                     style={{
-                      transform: `rotate(${getGaugeAngle(53, liveRandom.gauge)}deg)`
+                      transform: `rotate(${getGaugeAngle(53, transformCurrent.gauge)}deg)`
                     }}
                   ></div>
-                  <div className={styles.gaugeValue}>81% Stable</div>
+                  <div className={styles.gaugeValue}>
+                    {Math.round(gaugeCurrent)}% Stable
+                  </div>
                 </div>
               </div>
             </>,
@@ -677,54 +807,22 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.chartAxisY}></div>
                 <div className={styles.barChartContainer}>
                   <div className={styles.barGroup}>
-                    <div className={styles.barWrapper}>
-                      <div
-                        className={styles.bar}
-                        style={{ height: `${clamp(55 + liveRandom.bar, 0, 100)}%` }}
-                      ></div>
-                      <div className={styles.barLabel}>Cat A</div>
-                      <div className={styles.barValue}>58%</div>
-                    </div>
-                    <div className={styles.barWrapper}>
-                      <div
-                        className={styles.bar}
-                        style={{ height: `${clamp(80 + liveRandom.bar, 0, 100)}%` }}
-                      ></div>
-                      <div className={styles.barLabel}>Cat B</div>
-                      <div className={styles.barValue}>82%</div>
-                    </div>
-                    <div className={styles.barWrapper}>
-                      <div
-                        className={styles.bar}
-                        style={{ height: `${clamp(68 + liveRandom.bar, 0, 100)}%` }}
-                      ></div>
-                      <div className={styles.barLabel}>Cat C</div>
-                      <div className={styles.barValue}>71%</div>
-                    </div>
-                    <div className={styles.barWrapper}>
-                      <div
-                        className={styles.bar}
-                        style={{ height: `${clamp(90 + liveRandom.bar, 0, 100)}%` }}
-                      ></div>
-                      <div className={styles.barLabel}>Cat D</div>
-                      <div className={styles.barValue}>93%</div>
-                    </div>
-                    <div className={styles.barWrapper}>
-                      <div
-                        className={styles.bar}
-                        style={{ height: `${clamp(77 + liveRandom.bar, 0, 100)}%` }}
-                      ></div>
-                      <div className={styles.barLabel}>Cat E</div>
-                      <div className={styles.barValue}>79%</div>
-                    </div>
-                    <div className={styles.barWrapper}>
-                      <div
-                        className={styles.bar}
-                        style={{ height: `${clamp(42 + liveRandom.bar, 0, 100)}%` }}
-                      ></div>
-                      <div className={styles.barLabel}>Cat F</div>
-                      <div className={styles.barValue}>46%</div>
-                    </div>
+                    {barCurrent.map((val, idx) => (
+                      <div key={idx} className={styles.barWrapper}>
+                        <div
+                          className={styles.bar}
+                          style={{
+                            height: `${clamp(val + transformCurrent.bar, 0, 100)}%`
+                          }}
+                        ></div>
+                        <div className={styles.barLabel}>
+                          Cat {String.fromCharCode(65 + idx)}
+                        </div>
+                        <div className={styles.barValue}>
+                          {Math.round(val)}%
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -747,7 +845,7 @@ const LoadingCircle: React.FC = () => {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `scale(${1 + liveRandom.bubble * 0.01})`
+                  transform: `scale(${1 + transformCurrent.bubble * 0.01})`
                 }}
               >
                 <div className={styles.chartGrid}></div>
@@ -784,7 +882,7 @@ const LoadingCircle: React.FC = () => {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `translateX(${liveRandom.line * 0.5}px)`
+                  transform: `translateX(${transformCurrent.line * 0.5}px)`
                 }}
               >
                 <div className={styles.chartGrid}></div>
@@ -828,7 +926,7 @@ const LoadingCircle: React.FC = () => {
               <div
                 className={styles.moduleBody}
                 style={{
-                  transform: `rotate(${liveRandom.network * 0.5}deg)`
+                  transform: `rotate(${transformCurrent.network * 0.5}deg)`
                 }}
               >
                 <div className={styles.chartGrid}></div>
@@ -858,7 +956,7 @@ const LoadingCircle: React.FC = () => {
           )}
         </div>
 
-        {/* Single-line rotating message */}
+        {/* Rotating message */}
         <div className={`${styles.message} ${fade ? styles.fadeIn : styles.fadeOut}`}>
           {loadingMessages[messageIndex]}
         </div>
