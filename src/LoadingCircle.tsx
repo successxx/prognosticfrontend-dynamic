@@ -75,18 +75,18 @@ const LoadingCircle: React.FC = () => {
 
     // Master timer: increments timeElapsed by 1s
     const masterTimer = window.setInterval(() => {
-      setTimeElapsed((prev) => {
-        if (prev >= totalDuration) {
+      setTimeElapsed((_prev) => {
+        if (_prev >= totalDuration) {
           // Reset after 30s
           return 0;
         }
-        return prev + 1;
+        return _prev + 1;
       });
     }, 1000);
 
     // Fill the progress bar to 100% by ~8s
     progressIntervalRef.current = window.setInterval(() => {
-      setProgressPercent((prev) => {
+      setProgressPercent((_prev) => {
         if (timeElapsed < topLoaderDuration) {
           // Gradual fill from 0% → 100% over 8s
           const newVal = Math.min((timeElapsed / topLoaderDuration) * 100, 100);
@@ -112,7 +112,7 @@ const LoadingCircle: React.FC = () => {
     const intervalId = window.setInterval(() => {
       setFade(false);
       setTimeout(() => {
-        setMessageIndex((prev) => (prev + 1) % loadingMessages.length);
+        setMessageIndex((_prev) => (_prev + 1) % loadingMessages.length);
         setFade(true);
       }, 300);
     }, 4000);
@@ -128,17 +128,17 @@ const LoadingCircle: React.FC = () => {
   useEffect(() => {
     // Add a log line ~every 1.5s
     const logTimer = window.setInterval(() => {
-      setLogIndex((prev) => {
-        const next = prev + 1;
+      setLogIndex((_prev) => {
+        const next = _prev + 1;
         if (next >= analysisLogLines.length) {
           return 0;
         }
         return next;
       });
 
-      setLogMessages((prev) => {
+      setLogMessages((_prev) => {
         const newMsg = analysisLogLines[logIndex % analysisLogLines.length];
-        return [...prev, newMsg];
+        return [..._prev, newMsg];
       });
     }, 1500);
 
