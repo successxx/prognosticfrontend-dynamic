@@ -19,8 +19,7 @@ const LoadingCircle: React.FC = () => {
     "Analysis complete—preparing output..."
   ];
 
-  // We'll add additional "log" lines to show under the rotating messages
-  // to give that "live VM log" impression.
+  // Additional log lines for "live VM log" effect
   const analysisLogLines = [
     "[VM] Starting Virtual Machine environment 1...",
     "[VM] Checking resource pool allocation...",
@@ -51,51 +50,50 @@ const LoadingCircle: React.FC = () => {
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const progressIntervalRef = useRef<number | null>(null);
 
-  // For the analysis log lines
+  // Analysis log
   const [logIndex, setLogIndex] = useState<number>(0);
   const [logMessages, setLogMessages] = useState<string[]>([]);
 
-  // We'll keep a 30s timer to reset or cycle everything
+  // 30s cycle + 8s top loader
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
-  const totalDuration = 30; // seconds
-  const topLoaderDuration = 8; // seconds for the top loader
+  const totalDuration = 30;
+  const topLoaderDuration = 8;
 
-  // For subtle "micro adjustments" we'll keep track of some random offsets
-  // (for demonstration, funnel and bar chart data changes).
+  // Micro-adjustments
   const [funnelAdjust, setFunnelAdjust] = useState<number>(0);
   const [barAdjust, setBarAdjust] = useState<number>(0);
   const [gaugeAdjust, setGaugeAdjust] = useState<number>(0);
 
   // -------------------------------------------
-  //          PROGRESS BAR + MAIN TIMING
+  //   PROGRESS BAR + MAIN TIMING (30s cycle)
   // -------------------------------------------
   useEffect(() => {
-    // Clear any previous intervals if re-rendered
+    // Clear any previous intervals
     if (progressIntervalRef.current) {
       window.clearInterval(progressIntervalRef.current);
     }
 
-    // We update timeElapsed every 1 second up to totalDuration (30s).
+    // Master timer: increments timeElapsed by 1s
     const masterTimer = window.setInterval(() => {
-      setTimeElapsed(prev => {
+      setTimeElapsed((prev) => {
         if (prev >= totalDuration) {
-          return 0; // loop it after 30s (or you could keep going)
+          // Reset after 30s
+          return 0;
         }
         return prev + 1;
       });
     }, 1000);
 
-    // Grow the progress bar up to 100% within topLoaderDuration (~8s)
-    // Then keep it at 100% and let it blink via CSS
+    // Fill the progress bar to 100% by ~8s
     progressIntervalRef.current = window.setInterval(() => {
-      setProgressPercent(prev => {
+      setProgressPercent((prev) => {
         if (timeElapsed < topLoaderDuration) {
-          // Fill up from 0% to 100% over topLoaderDuration seconds
+          // Gradual fill from 0% → 100% over 8s
           const newVal = Math.min((timeElapsed / topLoaderDuration) * 100, 100);
           return newVal;
-        } else {
-          return 100; // stay at 100% after 8s
         }
+        // Once 8s passes, keep at 100%
+        return 100;
       });
     }, 300);
 
@@ -108,10 +106,10 @@ const LoadingCircle: React.FC = () => {
   }, [timeElapsed]);
 
   // -------------------------------------------
-  //         ROTATING MESSAGES (every 4s)
+  //        ROTATING MESSAGES (every 4s)
   // -------------------------------------------
   useEffect(() => {
-    const intervalId = setInterval(() => {
+    const intervalId = window.setInterval(() => {
       setFade(false);
       setTimeout(() => {
         setMessageIndex((prev) => (prev + 1) % loadingMessages.length);
@@ -120,17 +118,16 @@ const LoadingCircle: React.FC = () => {
     }, 4000);
 
     return () => {
-      clearInterval(intervalId);
+      window.clearInterval(intervalId);
     };
   }, [loadingMessages.length]);
 
   // -------------------------------------------
-  //       ANALYSIS LOG (live “VM” lines)
+  //        ANALYSIS LOG (live “VM” lines)
   // -------------------------------------------
   useEffect(() => {
-    // We want to add a new line to the "analysis log" every ~1.5-2s or so.
-    // Then after 30s, reset for the loop effect.
-    const logTimer = setInterval(() => {
+    // Add a log line ~every 1.5s
+    const logTimer = window.setInterval(() => {
       setLogIndex((prev) => {
         const next = prev + 1;
         if (next >= analysisLogLines.length) {
@@ -139,60 +136,52 @@ const LoadingCircle: React.FC = () => {
         return next;
       });
 
-      // Add a new message
       setLogMessages((prev) => {
         const newMsg = analysisLogLines[logIndex % analysisLogLines.length];
         return [...prev, newMsg];
       });
     }, 1500);
 
-    // Reset the log after 30s
+    // Reset the log each 30s cycle
     if (timeElapsed === 0) {
       setLogIndex(0);
       setLogMessages([]);
     }
 
     return () => {
-      clearInterval(logTimer);
+      window.clearInterval(logTimer);
     };
   }, [logIndex, timeElapsed, analysisLogLines]);
 
   // -------------------------------------------
-  //     MICRO-ADJUSTMENTS FOR REALISM
+  //     MICRO-ADJUSTMENTS (funnel/bar/gauge)
   // -------------------------------------------
   useEffect(() => {
-    // Slight random changes every 2 seconds
-    const microAdjustTimer = setInterval(() => {
-      // e.g., funnel changes
-      setFunnelAdjust(Math.random() * 10 - 5); // random between -5 and 5
-      // e.g., bar changes
+    const microAdjustTimer = window.setInterval(() => {
+      setFunnelAdjust(Math.random() * 10 - 5); // random -5..+5
       setBarAdjust(Math.random() * 10 - 5);
-      // e.g., gauge changes
       setGaugeAdjust(Math.random() * 3 - 1.5); // small angle shift
     }, 2000);
 
     return () => {
-      clearInterval(microAdjustTimer);
+      window.clearInterval(microAdjustTimer);
     };
   }, []);
 
-  // We'll define a small helper to clamp or map the micro adjustments
+  // Helper to clamp funnel widths
   function getWidthPercent(basePercent: number, adjust: number) {
-    // Add a small offset in a safe range
     const val = basePercent + adjust;
-    // clamp between 0 and 100
     return Math.max(0, Math.min(100, val));
   }
 
-  // Likewise for a gauge angle, for example
+  // Helper to clamp gauge angles
   function getGaugeAngle(baseAngle: number, adjustDeg: number) {
     const val = baseAngle + adjustDeg;
-    // clamp the gauge angle between some range, say 0 to 90
     return Math.max(0, Math.min(90, val));
   }
 
   // -------------------------------------------
-  //       GET ANIMATION CLASS PER MODULE
+  //   GET ANIMATION CLASS PER MODULE (4 types)
   // -------------------------------------------
   const animationClasses = [
     styles.animation1,
@@ -204,7 +193,7 @@ const LoadingCircle: React.FC = () => {
     return animationClasses[i % animationClasses.length];
   }
 
-  // 12 different delay classes for more natural staggering
+  // Natural stagger delay for each of 12 modules
   const delayClasses = [
     styles.delay1, styles.delay2, styles.delay3, styles.delay4,
     styles.delay5, styles.delay6, styles.delay7, styles.delay8,
@@ -218,10 +207,12 @@ const LoadingCircle: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.header}>Comprehensive Insight Dashboard</div>
 
-      {/* Progress Bar */}
+      {/* Top Progress Bar */}
       <div className={styles.progressContainer}>
         <div
-          className={`${styles.progressBar} ${progressPercent >= 100 ? styles.progressComplete : ""}`}
+          className={`${styles.progressBar} ${
+            progressPercent >= 100 ? styles.progressComplete : ""
+          }`}
           style={{ width: `${progressPercent}%` }}
         >
           <div className={styles.progressGlow}></div>
@@ -250,8 +241,7 @@ const LoadingCircle: React.FC = () => {
                   <div
                     className={styles.bar}
                     style={{
-                      width: `100%`,
-                      transform: "scaleX(1)"
+                      width: `${getWidthPercent(100, funnelAdjust)}%`
                     }}
                   ></div>
                 </div>
@@ -261,7 +251,7 @@ const LoadingCircle: React.FC = () => {
                   <div
                     className={styles.bar}
                     style={{
-                      width: `85%`
+                      width: `${getWidthPercent(85, funnelAdjust)}%`
                     }}
                   ></div>
                 </div>
@@ -271,7 +261,7 @@ const LoadingCircle: React.FC = () => {
                   <div
                     className={styles.bar}
                     style={{
-                      width: `64%`
+                      width: `${getWidthPercent(64, funnelAdjust)}%`
                     }}
                   ></div>
                 </div>
@@ -281,7 +271,7 @@ const LoadingCircle: React.FC = () => {
                   <div
                     className={styles.bar}
                     style={{
-                      width: `37%`
+                      width: `${getWidthPercent(37, funnelAdjust)}%`
                     }}
                   ></div>
                 </div>
@@ -303,9 +293,7 @@ const LoadingCircle: React.FC = () => {
             <div className={styles.moduleBody}>
               {/* Radar Chart */}
               <div className={styles.radarContainer}>
-                {/* ...existing radar elements... */}
                 <div className={styles.radarChart}>
-                  {/* axes, circles, etc. are all animated by CSS */}
                   <div className={styles.radarAxis}></div>
                   <div className={styles.radarAxis}></div>
                   <div className={styles.radarAxis}></div>
@@ -534,12 +522,11 @@ const LoadingCircle: React.FC = () => {
                 <div
                   className={styles.gaugeMeter}
                   style={{
-                    transform: `scale(${1}) rotate(-90deg)` 
+                    transform: `scale(1) rotate(-90deg)`
                   }}
                 ></div>
                 <div className={styles.gaugeCover}></div>
                 <div className={styles.gaugeTicks}>
-                  {/* ticks */}
                   <div className={styles.gaugeTick}></div>
                   <div className={styles.gaugeTick}></div>
                   <div className={styles.gaugeTick}></div>
@@ -653,7 +640,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.chartAxisX}></div>
               <div className={styles.chartAxisY}></div>
               <div className={styles.bubbleContainer}>
-                {/* Bubbles */}
                 <div className={styles.bubble}></div>
                 <div className={styles.bubble}></div>
                 <div className={styles.bubble}></div>
