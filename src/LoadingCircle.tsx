@@ -2,217 +2,195 @@ import React, { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
 const LoadingCircle: React.FC = () => {
-  // -------------------------------------------
-  //               LOADING MESSAGES
-  // -------------------------------------------
-  const loadingMessages = [
+  // More detailed analysis log messages for realistic appearance
+  const analysisLogMessages = [
+    "Initializing system architecture...",
+    "Starting virtual machine instances...",
+    "Mounting data processing nodes...",
+    "Connecting to analytical framework...",
+    "Calibrating measurement parameters...",
+    "Loading baseline comparisons...",
     "Initializing cross-domain analysis...",
     "Collecting multi-layer inputs...",
     "Identifying key data clusters...",
     "Evaluating potential anomalies...",
+    "Preprocessing raw data streams...",
+    "Building predictive models...",
     "Aggregating deep indicators...",
+    "Normalizing reference datasets...",
+    "Processing statistical correlations...",
+    "Running variance analysis...",
     "Refining multi-dimensional signals...",
+    "Mapping relational structures...",
+    "Processing confidence intervals...",
     "Applying heuristic predictions...",
+    "Calculating attribution models...",
     "Synthesizing correlation patterns...",
+    "Validating projection accuracy...",
+    "Optimizing decision thresholds...",
     "Pinpointing emergent insights...",
+    "Finalizing data visualization...",
     "Compiling final intelligence...",
     "Analysis complete—preparing output..."
   ];
 
-  // Additional log lines for "live VM log" effect
-  const analysisLogLines = [
-    "[VM] Starting Virtual Machine environment 1...",
-    "[VM] Checking resource pool allocation...",
-    "[VM] Boot complete: environment 1",
-    "[VM] Starting Virtual Machine environment 2...",
-    "[VM] Launching advanced heuristics...",
-    "[Data] Fetching cluster 1 from distributed nodes...",
-    "[Data] Real-time signal aggregator started...",
-    "[VM] Starting Virtual Machine environment 3...",
-    "[Data] Pipeline stable: no anomalies found",
-    "[Data] Recalibrating correlation thresholds...",
-    "[System] GPU acceleration verified",
-    "[System] CPU usage stable at 72%",
-    "[Data] Cross-correlation check in progress...",
-    "[System] Memory usage: 1.2 GB / 8 GB",
-    "[Data] Forecast model iteration #3 in progress...",
-    "[System] All sub-processes stable",
-    "[VM] Starting Virtual Machine environment 4...",
-    "[Data] Gathering final summary metrics...",
-    "[System] Exporting insights..."
+  // VM initialization messages
+  const vmInitMessages = [
+    "Initializing virtual machine...",
+    "Starting analytical engine...",
+    "Booting data processor...",
+    "Loading analysis framework...",
+    "Starting computational node...",
+    "Initializing metrics engine...",
   ];
 
-  // -------------------------------------------
-  //                 REACT STATES
-  // -------------------------------------------
+  // State management
   const [messageIndex, setMessageIndex] = useState<number>(0);
   const [fade, setFade] = useState<boolean>(true);
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const progressIntervalRef = useRef<number | null>(null);
+  const [moduleStates, setModuleStates] = useState<Array<{loading: boolean, initializing: boolean}>>([
+    {loading: false, initializing: false},
+    {loading: false, initializing: false},
+    {loading: false, initializing: false},
+    {loading: false, initializing: false},
+    {loading: false, initializing: false},
+    {loading: false, initializing: false},
+    {loading: false, initializing: false},
+    {loading: false, initializing: false},
+    {loading: false, initializing: false},
+    {loading: false, initializing: false},
+    {loading: false, initializing: false},
+    {loading: false, initializing: false}
+  ]);
+  const [analysisComplete, setAnalysisComplete] = useState<boolean>(false);
 
-  // Analysis log
-  const [logIndex, setLogIndex] = useState<number>(0);
-  const [logMessages, setLogMessages] = useState<string[]>([]);
-
-  // 30s cycle + 8s top loader
-  const [timeElapsed, setTimeElapsed] = useState<number>(0);
-  const totalDuration = 30;
-  const topLoaderDuration = 8;
-
-  // Micro-adjustments
-  const [funnelAdjust, setFunnelAdjust] = useState<number>(0);
-  const [barAdjust, setBarAdjust] = useState<number>(0);
-  const [gaugeAdjust, setGaugeAdjust] = useState<number>(0);
-
-  // -------------------------------------------
-  //   PROGRESS BAR + MAIN TIMING (30s cycle)
-  // -------------------------------------------
+  // Handle module initialization
   useEffect(() => {
-    // Clear any previous intervals
+    // Randomly initialize modules
+    const initializationOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].sort(() => Math.random() - 0.5);
+    
+    initializationOrder.forEach((moduleIndex, i) => {
+      // Start loading modules at staggered times
+      setTimeout(() => {
+        setModuleStates(prev => {
+          const newStates = [...prev];
+          newStates[moduleIndex] = {loading: true, initializing: true};
+          return newStates;
+        });
+        
+        // After a random delay, switch from initializing to analysis
+        setTimeout(() => {
+          setModuleStates(prev => {
+            const newStates = [...prev];
+            newStates[moduleIndex] = {loading: true, initializing: false};
+            return newStates;
+          });
+        }, 2000 + Math.random() * 3000);
+      }, 500 + i * (Math.random() * 1000 + 300));
+    });
+  }, []);
+
+  // Handle progress bar + rotating messages
+  useEffect(() => {
     if (progressIntervalRef.current) {
       window.clearInterval(progressIntervalRef.current);
     }
-
-    // Master timer: increments timeElapsed by 1s
-    const masterTimer = window.setInterval(() => {
-      setTimeElapsed((_prev) => {
-        if (_prev >= totalDuration) {
-          // Reset after 30s
-          return 0;
-        }
-        return _prev + 1;
-      });
-    }, 1000);
-
-    // Fill the progress bar to 100% by ~8s
+    
+    // Gradually increase the progress bar over 8 seconds
     progressIntervalRef.current = window.setInterval(() => {
-      setProgressPercent((_prev) => {
-        if (timeElapsed < topLoaderDuration) {
-          // Gradual fill from 0% → 100% over 8s
-          const newVal = Math.min((timeElapsed / topLoaderDuration) * 100, 100);
-          return newVal;
+      setProgressPercent((prev) => {
+        if (prev >= 100) {
+          // Once at 100%, set analysis complete
+          if (!analysisComplete) {
+            setAnalysisComplete(true);
+          }
+          return 100;
         }
-        // Once 8s passes, keep at 100%
-        return 100;
+        // Make progress faster (complete in ~8 seconds)
+        return Math.min(prev + 0.5, 100);
       });
-    }, 300);
+    }, 40); // Faster updates for smoother animation
+
+    // Rotate messages at a pace appropriate for 30-second analysis
+    const updateMessage = () => {
+      setFade(false);
+      setTimeout(() => {
+        setMessageIndex((prev) => (prev + 1) % analysisLogMessages.length);
+        setFade(true);
+      }, 500);
+    };
+    const intervalId = setInterval(updateMessage, 1100); // Faster message rotation
 
     return () => {
-      window.clearInterval(masterTimer);
+      clearInterval(intervalId);
       if (progressIntervalRef.current) {
         window.clearInterval(progressIntervalRef.current);
       }
     };
-  }, [timeElapsed]);
+  }, [messageIndex, analysisLogMessages.length, analysisComplete]);
 
-  // -------------------------------------------
-  //        ROTATING MESSAGES (every 4s)
-  // -------------------------------------------
-  useEffect(() => {
-    const intervalId = window.setInterval(() => {
-      setFade(false);
-      setTimeout(() => {
-        setMessageIndex((_prev) => (_prev + 1) % loadingMessages.length);
-        setFade(true);
-      }, 300);
-    }, 4000);
-
-    return () => {
-      window.clearInterval(intervalId);
-    };
-  }, [loadingMessages.length]);
-
-  // -------------------------------------------
-  //        ANALYSIS LOG (live “VM” lines)
-  // -------------------------------------------
-  useEffect(() => {
-    // Add a log line ~every 1.5s
-    const logTimer = window.setInterval(() => {
-      setLogIndex((_prev) => {
-        const next = _prev + 1;
-        if (next >= analysisLogLines.length) {
-          return 0;
-        }
-        return next;
-      });
-
-      setLogMessages((_prev) => {
-        const newMsg = analysisLogLines[logIndex % analysisLogLines.length];
-        return [..._prev, newMsg];
-      });
-    }, 1500);
-
-    // Reset the log each 30s cycle
-    if (timeElapsed === 0) {
-      setLogIndex(0);
-      setLogMessages([]);
-    }
-
-    return () => {
-      window.clearInterval(logTimer);
-    };
-  }, [logIndex, timeElapsed, analysisLogLines]);
-
-  // -------------------------------------------
-  //     MICRO-ADJUSTMENTS (funnel/bar/gauge)
-  // -------------------------------------------
-  useEffect(() => {
-    const microAdjustTimer = window.setInterval(() => {
-      setFunnelAdjust(Math.random() * 10 - 5); // random -5..+5
-      setBarAdjust(Math.random() * 10 - 5);
-      setGaugeAdjust(Math.random() * 3 - 1.5); // small angle shift
-    }, 2000);
-
-    return () => {
-      window.clearInterval(microAdjustTimer);
-    };
-  }, []);
-
-  // Helper to clamp funnel widths
-  function getWidthPercent(basePercent: number, adjust: number) {
-    const val = basePercent + adjust;
-    return Math.max(0, Math.min(100, val));
-  }
-
-  // Helper to clamp gauge angles
-  function getGaugeAngle(baseAngle: number, adjustDeg: number) {
-    const val = baseAngle + adjustDeg;
-    return Math.max(0, Math.min(90, val));
-  }
-
-  // -------------------------------------------
-  //   GET ANIMATION CLASS PER MODULE (4 types)
-  // -------------------------------------------
+  // Animation classes for more organic appearance
   const animationClasses = [
     styles.animation1,
     styles.animation2,
     styles.animation3,
     styles.animation4
   ];
+
+  // Get animation class based on module index
   function getAnimationClass(i: number) {
     return animationClasses[i % animationClasses.length];
   }
 
-  // Natural stagger delay for each of 12 modules
+  // More fine-grained delay classes for natural staggering
   const delayClasses = [
     styles.delay1, styles.delay2, styles.delay3, styles.delay4,
     styles.delay5, styles.delay6, styles.delay7, styles.delay8,
     styles.delay9, styles.delay10, styles.delay11, styles.delay12
   ];
 
-  // -------------------------------------------
-  //                 RENDER
-  // -------------------------------------------
+  // Random VM initialization message for a module
+  const getVmMessage = (moduleIndex: number) => {
+    return vmInitMessages[moduleIndex % vmInitMessages.length];
+  };
+
+  // Generic titles that work for any business context
+  const moduleTitles = [
+    "Data Acquisition – Primary Metrics",
+    "Pattern Recognition – Insight Engine",
+    "Trend Analysis – Projection System",
+    "Comparative Analysis – Relationship Matrix",
+    "Factor Analysis – Variable Mapping",
+    "Correlation Engine – Signal Detection",
+    "Resource Allocation – Optimization Model",
+    "Stability Assessment – Risk Framework",
+    "Performance Metrics – Efficiency Analyzer",
+    "Segment Analysis – Distribution Map",
+    "Forecasting Engine – Trend Modeler",
+    "Network Analysis – Structure Mapper"
+  ];
+
+  // Status indicators that appear during module analysis
+  const statusIndicators = [
+    "Active", "Processing", "Analyzing", "Computing", 
+    "Calculating", "Measuring", "Mapping", "Running",
+    "Evaluating", "Modeling", "Optimizing", "Detecting"
+  ];
+
+  // Get a random status for a module
+  const getModuleStatus = (moduleIndex: number) => {
+    return statusIndicators[moduleIndex % statusIndicators.length];
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>Comprehensive Insight Dashboard</div>
 
-      {/* Top Progress Bar */}
+      {/* Progress Bar */}
       <div className={styles.progressContainer}>
         <div
-          className={`${styles.progressBar} ${
-            progressPercent >= 100 ? styles.progressComplete : ""
-          }`}
+          className={styles.progressBar}
           style={{ width: `${progressPercent}%` }}
         >
           <div className={styles.progressGlow}></div>
@@ -221,61 +199,63 @@ const LoadingCircle: React.FC = () => {
 
       <div className={styles.content}>
         <div className={styles.visualization}>
-          {/* 1) KPI NAVIGATOR */}
+
+          {/* 1) CONVERSION FUNNEL ANALYSIS */}
           <div className={`${styles.module} ${getAnimationClass(0)} ${delayClasses[0]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                Key Performance Indices – Data Navigator
+                {moduleStates[0].initializing ? getVmMessage(0) : moduleTitles[0]}
               </div>
-              <div className={styles.windowStatus}>Live</div>
+              <div className={`${styles.windowStatus} ${moduleStates[0].loading ? styles.active : ''}`}>
+                {moduleStates[0].initializing ? 'Booting' : getModuleStatus(0)}
+              </div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Funnel-like chart */}
-              <div className={styles.funnelContainer}>
-                <div className={styles.funnelMetric} style={{ top: "10%" }}>
-                  <span className={styles.label}>Traffic Volume</span>
-                  <span className={styles.value}>14,982</span>
-                  <div
-                    className={styles.bar}
-                    style={{
-                      width: `${getWidthPercent(100, funnelAdjust)}%`
-                    }}
-                  ></div>
+              {moduleStates[0].initializing ? (
+                <div className={styles.moduleLoading}>
+                  <div className={styles.loadingDots}></div>
                 </div>
-                <div className={styles.funnelMetric} style={{ top: "35%" }}>
-                  <span className={styles.label}>Qualified Leads</span>
-                  <span className={styles.value}>8,439</span>
-                  <div
-                    className={styles.bar}
-                    style={{
-                      width: `${getWidthPercent(85, funnelAdjust)}%`
-                    }}
-                  ></div>
-                </div>
-                <div className={styles.funnelMetric} style={{ top: "60%" }}>
-                  <span className={styles.label}>Sales Opportunities</span>
-                  <span className={styles.value}>3,214</span>
-                  <div
-                    className={styles.bar}
-                    style={{
-                      width: `${getWidthPercent(64, funnelAdjust)}%`
-                    }}
-                  ></div>
-                </div>
-                <div className={styles.funnelMetric} style={{ top: "85%" }}>
-                  <span className={styles.label}>Closed Deals</span>
-                  <span className={styles.value}>1,897</span>
-                  <div
-                    className={styles.bar}
-                    style={{
-                      width: `${getWidthPercent(37, funnelAdjust)}%`
-                    }}
-                  ></div>
-                </div>
-              </div>
+              ) : (
+                <>
+                  <div className={styles.chartGrid}></div>
+                  <div className={styles.chartAxisX}></div>
+                  <div className={styles.chartAxisY}></div>
+
+                  <div className={styles.funnelContainer}>
+                    <div className={styles.funnelMetric}>
+                      <span className={styles.label}>Incoming Volume</span>
+                      <span className={styles.value}>
+                        <span className={styles.fluctuate}>14,982</span>
+                      </span>
+                      <div className={styles.bar} style={{width: '100%'}}></div>
+                    </div>
+                    <div className={styles.funnelMetric}>
+                      <span className={styles.label}>Qualified Opportunities</span>
+                      <span className={styles.value}>
+                        <span className={styles.fluctuate}>8,439</span>
+                      </span>
+                      <div className={styles.bar} style={{width: '85%'}}></div>
+                    </div>
+                    <div className={styles.funnelMetric}>
+                      <span className={styles.label}>Active Engagements</span>
+                      <span className={styles.value}>
+                        <span className={styles.fluctuate}>3,214</span>
+                      </span>
+                      <div className={styles.bar} style={{width: '64%'}}></div>
+                    </div>
+                    <div className={styles.funnelMetric}>
+                      <span className={styles.label}>Conversion Events</span>
+                      <span className={styles.value}>
+                        <span className={styles.fluctuate}>1,897</span>
+                      </span>
+                      <div className={styles.bar} style={{width: '37%'}}></div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -286,460 +266,539 @@ const LoadingCircle: React.FC = () => {
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                Opportunity Potential – Insight Engine
+                {moduleStates[1].initializing ? getVmMessage(1) : moduleTitles[1]}
               </div>
-              <div className={styles.windowStatus}>Processing</div>
+              <div className={`${styles.windowStatus} ${moduleStates[1].loading ? styles.active : ''}`}>
+                {moduleStates[1].initializing ? 'Booting' : getModuleStatus(1)}
+              </div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Radar Chart */}
-              <div className={styles.radarContainer}>
-                <div className={styles.radarChart}>
-                  <div className={styles.radarAxis}></div>
-                  <div className={styles.radarAxis}></div>
-                  <div className={styles.radarAxis}></div>
-                  <div className={styles.radarAxis}></div>
-                  <div className={styles.radarAxis}></div>
-                  <div className={styles.radarAxis}></div>
-                  <div className={styles.radarCircle}></div>
-                  <div className={styles.radarCircle}></div>
-                  <div className={styles.radarCircle}></div>
-                  <div className={styles.radarCircle}></div>
-                  <div className={styles.radarValue}></div>
-                  <div className={styles.radarValue}></div>
-                  <div className={styles.radarValue}></div>
-                  <div className={styles.radarValue}></div>
-                  <div className={styles.radarValue}></div>
-                  <div className={styles.radarValue}></div>
-                  <div className={styles.radarArea}></div>
+              {moduleStates[1].initializing ? (
+                <div className={styles.moduleLoading}>
+                  <div className={styles.loadingDots}></div>
                 </div>
-              </div>
+              ) : (
+                <div className={styles.radarContainer}>
+                  <div className={styles.radarChart}>
+                    <div className={styles.radarAxis}></div>
+                    <div className={styles.radarAxis}></div>
+                    <div className={styles.radarAxis}></div>
+                    <div className={styles.radarAxis}></div>
+                    <div className={styles.radarAxis}></div>
+                    <div className={styles.radarAxis}></div>
+                    <div className={styles.radarCircle}></div>
+                    <div className={styles.radarCircle}></div>
+                    <div className={styles.radarCircle}></div>
+                    <div className={styles.radarCircle}></div>
+                    <div className={`${styles.radarValue} ${styles.pulse}`}></div>
+                    <div className={`${styles.radarValue} ${styles.pulse}`}></div>
+                    <div className={`${styles.radarValue} ${styles.pulse}`}></div>
+                    <div className={`${styles.radarValue} ${styles.pulse}`}></div>
+                    <div className={`${styles.radarValue} ${styles.pulse}`}></div>
+                    <div className={`${styles.radarValue} ${styles.pulse}`}></div>
+                    <div className={styles.radarArea}></div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* 3) PROJECTIVE PATTERNS */}
+          {/* 3) PREDICTIVE TRENDS */}
           <div className={`${styles.module} ${getAnimationClass(2)} ${delayClasses[2]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                Trend Casting – Future Mapper
+                {moduleStates[2].initializing ? getVmMessage(2) : moduleTitles[2]}
               </div>
-              <div className={styles.windowStatus}>Analyzing</div>
+              <div className={`${styles.windowStatus} ${moduleStates[2].loading ? styles.active : ''}`}>
+                {moduleStates[2].initializing ? 'Booting' : getModuleStatus(2)}
+              </div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Area Chart */}
-              <div className={styles.chartGrid}></div>
-              <div className={styles.chartAxisX}></div>
-              <div className={styles.chartAxisY}></div>
-              <div className={styles.areaChartContainer}>
-                <div className={styles.areaPath}>
-                  <div className={styles.area}></div>
-                  <div className={styles.areaLine}></div>
-                  {/* data points... */}
-                  <div className={styles.dataPoint}></div>
-                  <div className={styles.dataPoint}></div>
-                  <div className={styles.dataPoint}></div>
-                  <div className={styles.dataPoint}></div>
-                  <div className={styles.dataPoint}></div>
-                  <div className={styles.dataPoint}></div>
-                  <div className={styles.dataPoint}></div>
-                  <div className={styles.dataPoint}></div>
-                  <div className={styles.dataPoint}></div>
-                  <div className={styles.dataPoint}></div>
-                  <div className={styles.dataPoint}></div>
+              {moduleStates[2].initializing ? (
+                <div className={styles.moduleLoading}>
+                  <div className={styles.loadingDots}></div>
                 </div>
-              </div>
+              ) : (
+                <>
+                  <div className={styles.chartGrid}></div>
+                  <div className={styles.chartAxisX}></div>
+                  <div className={styles.chartAxisY}></div>
+
+                  <div className={styles.areaChartContainer}>
+                    <div className={styles.areaPath}>
+                      <div className={styles.area}></div>
+                      <div className={styles.areaLine}></div>
+                      <div className={`${styles.dataPoint} ${styles.fluctuate}`}></div>
+                      <div className={`${styles.dataPoint} ${styles.fluctuate}`}></div>
+                      <div className={`${styles.dataPoint} ${styles.fluctuate}`}></div>
+                      <div className={`${styles.dataPoint} ${styles.fluctuate}`}></div>
+                      <div className={`${styles.dataPoint} ${styles.fluctuate}`}></div>
+                      <div className={`${styles.dataPoint} ${styles.fluctuate}`}></div>
+                      <div className={`${styles.dataPoint} ${styles.fluctuate}`}></div>
+                      <div className={`${styles.dataPoint} ${styles.fluctuate}`}></div>
+                      <div className={`${styles.dataPoint} ${styles.fluctuate}`}></div>
+                      <div className={`${styles.dataPoint} ${styles.fluctuate}`}></div>
+                      <div className={`${styles.dataPoint} ${styles.fluctuate}`}></div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
-          {/* 4) COMPARATIVE MARKERS */}
+          {/* 4) COMPARATIVE BENCHMARKS */}
           <div className={`${styles.module} ${getAnimationClass(3)} ${delayClasses[3]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                Comparative Markers – Performance Matrix
+                {moduleStates[3].initializing ? getVmMessage(3) : moduleTitles[3]}
               </div>
-              <div className={styles.windowStatus}>Computing</div>
+              <div className={`${styles.windowStatus} ${moduleStates[3].loading ? styles.active : ''}`}>
+                {moduleStates[3].initializing ? 'Booting' : getModuleStatus(3)}
+              </div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Chord Diagram */}
-              <div className={styles.chordContainer}>
-                <div className={styles.chordCircle}></div>
-                <div className={styles.chordArc}></div>
-                <div className={styles.chordArc}></div>
-                <div className={styles.chordArc}></div>
-                <div className={styles.chord}></div>
-                <div className={styles.chord2}></div>
-              </div>
+              {moduleStates[3].initializing ? (
+                <div className={styles.moduleLoading}>
+                  <div className={styles.loadingDots}></div>
+                </div>
+              ) : (
+                <div className={styles.chordContainer}>
+                  <div className={styles.chordCircle}></div>
+                  <div className={styles.chordArc}></div>
+                  <div className={styles.chordArc}></div>
+                  <div className={styles.chordArc}></div>
+                  <div className={styles.chord}></div>
+                  <div className={styles.chord2}></div>
+                  <div className={`${styles.chordPoint} ${styles.fluctuate}`}></div>
+                  <div className={`${styles.chordPoint} ${styles.fluctuate}`}></div>
+                  <div className={`${styles.chordPoint} ${styles.fluctuate}`}></div>
+                  <div className={`${styles.chordPoint} ${styles.fluctuate}`}></div>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* 5) FACTOR ANALYSIS */}
+          {/* 5) MULTI-FACTOR ANALYSIS */}
           <div className={`${styles.module} ${getAnimationClass(0)} ${delayClasses[4]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                Multi-Variable Analytics – Factor Explorer
+                {moduleStates[4].initializing ? getVmMessage(4) : moduleTitles[4]}
               </div>
-              <div className={styles.windowStatus}>Active</div>
+              <div className={`${styles.windowStatus} ${moduleStates[4].loading ? styles.active : ''}`}>
+                {moduleStates[4].initializing ? 'Booting' : getModuleStatus(4)}
+              </div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Scatter Plot */}
-              <div className={styles.chartGrid}></div>
-              <div className={styles.chartAxisX}></div>
-              <div className={styles.chartAxisY}></div>
-              <div className={styles.scatterContainer}>
-                <div className={styles.scatterPoint} data-value="high"></div>
-                <div className={styles.scatterPoint} data-value="medium"></div>
-                <div className={styles.scatterPoint} data-value="high"></div>
-                <div className={styles.scatterPoint} data-value="low"></div>
-                <div className={styles.scatterPoint} data-value="medium"></div>
-                <div className={styles.scatterPoint} data-value="low"></div>
-                <div className={styles.scatterPoint} data-value="medium"></div>
-                <div className={styles.scatterPoint} data-value="high"></div>
-                <div className={styles.scatterPoint} data-value="medium"></div>
-                <div className={styles.trendLine}></div>
-              </div>
+              {moduleStates[4].initializing ? (
+                <div className={styles.moduleLoading}>
+                  <div className={styles.loadingDots}></div>
+                </div>
+              ) : (
+                <>
+                  <div className={styles.chartGrid}></div>
+                  <div className={styles.chartAxisX}></div>
+                  <div className={styles.chartAxisY}></div>
+
+                  <div className={styles.scatterContainer}>
+                    <div className={`${styles.scatterPoint} ${styles.fluctuate}`} data-value="high"></div>
+                    <div className={`${styles.scatterPoint} ${styles.fluctuate}`} data-value="medium"></div>
+                    <div className={`${styles.scatterPoint} ${styles.fluctuate}`} data-value="high"></div>
+                    <div className={`${styles.scatterPoint} ${styles.fluctuate}`} data-value="low"></div>
+                    <div className={`${styles.scatterPoint} ${styles.fluctuate}`} data-value="medium"></div>
+                    <div className={`${styles.scatterPoint} ${styles.fluctuate}`} data-value="low"></div>
+                    <div className={`${styles.scatterPoint} ${styles.fluctuate}`} data-value="medium"></div>
+                    <div className={`${styles.scatterPoint} ${styles.fluctuate}`} data-value="high"></div>
+                    <div className={`${styles.scatterPoint} ${styles.fluctuate}`} data-value="medium"></div>
+                    <div className={styles.trendLine}></div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
-          {/* 6) ASSOCIATION MATRIX */}
+          {/* 6) CORRELATION MAPPING */}
           <div className={`${styles.module} ${getAnimationClass(1)} ${delayClasses[5]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                Association Mapping – Connection Grid
+                {moduleStates[5].initializing ? getVmMessage(5) : moduleTitles[5]}
               </div>
-              <div className={styles.windowStatus}>Calculating</div>
+              <div className={`${styles.windowStatus} ${moduleStates[5].loading ? styles.active : ''}`}>
+                {moduleStates[5].initializing ? 'Booting' : getModuleStatus(5)}
+              </div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Heatmap */}
-              <div className={styles.heatmapContainer}>
-                <div className={styles.heatmapGrid}>
-                  {/* 25 cells */}
-                  <div className={`${styles.heatCell} ${styles.low}`}></div>
-                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                  <div className={`${styles.heatCell} ${styles.low}`}></div>
-                  <div className={`${styles.heatCell} ${styles.high}`}></div>
-                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                  <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
-                  <div className={`${styles.heatCell} ${styles.high}`}></div>
-                  <div className={`${styles.heatCell} ${styles.low}`}></div>
-                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                  <div className={`${styles.heatCell} ${styles.low}`}></div>
-                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                  <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
-                  <div className={`${styles.heatCell} ${styles.high}`}></div>
-                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                  <div className={`${styles.heatCell} ${styles.high}`}></div>
-                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                  <div className={`${styles.heatCell} ${styles.low}`}></div>
-                  <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
-                  <div className={`${styles.heatCell} ${styles.high}`}></div>
-                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                  <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
-                  <div className={`${styles.heatCell} ${styles.high}`}></div>
-                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                  <div className={`${styles.heatCell} ${styles.low}`}></div>
+              {moduleStates[5].initializing ? (
+                <div className={styles.moduleLoading}>
+                  <div className={styles.loadingDots}></div>
                 </div>
-                <div className={styles.xLabels}>
-                  <span>Email</span>
-                  <span>Social</span>
-                  <span>Ads</span>
-                  <span>Search</span>
-                  <span>Direct</span>
+              ) : (
+                <div className={styles.heatmapContainer}>
+                  <div className={styles.heatmapGrid}>
+                    <div className={`${styles.heatCell} ${styles.low} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.low} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.high} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles["very-high"]} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.high} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.low} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.low} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles["very-high"]} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.high} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.high} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.low} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles["very-high"]} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.high} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles["very-high"]} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.high} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium} ${styles.pulse}`}></div>
+                    <div className={`${styles.heatCell} ${styles.low} ${styles.pulse}`}></div>
+                  </div>
+                  <div className={styles.xLabels}>
+                    <span>Primary</span>
+                    <span>Secondary</span>
+                    <span>Tertiary</span>
+                    <span>Quaternary</span>
+                    <span>Extended</span>
+                  </div>
+                  <div className={styles.yLabels}>
+                    <span>Phase 1</span>
+                    <span>Phase 2</span>
+                    <span>Phase 3</span>
+                    <span>Phase 4</span>
+                    <span>Phase 5</span>
+                  </div>
                 </div>
-                <div className={styles.yLabels} style={{ left: "7%" }}>
-                  <span>Reach</span>
-                  <span>Interest</span>
-                  <span>Intent</span>
-                  <span>Purchase</span>
-                  <span>Loyalty</span>
-                </div>
-              </div>
+              )}
             </div>
           </div>
 
-          {/* 7) RESOURCE INDEX */}
+          {/* 7) RESOURCE EFFICIENCY */}
           <div className={`${styles.module} ${getAnimationClass(2)} ${delayClasses[6]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                Resource Index – Efficiency Pulse
+                {moduleStates[6].initializing ? getVmMessage(6) : moduleTitles[6]}
               </div>
-              <div className={styles.windowStatus}>Processing</div>
+              <div className={`${styles.windowStatus} ${moduleStates[6].loading ? styles.active : ''}`}>
+                {moduleStates[6].initializing ? 'Booting' : getModuleStatus(6)}
+              </div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Donut Chart */}
-              <div className={styles.donutContainer}>
-                <div className={styles.donutRing}></div>
-                <div className={`${styles.donutSegment} ${styles.segment1}`}></div>
-                <div className={`${styles.donutSegment} ${styles.segment2}`}></div>
-                <div className={`${styles.donutSegment} ${styles.segment3}`}></div>
-                <div className={styles.donutHole}></div>
-                <div className={styles.donutLabel}>
-                  <div className={styles.value}>68%</div>
-                  <div className={styles.text}>Efficiency</div>
+              {moduleStates[6].initializing ? (
+                <div className={styles.moduleLoading}>
+                  <div className={styles.loadingDots}></div>
                 </div>
-                <div className={styles.legendItem}>
-                  <span></span>Paid Media
+              ) : (
+                <div className={styles.donutContainer}>
+                  <div className={styles.donutRing}></div>
+                  <div className={`${styles.donutSegment} ${styles.segment1}`}></div>
+                  <div className={`${styles.donutSegment} ${styles.segment2}`}></div>
+                  <div className={`${styles.donutSegment} ${styles.segment3}`}></div>
+                  <div className={styles.donutHole}></div>
+                  <div className={styles.donutLabel}>
+                    <div className={`${styles.value} ${styles.fluctuate}`}>68%</div>
+                    <div className={styles.text}>Efficiency</div>
+                  </div>
+                  <div className={styles.legendItem}>
+                    <span></span>Primary Drivers
+                  </div>
+                  <div className={styles.legendItem}>
+                    <span></span>Secondary Factors
+                  </div>
+                  <div className={styles.legendItem}>
+                    <span></span>Tertiary Elements
+                  </div>
                 </div>
-                <div className={styles.legendItem}>
-                  <span></span>Content Marketing
-                </div>
-                <div className={styles.legendItem}>
-                  <span></span>Direct Engagement
-                </div>
-              </div>
+              )}
             </div>
           </div>
 
-          {/* 8) ROBUSTNESS OVERVIEW */}
+          {/* 8) STABILITY OVERVIEW */}
           <div className={`${styles.module} ${getAnimationClass(3)} ${delayClasses[7]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                Robustness Overview – Risk Evaluator
+                {moduleStates[7].initializing ? getVmMessage(7) : moduleTitles[7]}
               </div>
-              <div className={styles.windowStatus}>Measuring</div>
+              <div className={`${styles.windowStatus} ${moduleStates[7].loading ? styles.active : ''}`}>
+                {moduleStates[7].initializing ? 'Booting' : getModuleStatus(7)}
+              </div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Gauge Chart */}
-              <div className={styles.gaugeContainer}>
-                <div className={styles.gaugeBackground}></div>
-                <div
-                  className={styles.gaugeMeter}
-                  style={{
-                    transform: `scale(1) rotate(-90deg)`
-                  }}
-                ></div>
-                <div className={styles.gaugeCover}></div>
-                <div className={styles.gaugeTicks}>
-                  <div className={styles.gaugeTick}></div>
-                  <div className={styles.gaugeTick}></div>
-                  <div className={styles.gaugeTick}></div>
-                  <div className={styles.gaugeTick}></div>
-                  <div className={styles.gaugeTick}></div>
-                  <div className={styles.gaugeTick}></div>
-                  <div className={styles.gaugeTick}></div>
-                  <div className={styles.gaugeTick}></div>
-                  <div className={styles.gaugeTick}></div>
-                  <div className={styles.gaugeTick}></div>
-                  <div className={styles.gaugeTick}></div>
-                  <div className={styles.gaugeTick}></div>
-                  <div className={styles.gaugeTick}></div>
+              {moduleStates[7].initializing ? (
+                <div className={styles.moduleLoading}>
+                  <div className={styles.loadingDots}></div>
                 </div>
-                <div
-                  className={styles.gaugeNeedle}
-                  style={{
-                    transform: `rotate(${getGaugeAngle(53, gaugeAdjust)}deg)`
-                  }}
-                ></div>
-                <div className={styles.gaugeValue}>73% Stable</div>
-              </div>
+              ) : (
+                <div className={styles.gaugeContainer}>
+                  <div className={styles.gaugeBackground}></div>
+                  <div className={styles.gaugeMeter}></div>
+                  <div className={styles.gaugeCover}></div>
+                  <div className={styles.gaugeTicks}>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                  </div>
+                  <div className={`${styles.gaugeNeedle} ${styles.microMove}`}></div>
+                  <div className={styles.gaugeValue}>
+                    <span className={styles.fluctuate}>73%</span> Stability
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* 9) PERFORMANCE TIERS */}
+          {/* 9) PERFORMANCE LAYERS */}
           <div className={`${styles.module} ${getAnimationClass(0)} ${delayClasses[8]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                Performance Tiers – Efficiency Review
+                {moduleStates[8].initializing ? getVmMessage(8) : moduleTitles[8]}
               </div>
-              <div className={styles.windowStatus}>Calculating</div>
+              <div className={`${styles.windowStatus} ${moduleStates[8].loading ? styles.active : ''}`}>
+                {moduleStates[8].initializing ? 'Booting' : getModuleStatus(8)}
+              </div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Bar Chart */}
-              <div className={styles.chartGrid}></div>
-              <div className={styles.chartAxisX}></div>
-              <div className={styles.chartAxisY}></div>
-              <div className={styles.barChartContainer}>
-                <div className={styles.barGroup}>
-                  <div className={styles.barWrapper}>
-                    <div
-                      className={styles.bar}
-                      style={{ height: `${50 + barAdjust}%` }}
-                    ></div>
-                    <div className={styles.barLabel}>Q1</div>
-                    <div className={styles.barValue}>54%</div>
-                  </div>
-                  <div className={styles.barWrapper}>
-                    <div
-                      className={styles.bar}
-                      style={{ height: `${80 + barAdjust}%` }}
-                    ></div>
-                    <div className={styles.barLabel}>Q2</div>
-                    <div className={styles.barValue}>76%</div>
-                  </div>
-                  <div className={styles.barWrapper}>
-                    <div
-                      className={styles.bar}
-                      style={{ height: `${65 + barAdjust}%` }}
-                    ></div>
-                    <div className={styles.barLabel}>Q3</div>
-                    <div className={styles.barValue}>62%</div>
-                  </div>
-                  <div className={styles.barWrapper}>
-                    <div
-                      className={styles.bar}
-                      style={{ height: `${90 + barAdjust}%` }}
-                    ></div>
-                    <div className={styles.barLabel}>Q4</div>
-                    <div className={styles.barValue}>89%</div>
-                  </div>
-                  <div className={styles.barWrapper}>
-                    <div
-                      className={styles.bar}
-                      style={{ height: `${75 + barAdjust}%` }}
-                    ></div>
-                    <div className={styles.barLabel}>Q5</div>
-                    <div className={styles.barValue}>71%</div>
-                  </div>
-                  <div className={styles.barWrapper}>
-                    <div
-                      className={styles.bar}
-                      style={{ height: `${40 + barAdjust}%` }}
-                    ></div>
-                    <div className={styles.barLabel}>Q6</div>
-                    <div className={styles.barValue}>48%</div>
-                  </div>
+              {moduleStates[8].initializing ? (
+                <div className={styles.moduleLoading}>
+                  <div className={styles.loadingDots}></div>
                 </div>
-              </div>
+              ) : (
+                <>
+                  <div className={styles.chartGrid}></div>
+                  <div className={styles.chartAxisX}></div>
+                  <div className={styles.chartAxisY}></div>
+
+                  <div className={styles.barChartContainer}>
+                    <div className={styles.barGroup}>
+                      <div className={styles.barWrapper}>
+                        <div className={`${styles.bar} ${styles.microMove}`}></div>
+                        <div className={styles.barLabel}>Category 1</div>
+                        <div className={styles.barValue}>
+                          <span className={styles.fluctuate}>54%</span>
+                        </div>
+                      </div>
+                      <div className={styles.barWrapper}>
+                        <div className={`${styles.bar} ${styles.microMove}`}></div>
+                        <div className={styles.barLabel}>Category 2</div>
+                        <div className={styles.barValue}>
+                          <span className={styles.fluctuate}>76%</span>
+                        </div>
+                      </div>
+                      <div className={styles.barWrapper}>
+                        <div className={`${styles.bar} ${styles.microMove}`}></div>
+                        <div className={styles.barLabel}>Category 3</div>
+                        <div className={styles.barValue}>
+                          <span className={styles.fluctuate}>62%</span>
+                        </div>
+                      </div>
+                      <div className={styles.barWrapper}>
+                        <div className={`${styles.bar} ${styles.microMove}`}></div>
+                        <div className={styles.barLabel}>Category 4</div>
+                        <div className={styles.barValue}>
+                          <span className={styles.fluctuate}>89%</span>
+                        </div>
+                      </div>
+                      <div className={styles.barWrapper}>
+                        <div className={`${styles.bar} ${styles.microMove}`}></div>
+                        <div className={styles.barLabel}>Category 5</div>
+                        <div className={styles.barValue}>
+                          <span className={styles.fluctuate}>71%</span>
+                        </div>
+                      </div>
+                      <div className={styles.barWrapper}>
+                        <div className={`${styles.bar} ${styles.microMove}`}></div>
+                        <div className={styles.barLabel}>Category 6</div>
+                        <div className={styles.barValue}>
+                          <span className={styles.fluctuate}>48%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
-          {/* 10) MARKET EXPLORER */}
+          {/* 10) MARKET INTELLIGENCE */}
           <div className={`${styles.module} ${getAnimationClass(1)} ${delayClasses[9]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                Market Explorer – Cluster Navigator
+                {moduleStates[9].initializing ? getVmMessage(9) : moduleTitles[9]}
               </div>
-              <div className={styles.windowStatus}>Mapping</div>
+              <div className={`${styles.windowStatus} ${moduleStates[9].loading ? styles.active : ''}`}>
+                {moduleStates[9].initializing ? 'Booting' : getModuleStatus(9)}
+              </div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Bubble Chart */}
-              <div className={styles.chartGrid}></div>
-              <div className={styles.chartAxisX}></div>
-              <div className={styles.chartAxisY}></div>
-              <div className={styles.bubbleContainer}>
-                <div className={styles.bubble}></div>
-                <div className={styles.bubble}></div>
-                <div className={styles.bubble}></div>
-                <div className={styles.bubbleLabel}>Enterprise</div>
-                <div className={styles.bubbleLabel}>Mid-Market</div>
-                <div className={styles.bubbleLabel}>SMB</div>
-                <div className={styles.bubbleValue}>$14.2M</div>
-                <div className={styles.bubbleValue}>$8.7M</div>
-                <div className={styles.bubbleValue}>$3.5M</div>
-              </div>
+              {moduleStates[9].initializing ? (
+                <div className={styles.moduleLoading}>
+                  <div className={styles.loadingDots}></div>
+                </div>
+              ) : (
+                <>
+                  <div className={styles.chartGrid}></div>
+                  <div className={styles.chartAxisX}></div>
+                  <div className={styles.chartAxisY}></div>
+
+                  <div className={styles.bubbleContainer}>
+                    <div className={`${styles.bubble} ${styles.microMove}`}></div>
+                    <div className={`${styles.bubble} ${styles.microMove}`}></div>
+                    <div className={`${styles.bubble} ${styles.microMove}`}></div>
+                    <div className={styles.bubbleLabel}>Segment A</div>
+                    <div className={styles.bubbleLabel}>Segment B</div>
+                    <div className={styles.bubbleLabel}>Segment C</div>
+                    <div className={styles.bubbleValue}>
+                      <span className={styles.fluctuate}>42.6%</span>
+                    </div>
+                    <div className={styles.bubbleValue}>
+                      <span className={styles.fluctuate}>31.8%</span>
+                    </div>
+                    <div className={styles.bubbleValue}>
+                      <span className={styles.fluctuate}>25.6%</span>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
-          {/* 11) FORECASTING */}
+          {/* 11) FORECAST MODELING */}
           <div className={`${styles.module} ${getAnimationClass(2)} ${delayClasses[10]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                Forecasting – Trend Projections
+                {moduleStates[10].initializing ? getVmMessage(10) : moduleTitles[10]}
               </div>
-              <div className={styles.windowStatus}>Predicting</div>
+              <div className={`${styles.windowStatus} ${moduleStates[10].loading ? styles.active : ''}`}>
+                {moduleStates[10].initializing ? 'Booting' : getModuleStatus(10)}
+              </div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Line Chart */}
-              <div className={styles.chartGrid}></div>
-              <div className={styles.chartAxisX}></div>
-              <div className={styles.chartAxisY}></div>
-              <div className={styles.lineChartContainer}>
-                <div className={styles.lineChart}>
-                  <div className={styles.lineBase}></div>
-                  <div className={styles.linePath}></div>
-                  <div className={styles.linePoint}></div>
-                  <div className={styles.linePoint}></div>
-                  <div className={styles.linePoint}></div>
-                  <div className={styles.linePoint}></div>
-                  <div className={styles.linePoint}></div>
-                  <div className={styles.linePoint}></div>
-                  <div className={styles.linePoint}></div>
-                  <div className={styles.linePoint}></div>
-                  <div className={styles.linePoint}></div>
-                  <div className={styles.linePoint}></div>
-                  <div className={styles.linePoint}></div>
-                  <div className={styles.lineFill}></div>
+              {moduleStates[10].initializing ? (
+                <div className={styles.moduleLoading}>
+                  <div className={styles.loadingDots}></div>
                 </div>
-              </div>
+              ) : (
+                <>
+                  <div className={styles.chartGrid}></div>
+                  <div className={styles.chartAxisX}></div>
+                  <div className={styles.chartAxisY}></div>
+
+                  <div className={styles.lineChartContainer}>
+                    <div className={styles.lineChart}>
+                      <div className={styles.lineBase}></div>
+                      <div className={styles.linePath}></div>
+                      <div className={`${styles.linePoint} ${styles.microMove}`}></div>
+                      <div className={`${styles.linePoint} ${styles.microMove}`}></div>
+                      <div className={`${styles.linePoint} ${styles.microMove}`}></div>
+                      <div className={`${styles.linePoint} ${styles.microMove}`}></div>
+                      <div className={`${styles.linePoint} ${styles.microMove}`}></div>
+                      <div className={`${styles.linePoint} ${styles.microMove}`}></div>
+                      <div className={`${styles.linePoint} ${styles.microMove}`}></div>
+                      <div className={`${styles.linePoint} ${styles.microMove}`}></div>
+                      <div className={`${styles.linePoint} ${styles.microMove}`}></div>
+                      <div className={`${styles.linePoint} ${styles.microMove}`}></div>
+                      <div className={`${styles.linePoint} ${styles.microMove}`}></div>
+                      <div className={styles.lineFill}></div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
-          {/* 12) TOPOLOGY ANALYSIS */}
+          {/* 12) PATTERN DISCOVERY */}
           <div className={`${styles.module} ${getAnimationClass(3)} ${delayClasses[11]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
               <span className={styles.trafficLight} data-color="green" />
               <div className={styles.windowTitle}>
-                Topology Analysis – Network Synthesis
+                {moduleStates[11].initializing ? getVmMessage(11) : moduleTitles[11]}
               </div>
-              <div className={styles.windowStatus}>Running</div>
+              <div className={`${styles.windowStatus} ${moduleStates[11].loading ? styles.active : ''}`}>
+                {moduleStates[11].initializing ? 'Booting' : getModuleStatus(11)}
+              </div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Network Diagram */}
-              <div className={styles.chartGrid}></div>
-              <div className={styles.networkContainer}>
-                <div className={styles.networkNode}></div>
-                <div className={styles.networkNode}></div>
-                <div className={styles.networkNode}></div>
-                <div className={styles.networkNode}></div>
-                <div className={styles.networkNode}></div>
-                <div className={styles.networkLink}></div>
-                <div className={styles.networkLink}></div>
-                <div className={styles.networkLink}></div>
-                <div className={styles.networkLink}></div>
-                <div className={styles.networkLink}></div>
-                <div className={styles.networkLink}></div>
-                <div className={styles.networkLink}></div>
-                <div className={styles.networkLink}></div>
-                <div className={styles.nodeLabel}>Primary</div>
-                <div className={styles.nodeLabel}>Secondary</div>
-                <div className={styles.nodeLabel}>Tertiary</div>
-                <div className={styles.nodeLabel}>Quaternary</div>
-                <div className={styles.nodeLabel}>Central</div>
-              </div>
+              {moduleStates[11].initializing ? (
+                <div className={styles.moduleLoading}>
+                  <div className={styles.loadingDots}></div>
+                </div>
+              ) : (
+                <>
+                  <div className={styles.chartGrid}></div>
+                  <div className={styles.networkContainer}>
+                    <div className={`${styles.networkNode} ${styles.microMove}`}></div>
+                    <div className={`${styles.networkNode} ${styles.microMove}`}></div>
+                    <div className={`${styles.networkNode} ${styles.microMove}`}></div>
+                    <div className={`${styles.networkNode} ${styles.microMove}`}></div>
+                    <div className={`${styles.networkNode} ${styles.microMove}`}></div>
+                    <div className={styles.networkLink}></div>
+                    <div className={styles.networkLink}></div>
+                    <div className={styles.networkLink}></div>
+                    <div className={styles.networkLink}></div>
+                    <div className={styles.networkLink}></div>
+                    <div className={styles.networkLink}></div>
+                    <div className={styles.networkLink}></div>
+                    <div className={styles.networkLink}></div>
+                    <div className={styles.nodeLabel}>Node A</div>
+                    <div className={styles.nodeLabel}>Node B</div>
+                    <div className={styles.nodeLabel}>Node C</div>
+                    <div className={styles.nodeLabel}>Node D</div>
+                    <div className={styles.nodeLabel}>Node E</div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Rotating single-line status message */}
+        {/* Rotating messages - Analysis log */}
         <div className={`${styles.message} ${fade ? styles.fadeIn : styles.fadeOut}`}>
-          {loadingMessages[messageIndex]}
-        </div>
-
-        {/* Analysis Log Area */}
-        <div className={styles.analysisLog}>
-          {logMessages.map((line, idx) => (
-            <div key={idx} className={styles.logLine}>
-              {line}
-            </div>
-          ))}
+          {analysisLogMessages[messageIndex]}
         </div>
       </div>
     </div>
