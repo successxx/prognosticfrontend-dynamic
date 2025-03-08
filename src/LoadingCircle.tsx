@@ -19,6 +19,21 @@ function randomNoise() {
 }
 
 const LoadingCircle: React.FC = () => {
+  // ============== NEW: THE MISSING MESSAGES ==============
+  const loadingMessages = [
+    "Initializing cross-domain analysis...",
+    "Collecting multi-layer inputs...",
+    "Identifying key data clusters...",
+    "Evaluating potential anomalies...",
+    "Aggregating deep indicators...",
+    "Refining multi-dimensional signals...",
+    "Applying heuristic predictions...",
+    "Synthesizing correlation patterns...",
+    "Pinpointing emergent insights...",
+    "Compiling final intelligence...",
+    "Analysis complete—preparing output..."
+  ];
+
   // ============== LOGIC STATES ==============
   const [progressPercent, setProgressPercent] = useState(0);
   const [timeElapsed, setTimeElapsed] = useState(0); // for top loader
@@ -289,12 +304,8 @@ const LoadingCircle: React.FC = () => {
     { label: "Core Insights", base: 40, offset: 0 }
   ];
 
-  // 2) Radar, we just scale the container
-  // 3) Future Mapping – area chart from 0..some fraction
-  // ... etc. We replicate similar logic for all charts
-
-  // For the robust gauge, we want to place it so it's not cut off. 
-  // We'll move it to row 2, column 1 for safety (change the nth-of-type in CSS or reorder below).
+  // Just an example of how each module is configured
+  // Additional modules (Radar, Future Mapping, etc.) follow the same pattern
 
   return (
     <div className={styles.container}>
@@ -364,13 +375,11 @@ const LoadingCircle: React.FC = () => {
               <div
                 className={styles.moduleBody}
                 style={{
-                  // scale from 0.5..1.2 to show continuous "pulsing"
                   transform: `scale(${0.5 + getFraction() * 0.7 + randomNoise() * 0.005})`
                 }}
               >
                 <div className={styles.radarContainer}>
                   <div className={styles.radarChart}>
-                    {/* Radar Axes, Circles, Values, etc. unchanged */}
                     <div className={styles.radarAxis}></div>
                     <div className={styles.radarAxis}></div>
                     <div className={styles.radarAxis}></div>
@@ -420,7 +429,6 @@ const LoadingCircle: React.FC = () => {
                   <div className={styles.areaPath}>
                     <div className={styles.area}></div>
                     <div className={styles.areaLine}></div>
-                    {/* Data points remain */}
                     {[...Array(9)].map((_, idx) => (
                       <div key={idx} className={styles.dataPoint}></div>
                     ))}
@@ -460,7 +468,7 @@ const LoadingCircle: React.FC = () => {
             3
           )}
 
-          {/* 5) MULTI-VARIABLE ANALYSIS – FACTOR EXPLORER (not blank now) */}
+          {/* 5) MULTI-VARIABLE ANALYSIS – FACTOR EXPLORER */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -475,18 +483,16 @@ const LoadingCircle: React.FC = () => {
               <div
                 className={styles.moduleBody}
                 style={{
-                  // rotate a bit as well
                   transform: `rotate(${randomNoise() * 0.5}deg)`
                 }}
               >
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
-                {/* Some random scatter points with dynamic positions */}
                 <div style={{ position: "absolute", top: "15%", left: "10%", width: "80%", height: "70%" }}>
                   {[...Array(8)].map((_, idx) => {
                     const frac = getFraction();
-                    const x = Math.random() * 90 * frac; // 0..(90*frac)
+                    const x = Math.random() * 90 * frac;
                     const y = Math.random() * 60 * frac;
                     return (
                       <div
@@ -510,7 +516,7 @@ const LoadingCircle: React.FC = () => {
             4
           )}
 
-          {/* 6) ASSOCIATION MAPPING - with changed text to avoid overlap */}
+          {/* 6) ASSOCIATION MAPPING – CONNECTION GRID */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -528,9 +534,8 @@ const LoadingCircle: React.FC = () => {
               >
                 <div className={styles.heatmapContainer}>
                   <div className={styles.heatmapGrid}>
-                    {/* 25 cells as before */}
                     {[...Array(25)].map((_, idx) => {
-                      const classes = [ styles.low, styles.medium, styles.high, styles["very-high"] ];
+                      const classes = [styles.low, styles.medium, styles.high, styles["very-high"]];
                       const pick = classes[Math.floor(Math.random() * classes.length)];
                       return <div key={idx} className={`${styles.heatCell} ${pick}`}></div>;
                     })}
@@ -580,7 +585,6 @@ const LoadingCircle: React.FC = () => {
                   <div className={`${styles.donutSegment} ${styles.segment3}`}></div>
                   <div className={styles.donutHole}></div>
                   <div className={styles.donutLabel}>
-                    {/* Example utilization from fraction * 100 */}
                     <div className={styles.value}>{Math.round(getFraction() * 100)}%</div>
                     <div className={styles.text}>Utilization</div>
                   </div>
@@ -599,8 +603,7 @@ const LoadingCircle: React.FC = () => {
             6
           )}
 
-          {/* 8) ROBUSTNESS OVERVIEW – moved up so it's not cut off 
-              Let's place it in row 2 instead of row 3. We'll just reorder in code */}
+          {/* 8) ROBUSTNESS OVERVIEW – RISK EVALUATOR */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -681,8 +684,7 @@ const LoadingCircle: React.FC = () => {
             8
           )}
 
-          {/* 10) CLUSTERING - remove black text top left 
-              We'll just show some bubbles plus the group labels */}
+          {/* 10) CLUSTERING – MULTI-GROUP NAVIGATOR */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -704,7 +706,6 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
                 <div className={styles.bubbleContainer}>
-                  {/* 3 Bubbles. We'll just scale them by fraction */}
                   <div
                     className={styles.bubble}
                     style={{
@@ -794,7 +795,7 @@ const LoadingCircle: React.FC = () => {
             10
           )}
 
-          {/* 12) TOPOLOGY ANALYSIS – NETWORK SYNTHESIS (not blank) */}
+          {/* 12) TOPOLOGY ANALYSIS – NETWORK SYNTHESIS */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -814,8 +815,6 @@ const LoadingCircle: React.FC = () => {
               >
                 <div className={styles.chartGrid}></div>
                 <div className={styles.networkContainer}>
-                  {/* 5 nodes in random positions, linked by lines? 
-                      For simplicity, keep existing but shift them slightly */}
                   {[...Array(5)].map((_, idx) => {
                     const left = [25, 70, 20, 65, 45][idx];
                     const top = [30, 25, 65, 70, 45][idx];
@@ -830,7 +829,6 @@ const LoadingCircle: React.FC = () => {
                       ></div>
                     );
                   })}
-                  {/* We'll keep the links & label positions as is */}
                   {[...Array(8)].map((_, idx) => (
                     <div key={idx} className={styles.networkLink}></div>
                   ))}
