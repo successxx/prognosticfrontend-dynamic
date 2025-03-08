@@ -17,7 +17,11 @@
     box-sizing: border-box;
 }
 
-/* Header styles */
+/* 
+   We have intentionally kept .pai-dr-header in the CSS to ensure
+   "no lines lost," but we will NOT use it in our markup so the black
+   header is effectively removed from the UI.
+*/
 .pai-dr-header {
     background-color: #252525;
     color: white;
@@ -419,8 +423,8 @@
 }
 
 @keyframes particle-move {
-    0% {
-        transform: translateX(0) translateY(0);
+    0% { 
+        transform: translateX(0) translateY(0); 
         opacity: 0;
     }
     10% {
@@ -429,8 +433,8 @@
     90% {
         opacity: 0.4;
     }
-    100% {
-        transform: translateX(105vw) translateY(20px);
+    100% { 
+        transform: translateX(105vw) translateY(20px); 
         opacity: 0;
     }
 }
@@ -471,6 +475,7 @@
         font-size: 18px;
     }
 }
+
 
 /* -------------------------------------------------------------------
    NEW ADVANCED ANALYSIS MODULE STYLES (COMBINED FINAL)
@@ -568,7 +573,7 @@
 }
 
 /********************************************************
-  CONTENT
+  CONTENT AREA
 ********************************************************/
 .content {
   background-color: white;
