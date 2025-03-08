@@ -72,7 +72,6 @@ const LoadingIndicator: React.FC = () => {
   ];
 
   // keep a list of module indexes for stable assignment
-  const moduleIndexes = Array.from({ length: 12 }, (_, i) => i);
 
   return (
     <div className={styles.container}>
