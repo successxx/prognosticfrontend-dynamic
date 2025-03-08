@@ -2,490 +2,414 @@
    OLD LOADER (Prognostic AI) STYLES
    ------------------------------------------------------------------- */
 
-/* Base container styles */
-.prognostic-ai-demo-results-container {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #F0F4F8;
-    width: 100%;
-    max-width: 800px;
-    margin: 20px auto;
-    border-radius: 15px;
-    overflow: hidden;
-}
+/* 
+   We do NOT need a separate .prognostic-ai-demo-results-container 
+   because everything is now inside .container from the new code. 
+   However, we keep the classes for reference. 
+*/
 
-.prognostic-ai-demo-results-container * {
-    box-sizing: border-box;
-}
+/* Overwrite or unify color references to match the new color palette if desired */
 
-/* We have intentionally kept .pai-dr-header in the CSS to ensure
-   "no lines lost," but we will NOT use it in our markup 
-   (so the black header is effectively removed from the UI). */
-.pai-dr-header {
-    background-color: #252525;
-    color: white;
-    padding: 20px;
-    font-size: 24px;
-    font-weight: 700;
-    text-align: center;
-    width: 100%;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    position: relative;
-    overflow: hidden;
-}
+/* 
+   .pai-dr-header {
+       display: none; 
+   } 
+   Removed or set to display none, as requested 
+*/
 
-/* Subtle header animation */
-.pai-dr-header::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    animation: header-scan 8s linear infinite;
-}
+/* Content area that used to be .pai-dr-content 
+   We'll keep the class name but it now sits inside the .container. 
+*/
 
-@keyframes header-scan {
-    0% { left: -100%; }
-    100% { left: 200%; }
-}
-
-/* Content area */
 .pai-dr-content {
-    background-color: white;
-    padding: 30px;
-    min-height: 350px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 0 0 15px 15px;
-    position: relative;
-    overflow: hidden;
+  background-color: transparent; /* unify with new container’s BG */
+  padding: 30px;
+  min-height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  /* No border-radius, no box-shadow, to seamlessly blend inside the parent */
 }
 
 /* Futuristic visualization container */
 .pai-dr-visualization {
-    position: relative;
-    width: 180px;
-    height: 180px;
-    margin-bottom: 40px;
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin-bottom: 40px;
 }
 
-/* Core central circle */
+/* Core central circle 
+   We might shift #252525 to a deeper purple or neutral gray. 
+   Keep the code, but consider a color override if desired. 
+*/
 .pai-dr-core {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 40px;
-    height: 40px;
-    background-color: #252525;
-    border-radius: 50%;
-    z-index: 5;
-    box-shadow: 0 0 10px rgba(37, 37, 37, 0.3);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  background-color: #252525; 
+  border-radius: 50%;
+  z-index: 5;
+  box-shadow: 0 0 10px rgba(37, 37, 37, 0.3);
 }
 
 /* Inner rotating ring */
 .pai-dr-ring-inner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80px;
-    height: 80px;
-    border: 2px solid rgba(37, 37, 37, 0.1);
-    border-top: 2px solid #252525;
-    border-radius: 50%;
-    animation: pai-dr-spin-inner 3s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border: 2px solid rgba(37, 37, 37, 0.1);
+  border-top: 2px solid #252525;
+  border-radius: 50%;
+  animation: pai-dr-spin-inner 3s linear infinite;
 }
 
 /* Middle rotating ring */
 .pai-dr-ring-middle {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 120px;
-    height: 120px;
-    border: 1px solid rgba(37, 37, 37, 0.05);
-    border-left: 1px solid #252525;
-    border-radius: 50%;
-    animation: pai-dr-spin-middle 7s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border: 1px solid rgba(37, 37, 37, 0.05);
+  border-left: 1px solid #252525;
+  border-radius: 50%;
+  animation: pai-dr-spin-middle 7s linear infinite;
 }
 
 /* Outer rotating ring */
 .pai-dr-ring-outer {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 160px;
-    height: 160px;
-    border: 1px dashed rgba(37, 37, 37, 0.05);
-    border-right: 1px solid rgba(37, 37, 37, 0.6);
-    border-radius: 50%;
-    animation: pai-dr-spin-outer 15s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 160px;
+  height: 160px;
+  border: 1px dashed rgba(37, 37, 37, 0.05);
+  border-right: 1px solid rgba(37, 37, 37, 0.6);
+  border-radius: 50%;
+  animation: pai-dr-spin-outer 15s linear infinite;
 }
 
 /* Data points that appear and disappear */
 .pai-dr-data-points {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 4;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
 }
-
 .pai-dr-data-point {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background-color: #252525;
-    border-radius: 50%;
-    opacity: 0;
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: #252525;
+  border-radius: 50%;
+  opacity: 0;
 }
 
-/* Data point animations - positioned at various points around the circle */
+/* Data points around the circle */
 .pai-dr-data-point:nth-child(1) {
-    top: 30%;
-    left: 10%;
-    animation: data-point-pulse 5s ease-in-out infinite;
-    animation-delay: 0.2s;
+  top: 30%;
+  left: 10%;
+  animation: data-point-pulse 5s ease-in-out infinite;
+  animation-delay: 0.2s;
 }
-
 .pai-dr-data-point:nth-child(2) {
-    top: 70%;
-    left: 20%;
-    animation: data-point-pulse 7s ease-in-out infinite;
-    animation-delay: 1.5s;
+  top: 70%;
+  left: 20%;
+  animation: data-point-pulse 7s ease-in-out infinite;
+  animation-delay: 1.5s;
 }
-
 .pai-dr-data-point:nth-child(3) {
-    top: 20%;
-    left: 80%;
-    animation: data-point-pulse 6s ease-in-out infinite;
-    animation-delay: 0.7s;
+  top: 20%;
+  left: 80%;
+  animation: data-point-pulse 6s ease-in-out infinite;
+  animation-delay: 0.7s;
 }
-
 .pai-dr-data-point:nth-child(4) {
-    top: 60%;
-    left: 85%;
-    animation: data-point-pulse 8s ease-in-out infinite;
-    animation-delay: 2.1s;
+  top: 60%;
+  left: 85%;
+  animation: data-point-pulse 8s ease-in-out infinite;
+  animation-delay: 2.1s;
 }
-
 .pai-dr-data-point:nth-child(5) {
-    top: 40%;
-    left: 50%;
-    animation: data-point-pulse 4s ease-in-out infinite;
-    animation-delay: 1.2s;
+  top: 40%;
+  left: 50%;
+  animation: data-point-pulse 4s ease-in-out infinite;
+  animation-delay: 1.2s;
 }
-
 .pai-dr-data-point:nth-child(6) {
-    top: 80%;
-    left: 50%;
-    animation: data-point-pulse 6s ease-in-out infinite;
-    animation-delay: 3.5s;
+  top: 80%;
+  left: 50%;
+  animation: data-point-pulse 6s ease-in-out infinite;
+  animation-delay: 3.5s;
 }
 
-/* Data connection lines */
+/* Connection lines between data points */
 .pai-dr-data-connection {
-    position: absolute;
-    background-color: rgba(37, 37, 37, 0.1);
-    transform-origin: 0 0;
-    z-index: 3;
-    opacity: 0;
+  position: absolute;
+  background-color: rgba(37, 37, 37, 0.1);
+  transform-origin: 0 0;
+  z-index: 3;
+  opacity: 0;
 }
-
 .pai-dr-data-connection:nth-child(1) {
-    top: 32%;
-    left: 12%;
-    width: 50px;
-    height: 1px;
-    transform: rotate(30deg);
-    animation: connection-appear 4s ease-in-out infinite;
-    animation-delay: 0.3s;
+  top: 32%;
+  left: 12%;
+  width: 50px;
+  height: 1px;
+  transform: rotate(30deg);
+  animation: connection-appear 4s ease-in-out infinite;
+  animation-delay: 0.3s;
 }
-
 .pai-dr-data-connection:nth-child(2) {
-    top: 72%;
-    left: 22%;
-    width: 70px;
-    height: 1px;
-    transform: rotate(-15deg);
-    animation: connection-appear 6s ease-in-out infinite;
-    animation-delay: 1.7s;
+  top: 72%;
+  left: 22%;
+  width: 70px;
+  height: 1px;
+  transform: rotate(-15deg);
+  animation: connection-appear 6s ease-in-out infinite;
+  animation-delay: 1.7s;
 }
-
 .pai-dr-data-connection:nth-child(3) {
-    top: 22%;
-    left: 78%;
-    width: 60px;
-    height: 1px;
-    transform: rotate(150deg);
-    animation: connection-appear 5s ease-in-out infinite;
-    animation-delay: 0.9s;
+  top: 22%;
+  left: 78%;
+  width: 60px;
+  height: 1px;
+  transform: rotate(150deg);
+  animation: connection-appear 5s ease-in-out infinite;
+  animation-delay: 0.9s;
 }
-
 .pai-dr-data-connection:nth-child(4) {
-    top: 62%;
-    left: 83%;
-    width: 55px;
-    height: 1px;
-    transform: rotate(200deg);
-    animation: connection-appear 7s ease-in-out infinite;
-    animation-delay: 2.3s;
+  top: 62%;
+  left: 83%;
+  width: 55px;
+  height: 1px;
+  transform: rotate(200deg);
+  animation: connection-appear 7s ease-in-out infinite;
+  animation-delay: 2.3s;
 }
 
 /* Glowing scan effect */
 .pai-dr-scan {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 180px;
-    height: 180px;
-    background: radial-gradient(circle, transparent 30%, rgba(37, 37, 37, 0.03) 60%, transparent 70%);
-    border-radius: 50%;
-    z-index: 2;
-    animation: scan-pulse 4s ease-in-out infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, transparent 30%, rgba(37, 37, 37, 0.03) 60%, transparent 70%);
+  border-radius: 50%;
+  z-index: 2;
+  animation: scan-pulse 4s ease-in-out infinite;
 }
 
 /* Background grid for futuristic effect */
 .pai-dr-grid {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: 20px 20px;
-    background-image: radial-gradient(circle, rgba(37, 37, 37, 0.1) 1px, transparent 1px);
-    z-index: 1;
-    opacity: 0.3;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 20px 20px;
+  background-image: radial-gradient(circle, rgba(37, 37, 37, 0.1) 1px, transparent 1px);
+  z-index: 1;
+  opacity: 0.3;
 }
 
 /* Message display */
 .pai-dr-message {
-    font-size: 20px;
-    color: #333;
-    text-align: center;
-    opacity: 1;
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-    position: relative;
-    z-index: 6;
+  font-size: 20px;
+  color: #333;
+  text-align: center;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  position: relative;
+  z-index: 6;
+  margin-top: 20px; 
 }
 
 .fade-out {
-    opacity: 0;
-    transform: translateY(20px);
+  opacity: 0;
+  transform: translateY(20px);
 }
 
 .fade-in {
-    opacity: 1;
-    transform: translateY(0);
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Success message styling */
 .pai-dr-message.success {
-    color: #252525;
-    font-weight: 600;
+  color: #252525;
+  font-weight: 600;
 }
 
-/* Button styling */
+/* Button styling - not used in final version, but kept for completeness */
 .pai-dr-button {
-    display: inline-block;
-    background-color: #252525;
-    color: white;
-    font-size: 14px;
-    padding: 8px 16px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-    margin-top: 20px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  background-color: #252525;
+  color: white;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 .pai-dr-button:hover {
-    background-color: #333;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background-color: #333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Animation keyframes */
+/* Animation keyframes (old loader) */
 @keyframes pai-dr-spin-inner {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
-
 @keyframes pai-dr-spin-middle {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(-360deg); }
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(-360deg); }
 }
-
 @keyframes pai-dr-spin-outer {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
-
 @keyframes data-point-pulse {
-    0%, 100% { opacity: 0; transform: scale(0); }
-    20% { opacity: 0.2; transform: scale(1); }
-    40% { opacity: 0.8; transform: scale(2); }
-    60% { opacity: 0.4; transform: scale(1.5); }
-    80% { opacity: 0.1; transform: scale(1); }
+  0%, 100% { opacity: 0; transform: scale(0); }
+  20% { opacity: 0.2; transform: scale(1); }
+  40% { opacity: 0.8; transform: scale(2); }
+  60% { opacity: 0.4; transform: scale(1.5); }
+  80% { opacity: 0.1; transform: scale(1); }
 }
-
 @keyframes connection-appear {
-    0%, 100% { opacity: 0; }
-    30%, 70% { opacity: 0.7; }
+  0%, 100% { opacity: 0; }
+  30%, 70% { opacity: 0.7; }
 }
-
 @keyframes scan-pulse {
-    0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; }
-    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.7; }
+  0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.7; }
 }
 
 /* Flying data particles effect */
 .pai-dr-particles-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
 }
-
 .pai-dr-particle {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    background-color: rgba(37, 37, 37, 0.2);
-    border-radius: 50%;
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background-color: rgba(37, 37, 37, 0.2);
+  border-radius: 50%;
 }
-
 .pai-dr-particle:nth-child(1) {
-    top: 20%;
-    left: -5%;
-    animation: particle-move 7s linear infinite;
+  top: 20%;
+  left: -5%;
+  animation: particle-move 7s linear infinite;
 }
-
 .pai-dr-particle:nth-child(2) {
-    top: 70%;
-    left: -5%;
-    animation: particle-move 8s linear infinite 1s;
+  top: 70%;
+  left: -5%;
+  animation: particle-move 8s linear infinite 1s;
 }
-
 .pai-dr-particle:nth-child(3) {
-    top: 40%;
-    left: -5%;
-    animation: particle-move 6s linear infinite 2s;
+  top: 40%;
+  left: -5%;
+  animation: particle-move 6s linear infinite 2s;
 }
-
 .pai-dr-particle:nth-child(4) {
-    top: 30%;
-    left: -5%;
-    animation: particle-move 9s linear infinite 3s;
+  top: 30%;
+  left: -5%;
+  animation: particle-move 9s linear infinite 3s;
 }
-
 .pai-dr-particle:nth-child(5) {
-    top: 60%;
-    left: -5%;
-    animation: particle-move 7s linear infinite 4s;
+  top: 60%;
+  left: -5%;
+  animation: particle-move 7s linear infinite 4s;
 }
-
 .pai-dr-particle:nth-child(6) {
-    top: 80%;
-    left: -5%;
-    animation: particle-move 10s linear infinite 0.5s;
+  top: 80%;
+  left: -5%;
+  animation: particle-move 10s linear infinite 0.5s;
 }
-
 .pai-dr-particle:nth-child(7) {
-    top: 50%;
-    left: -5%;
-    animation: particle-move 8s linear infinite 2.5s;
+  top: 50%;
+  left: -5%;
+  animation: particle-move 8s linear infinite 2.5s;
 }
-
 .pai-dr-particle:nth-child(8) {
-    top: 10%;
-    left: -5%;
-    animation: particle-move 6s linear infinite 1.5s;
+  top: 10%;
+  left: -5%;
+  animation: particle-move 6s linear infinite 1.5s;
 }
-
 @keyframes particle-move {
-    0% { 
-        transform: translateX(0) translateY(0); 
-        opacity: 0;
-    }
-    10% {
-        opacity: 0.4;
-    }
-    90% {
-        opacity: 0.4;
-    }
-    100% { 
-        transform: translateX(105vw) translateY(20px); 
-        opacity: 0;
-    }
+  0% {
+    transform: translateX(0) translateY(0);
+    opacity: 0;
+  }
+  10% { opacity: 0.4; }
+  90% { opacity: 0.4; }
+  100% {
+    transform: translateX(105vw) translateY(20px);
+    opacity: 0;
+  }
 }
 
-/* Media queries for OLD LOADER */
+/* OLD loader responsiveness */
 @media (max-width: 600px) {
-    .pai-dr-header {
-        font-size: 20px;
-        padding: 15px;
-    }
-
-    .pai-dr-content {
-        padding: 20px;
-        min-height: 300px;
-    }
-
-    .pai-dr-visualization {
-        width: 150px;
-        height: 150px;
-    }
-
-    .pai-dr-ring-outer {
-        width: 130px;
-        height: 130px;
-    }
-
-    .pai-dr-ring-middle {
-        width: 100px;
-        height: 100px;
-    }
-
-    .pai-dr-ring-inner {
-        width: 70px;
-        height: 70px;
-    }
-
-    .pai-dr-message {
-        font-size: 18px;
-    }
+  .pai-dr-content {
+    padding: 20px;
+    min-height: 300px;
+  }
+  .pai-dr-visualization {
+    width: 150px;
+    height: 150px;
+  }
+  .pai-dr-ring-outer {
+    width: 130px;
+    height: 130px;
+  }
+  .pai-dr-ring-middle {
+    width: 100px;
+    height: 100px;
+  }
+  .pai-dr-ring-inner {
+    width: 70px;
+    height: 70px;
+  }
+  .pai-dr-message {
+    font-size: 18px;
+  }
 }
-
 
 /* -------------------------------------------------------------------
    NEW ADVANCED ANALYSIS MODULE STYLES (COMBINED FINAL)
    ------------------------------------------------------------------- */
 
-/******************************************************
-  ENHANCED DATA ANALYSIS MODULE STYLES (COMBINED FINAL)
-******************************************************/
-
-/********************************************************
-  BASE CONTAINER & LAYOUT
-********************************************************/
 .container {
   font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont,
                'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -535,14 +459,12 @@
   overflow: hidden;
   z-index: 1;
 }
-
 .progressBar {
   height: 100%;
   background: linear-gradient(90deg, #9552D3, #BC73ED);
   transition: width 0.3s ease-out;
   position: relative;
 }
-
 .progressGlow {
   position: absolute;
   top: 0;
@@ -558,15 +480,14 @@
   animation: glowLoop 2s ease-out infinite;
 }
 @keyframes glowLoop {
-  0%   { transform: translateX(0); }
+  0% { transform: translateX(0); }
   100% { transform: translateX(100px); }
 }
-
 .progressComplete {
   animation: blinkBar 1s infinite alternate ease-in-out;
 }
 @keyframes blinkBar {
-  0%   { opacity: 1; }
+  0% { opacity: 1; }
   100% { opacity: 0.85; }
 }
 
@@ -584,7 +505,6 @@
   overflow: hidden;
   z-index: 1;
 }
-
 .visualization {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -627,28 +547,40 @@
   MODULE FLY-IN ANIMATIONS
 ********************************************************/
 @keyframes flyInWithBounce {
-  0%   { transform: translateY(-300px) scale(0.9); opacity: 0; }
-  70%  { transform: translateY(15px) scale(1.02); opacity: 0.9; }
-  85%  { transform: translateY(-8px) scale(0.98); opacity: 0.95; }
+  0% { transform: translateY(-300px) scale(0.9); opacity: 0; }
+  70% { transform: translateY(15px) scale(1.02); opacity: 0.9; }
+  85% { transform: translateY(-8px) scale(0.98); opacity: 0.95; }
   100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 @keyframes flyInFromSide {
-  0%   { transform: translateX(-300px) scale(0.9); opacity: 0; }
-  70%  { transform: translateX(15px) scale(1.02); opacity: 0.9; }
-  85%  { transform: translateX(-8px) scale(0.98); opacity: 0.95; }
+  0% { transform: translateX(-300px) scale(0.9); opacity: 0; }
+  70% { transform: translateX(15px) scale(1.02); opacity: 0.9; }
+  85% { transform: translateX(-8px) scale(0.98); opacity: 0.95; }
   100% { transform: translateX(0) scale(1); opacity: 1; }
 }
 @keyframes zoomInWithFade {
-  0%   { transform: scale(0.7); opacity: 0; }
-  60%  { transform: scale(1.05); opacity: 0.8; }
-  80%  { transform: scale(0.97); opacity: 0.9; }
+  0% { transform: scale(0.7); opacity: 0; }
+  60% { transform: scale(1.05); opacity: 0.8; }
+  80% { transform: scale(0.97); opacity: 0.9; }
   100% { transform: scale(1); opacity: 1; }
 }
 @keyframes slideUpWithShadow {
-  0%   { transform: translateY(100px); opacity: 0; }
-  70%  { transform: translateY(-10px); opacity: 0.8; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-  85%  { transform: translateY(5px); opacity: 0.9; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
-  100% { transform: translateY(0); opacity: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+  0% { transform: translateY(100px); opacity: 0; }
+  70% { 
+    transform: translateY(-10px); 
+    opacity: 0.8; 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+  }
+  85% { 
+    transform: translateY(5px); 
+    opacity: 0.9; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08); 
+  }
+  100% { 
+    transform: translateY(0); 
+    opacity: 1; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06); 
+  }
 }
 
 .animation1 { animation: flyInWithBounce 0.7s forwards ease-out; }
@@ -670,7 +602,7 @@
 .delay12 { animation-delay: 0.75s; }
 
 /********************************************************
-  VM LOADING OVERLAY - MORE ADVANCED LOOK
+  VM LOADING OVERLAY
 ********************************************************/
 .vmLoadingOverlay {
   position: absolute;
@@ -681,7 +613,6 @@
   align-items: center;
   z-index: 999;
 }
-
 .vmBootLines {
   color: #8DE8AD;
   font-family: "Source Code Pro", monospace;
@@ -691,18 +622,15 @@
   align-items: center;
   animation: flickerScreen 2s infinite;
 }
-
 .vmDotFlicker {
   margin: 6px 0;
   animation: dotFlicker 1.8s infinite;
 }
-
 @keyframes dotFlicker {
-  0%   { opacity: 1; }
-  50%  { opacity: 0.2; }
+  0% { opacity: 1; }
+  50% { opacity: 0.2; }
   100% { opacity: 1; }
 }
-
 @keyframes flickerScreen {
   0% { opacity: 1; }
   80% { opacity: 0.98; }
@@ -711,7 +639,7 @@
 }
 
 /********************************************************
-  VM-LIKE WINDOW BAR
+  MAC WINDOW BAR
 ********************************************************/
 .macWindowBar {
   height: 26px;
@@ -721,9 +649,8 @@
   padding-left: 8px;
   border-bottom: 1px solid #d2d2d2;
 }
-
 .trafficLight {
-  width: 12px;
+  width: 12px; 
   height: 12px;
   border-radius: 50%;
   margin-right: 5px;
@@ -736,11 +663,9 @@
   inset: 0;
   background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 50%);
 }
-
 .trafficLight[data-color="red"]    { background-color: #ff5f56; box-shadow: 0 0 1px rgba(0,0,0,0.2);}
 .trafficLight[data-color="yellow"] { background-color: #ffbd2e; box-shadow: 0 0 1px rgba(0,0,0,0.2);}
 .trafficLight[data-color="green"]  { background-color: #27c93f; box-shadow: 0 0 1px rgba(0,0,0,0.2);}
-
 .windowTitle {
   font-size: 11px;
   font-weight: 600;
@@ -751,7 +676,6 @@
   text-overflow: ellipsis;
   text-shadow: 0 1px 0 rgba(255,255,255,0.7);
 }
-
 .windowStatus {
   margin-left: auto;
   margin-right: 8px;
@@ -763,12 +687,10 @@
   letter-spacing: 0.5px;
   animation: statusBlink 3s infinite alternate;
 }
-
 @keyframes statusBlink {
   0%, 80% { color: #666; }
   90%, 100% { color: #9552D3; }
 }
-
 .moduleBody {
   width: 100%;
   height: calc(100% - 26px);
@@ -792,12 +714,10 @@
     linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
   background-size: 20px 20px;
 }
-
 .chartAxisX, .chartAxisY {
   position: absolute;
   background-color: rgba(0,0,0,0.2);
 }
-
 .chartAxisX {
   bottom: 12%;
   left: 6%;
@@ -810,13 +730,11 @@
   width: 1px;
   height: 82%;
 }
-
 .chartAxisX::after, .chartAxisY::after {
   content: '';
   position: absolute;
   border-style: solid;
 }
-
 .chartAxisX::after {
   right: -6px;
   top: -3px;
@@ -838,7 +756,6 @@
   width: 100%;
   height: 100%;
 }
-
 .funnelMetric {
   position: absolute;
   height: 22px;
@@ -855,10 +772,8 @@
   transform-origin: left;
   opacity: 0;
 }
-
 .funnelMetric .label { flex: 1; text-align: left; font-weight: 500; }
 .funnelMetric .value { font-weight: 600; color: #9552D3; }
-
 .funnelMetric .bar {
   position: absolute;
   left: 0;
@@ -871,7 +786,6 @@
   transform-origin: left;
   transform: scaleX(0);
 }
-
 @keyframes metricPopulate {
   0% { transform: translateX(-30px); opacity: 0; }
   100% { transform: translateX(0); opacity: 1; }
@@ -889,7 +803,6 @@
   width: 100%;
   height: 100%;
 }
-
 .radarChart {
   position: absolute;
   top: 10%;
@@ -897,7 +810,6 @@
   width: 80%;
   height: 80%;
 }
-
 .radarAxis {
   position: absolute;
   top: 50%;
@@ -913,7 +825,6 @@
 .radarAxis:nth-child(4) { transform: rotate(180deg); }
 .radarAxis:nth-child(5) { transform: rotate(240deg); }
 .radarAxis:nth-child(6) { transform: rotate(300deg); }
-
 .radarCircle {
   position: absolute;
   top: 50%;
@@ -926,7 +837,6 @@
 .radarCircle:nth-child(8)  { width: 70%; height: 70%; }
 .radarCircle:nth-child(9)  { width: 50%; height: 50%; }
 .radarCircle:nth-child(10) { width: 30%; height: 30%; }
-
 .radarValue {
   position: absolute;
   width: 8px;
@@ -946,7 +856,6 @@
 .radarValue:nth-child(14) { transform: translate(calc(-50% - 40%), calc(-50% + 0%));  animation-delay: 1.9s; }
 .radarValue:nth-child(15) { transform: translate(calc(-50% - 10%), calc(-50% + 30%)); animation-delay: 2.2s; }
 .radarValue:nth-child(16) { transform: translate(calc(-50% + 25%), calc(-50% + 20%)); animation-delay: 2.5s; }
-
 .radarArea {
   position: absolute;
   top: 50%;
@@ -966,7 +875,6 @@
   opacity: 0;
   animation: radarAreaAppear 1s forwards ease-out 2.8s;
 }
-
 @keyframes radarValueAppear {
   0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
   50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.8; }
@@ -989,7 +897,6 @@
   height: 82%;
   overflow: hidden;
 }
-
 .area {
   position: absolute;
   bottom: 0;
@@ -1016,7 +923,6 @@
   transform-origin: left;
   animation: areaGrow 2s forwards ease-out 1s;
 }
-
 .areaLine {
   position: absolute;
   width: 100%;
@@ -1048,7 +954,6 @@
   transform-origin: left;
   animation: areaGrow 2.4s forwards ease-out 1.2s;
 }
-
 .dataPoint {
   position: absolute;
   width: 6px;
@@ -1070,7 +975,6 @@
 .dataPoint:nth-child(11) { bottom: 25%; left: 80%;  animation-delay: 2.2s; }
 .dataPoint:nth-child(12) { bottom: 30%; left: 90%;  animation-delay: 2.3s; }
 .dataPoint:nth-child(13) { bottom: 20%; left: 100%; animation-delay: 2.4s; }
-
 @keyframes areaGrow {
   0% { transform: scaleX(0); }
   100% { transform: scaleX(1); }
@@ -1114,13 +1018,11 @@
   animation: arcPointAppear 0.7s forwards ease-out;
   transform: translate(-50%, -50%);
 }
-
 @keyframes arcPointAppear {
   0% { transform: scale(0); opacity: 0; }
   70% { transform: scale(1.5); opacity: 1; }
   100% { transform: scale(1); opacity: 1; }
 }
-
 .chordSegment {
   position: absolute;
   top: 50%;
@@ -1133,7 +1035,6 @@
   animation: segmentGrow 1s forwards ease-out;
   opacity: 0.8;
 }
-
 .chord {
   position: absolute;
   top: 50%;
@@ -1153,7 +1054,6 @@
   height: 100%;
   transform: translate(-50%, -50%);
 }
-
 @keyframes segmentGrow {
   0% { transform: scaleY(0); }
   100% { transform: scaleY(1); }
@@ -1175,7 +1075,6 @@
 .scatterPoint[data-value="high"]   { width: 12px; height: 12px; }
 .scatterPoint[data-value="medium"] { width: 9px;  height: 9px;  }
 .scatterPoint[data-value="low"]    { width: 6px;  height: 6px;  }
-
 .scatterPoint:nth-child(1) { left: 18%; top: 25%; animation-delay: 0.7s; }
 .scatterPoint:nth-child(2) { left: 32%; top: 45%; animation-delay: 0.9s; }
 .scatterPoint:nth-child(3) { left: 45%; top: 20%; animation-delay: 1.1s; }
@@ -1185,7 +1084,6 @@
 .scatterPoint:nth-child(7) { left: 48%; top: 75%; animation-delay: 1.9s; }
 .scatterPoint:nth-child(8) { left: 70%; top: 78%; animation-delay: 2.1s; }
 .scatterPoint:nth-child(9) { left: 85%; top: 55%; animation-delay: 2.3s; }
-
 .trendLine {
   position: absolute;
   width: 75%;
@@ -1197,10 +1095,9 @@
   transform-origin: left;
   animation: trendLineGrow 1.5s forwards ease-out 2.5s;
 }
-
 @keyframes scatterAppear {
-  0%   { transform: scale(0); opacity: 0; }
-  50%  { transform: scale(1.2); opacity: 0.8; }
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 0.8; }
   100% { transform: scale(1); opacity: 1; }
 }
 @keyframes trendLineGrow {
@@ -1223,7 +1120,6 @@
   grid-template-rows: repeat(5, 1fr);
   gap: 3px;
 }
-
 .heatCell {
   background-color: rgba(149,82,211,0.05);
   border-radius: 2px;
@@ -1234,7 +1130,6 @@
 .heatCell.medium    { background-color: rgba(149,82,211,0.3); }
 .heatCell.high      { background-color: rgba(149,82,211,0.6); }
 .heatCell.very-high { background-color: rgba(149,82,211,0.9); }
-
 .xLabels, .yLabels {
   position: absolute;
   display: flex;
@@ -1250,15 +1145,13 @@
   flex-direction: column;
   height: 70%;
 }
-
 .xLabels span, .yLabels span {
   font-size: 8px;
   color: #666;
 }
-
 @keyframes heatCellAppear {
-  0%   { transform: scale(0); }
-  70%  { transform: scale(1.1); }
+  0% { transform: scale(0); }
+  70% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
 
@@ -1271,7 +1164,6 @@
   height: 70%;
   margin: 5% auto;
 }
-
 .donutRing {
   position: absolute;
   width: 100%;
@@ -1301,7 +1193,6 @@
   background: conic-gradient(transparent 0% 68%, rgba(105, 73, 140, 0.7) 68% 100%);
   animation-delay: 2.0s;
 }
-
 .donutHole {
   position: absolute;
   width: 60%;
@@ -1313,7 +1204,6 @@
   z-index: 3;
   box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
 }
-
 .donutLabel {
   position: absolute;
   width: 60%;
@@ -1329,7 +1219,6 @@
   transform: scale(0);
   animation: labelAppear 0.8s forwards ease-out 2.6s;
 }
-
 .donutLabel .value {
   font-size: 16px;
   font-weight: 600;
@@ -1340,7 +1229,6 @@
   color: #666;
   margin-top: 2px;
 }
-
 .legendItem {
   position: absolute;
   display: flex;
@@ -1447,7 +1335,6 @@
 .gaugeTick:nth-child(11) { transform: rotate(60deg);  animation-delay: 1.3s; }
 .gaugeTick:nth-child(12) { transform: rotate(75deg);  animation-delay: 1.4s; }
 .gaugeTick:nth-child(13) { transform: rotate(90deg);  animation-delay: 1.5s; }
-
 .gaugeNeedle {
   position: absolute;
   width: 3px;
@@ -1484,7 +1371,6 @@
   opacity: 0;
   animation: valueAppear 0.8s forwards ease-out 4s;
 }
-
 @keyframes gaugeAppear {
   0% { transform: scale(0); }
   100% { transform: scale(1); }
@@ -1498,11 +1384,11 @@
   100% { opacity: 1; transform: rotate(-70deg); }
 }
 @keyframes needleMove {
-  0%   { transform: rotate(-70deg); }
-  40%  { transform: rotate(60deg); }
-  60%  { transform: rotate(45deg); }
-  75%  { transform: rotate(55deg); }
-  90%  { transform: rotate(50deg); }
+  0% { transform: rotate(-70deg); }
+  40% { transform: rotate(60deg); }
+  60% { transform: rotate(45deg); }
+  75% { transform: rotate(55deg); }
+  90% { transform: rotate(50deg); }
   100% { transform: rotate(53deg); }
 }
 @keyframes valueAppear {
@@ -1565,7 +1451,6 @@
   opacity: 0;
   animation: labelFadeIn 0.5s forwards ease-out;
 }
-
 @keyframes barGrow {
   0% { transform: scaleY(0); }
   100% { transform: scaleY(1); }
@@ -1612,7 +1497,6 @@
   top: 25%;
   animation-delay: 1.7s;
 }
-
 .bubbleLabel {
   position: absolute;
   font-size: 9px;
@@ -1638,7 +1522,6 @@
   top: 25%;
   animation-delay: 2.2s;
 }
-
 .bubbleValue {
   position: absolute;
   font-size: 7px;
@@ -1663,7 +1546,6 @@
   top: calc(25% + 8px);
   animation-delay: 2.3s;
 }
-
 @keyframes bubbleGrow {
   0% { transform: scale(0); opacity: 0; }
   60% { transform: scale(1.1); opacity: 0.8; }
@@ -1729,7 +1611,6 @@
   opacity: 0;
   animation: lineAppear 0.1s forwards ease-out 1s;
 }
-
 .linePoint {
   position: absolute;
   width: 6px;
@@ -1751,7 +1632,6 @@
 .linePoint:nth-child(11) { bottom: 30%; left: 80%;  animation-delay: 1.9s; }
 .linePoint:nth-child(12) { bottom: 15%; left: 90%;  animation-delay: 2.0s; }
 .linePoint:nth-child(13) { bottom: 25%; left: 100%; animation-delay: 2.1s; }
-
 .lineFill {
   position: absolute;
   width: 100%;
@@ -1765,7 +1645,6 @@
   opacity: 0;
   animation: lineFillAppear 1.5s forwards ease-out 2.3s;
 }
-
 @keyframes lineDraw {
   0% { stroke-dashoffset: 500; }
   100% { stroke-dashoffset: 0; }
@@ -1808,7 +1687,6 @@
 .networkNode:nth-child(3) { left: 20%; top: 65%; animation-delay: 1.1s; }
 .networkNode:nth-child(4) { left: 65%; top: 70%; animation-delay: 1.4s; }
 .networkNode:nth-child(5) { left: 45%; top: 45%; animation-delay: 1.7s; }
-
 .networkLink {
   position: absolute;
   height: 2px;
@@ -1825,7 +1703,6 @@
 .networkLink:nth-child(11) { animation: linkGrow 1s forwards ease-out 3.0s; }
 .networkLink:nth-child(12) { animation: linkGrow 1s forwards ease-out 3.2s; }
 .networkLink:nth-child(13) { animation: linkGrow 1s forwards ease-out 3.4s; }
-
 .nodeLabel {
   position: absolute;
   font-size: 9px;
@@ -1843,7 +1720,6 @@
 .nodeLabel:nth-child(16) { left: 20%; top: calc(65% - 25px); animation-delay: 1.3s; }
 .nodeLabel:nth-child(17) { left: 65%; top: calc(70% - 25px); animation-delay: 1.6s; }
 .nodeLabel:nth-child(18) { left: 45%; top: calc(45% - 25px); animation-delay: 1.9s; }
-
 @keyframes nodeAppear {
   0% { transform: translate(-50%, -50%) scale(0); }
   60% { transform: translate(-50%, -50%) scale(1.2); }
