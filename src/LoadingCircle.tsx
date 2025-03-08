@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
 const LoadingCircle: React.FC = () => {
-  // Rotating messages for realism
+  // Professional analysis messages
   const loadingMessages = [
     "Initializing cross-domain analysis...",
     "Collecting multi-layer inputs...",
@@ -53,27 +53,25 @@ const LoadingCircle: React.FC = () => {
     };
   }, [messageIndex, loadingMessages.length]);
 
-  // 4 random fly-in classes
-  const snapClasses = [
-    styles.snapIn1,
-    styles.snapIn2,
-    styles.snapIn3,
-    styles.snapIn4
+  // 4 animation classes for more natural appearance
+  const animationClasses = [
+    styles.animation1,
+    styles.animation2,
+    styles.animation3,
+    styles.animation4
   ];
 
-  function getRandomSnapClass(i: number) {
-    // pseudo-random pick from 4
-    return snapClasses[i % snapClasses.length];
+  // Get animation class based on module index
+  function getAnimationClass(i: number) {
+    return animationClasses[i % animationClasses.length];
   }
 
-  // 12 random delay classes for the modules
+  // 12 different delay classes for more natural staggering
   const delayClasses = [
-    styles.delay0, styles.delay1, styles.delay2, styles.delay3,
-    styles.delay4, styles.delay5, styles.delay6, styles.delay7,
-    styles.delay8, styles.delay9, styles.delay10, styles.delay11
+    styles.delay1, styles.delay2, styles.delay3, styles.delay4,
+    styles.delay5, styles.delay6, styles.delay7, styles.delay8,
+    styles.delay9, styles.delay10, styles.delay11, styles.delay12
   ];
-
-  // We'll use an array of 12 so each module can have a stable "random" assignment
 
   return (
     <div className={styles.container}>
@@ -92,8 +90,8 @@ const LoadingCircle: React.FC = () => {
       <div className={styles.content}>
         <div className={styles.visualization}>
 
-          {/* 1) CORE METRICS */}
-          <div className={`${styles.module} ${getRandomSnapClass(0)} ${delayClasses[0]}`}>
+          {/* 1) CONVERSION FUNNEL ANALYSIS */}
+          <div className={`${styles.module} ${getAnimationClass(0)} ${delayClasses[0]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
@@ -101,6 +99,7 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowTitle}>
                 Core Metrics – Data Navigator
               </div>
+              <div className={styles.windowStatus}>Live</div>
             </div>
             <div className={styles.moduleBody}>
               <div className={styles.chartGrid}></div>
@@ -108,16 +107,32 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.chartAxisY}></div>
 
               <div className={styles.funnelContainer}>
-                <div className={styles.funnelBar} data-step="1"></div>
-                <div className={styles.funnelBar} data-step="2"></div>
-                <div className={styles.funnelBar} data-step="3"></div>
-                <div className={styles.funnelBar} data-step="4"></div>
+                <div className={styles.funnelMetric}>
+                  <span className={styles.label}>Traffic Volume</span>
+                  <span className={styles.value}>14,982</span>
+                  <div className={styles.bar} style={{width: '100%'}}></div>
+                </div>
+                <div className={styles.funnelMetric}>
+                  <span className={styles.label}>Qualified Leads</span>
+                  <span className={styles.value}>8,439</span>
+                  <div className={styles.bar} style={{width: '85%'}}></div>
+                </div>
+                <div className={styles.funnelMetric}>
+                  <span className={styles.label}>Sales Opportunities</span>
+                  <span className={styles.value}>3,214</span>
+                  <div className={styles.bar} style={{width: '64%'}}></div>
+                </div>
+                <div className={styles.funnelMetric}>
+                  <span className={styles.label}>Closed Deals</span>
+                  <span className={styles.value}>1,897</span>
+                  <div className={styles.bar} style={{width: '37%'}}></div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* 2) OPPORTUNITY MATRIX */}
-          <div className={`${styles.module} ${getRandomSnapClass(1)} ${delayClasses[1]}`}>
+          <div className={`${styles.module} ${getAnimationClass(1)} ${delayClasses[1]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
@@ -125,18 +140,35 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowTitle}>
                 Opportunity Matrix – Insight Engine
               </div>
+              <div className={styles.windowStatus}>Processing</div>
             </div>
             <div className={styles.moduleBody}>
               <div className={styles.radarContainer}>
-                <div className={styles.chartGrid}></div>
-                <div className={styles.radarGrid}></div>
-                <div className={styles.radarShape}></div>
+                <div className={styles.radarChart}>
+                  <div className={styles.radarAxis}></div>
+                  <div className={styles.radarAxis}></div>
+                  <div className={styles.radarAxis}></div>
+                  <div className={styles.radarAxis}></div>
+                  <div className={styles.radarAxis}></div>
+                  <div className={styles.radarAxis}></div>
+                  <div className={styles.radarCircle}></div>
+                  <div className={styles.radarCircle}></div>
+                  <div className={styles.radarCircle}></div>
+                  <div className={styles.radarCircle}></div>
+                  <div className={styles.radarValue}></div>
+                  <div className={styles.radarValue}></div>
+                  <div className={styles.radarValue}></div>
+                  <div className={styles.radarValue}></div>
+                  <div className={styles.radarValue}></div>
+                  <div className={styles.radarValue}></div>
+                  <div className={styles.radarArea}></div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* 3) PREDICTIVE TRENDS */}
-          <div className={`${styles.module} ${getRandomSnapClass(2)} ${delayClasses[2]}`}>
+          <div className={`${styles.module} ${getAnimationClass(2)} ${delayClasses[2]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
@@ -144,22 +176,35 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowTitle}>
                 Predictive Trends – Future Mapper
               </div>
+              <div className={styles.windowStatus}>Analyzing</div>
             </div>
             <div className={styles.moduleBody}>
               <div className={styles.chartGrid}></div>
               <div className={styles.chartAxisX}></div>
               <div className={styles.chartAxisY}></div>
 
-              <div className={styles.predictiveArea}>
-                <div className={styles.predictiveLayer} data-layer="1"></div>
-                <div className={styles.predictiveLayer} data-layer="2"></div>
-                <div className={styles.predictiveLayer} data-layer="3"></div>
+              <div className={styles.areaChartContainer}>
+                <div className={styles.areaPath}>
+                  <div className={styles.area}></div>
+                  <div className={styles.areaLine}></div>
+                  <div className={styles.dataPoint}></div>
+                  <div className={styles.dataPoint}></div>
+                  <div className={styles.dataPoint}></div>
+                  <div className={styles.dataPoint}></div>
+                  <div className={styles.dataPoint}></div>
+                  <div className={styles.dataPoint}></div>
+                  <div className={styles.dataPoint}></div>
+                  <div className={styles.dataPoint}></div>
+                  <div className={styles.dataPoint}></div>
+                  <div className={styles.dataPoint}></div>
+                  <div className={styles.dataPoint}></div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* 4) COMPARATIVE BENCHMARKS */}
-          <div className={`${styles.module} ${getRandomSnapClass(3)} ${delayClasses[3]}`}>
+          <div className={`${styles.module} ${getAnimationClass(3)} ${delayClasses[3]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
@@ -167,20 +212,22 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowTitle}>
                 Comparative Benchmarks – Performance Spectrum
               </div>
+              <div className={styles.windowStatus}>Computing</div>
             </div>
             <div className={styles.moduleBody}>
-              <div className={styles.chartGrid}></div>
               <div className={styles.chordContainer}>
-                <div className={styles.chordRing}></div>
-                <div className={styles.chordArc} data-arc="1"></div>
-                <div className={styles.chordArc} data-arc="2"></div>
-                <div className={styles.chordArc} data-arc="3"></div>
+                <div className={styles.chordCircle}></div>
+                <div className={styles.chordArc}></div>
+                <div className={styles.chordArc}></div>
+                <div className={styles.chordArc}></div>
+                <div className={styles.chord}></div>
+                <div className={styles.chord2}></div>
               </div>
             </div>
           </div>
 
           {/* 5) MULTI-FACTOR ANALYSIS */}
-          <div className={`${styles.module} ${getRandomSnapClass(4)} ${delayClasses[4]}`}>
+          <div className={`${styles.module} ${getAnimationClass(0)} ${delayClasses[4]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
@@ -188,6 +235,7 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowTitle}>
                 Multi-Factor Analysis – Variable Insights
               </div>
+              <div className={styles.windowStatus}>Active</div>
             </div>
             <div className={styles.moduleBody}>
               <div className={styles.chartGrid}></div>
@@ -195,18 +243,22 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.chartAxisY}></div>
 
               <div className={styles.scatterContainer}>
-                <div className={styles.scatterPoint} data-id="1"></div>
-                <div className={styles.scatterPoint} data-id="2"></div>
-                <div className={styles.scatterPoint} data-id="3"></div>
-                <div className={styles.scatterPoint} data-id="4"></div>
-                <div className={styles.scatterPoint} data-id="5"></div>
-                <div className={styles.scatterPoint} data-id="6"></div>
+                <div className={styles.scatterPoint} data-value="high"></div>
+                <div className={styles.scatterPoint} data-value="medium"></div>
+                <div className={styles.scatterPoint} data-value="high"></div>
+                <div className={styles.scatterPoint} data-value="low"></div>
+                <div className={styles.scatterPoint} data-value="medium"></div>
+                <div className={styles.scatterPoint} data-value="low"></div>
+                <div className={styles.scatterPoint} data-value="medium"></div>
+                <div className={styles.scatterPoint} data-value="high"></div>
+                <div className={styles.scatterPoint} data-value="medium"></div>
+                <div className={styles.trendLine}></div>
               </div>
             </div>
           </div>
 
           {/* 6) CORRELATION MAPPING */}
-          <div className={`${styles.module} ${getRandomSnapClass(5)} ${delayClasses[5]}`}>
+          <div className={`${styles.module} ${getAnimationClass(1)} ${delayClasses[5]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
@@ -214,21 +266,57 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowTitle}>
                 Correlation Mapping – Connection Grid
               </div>
+              <div className={styles.windowStatus}>Calculating</div>
             </div>
             <div className={styles.moduleBody}>
               <div className={styles.heatmapContainer}>
-                <div className={styles.chartGrid}></div>
                 <div className={styles.heatmapGrid}>
-                  {Array.from({ length: 25 }).map((_, i) => (
-                    <div key={i} className={styles.heatCell} />
-                  ))}
+                  <div className={`${styles.heatCell} ${styles.low}`}></div>
+                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                  <div className={`${styles.heatCell} ${styles.low}`}></div>
+                  <div className={`${styles.heatCell} ${styles.high}`}></div>
+                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                  <div className={`${styles.heatCell} ${styles.very-high}`}></div>
+                  <div className={`${styles.heatCell} ${styles.high}`}></div>
+                  <div className={`${styles.heatCell} ${styles.low}`}></div>
+                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                  <div className={`${styles.heatCell} ${styles.low}`}></div>
+                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                  <div className={`${styles.heatCell} ${styles.very-high}`}></div>
+                  <div className={`${styles.heatCell} ${styles.high}`}></div>
+                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                  <div className={`${styles.heatCell} ${styles.high}`}></div>
+                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                  <div className={`${styles.heatCell} ${styles.low}`}></div>
+                  <div className={`${styles.heatCell} ${styles.very-high}`}></div>
+                  <div className={`${styles.heatCell} ${styles.high}`}></div>
+                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                  <div className={`${styles.heatCell} ${styles.very-high}`}></div>
+                  <div className={`${styles.heatCell} ${styles.high}`}></div>
+                  <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                  <div className={`${styles.heatCell} ${styles.low}`}></div>
+                </div>
+                <div className={styles.xLabels}>
+                  <span>Email</span>
+                  <span>Social</span>
+                  <span>Ads</span>
+                  <span>Search</span>
+                  <span>Direct</span>
+                </div>
+                <div className={styles.yLabels}>
+                  <span>Reach</span>
+                  <span>Interest</span>
+                  <span>Intent</span>
+                  <span>Purchase</span>
+                  <span>Loyalty</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* 7) RESOURCE EFFICIENCY */}
-          <div className={`${styles.module} ${getRandomSnapClass(6)} ${delayClasses[6]}`}>
+          <div className={`${styles.module} ${getAnimationClass(2)} ${delayClasses[6]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
@@ -236,19 +324,34 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowTitle}>
                 Resource Efficiency – Optimization Pulse
               </div>
+              <div className={styles.windowStatus}>Processing</div>
             </div>
             <div className={styles.moduleBody}>
-              <div className={styles.chartGrid}></div>
               <div className={styles.donutContainer}>
-                <div className={styles.donutSlice} data-slice="1"></div>
-                <div className={styles.donutSlice} data-slice="2"></div>
-                <div className={styles.donutSlice} data-slice="3"></div>
+                <div className={styles.donutRing}></div>
+                <div className={`${styles.donutSegment} ${styles.segment1}`}></div>
+                <div className={`${styles.donutSegment} ${styles.segment2}`}></div>
+                <div className={`${styles.donutSegment} ${styles.segment3}`}></div>
+                <div className={styles.donutHole}></div>
+                <div className={styles.donutLabel}>
+                  <div className={styles.value}>68%</div>
+                  <div className={styles.text}>Efficiency</div>
+                </div>
+                <div className={styles.legendItem}>
+                  <span></span>Paid Media
+                </div>
+                <div className={styles.legendItem}>
+                  <span></span>Content Marketing
+                </div>
+                <div className={styles.legendItem}>
+                  <span></span>Direct Engagement
+                </div>
               </div>
             </div>
           </div>
 
           {/* 8) STABILITY OVERVIEW */}
-          <div className={`${styles.module} ${getRandomSnapClass(7)} ${delayClasses[7]}`}>
+          <div className={`${styles.module} ${getAnimationClass(3)} ${delayClasses[7]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
@@ -256,17 +359,36 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowTitle}>
                 Stability Overview – Risk Evaluator
               </div>
+              <div className={styles.windowStatus}>Measuring</div>
             </div>
             <div className={styles.moduleBody}>
               <div className={styles.gaugeContainer}>
-                <div className={styles.gaugeArc}></div>
+                <div className={styles.gaugeBackground}></div>
+                <div className={styles.gaugeMeter}></div>
+                <div className={styles.gaugeCover}></div>
+                <div className={styles.gaugeTicks}>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                </div>
                 <div className={styles.gaugeNeedle}></div>
+                <div className={styles.gaugeValue}>73% Stable</div>
               </div>
             </div>
           </div>
 
           {/* 9) PERFORMANCE LAYERS */}
-          <div className={`${styles.module} ${getRandomSnapClass(8)} ${delayClasses[8]}`}>
+          <div className={`${styles.module} ${getAnimationClass(0)} ${delayClasses[8]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
@@ -274,25 +396,52 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowTitle}>
                 Performance Layers – Efficiency Review
               </div>
+              <div className={styles.windowStatus}>Calculating</div>
             </div>
             <div className={styles.moduleBody}>
               <div className={styles.chartGrid}></div>
               <div className={styles.chartAxisX}></div>
               <div className={styles.chartAxisY}></div>
 
-              <div className={styles.performanceStacks}>
-                <div className={styles.perfBar} data-bar="1"></div>
-                <div className={styles.perfBar} data-bar="2"></div>
-                <div className={styles.perfBar} data-bar="3"></div>
-                <div className={styles.perfBar} data-bar="4"></div>
-                <div className={styles.perfBar} data-bar="5"></div>
-                <div className={styles.perfBar} data-bar="6"></div>
+              <div className={styles.barChartContainer}>
+                <div className={styles.barGroup}>
+                  <div className={styles.barWrapper}>
+                    <div className={styles.bar}></div>
+                    <div className={styles.barLabel}>Q1</div>
+                    <div className={styles.barValue}>54%</div>
+                  </div>
+                  <div className={styles.barWrapper}>
+                    <div className={styles.bar}></div>
+                    <div className={styles.barLabel}>Q2</div>
+                    <div className={styles.barValue}>76%</div>
+                  </div>
+                  <div className={styles.barWrapper}>
+                    <div className={styles.bar}></div>
+                    <div className={styles.barLabel}>Q3</div>
+                    <div className={styles.barValue}>62%</div>
+                  </div>
+                  <div className={styles.barWrapper}>
+                    <div className={styles.bar}></div>
+                    <div className={styles.barLabel}>Q4</div>
+                    <div className={styles.barValue}>89%</div>
+                  </div>
+                  <div className={styles.barWrapper}>
+                    <div className={styles.bar}></div>
+                    <div className={styles.barLabel}>Q5</div>
+                    <div className={styles.barValue}>71%</div>
+                  </div>
+                  <div className={styles.barWrapper}>
+                    <div className={styles.bar}></div>
+                    <div className={styles.barLabel}>Q6</div>
+                    <div className={styles.barValue}>48%</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* 10) MARKET INTELLIGENCE */}
-          <div className={`${styles.module} ${getRandomSnapClass(9)} ${delayClasses[9]}`}>
+          <div className={`${styles.module} ${getAnimationClass(1)} ${delayClasses[9]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
@@ -300,22 +449,29 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowTitle}>
                 Market Intelligence – Cluster Navigator
               </div>
+              <div className={styles.windowStatus}>Mapping</div>
             </div>
             <div className={styles.moduleBody}>
               <div className={styles.chartGrid}></div>
               <div className={styles.chartAxisX}></div>
               <div className={styles.chartAxisY}></div>
 
-              <div className={styles.clusterContainer}>
-                <div className={styles.clusterBubble} data-bub="1"></div>
-                <div className={styles.clusterBubble} data-bub="2"></div>
-                <div className={styles.clusterBubble} data-bub="3"></div>
+              <div className={styles.bubbleContainer}>
+                <div className={styles.bubble}></div>
+                <div className={styles.bubble}></div>
+                <div className={styles.bubble}></div>
+                <div className={styles.bubbleLabel}>Enterprise</div>
+                <div className={styles.bubbleLabel}>Mid-Market</div>
+                <div className={styles.bubbleLabel}>SMB</div>
+                <div className={styles.bubbleValue}>$14.2M</div>
+                <div className={styles.bubbleValue}>$8.7M</div>
+                <div className={styles.bubbleValue}>$3.5M</div>
               </div>
             </div>
           </div>
 
           {/* 11) FORECAST MODELING */}
-          <div className={`${styles.module} ${getRandomSnapClass(10)} ${delayClasses[10]}`}>
+          <div className={`${styles.module} ${getAnimationClass(2)} ${delayClasses[10]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
@@ -323,22 +479,36 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowTitle}>
                 Forecast Modeling – Trend Projections
               </div>
+              <div className={styles.windowStatus}>Predicting</div>
             </div>
             <div className={styles.moduleBody}>
               <div className={styles.chartGrid}></div>
               <div className={styles.chartAxisX}></div>
               <div className={styles.chartAxisY}></div>
 
-              <div className={styles.forecastContainer}>
-                <div className={styles.forecastLine} data-line="a"></div>
-                <div className={styles.forecastLine} data-line="b"></div>
-                <div className={styles.forecastLine} data-line="c"></div>
+              <div className={styles.lineChartContainer}>
+                <div className={styles.lineChart}>
+                  <div className={styles.lineBase}></div>
+                  <div className={styles.linePath}></div>
+                  <div className={styles.linePoint}></div>
+                  <div className={styles.linePoint}></div>
+                  <div className={styles.linePoint}></div>
+                  <div className={styles.linePoint}></div>
+                  <div className={styles.linePoint}></div>
+                  <div className={styles.linePoint}></div>
+                  <div className={styles.linePoint}></div>
+                  <div className={styles.linePoint}></div>
+                  <div className={styles.linePoint}></div>
+                  <div className={styles.linePoint}></div>
+                  <div className={styles.linePoint}></div>
+                  <div className={styles.lineFill}></div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* 12) PATTERN DISCOVERY */}
-          <div className={`${styles.module} ${getRandomSnapClass(11)} ${delayClasses[11]}`}>
+          <div className={`${styles.module} ${getAnimationClass(3)} ${delayClasses[11]}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red" />
               <span className={styles.trafficLight} data-color="yellow" />
@@ -346,16 +516,29 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.windowTitle}>
                 Pattern Discovery – Network Synthesis
               </div>
+              <div className={styles.windowStatus}>Running</div>
             </div>
             <div className={styles.moduleBody}>
               <div className={styles.chartGrid}></div>
               <div className={styles.networkContainer}>
-                <div className={styles.netNode} data-n="1"></div>
-                <div className={styles.netNode} data-n="2"></div>
-                <div className={styles.netNode} data-n="3"></div>
-                <div className={styles.netLink} data-link="12"></div>
-                <div className={styles.netLink} data-link="23"></div>
-                <div className={styles.netLink} data-link="13"></div>
+                <div className={styles.networkNode}></div>
+                <div className={styles.networkNode}></div>
+                <div className={styles.networkNode}></div>
+                <div className={styles.networkNode}></div>
+                <div className={styles.networkNode}></div>
+                <div className={styles.networkLink}></div>
+                <div className={styles.networkLink}></div>
+                <div className={styles.networkLink}></div>
+                <div className={styles.networkLink}></div>
+                <div className={styles.networkLink}></div>
+                <div className={styles.networkLink}></div>
+                <div className={styles.networkLink}></div>
+                <div className={styles.networkLink}></div>
+                <div className={styles.nodeLabel}>Primary</div>
+                <div className={styles.nodeLabel}>Secondary</div>
+                <div className={styles.nodeLabel}>Tertiary</div>
+                <div className={styles.nodeLabel}>Quaternary</div>
+                <div className={styles.nodeLabel}>Central</div>
               </div>
             </div>
           </div>
