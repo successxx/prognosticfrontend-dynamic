@@ -1,3 +1,14 @@
+/* 
+  This CSS file merges the OLD LOADER STYLES 
+  + the NEW ADVANCED ANALYSIS MODULE STYLES.
+
+  Nothing is removed; everything is kept intact.
+  The only practical difference is that we might 
+  not rely on the old container if we’re 
+  using the new one. But all code remains 
+  so as not to lose anything.
+*/
+
 /* -------------------------------------------------------------------
    OLD LOADER (Prognostic AI) STYLES
    ------------------------------------------------------------------- */
@@ -5,33 +16,71 @@
 /* 
    We do NOT need a separate .prognostic-ai-demo-results-container 
    because everything is now inside .container from the new code. 
-   However, we keep the classes for reference. 
+   However, we keep the classes for reference to ensure 
+   "nothing is lost." 
 */
 
-/* Overwrite or unify color references to match the new color palette if desired */
+/* Base container styles from old code */
+.prognostic-ai-demo-results-container {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #F0F4F8;
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  border-radius: 15px;
+  overflow: hidden;
+}
 
-/* 
-   .pai-dr-header {
-       display: none; 
-   } 
-   Removed or set to display none, as requested 
-*/
+.prognostic-ai-demo-results-container * {
+  box-sizing: border-box;
+}
 
-/* Content area that used to be .pai-dr-content 
-   We'll keep the class name but it now sits inside the .container. 
-*/
+/* The old .pai-dr-header (dark background) - we keep it here in case 
+   the user wants to utilize it or to preserve for future reference. */
+.pai-dr-header {
+  background-color: #252525;
+  color: white;
+  padding: 20px;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  width: 100%;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
 
+/* Old subtle header animation. Not necessarily used, but not removed. */
+.pai-dr-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: header-scan 8s linear infinite;
+}
+
+@keyframes header-scan {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+/* .pai-dr-content - the old container for the spinner */
 .pai-dr-content {
-  background-color: transparent; /* unify with new container’s BG */
+  background-color: white;
   padding: 30px;
   min-height: 350px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 15px 15px;
   position: relative;
   overflow: hidden;
-  /* No border-radius, no box-shadow, to seamlessly blend inside the parent */
 }
 
 /* Futuristic visualization container */
@@ -42,10 +91,7 @@
   margin-bottom: 40px;
 }
 
-/* Core central circle 
-   We might shift #252525 to a deeper purple or neutral gray. 
-   Keep the code, but consider a color override if desired. 
-*/
+/* Core central circle */
 .pai-dr-core {
   position: absolute;
   top: 50%;
@@ -53,7 +99,7 @@
   transform: translate(-50%, -50%);
   width: 40px;
   height: 40px;
-  background-color: #252525; 
+  background-color: #252525;
   border-radius: 50%;
   z-index: 5;
   box-shadow: 0 0 10px rgba(37, 37, 37, 0.3);
@@ -119,7 +165,7 @@
   opacity: 0;
 }
 
-/* Data points around the circle */
+/* Data point animations - positioned at various points around the circle */
 .pai-dr-data-point:nth-child(1) {
   top: 30%;
   left: 10%;
@@ -157,7 +203,7 @@
   animation-delay: 3.5s;
 }
 
-/* Connection lines between data points */
+/* Data connection lines */
 .pai-dr-data-connection {
   position: absolute;
   background-color: rgba(37, 37, 37, 0.1);
@@ -240,7 +286,6 @@
   letter-spacing: 0.3px;
   position: relative;
   z-index: 6;
-  margin-top: 20px; 
 }
 
 .fade-out {
@@ -259,7 +304,7 @@
   font-weight: 600;
 }
 
-/* Button styling - not used in final version, but kept for completeness */
+/* Button styling */
 .pai-dr-button {
   display: inline-block;
   background-color: #252525;
@@ -381,6 +426,10 @@
 
 /* OLD loader responsiveness */
 @media (max-width: 600px) {
+  .pai-dr-header {
+    font-size: 20px;
+    padding: 15px;
+  }
   .pai-dr-content {
     padding: 20px;
     min-height: 300px;
@@ -529,7 +578,6 @@
   z-index: 2;
   transform-origin: center center;
 }
-
 .module:nth-of-type(1) { grid-column: 1; grid-row: 1; }
 .module:nth-of-type(2) { grid-column: 2; grid-row: 1; }
 .module:nth-of-type(3) { grid-column: 3; grid-row: 1; }
@@ -569,7 +617,7 @@
   70% { 
     transform: translateY(-10px); 
     opacity: 0.8; 
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
   }
   85% { 
     transform: translateY(5px); 
@@ -701,7 +749,7 @@
 }
 
 /********************************************************
-  REALISTIC DATA GRID - BASE FOR ALL CHARTS
+  REALISTIC DATA GRID
 ********************************************************/
 .chartGrid {
   position: absolute;
@@ -888,7 +936,11 @@
 /********************************************************
   3) AREA CHART
 ********************************************************/
-.areaChartContainer { position: relative; width: 100%; height: 100%; }
+.areaChartContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 .areaPath {
   position: absolute;
   bottom: 12%;
@@ -988,7 +1040,11 @@
 /********************************************************
   4) CHORD
 ********************************************************/
-.chordContainer { position: relative; width: 100%; height: 100%; }
+.chordContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 .chordCircle {
   position: absolute;
   top: 15%;
@@ -1062,7 +1118,11 @@
 /********************************************************
   5) SCATTER
 ********************************************************/
-.scatterContainer { position: relative; width: 100%; height: 100%; }
+.scatterContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 .scatterPoint {
   position: absolute;
   border-radius: 50%;
@@ -1108,7 +1168,11 @@
 /********************************************************
   6) HEATMAP
 ********************************************************/
-.heatmapContainer { position: relative; width: 100%; height: 100%; }
+.heatmapContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 .heatmapGrid {
   position: absolute;
   top: 15%;
@@ -1130,6 +1194,11 @@
 .heatCell.medium    { background-color: rgba(149,82,211,0.3); }
 .heatCell.high      { background-color: rgba(149,82,211,0.6); }
 .heatCell.very-high { background-color: rgba(149,82,211,0.9); }
+@keyframes heatCellAppear {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
 .xLabels, .yLabels {
   position: absolute;
   display: flex;
@@ -1148,11 +1217,6 @@
 .xLabels span, .yLabels span {
   font-size: 8px;
   color: #666;
-}
-@keyframes heatCellAppear {
-  0% { transform: scale(0); }
-  70% { transform: scale(1.1); }
-  100% { transform: scale(1); }
 }
 
 /********************************************************
