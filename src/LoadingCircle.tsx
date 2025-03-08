@@ -73,10 +73,8 @@ const LoadingCircle: React.FC = () => {
 
   return (
     <div className={styles.lcContainer}>
-      {/* Renamed header */}
       <div className={styles.lcHeader}>Deep-Dive Data Analysis</div>
 
-      {/* Progress Bar */}
       <div className={styles.lcProgressContainer}>
         <div
           className={styles.lcProgressBar}
@@ -87,8 +85,8 @@ const LoadingCircle: React.FC = () => {
       </div>
 
       <div className={styles.lcContent}>
+        {/* Visualization area, forced min-height to ensure modules appear */}
         <div className={styles.lcVisualization}>
-
           {/* 1) REAL-TIME FUNNEL */}
           <div className={`${styles.lcModule} ${getRandomSnapClass(0)} ${delayClasses[0]}`}>
             <div className={styles.lcMacWindowBar}>
@@ -103,7 +101,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.lcChartGrid}></div>
               <div className={styles.lcChartAxisX}></div>
               <div className={styles.lcChartAxisY}></div>
-
               <div className={styles.lcFunnelContainer}>
                 <div className={styles.lcFunnelBar} data-step="1" />
                 <div className={styles.lcFunnelBar} data-step="2" />
@@ -146,7 +143,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.lcChartGrid} />
               <div className={styles.lcChartAxisX} />
               <div className={styles.lcChartAxisY} />
-
               <div className={styles.lcPredictiveArea}>
                 <div className={styles.lcPredictiveLayer} data-layer="1" />
                 <div className={styles.lcPredictiveLayer} data-layer="2" />
@@ -190,7 +186,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.lcChartGrid} />
               <div className={styles.lcChartAxisX} />
               <div className={styles.lcChartAxisY} />
-
               <div className={styles.lcScatterContainer}>
                 <div className={styles.lcScatterPoint} data-id="1" />
                 <div className={styles.lcScatterPoint} data-id="2" />
@@ -276,7 +271,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.lcChartGrid} />
               <div className={styles.lcChartAxisX} />
               <div className={styles.lcChartAxisY} />
-
               <div className={styles.lcPerformanceStacks}>
                 <div className={styles.lcPerfBar} data-bar="1" />
                 <div className={styles.lcPerfBar} data-bar="2" />
@@ -302,7 +296,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.lcChartGrid} />
               <div className={styles.lcChartAxisX} />
               <div className={styles.lcChartAxisY} />
-
               <div className={styles.lcClusterContainer}>
                 <div className={styles.lcClusterBubble} data-bub="1" />
                 <div className={styles.lcClusterBubble} data-bub="2" />
@@ -325,7 +318,6 @@ const LoadingCircle: React.FC = () => {
               <div className={styles.lcChartGrid} />
               <div className={styles.lcChartAxisX} />
               <div className={styles.lcChartAxisY} />
-
               <div className={styles.lcForecastContainer}>
                 <div className={styles.lcForecastLine} data-line="a" />
                 <div className={styles.lcForecastLine} data-line="b" />
