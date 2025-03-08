@@ -1,27 +1,17 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
-// Helper to clamp a numeric value
+// Helper to clamp a numeric value between min & max
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-// We'll run a single requestAnimationFrame loop. Over ~20 seconds, everything 
-// smoothly goes from 0% or minimal states to near 100% or final states, 
-// with small random micro-disturbances to appear "live."
-
 const TOTAL_MODULES = 12;
-const FULL_DURATION = 20; // seconds to go from 0 to 100
 
-// Reduced random amplitude to avoid large jitter
-function smallRandom() {
-  // range ~ -1..+1
-  return (Math.random() - 0.5) * 2;
-}
-
-// Main loading component
 const LoadingCircle: React.FC = () => {
-  // ================== Big rotating messages ==================
+  // -------------------------------------------
+  //               LOADING MESSAGES
+  // -------------------------------------------
   const loadingMessages = [
     "Initializing cross-domain analysis...",
     "Collecting multi-layer inputs...",
@@ -36,101 +26,159 @@ const LoadingCircle: React.FC = () => {
     "Analysis complete—preparing output..."
   ];
 
-  // ================== UI States ==================
-  const [progressPercent, setProgressPercent] = useState(0);
-  const [timeElapsed, setTimeElapsed] = useState(0); // for top progress bar
-  const totalDuration = 10; // resets every 10s
-  const topLoaderDuration = 8;
+  // Base log lines
+  const baseAnalysisLogLines = [
+    "[Data] Real-time aggregator is standing by...",
+    "[Data] Cross-checking system readiness...",
+    "[System] GPU acceleration verified",
+    "[System] CPU usage stable at 72%",
+    "[Data] Checking correlation thresholds...",
+    "[System] Memory usage stable at 1.2 GB / 8 GB",
+    "[Data] Forecast model iteration #3 in progress...",
+    "[System] All sub-processes stable",
+    "[Data] Gathering final summary metrics..."
+  ];
+
+  // A small random function for micro-changes (less jitter)
+  function smallRandom() {
+    return (Math.random() - 0.5) * 2; // -1..+1
+  }
+
+  // -------------------------------------------
+  //                 REACT STATES
+  // -------------------------------------------
+  const [messageIndex, setMessageIndex] = useState<number>(0);
+  const [fade, setFade] = useState<boolean>(true);
+  const [progressPercent, setProgressPercent] = useState<number>(0);
   const progressIntervalRef = useRef<number | null>(null);
 
-  // For rotating big message
-  const [messageIndex, setMessageIndex] = useState(0);
-  const [fade, setFade] = useState(true);
-
-  // For live log
+  // For analysis log
   const [logMessages, setLogMessages] = useState<string[]>([]);
-  const logRef = useRef<HTMLDivElement | null>(null);
 
-  // Each module has a “VM loading” screen
+  // Keep track of time for the master progress
+  const totalDuration = 10;          // ~10s total
+  const topLoaderDuration = 8;       // progress bar fills in 8s
+  const [timeElapsed, setTimeElapsed] = useState<number>(0);
+
+  // Each module loading state
   const [moduleLoaded, setModuleLoaded] = useState<boolean[]>(
     Array(TOTAL_MODULES).fill(false)
   );
 
-  // Hover for tooltips
+  // Each module's hover
   const [hoveredModuleIndex, setHoveredModuleIndex] = useState<number | null>(null);
 
-  // Master-time for continuous fluid animations (0..FULL_DURATION)
-  const [masterTime, setMasterTime] = useState(0);
+  // Ongoing “live” updates: store random seeds for each chart
+  const [liveRandom, setLiveRandom] = useState({
+    funnel: 0,
+    bar: 0,
+    gauge: 0,
+    radar: 0,
+    chord: 0,
+    scatter: 0,
+    bubble: 0,
+    area: 0,
+    line: 0,
+    network: 0,
+    heatmap: 0,
+    donut: 0
+  });
 
-  // Large log lines for sophistication
-  const extensiveLogLines = [
-    "[System] Initializing advanced synergy core...",
-    "[Data] Pre-fetching metadata from cross-nodes...",
-    "[AI] Generating heuristic guidelines...",
-    "[Engine] Allocating ephemeral compute resources...",
-    "[VM] Checking virtualization layers for environment bridging...",
-    "[Data] Pipeline spooling with multi-thread I/O operations...",
-    "[System] GPU micro-ops verified, concurrent tasks queued...",
-    "[AI] Deriving correlation matrices from partial data streams...",
-    "[Data] Real-time aggregator adjusting dimensional weighting...",
-    "[Engine] Priority queue scheduling ongoing tasks...",
-    "[AI] Identifying emergent correlation clusters for deeper insight...",
-    "[Data] Rapid indexing of high-fidelity micro signals...",
-    "[System] Tertiary processes online, capacity at 86%...",
-    "[VM] Re-checking environment hyper-calls for performance gain...",
-    "[Engine] Sub-translator modules optimizing intermediate results...",
-    "[Data] No anomalies found, continuing expansions...",
-    "[AI] Weighted synergy factor indicates upward trend...",
-    "[System] Rolling out next wave of inference tasks...",
-    "[Data] Real-time aggregator stable, memory usage nominal...",
-    "[Engine] Pipeline latency stable at ~7.3ms...",
-    "[AI] Extracting high-level feature sets from new data shards...",
-    "[System] Memory cache flush scheduled...",
-    "[VM] Additional environment spin-ups pending resource availability...",
-    "[AI] Forecast sub-engine cross-checking partial next-step predictions...",
-    "[Data] Weighted aggregator re-balancing final pass...",
-    "[System] All sub-processes remain stable, proceeding...",
-    "[AI] Consolidating partial results for final synergy scoring...",
-    "[Data] Additional correlation thresholds unlocked, continuing...",
-    "[Engine] CPU usage at 71%, GPU at 66% load...",
-    "[System] Advanced logging indicates stable real-time flow...",
-    "[AI] High-level emergent pattern recognized, continuing deeper analysis..."
-  ];
-
-  // Tooltips for each module
+  // Simple descriptive tooltip text per module
   const moduleTooltips = [
-    "Observational Data: Constantly refining key insights for you.",
-    "Radar Engine: Pinpoints subtle patterns across multiple contexts.",
-    "Predictive Mapping: Forecasts next-level outcomes in real time.",
-    "Comparative Matrix: Benchmarks data points to reveal hidden gains.",
-    "Factor Explorer: Evaluates multi-variable synergy for better decisions.",
-    "Association Mapping: Shows how every channel interconnects for success.",
-    "Efficiency Pulse: Measures resource usage to maximize ROI.",
-    "Risk Evaluator: Gauges robustness, helping you stay secure.",
-    "Performance Tiers: Dynamically ranks metrics to boost strategy.",
-    "Clustering: Groups data points for immediate clarity & action.",
-    "Trend Projections: Continuously scanning for next big opportunity.",
-    "Network Synthesis: Visualizes connections for comprehensive oversight."
+    "Funnel module: Observational Data",
+    "Radar module: Multi-Faceted Radar Engine",
+    "Area chart: Future Mapping – Predictive View",
+    "Chord diagram: Comparative Markers – Matrix",
+    "Scatter: Multi-Variable Analytics – Factor Explorer",
+    "Heatmap: Association Mapping – Connection Grid",
+    "Donut: Resource Index – Efficiency Pulse",
+    "Gauge: Robustness Overview – Risk Evaluator",
+    "Bar chart: Performance Tiers – Efficiency Review",
+    "Bubbles: Clustering – Multi-Group Navigator",
+    "Line chart: Forecasting – Trend Projections",
+    "Network: Topology Analysis – Network Synthesis"
   ];
 
-  // ================== 1) VM BOOT LOGIC ==================
+  // -------------------------------------------
+  //          PROGRESS BAR + MAIN TIMING
+  // -------------------------------------------
+  useEffect(() => {
+    if (progressIntervalRef.current) {
+      window.clearInterval(progressIntervalRef.current);
+    }
+
+    // Master timer updates every second, but no longer resets at 10s
+    const masterTimer = window.setInterval(() => {
+      setTimeElapsed((current) => {
+        // If we already reached totalDuration, do not reset back to 0
+        if (current >= totalDuration) {
+          return current; // just stay
+        }
+        return current + 1;
+      });
+    }, 1000);
+
+    // Fill progress bar from 0% to 100% in topLoaderDuration seconds
+    progressIntervalRef.current = window.setInterval(() => {
+      setProgressPercent((prev) => {
+        // Once we hit 100% we do not revert
+        if (timeElapsed < topLoaderDuration) {
+          return Math.min((timeElapsed / topLoaderDuration) * 100, 100);
+        } else {
+          return 100; // done
+        }
+      });
+    }, 300);
+
+    return () => {
+      window.clearInterval(masterTimer);
+      if (progressIntervalRef.current) {
+        window.clearInterval(progressIntervalRef.current);
+      }
+    };
+  }, [timeElapsed, topLoaderDuration, totalDuration]);
+
+  // -------------------------------------------
+  //         ROTATING MESSAGES (4s intervals)
+  // -------------------------------------------
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        setMessageIndex((prevIdx) => (prevIdx + 1) % loadingMessages.length);
+        setFade(true);
+      }, 300);
+    }, 4000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [loadingMessages.length]);
+
+  // -------------------------------------------
+  //  LOGIC FOR RANDOM VM STARTUP (12 modules)
+  // -------------------------------------------
   useEffect(() => {
     moduleLoaded.forEach((loaded, i) => {
       if (!loaded) {
-        const startDelay = Math.random() * 3000;
+        const startDelay = Math.random() * 4000; // up to 4s
         setTimeout(() => {
+          // Log advanced boot text
           setLogMessages((prev) => [
             ...prev,
-            `[VM] Environment ${i + 1} initiating advanced subsystem...`,
-            `[VM] Loading essential libraries...`,
+            `[VM] Initializing advanced subsystem for environment ${i + 1}...`,
+            `[VM] Loading dynamic libraries...`,
             `[VM] Starting Virtual Machine environment ${i + 1}...`
           ]);
-          const finishDelay = 1000 + Math.random() * 1000;
+          // Another short random time to finish boot
+          const finishDelay = 1000 + Math.random() * 1500;
           setTimeout(() => {
             setLogMessages((prev) => [
               ...prev,
-              `[VM] Environment ${i + 1} is fully operational.`
+              `[VM] Environment ${i + 1} is operational.`
             ]);
+            // Mark module as loaded
             setModuleLoaded((prevStates) => {
               const updated = [...prevStates];
               updated[i] = true;
@@ -142,141 +190,109 @@ const LoadingCircle: React.FC = () => {
     });
   }, [moduleLoaded]);
 
-  // ================== 2) LARGE LOG MESSAGES ==================
+  // -------------------------------------------
+  //  ADDITIONAL PERIODIC LOGS
+  // -------------------------------------------
   useEffect(() => {
-    let idx = 0;
-    const logTimer = setInterval(() => {
-      setLogMessages((prev) => [...prev, extensiveLogLines[idx]]);
-      idx++;
-      // auto-scroll
-      if (logRef.current) {
-        logRef.current.scrollTop = logRef.current.scrollHeight;
+    let currentIndex = 0;
+    const analysisTimer = setInterval(() => {
+      if (currentIndex < baseAnalysisLogLines.length) {
+        setLogMessages((prev) => [...prev, baseAnalysisLogLines[currentIndex]]);
+        currentIndex++;
+      } else {
+        clearInterval(analysisTimer);
       }
-      if (idx >= extensiveLogLines.length) {
-        clearInterval(logTimer);
-      }
-    }, 1500);
-    return () => clearInterval(logTimer);
-  }, [extensiveLogLines]);
+    }, 2000);
 
-  // ================== 3) MASTER TIME (rAF) ==================
-  const rAFRef = useRef<number | null>(null);
-  const prevTimestamp = useRef<number | null>(null);
+    return () => {
+      clearInterval(analysisTimer);
+    };
+  }, [baseAnalysisLogLines]);
 
-  const animateFrame = useCallback((timestamp: number) => {
-    if (!prevTimestamp.current) {
-      prevTimestamp.current = timestamp;
-    }
-    const delta = (timestamp - prevTimestamp.current) / 1000;
-    prevTimestamp.current = timestamp;
+  // -------------------------------------------
+  //  CONTINUOUS “LIVE” DATA CHANGES (toned down)
+  // -------------------------------------------
+  useEffect(() => {
+    const liveUpdateTimer = setInterval(() => {
+      setLiveRandom({
+        funnel: smallRandom() * 2,    // was 10, now 2 => less movement
+        bar: smallRandom() * 3,       // was 10, now 3
+        gauge: smallRandom() * 1.2,   // was up to 3
+        radar: smallRandom() * 0.8,   // smaller amplitude
+        chord: smallRandom() * 0.8,
+        scatter: smallRandom() * 0.8,
+        bubble: smallRandom() * 0.8,
+        area: smallRandom() * 0.8,
+        line: smallRandom() * 0.8,
+        network: smallRandom() * 0.8,
+        heatmap: smallRandom() * 0.8,
+        donut: smallRandom() * 0.8
+      });
+    }, 2000); // update every 2s for subtle changes
 
-    setMasterTime((prev) => {
-      const newVal = prev + delta;
-      // loop after FULL_DURATION
-      if (newVal > FULL_DURATION) {
-        return newVal - FULL_DURATION;
-      }
-      return newVal;
-    });
-
-    rAFRef.current = requestAnimationFrame(animateFrame);
+    return () => {
+      clearInterval(liveUpdateTimer);
+    };
   }, []);
 
-  useEffect(() => {
-    rAFRef.current = requestAnimationFrame(animateFrame);
-    return () => {
-      if (rAFRef.current) cancelAnimationFrame(rAFRef.current);
-    };
-  }, [animateFrame]);
-
-  // ================== 4) PROGRESS BAR ==================
-  useEffect(() => {
-    if (progressIntervalRef.current) {
-      window.clearInterval(progressIntervalRef.current);
-    }
-    const masterTimer = window.setInterval(() => {
-      setTimeElapsed((current) => {
-        if (current >= totalDuration) {
-          return 0;
-        }
-        return current + 1;
-      });
-    }, 1000);
-
-    progressIntervalRef.current = window.setInterval(() => {
-      setProgressPercent(() => {
-        if (timeElapsed < topLoaderDuration) {
-          return Math.min((timeElapsed / topLoaderDuration) * 100, 100);
-        } else {
-          return 100;
-        }
-      });
-    }, 300);
-
-    return () => {
-      window.clearInterval(masterTimer);
-      if (progressIntervalRef.current) {
-        window.clearInterval(progressIntervalRef.current);
-      }
-    };
-  }, [timeElapsed, totalDuration, topLoaderDuration]);
-
-  // ================== 5) ROTATING BIG MESSAGES ==================
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setFade(false);
-      setTimeout(() => {
-        setMessageIndex((prev) => (prev + 1) % loadingMessages.length);
-        setFade(true);
-      }, 300);
-    }, 4000);
-    return () => clearInterval(intervalId);
-  }, [loadingMessages.length]);
-
-  // ================== HELPER: 0..1 FRACTION ==================
-  function getFraction() {
-    return clamp(masterTime / FULL_DURATION, 0, 1);
+  // Helper for gauge angle
+  function getGaugeAngle(baseAngle: number, adjustDeg: number) {
+    return clamp(baseAngle + adjustDeg, 0, 90);
   }
 
-  // ================== RENDER MODULE ==================
-  const animationClasses = [styles.animation1, styles.animation2, styles.animation3, styles.animation4];
+  // -------------------------------------------
+  //        MODULE ANIMATION CLASSES
+  // -------------------------------------------
+  const animationClasses = [
+    styles.animation1,
+    styles.animation2,
+    styles.animation3,
+    styles.animation4
+  ];
+  function getAnimationClass(i: number) {
+    return animationClasses[i % animationClasses.length];
+  }
+
+  // 12 staggered delay classes
   const delayClasses = [
     styles.delay1, styles.delay2, styles.delay3, styles.delay4,
     styles.delay5, styles.delay6, styles.delay7, styles.delay8,
     styles.delay9, styles.delay10, styles.delay11, styles.delay12
   ];
 
-  function getAnimationClass(i: number) {
-    return animationClasses[i % animationClasses.length];
+  // For hover tooltips:
+  function handleMouseEnter(moduleIndex: number) {
+    setHoveredModuleIndex(moduleIndex);
+  }
+  function handleMouseLeave() {
+    setHoveredModuleIndex(null);
   }
 
+  // Render each module with advanced overlay if not loaded
   function renderModule(content: JSX.Element, moduleIndex: number) {
-    const onMouseEnter = () => setHoveredModuleIndex(moduleIndex);
-    const onMouseLeave = () => setHoveredModuleIndex(null);
-
+    const loaded = moduleLoaded[moduleIndex];
     return (
       <div
         className={`${styles.module} ${getAnimationClass(moduleIndex)} ${delayClasses[moduleIndex]}`}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
+        onMouseEnter={() => handleMouseEnter(moduleIndex)}
+        onMouseLeave={handleMouseLeave}
       >
         {/* VM loading overlay if not loaded */}
-        {!moduleLoaded[moduleIndex] && (
+        {!loaded && (
           <div className={styles.vmLoadingOverlay}>
             <div className={styles.vmBootLines}>
               <div>bootcfg.sys loaded</div>
               <div>vkernel.sys loaded</div>
               <div>hypervisor check: OK</div>
               <div className={styles.vmDotFlicker}>. . .</div>
-              <div>Starting environment {moduleIndex + 1}...</div>
+              <div>Starting environment {moduleIndex + 1} ...</div>
             </div>
           </div>
         )}
+        {/* Actual chart content if loaded */}
+        {loaded && content}
 
-        {/* Actual content if loaded */}
-        {moduleLoaded[moduleIndex] && content}
-
-        {/* Hover tooltip */}
+        {/* Hover tooltip if this module is hovered */}
         {hoveredModuleIndex === moduleIndex && (
           <div className={styles.hoverTooltip}>
             {moduleTooltips[moduleIndex]}
@@ -286,23 +302,16 @@ const LoadingCircle: React.FC = () => {
     );
   }
 
-  // ================== CHART EXAMPLES ==================
-  // 1) Funnel
-  const funnelData = [
-    { label: "Data Points", base: 100 },
-    { label: "Key Observations", base: 85 },
-    { label: "Potential Patterns", base: 65 },
-    { label: "Core Insights", base: 40 }
-  ];
-
   return (
     <div className={styles.container}>
-      <div className={styles.header}>Comprehensive Insight Dashboard</div>
+      <div className={styles.header}>Your Quantum Analysis In Process...</div>
 
       {/* Progress Bar */}
       <div className={styles.progressContainer}>
         <div
-          className={`${styles.progressBar} ${progressPercent >= 100 ? styles.progressComplete : ""}`}
+          className={`${styles.progressBar} ${
+            progressPercent >= 100 ? styles.progressComplete : ""
+          }`}
           style={{ width: `${progressPercent}%` }}
         >
           <div className={styles.progressGlow}></div>
@@ -311,8 +320,7 @@ const LoadingCircle: React.FC = () => {
 
       <div className={styles.content}>
         <div className={styles.visualization}>
-
-          {/* 1) FUNNEL (Observational Data) */}
+          {/* 1) FUNNEL */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -324,27 +332,53 @@ const LoadingCircle: React.FC = () => {
               </div>
               <div className={styles.moduleBody}>
                 <div className={styles.funnelContainer}>
-                  {funnelData.map((item, i) => {
-                    const frac = getFraction();
-                    // minimal random offset
-                    const width = clamp(item.base * frac + smallRandom(), 0, 100);
-                    const count = Math.floor(item.base * 200 * frac + 500 + smallRandom() * 10);
-                    const tops = ["10%", "35%", "60%", "85%"];
-                    return (
-                      <div key={i} className={styles.funnelMetric} style={{ top: tops[i] }}>
-                        <span className={styles.label}>{item.label}</span>
-                        <span className={styles.value}>{count}</span>
-                        <div className={styles.bar} style={{ width: `${width}%` }}></div>
-                      </div>
-                    );
-                  })}
+                  <div className={styles.funnelMetric} style={{ top: "10%" }}>
+                    <span className={styles.label}>Data Points</span>
+                    <span className={styles.value}>15,120</span>
+                    <div
+                      className={styles.bar}
+                      style={{
+                        width: `${clamp(100 + liveRandom.funnel, 0, 100)}%`
+                      }}
+                    ></div>
+                  </div>
+                  <div className={styles.funnelMetric} style={{ top: "35%" }}>
+                    <span className={styles.label}>Key Observations</span>
+                    <span className={styles.value}>9,304</span>
+                    <div
+                      className={styles.bar}
+                      style={{
+                        width: `${clamp(85 + liveRandom.funnel, 0, 100)}%`
+                      }}
+                    ></div>
+                  </div>
+                  <div className={styles.funnelMetric} style={{ top: "60%" }}>
+                    <span className={styles.label}>Potential Patterns</span>
+                    <span className={styles.value}>4,189</span>
+                    <div
+                      className={styles.bar}
+                      style={{
+                        width: `${clamp(65 + liveRandom.funnel, 0, 100)}%`
+                      }}
+                    ></div>
+                  </div>
+                  <div className={styles.funnelMetric} style={{ top: "85%" }}>
+                    <span className={styles.label}>Core Insights</span>
+                    <span className={styles.value}>2,532</span>
+                    <div
+                      className={styles.bar}
+                      style={{
+                        width: `${clamp(40 + liveRandom.funnel, 0, 100)}%`
+                      }}
+                    ></div>
+                  </div>
                 </div>
               </div>
             </>,
             0
           )}
 
-          {/* 2) RADAR (Multi-Faceted) */}
+          {/* 2) RADAR */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -354,7 +388,12 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.windowTitle}>Multi-Faceted Radar – Insight Engine</div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
-              <div className={styles.moduleBody}>
+              <div
+                className={styles.moduleBody}
+                style={{
+                  transform: `scale(${1 + liveRandom.radar * 0.01})`
+                }}
+              >
                 <div className={styles.radarContainer}>
                   <div className={styles.radarChart}>
                     <div className={styles.radarAxis}></div>
@@ -367,7 +406,6 @@ const LoadingCircle: React.FC = () => {
                     <div className={styles.radarCircle}></div>
                     <div className={styles.radarCircle}></div>
                     <div className={styles.radarCircle}></div>
-                    {/* 6 radarValue dots + the area fill */}
                     <div className={styles.radarValue}></div>
                     <div className={styles.radarValue}></div>
                     <div className={styles.radarValue}></div>
@@ -382,7 +420,7 @@ const LoadingCircle: React.FC = () => {
             1
           )}
 
-          {/* 3) FUTURE MAPPING - Predictive View */}
+          {/* 3) AREA CHART */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -392,7 +430,12 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.windowTitle}>Future Mapping – Predictive View</div>
                 <div className={styles.windowStatus}>Analyzing</div>
               </div>
-              <div className={styles.moduleBody}>
+              <div
+                className={styles.moduleBody}
+                style={{
+                  transform: `scale(${1 + liveRandom.area * 0.01})`
+                }}
+              >
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
@@ -400,8 +443,8 @@ const LoadingCircle: React.FC = () => {
                   <div className={styles.areaPath}>
                     <div className={styles.area}></div>
                     <div className={styles.areaLine}></div>
-                    {/* 9 data points */}
-                    {[...Array(9)].map((_, idx) => (
+                    {/* Multiple data points */}
+                    {[...Array(11)].map((_, idx) => (
                       <div key={idx} className={styles.dataPoint}></div>
                     ))}
                   </div>
@@ -411,7 +454,7 @@ const LoadingCircle: React.FC = () => {
             2
           )}
 
-          {/* 4) COMPARATIVE MARKERS - Matrix */}
+          {/* 4) CHORD */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -421,7 +464,12 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.windowTitle}>Comparative Markers – Matrix</div>
                 <div className={styles.windowStatus}>Computing</div>
               </div>
-              <div className={styles.moduleBody}>
+              <div
+                className={styles.moduleBody}
+                style={{
+                  transform: `translateY(${liveRandom.chord * 0.5}px)`
+                }}
+              >
                 <div className={styles.chordContainer}>
                   <div className={styles.chordCircle}></div>
                   <div className={styles.chordArc}></div>
@@ -435,7 +483,7 @@ const LoadingCircle: React.FC = () => {
             3
           )}
 
-          {/* 5) MULTI-VARIABLE ANALYSIS – Factor Explorer */}
+          {/* 5) SCATTER */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -445,39 +493,33 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.windowTitle}>Multi-Variable Analysis – Factor Explorer</div>
                 <div className={styles.windowStatus}>Active</div>
               </div>
-              <div className={styles.moduleBody}>
+              <div
+                className={styles.moduleBody}
+                style={{
+                  transform: `rotate(${liveRandom.scatter * 0.5}deg)`
+                }}
+              >
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
-                {/* Example scatter container - 8 random points */}
-                <div style={{ position: "absolute", top: "15%", left: "10%", width: "80%", height: "70%" }}>
-                  {[...Array(8)].map((_, idx) => {
-                    const frac = getFraction();
-                    const x = Math.random() * 90 * frac;
-                    const y = Math.random() * 60 * frac;
-                    return (
-                      <div
-                        key={idx}
-                        style={{
-                          position: "absolute",
-                          left: `${x}%`,
-                          top: `${y}%`,
-                          width: "10px",
-                          height: "10px",
-                          backgroundColor: "rgba(149,82,211,0.7)",
-                          borderRadius: "50%",
-                          transform: "translate(-50%, -50%)"
-                        }}
-                      />
-                    );
-                  })}
+                <div className={styles.scatterContainer}>
+                  <div className={styles.scatterPoint} data-value="high"></div>
+                  <div className={styles.scatterPoint} data-value="medium"></div>
+                  <div className={styles.scatterPoint} data-value="high"></div>
+                  <div className={styles.scatterPoint} data-value="low"></div>
+                  <div className={styles.scatterPoint} data-value="medium"></div>
+                  <div className={styles.scatterPoint} data-value="low"></div>
+                  <div className={styles.scatterPoint} data-value="medium"></div>
+                  <div className={styles.scatterPoint} data-value="high"></div>
+                  <div className={styles.scatterPoint} data-value="medium"></div>
+                  <div className={styles.trendLine}></div>
                 </div>
               </div>
             </>,
             4
           )}
 
-          {/* 6) ASSOCIATION MAPPING – Connection Grid */}
+          {/* 6) HEATMAP (Association Mapping) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -487,21 +529,47 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.windowTitle}>Association Mapping – Connection Grid</div>
                 <div className={styles.windowStatus}>Calculating</div>
               </div>
-              <div className={styles.moduleBody}>
+              <div
+                className={styles.moduleBody}
+                style={{
+                  transform: `scale(${1 + liveRandom.heatmap * 0.01})`
+                }}
+              >
                 <div className={styles.heatmapContainer}>
                   <div className={styles.heatmapGrid}>
-                    {[...Array(25)].map((_, idx) => {
-                      const choices = [styles.low, styles.medium, styles.high, styles["very-high"]];
-                      const pick = choices[Math.floor(Math.random() * choices.length)];
-                      return <div key={idx} className={`${styles.heatCell} ${pick}`}></div>;
-                    })}
+                    {/* 25 cells */}
+                    <div className={`${styles.heatCell} ${styles.low}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                    <div className={`${styles.heatCell} ${styles.low}`}></div>
+                    <div className={`${styles.heatCell} ${styles.high}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
+                    <div className={`${styles.heatCell} ${styles.high}`}></div>
+                    <div className={`${styles.heatCell} ${styles.low}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                    <div className={`${styles.heatCell} ${styles.low}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
+                    <div className={`${styles.heatCell} ${styles.high}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                    <div className={`${styles.heatCell} ${styles.high}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                    <div className={`${styles.heatCell} ${styles.low}`}></div>
+                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
+                    <div className={`${styles.heatCell} ${styles.high}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
+                    <div className={`${styles.heatCell} ${styles.high}`}></div>
+                    <div className={`${styles.heatCell} ${styles.medium}`}></div>
+                    <div className={`${styles.heatCell} ${styles.low}`}></div>
                   </div>
                   <div className={styles.xLabels}>
-                    <span>Ch1</span>
-                    <span>Ch2</span>
-                    <span>Ch3</span>
-                    <span>Ch4</span>
-                    <span>Ch5</span>
+                    <span>Channel 1</span>
+                    <span>Channel 2</span>
+                    <span>Channel 3</span>
+                    <span>Channel 4</span>
+                    <span>Channel 5</span>
                   </div>
                   <div className={styles.yLabels} style={{ left: "13%" }}>
                     <span>A</span>
@@ -516,7 +584,7 @@ const LoadingCircle: React.FC = () => {
             5
           )}
 
-          {/* 7) RESOURCE INDEX – Efficiency Pulse */}
+          {/* 7) DONUT (Resource Index) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -526,7 +594,12 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.windowTitle}>Resource Index – Efficiency Pulse</div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
-              <div className={styles.moduleBody}>
+              <div
+                className={styles.moduleBody}
+                style={{
+                  transform: `rotate(${liveRandom.donut * 0.5}deg)`
+                }}
+              >
                 <div className={styles.donutContainer}>
                   <div className={styles.donutRing}></div>
                   <div className={`${styles.donutSegment} ${styles.segment1}`}></div>
@@ -534,7 +607,7 @@ const LoadingCircle: React.FC = () => {
                   <div className={`${styles.donutSegment} ${styles.segment3}`}></div>
                   <div className={styles.donutHole}></div>
                   <div className={styles.donutLabel}>
-                    <div className={styles.value}>{Math.round(getFraction() * 100)}%</div>
+                    <div className={styles.value}>72%</div>
                     <div className={styles.text}>Utilization</div>
                   </div>
                   <div className={styles.legendItem} style={{ bottom: "25%" }}>
@@ -552,7 +625,7 @@ const LoadingCircle: React.FC = () => {
             6
           )}
 
-          {/* 8) ROBUSTNESS OVERVIEW – Risk Evaluator */}
+          {/* 8) GAUGE (Robustness) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -578,20 +651,17 @@ const LoadingCircle: React.FC = () => {
                   <div
                     className={styles.gaugeNeedle}
                     style={{
-                      // from 30 to 90 deg
-                      transform: `rotate(${clamp(30 + getFraction() * 60 + smallRandom() * 1, 0, 90)}deg)`
+                      transform: `rotate(${getGaugeAngle(53, liveRandom.gauge)}deg)`
                     }}
                   ></div>
-                  <div className={styles.gaugeValue}>
-                    {Math.round(50 + getFraction() * 50)}% Stable
-                  </div>
+                  <div className={styles.gaugeValue}>81% Stable</div>
                 </div>
               </div>
             </>,
             7
           )}
 
-          {/* 9) PERFORMANCE TIERS – Efficiency Review */}
+          {/* 9) BAR CHART */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -607,17 +677,54 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.chartAxisY}></div>
                 <div className={styles.barChartContainer}>
                   <div className={styles.barGroup}>
-                    {[...Array(6)].map((_, idx) => {
-                      const fraction = getFraction() * 100;
-                      const height = clamp(fraction + smallRandom() * 3, 0, 100);
-                      return (
-                        <div key={idx} className={styles.barWrapper}>
-                          <div className={styles.bar} style={{ height: `${height}%` }}></div>
-                          <div className={styles.barLabel}>Cat {String.fromCharCode(65 + idx)}</div>
-                          <div className={styles.barValue}>{Math.round(height)}%</div>
-                        </div>
-                      );
-                    })}
+                    <div className={styles.barWrapper}>
+                      <div
+                        className={styles.bar}
+                        style={{ height: `${clamp(55 + liveRandom.bar, 0, 100)}%` }}
+                      ></div>
+                      <div className={styles.barLabel}>Cat A</div>
+                      <div className={styles.barValue}>58%</div>
+                    </div>
+                    <div className={styles.barWrapper}>
+                      <div
+                        className={styles.bar}
+                        style={{ height: `${clamp(80 + liveRandom.bar, 0, 100)}%` }}
+                      ></div>
+                      <div className={styles.barLabel}>Cat B</div>
+                      <div className={styles.barValue}>82%</div>
+                    </div>
+                    <div className={styles.barWrapper}>
+                      <div
+                        className={styles.bar}
+                        style={{ height: `${clamp(68 + liveRandom.bar, 0, 100)}%` }}
+                      ></div>
+                      <div className={styles.barLabel}>Cat C</div>
+                      <div className={styles.barValue}>71%</div>
+                    </div>
+                    <div className={styles.barWrapper}>
+                      <div
+                        className={styles.bar}
+                        style={{ height: `${clamp(90 + liveRandom.bar, 0, 100)}%` }}
+                      ></div>
+                      <div className={styles.barLabel}>Cat D</div>
+                      <div className={styles.barValue}>93%</div>
+                    </div>
+                    <div className={styles.barWrapper}>
+                      <div
+                        className={styles.bar}
+                        style={{ height: `${clamp(77 + liveRandom.bar, 0, 100)}%` }}
+                      ></div>
+                      <div className={styles.barLabel}>Cat E</div>
+                      <div className={styles.barValue}>79%</div>
+                    </div>
+                    <div className={styles.barWrapper}>
+                      <div
+                        className={styles.bar}
+                        style={{ height: `${clamp(42 + liveRandom.bar, 0, 100)}%` }}
+                      ></div>
+                      <div className={styles.barLabel}>Cat F</div>
+                      <div className={styles.barValue}>46%</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -625,7 +732,7 @@ const LoadingCircle: React.FC = () => {
             8
           )}
 
-          {/* 10) CLUSTERING – Multi-Group Navigator */}
+          {/* 10) BUBBLE (Clustering) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -635,60 +742,32 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.windowTitle}>Clustering – Multi-Group Navigator</div>
                 <div className={styles.windowStatus}>Mapping</div>
               </div>
-              <div className={styles.moduleBody}>
+              <div
+                className={styles.moduleBody}
+                style={{
+                  transform: `scale(${1 + liveRandom.bubble * 0.01})`
+                }}
+              >
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
                 <div className={styles.bubbleContainer}>
-                  {/* 3 Bubbles, expand based on fraction */}
-                  <div
-                    className={styles.bubble}
-                    style={{
-                      left: "20%",
-                      top: "40%",
-                      width: `${20 + getFraction() * 10}%`,
-                      height: `${20 + getFraction() * 10}%`
-                    }}
-                  ></div>
-                  <div
-                    className={styles.bubble}
-                    style={{
-                      left: "60%",
-                      top: "50%",
-                      width: `${25 + getFraction() * 8}%`,
-                      height: `${25 + getFraction() * 8}%`
-                    }}
-                  ></div>
-                  <div
-                    className={styles.bubble}
-                    style={{
-                      left: "45%",
-                      top: "25%",
-                      width: `${15 + getFraction() * 5}%`,
-                      height: `${15 + getFraction() * 5}%`
-                    }}
-                  ></div>
-
-                  <div className={styles.bubbleLabel} style={{ left: "20%", top: "40%" }}>Group 1</div>
-                  <div className={styles.bubbleLabel} style={{ left: "60%", top: "50%" }}>Group 2</div>
-                  <div className={styles.bubbleLabel} style={{ left: "45%", top: "25%" }}>Group 3</div>
-
-                  <div className={styles.bubbleValue} style={{ left: "20%", top: "calc(40% + 10px)" }}>
-                    {Math.round(10 + getFraction() * 10)}.2
-                  </div>
-                  <div className={styles.bubbleValue} style={{ left: "60%", top: "calc(50% + 15px)" }}>
-                    {Math.round(7 + getFraction() * 8)}.1
-                  </div>
-                  <div className={styles.bubbleValue} style={{ left: "45%", top: "calc(25% + 8px)" }}>
-                    {Math.round(3 + getFraction() * 5)}.3
-                  </div>
+                  <div className={styles.bubble}></div>
+                  <div className={styles.bubble}></div>
+                  <div className={styles.bubble}></div>
+                  <div className={styles.bubbleLabel}>Group 1</div>
+                  <div className={styles.bubbleLabel}>Group 2</div>
+                  <div className={styles.bubbleLabel}>Group 3</div>
+                  <div className={styles.bubbleValue}>14.2</div>
+                  <div className={styles.bubbleValue}>9.1</div>
+                  <div className={styles.bubbleValue}>4.3</div>
                 </div>
               </div>
             </>,
             9
           )}
 
-          {/* 11) FORECASTING – Trend Projections */}
+          {/* 11) LINE (Forecasting) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -698,7 +777,12 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.windowTitle}>Forecasting – Trend Projections</div>
                 <div className={styles.windowStatus}>Predicting</div>
               </div>
-              <div className={styles.moduleBody}>
+              <div
+                className={styles.moduleBody}
+                style={{
+                  transform: `translateX(${liveRandom.line * 0.5}px)`
+                }}
+              >
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
@@ -717,7 +801,7 @@ const LoadingCircle: React.FC = () => {
             10
           )}
 
-          {/* 12) TOPOLOGY ANALYSIS – Network Synthesis */}
+          {/* 12) NETWORK (Topology Analysis) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -727,41 +811,32 @@ const LoadingCircle: React.FC = () => {
                 <div className={styles.windowTitle}>Topology Analysis – Network Synthesis</div>
                 <div className={styles.windowStatus}>Running</div>
               </div>
-              <div className={styles.moduleBody}>
+              <div
+                className={styles.moduleBody}
+                style={{
+                  transform: `rotate(${liveRandom.network * 0.5}deg)`
+                }}
+              >
                 <div className={styles.chartGrid}></div>
                 <div className={styles.networkContainer}>
-                  {[...Array(5)].map((_, idx) => {
-                    const lefts = [25, 70, 20, 65, 45];
-                    const tops = [30, 25, 65, 70, 45];
-                    return (
-                      <div
-                        key={idx}
-                        className={styles.networkNode}
-                        style={{
-                          left: `${lefts[idx]}%`,
-                          top: `${tops[idx]}%`
-                        }}
-                      ></div>
-                    );
-                  })}
-                  {[...Array(8)].map((_, idx) => (
-                    <div key={idx} className={styles.networkLink}></div>
-                  ))}
-                  <div className={styles.nodeLabel} style={{ left: "25%", top: "10%" }}>
-                    Primary
-                  </div>
-                  <div className={styles.nodeLabel} style={{ left: "70%", top: "10%" }}>
-                    Secondary
-                  </div>
-                  <div className={styles.nodeLabel} style={{ left: "20%", top: "80%" }}>
-                    Tertiary
-                  </div>
-                  <div className={styles.nodeLabel} style={{ left: "65%", top: "85%" }}>
-                    Quaternary
-                  </div>
-                  <div className={styles.nodeLabel} style={{ left: "45%", top: "50%" }}>
-                    Central
-                  </div>
+                  <div className={styles.networkNode}></div>
+                  <div className={styles.networkNode}></div>
+                  <div className={styles.networkNode}></div>
+                  <div className={styles.networkNode}></div>
+                  <div className={styles.networkNode}></div>
+                  <div className={styles.networkLink}></div>
+                  <div className={styles.networkLink}></div>
+                  <div className={styles.networkLink}></div>
+                  <div className={styles.networkLink}></div>
+                  <div className={styles.networkLink}></div>
+                  <div className={styles.networkLink}></div>
+                  <div className={styles.networkLink}></div>
+                  <div className={styles.networkLink}></div>
+                  <div className={styles.nodeLabel}>Primary</div>
+                  <div className={styles.nodeLabel}>Secondary</div>
+                  <div className={styles.nodeLabel}>Tertiary</div>
+                  <div className={styles.nodeLabel}>Quaternary</div>
+                  <div className={styles.nodeLabel}>Central</div>
                 </div>
               </div>
             </>,
@@ -769,13 +844,13 @@ const LoadingCircle: React.FC = () => {
           )}
         </div>
 
-        {/* Rotating status message */}
+        {/* Single-line rotating message */}
         <div className={`${styles.message} ${fade ? styles.fadeIn : styles.fadeOut}`}>
           {loadingMessages[messageIndex]}
         </div>
 
         {/* Live log area */}
-        <div className={styles.analysisLog} ref={logRef}>
+        <div className={styles.analysisLog}>
           {logMessages.map((line, idx) => (
             <div key={idx} className={styles.logLine}>
               {line}
