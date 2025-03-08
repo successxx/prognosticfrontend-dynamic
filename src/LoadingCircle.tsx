@@ -1,11 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
-/* ---------------------------------------------------------------------
-   OLD LOADER COMPONENT
-   (Exact copy from the original old loader code – no changes made)
----------------------------------------------------------------------- */
-const OldLoader: React.FC = () => {
+/* 
+  ---------------
+  OLD LOADER COMPONENT
+  ---------------
+  EXACT copy/paste from original code, 
+  except we do NOT render the black .pai-dr-header 
+  so we remain minimal & consistent. 
+*/
+function OldLoader() {
   const loadingMessages = [
     "Thinking...",
     "Looking at your site...",
@@ -38,33 +42,30 @@ const OldLoader: React.FC = () => {
         // After fade-out completes, update the message and fade-in
         setMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
         setFade(true); // Trigger fade-in
-      }, 500); // Match the duration of the fade-out
+      }, 500); // match fade-out duration
     };
 
-    // Set an interval to change the message every 5 seconds
+    // Change message every 5s
     const intervalId = setInterval(updateMessage, 5000);
-
-    // Clean up on unmount
     return () => clearInterval(intervalId);
   }, [loadingMessages.length]);
 
   return (
     <div className={styles["prognostic-ai-demo-results-container"]}>
-      <div className={styles["pai-dr-header"]}>
-        Clients.ai Quantum Analysis In Process
-      </div>
+      {/* 
+        We intentionally do NOT render the .pai-dr-header 
+        (the black bar) so the design is minimal 
+        and consistent with the new container. 
+      */}
       <div className={styles["pai-dr-content"]}>
-        {/* Futuristic visualization replaces simple spinner */}
+        {/* Futuristic spinner / visualization */}
         <div className={styles["pai-dr-visualization"]}>
-          {/* Core center circle */}
           <div className={styles["pai-dr-core"]}></div>
-
-          {/* Rotating rings */}
           <div className={styles["pai-dr-ring-inner"]}></div>
           <div className={styles["pai-dr-ring-middle"]}></div>
           <div className={styles["pai-dr-ring-outer"]}></div>
 
-          {/* Data points that appear and disappear */}
+          {/* Data points */}
           <div className={styles["pai-dr-data-points"]}>
             <div className={styles["pai-dr-data-point"]}></div>
             <div className={styles["pai-dr-data-point"]}></div>
@@ -74,7 +75,7 @@ const OldLoader: React.FC = () => {
             <div className={styles["pai-dr-data-point"]}></div>
           </div>
 
-          {/* Connection lines between data points */}
+          {/* Connection lines */}
           <div className={styles["pai-dr-data-connection"]}></div>
           <div className={styles["pai-dr-data-connection"]}></div>
           <div className={styles["pai-dr-data-connection"]}></div>
@@ -87,7 +88,7 @@ const OldLoader: React.FC = () => {
           <div className={styles["pai-dr-grid"]}></div>
         </div>
 
-        {/* Flying particles in background */}
+        {/* Flying particles */}
         <div className={styles["pai-dr-particles-container"]}>
           <div className={styles["pai-dr-particle"]}></div>
           <div className={styles["pai-dr-particle"]}></div>
@@ -112,14 +113,16 @@ const OldLoader: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
-/* ---------------------------------------------------------------------
-   NEW ADVANCED ANALYSIS MODULE COMPONENT (LoadingCircle)
-   (Exact copy from the current version – no changes made)
----------------------------------------------------------------------- */
-const LoadingCircle: React.FC = () => {
-  // Helper to clamp a numeric value between min & max
+/* 
+  ---------------
+  NEW ANALYSIS COMPONENT
+  ---------------
+  EXACT copy/paste from the original new module code
+*/
+function NewAnalysis() {
+  // Helper to clamp a numeric value
   function clamp(value: number, min: number, max: number) {
     return Math.max(min, Math.min(max, value));
   }
@@ -160,20 +163,17 @@ const LoadingCircle: React.FC = () => {
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const progressIntervalRef = useRef<number | null>(null);
 
-  // For analysis log
   const [logMessages, setLogMessages] = useState<string[]>([]);
 
-  // Keep track of time for the master progress (optimized for ~10s but can run longer)
   const totalDuration = 10;
   const topLoaderDuration = 8;
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
 
-  // Each module loading state
   const [moduleLoaded, setModuleLoaded] = useState<boolean[]>(
     Array(TOTAL_MODULES).fill(false)
   );
 
-  // Ongoing “live” updates: we’ll store random seeds for each chart
+  // Ongoing “live” updates
   const [liveRandom, setLiveRandom] = useState({
     funnel: 0,
     bar: 0,
@@ -189,23 +189,22 @@ const LoadingCircle: React.FC = () => {
     donut: 0
   });
 
-  // PROGRESS BAR + MAIN TIMING
+  // Master progress bar + timing
   useEffect(() => {
     if (progressIntervalRef.current) {
       window.clearInterval(progressIntervalRef.current);
     }
 
-    // Master timer updates every second
+    // Master timer every 1s
     const masterTimer = window.setInterval(() => {
       setTimeElapsed((current) => {
         if (current >= totalDuration) {
-          return 0; // loop if surpasses 10s
+          return 0; // loop
         }
         return current + 1;
       });
     }, 1000);
 
-    // Fill progress bar from 0% to 100% in topLoaderDuration seconds
     progressIntervalRef.current = window.setInterval(() => {
       setProgressPercent(() => {
         if (timeElapsed < topLoaderDuration) {
@@ -225,7 +224,7 @@ const LoadingCircle: React.FC = () => {
     };
   }, [timeElapsed, topLoaderDuration, totalDuration]);
 
-  // ROTATING MESSAGES (4s intervals)
+  // Rotating messages every 4s
   useEffect(() => {
     const intervalId = setInterval(() => {
       setFade(false);
@@ -240,27 +239,24 @@ const LoadingCircle: React.FC = () => {
     };
   }, [loadingMessages.length]);
 
-  // LOGIC FOR RANDOM VM STARTUP (12 modules)
+  // VM startup logic
   useEffect(() => {
     moduleLoaded.forEach((loaded, i) => {
       if (!loaded) {
         const startDelay = Math.random() * 4000; // up to 4s
         setTimeout(() => {
-          // Log advanced boot text to mimic real OS messages
           setLogMessages((prev) => [
             ...prev,
             `[VM] Initializing advanced subsystem for environment ${i + 1}...`,
-            `[VM] Loading dynamic libraries...`,
+            "[VM] Loading dynamic libraries...",
             `[VM] Starting Virtual Machine environment ${i + 1}...`
           ]);
-          // Another short random time to finish boot
-          const finishDelay = 1000 + Math.random() * 1500; // 1.0s - 2.5s
+          const finishDelay = 1000 + Math.random() * 1500;
           setTimeout(() => {
             setLogMessages((prev) => [
               ...prev,
               `[VM] Environment ${i + 1} is operational.`
             ]);
-            // Mark module as loaded
             setModuleLoaded((prevStates) => {
               const updated = [...prevStates];
               updated[i] = true;
@@ -270,10 +266,9 @@ const LoadingCircle: React.FC = () => {
         }, startDelay);
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [moduleLoaded]);
 
-  // ADDITIONAL PERIODIC LOGS
+  // Additional periodic logs
   useEffect(() => {
     let currentIndex = 0;
     const analysisTimer = setInterval(() => {
@@ -288,10 +283,9 @@ const LoadingCircle: React.FC = () => {
     return () => {
       clearInterval(analysisTimer);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [baseAnalysisLogLines]);
 
-  // CONTINUOUS “LIVE” DATA CHANGES
+  // Continuous “live” data changes
   useEffect(() => {
     const liveUpdateTimer = setInterval(() => {
       setLiveRandom({
@@ -308,19 +302,14 @@ const LoadingCircle: React.FC = () => {
         heatmap: Math.random() * 2 - 1,
         donut: Math.random() * 2 - 1
       });
-    }, 1500); // every 1.5 seconds
+    }, 1500);
 
     return () => {
       clearInterval(liveUpdateTimer);
     };
   }, []);
 
-  // Helper for gauge angle
-  function getGaugeAngle(baseAngle: number, adjustDeg: number) {
-    return clamp(baseAngle + adjustDeg, 0, 90);
-  }
-
-  // MODULE ANIMATION CLASSES
+  // Module animation classes
   const animationClasses = [
     styles.animation1,
     styles.animation2,
@@ -333,17 +322,30 @@ const LoadingCircle: React.FC = () => {
 
   // 12 staggered delay classes
   const delayClasses = [
-    styles.delay1, styles.delay2, styles.delay3, styles.delay4,
-    styles.delay5, styles.delay6, styles.delay7, styles.delay8,
-    styles.delay9, styles.delay10, styles.delay11, styles.delay12
+    styles.delay1,
+    styles.delay2,
+    styles.delay3,
+    styles.delay4,
+    styles.delay5,
+    styles.delay6,
+    styles.delay7,
+    styles.delay8,
+    styles.delay9,
+    styles.delay10,
+    styles.delay11,
+    styles.delay12
   ];
 
-  // Render each module with advanced overlay if not loaded
+  // Render each module
   function renderModule(content: JSX.Element, moduleIndex: number) {
     const loaded = moduleLoaded[moduleIndex];
     return (
       <div
-        className={`${styles.module} ${getAnimationClass(moduleIndex)} ${delayClasses[moduleIndex]}`}
+        className={`
+          ${styles.module} 
+          ${getAnimationClass(moduleIndex)} 
+          ${delayClasses[moduleIndex]}
+        `}
       >
         {!loaded && (
           <div className={styles.vmLoadingOverlay}>
@@ -361,6 +363,13 @@ const LoadingCircle: React.FC = () => {
     );
   }
 
+  // Helper for gauge angle
+  function getGaugeAngle(baseAngle: number, adjustDeg: number) {
+    const angle = baseAngle + adjustDeg;
+    return clamp(angle, 0, 90);
+  }
+
+  // Final render
   return (
     <div className={styles.container}>
       <div className={styles.header}>Your Quantum Analysis In Process...</div>
@@ -368,9 +377,10 @@ const LoadingCircle: React.FC = () => {
       {/* Progress Bar */}
       <div className={styles.progressContainer}>
         <div
-          className={`${styles.progressBar} ${
-            progressPercent >= 100 ? styles.progressComplete : ""
-          }`}
+          className={`
+            ${styles.progressBar} 
+            ${progressPercent >= 100 ? styles.progressComplete : ""}
+          `}
           style={{ width: `${progressPercent}%` }}
         >
           <div className={styles.progressGlow}></div>
@@ -379,6 +389,7 @@ const LoadingCircle: React.FC = () => {
 
       <div className={styles.content}>
         <div className={styles.visualization}>
+
           {/* 1) FUNNEL */}
           {renderModule(
             <>
@@ -386,9 +397,7 @@ const LoadingCircle: React.FC = () => {
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Observational Data – Funnel
-                </div>
+                <div className={styles.windowTitle}>Observational Data – Funnel</div>
                 <div className={styles.windowStatus}>Live</div>
               </div>
               <div className={styles.moduleBody}>
@@ -490,9 +499,7 @@ const LoadingCircle: React.FC = () => {
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Future Mapping – Predictive View
-                </div>
+                <div className={styles.windowTitle}>Future Mapping – Predictive View</div>
                 <div className={styles.windowStatus}>Analyzing</div>
               </div>
               <div
@@ -774,7 +781,9 @@ const LoadingCircle: React.FC = () => {
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{ height: `${clamp(55 + liveRandom.bar, 0, 100)}%` }}
+                        style={{
+                          height: `${clamp(55 + liveRandom.bar, 0, 100)}%`
+                        }}
                       ></div>
                       <div className={styles.barLabel}>Cat A</div>
                       <div className={styles.barValue}>58%</div>
@@ -782,7 +791,9 @@ const LoadingCircle: React.FC = () => {
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{ height: `${clamp(80 + liveRandom.bar, 0, 100)}%` }}
+                        style={{
+                          height: `${clamp(80 + liveRandom.bar, 0, 100)}%`
+                        }}
                       ></div>
                       <div className={styles.barLabel}>Cat B</div>
                       <div className={styles.barValue}>82%</div>
@@ -790,7 +801,9 @@ const LoadingCircle: React.FC = () => {
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{ height: `${clamp(68 + liveRandom.bar, 0, 100)}%` }}
+                        style={{
+                          height: `${clamp(68 + liveRandom.bar, 0, 100)}%`
+                        }}
                       ></div>
                       <div className={styles.barLabel}>Cat C</div>
                       <div className={styles.barValue}>71%</div>
@@ -798,7 +811,9 @@ const LoadingCircle: React.FC = () => {
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{ height: `${clamp(90 + liveRandom.bar, 0, 100)}%` }}
+                        style={{
+                          height: `${clamp(90 + liveRandom.bar, 0, 100)}%`
+                        }}
                       ></div>
                       <div className={styles.barLabel}>Cat D</div>
                       <div className={styles.barValue}>93%</div>
@@ -806,7 +821,9 @@ const LoadingCircle: React.FC = () => {
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{ height: `${clamp(77 + liveRandom.bar, 0, 100)}%` }}
+                        style={{
+                          height: `${clamp(77 + liveRandom.bar, 0, 100)}%`
+                        }}
                       ></div>
                       <div className={styles.barLabel}>Cat E</div>
                       <div className={styles.barValue}>79%</div>
@@ -814,7 +831,9 @@ const LoadingCircle: React.FC = () => {
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
-                        style={{ height: `${clamp(42 + liveRandom.bar, 0, 100)}%` }}
+                        style={{
+                          height: `${clamp(42 + liveRandom.bar, 0, 100)}%`
+                        }}
                       ></div>
                       <div className={styles.barLabel}>Cat F</div>
                       <div className={styles.barValue}>46%</div>
@@ -968,21 +987,22 @@ const LoadingCircle: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
-/* ---------------------------------------------------------------------
-   COMBINED LOADER COMPONENT
-   (Renders the OldLoader above the new analysis module with tasteful spacing)
----------------------------------------------------------------------- */
-const CombinedLoader: React.FC = () => {
+/* 
+  ---------------
+  COMBINED LOADER
+  ---------------
+  - Renders OldLoader on top, 
+    then NewAnalysis below with tasteful spacing.
+*/
+export default function CombinedLoader() {
   return (
     <div>
       <OldLoader />
-      {/* Tasteful spacing between loaders */}
+      {/* Some spacing to separate the old loader from new analysis */}
       <div style={{ margin: "60px 0" }} />
-      <LoadingCircle />
+      <NewAnalysis />
     </div>
   );
-};
-
-export default CombinedLoader;
+}
