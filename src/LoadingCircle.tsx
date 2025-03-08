@@ -39,11 +39,6 @@ const LoadingCircle: React.FC = () => {
     "[Data] Gathering final summary metrics..."
   ];
 
-  // A small random function for micro-changes (less jitter)
-  function smallRandom() {
-    return (Math.random() - 0.5) * 2; // -1..+1
-  }
-
   // -------------------------------------------
   //                 REACT STATES
   // -------------------------------------------
@@ -55,9 +50,9 @@ const LoadingCircle: React.FC = () => {
   // For analysis log
   const [logMessages, setLogMessages] = useState<string[]>([]);
 
-  // Keep track of time for the master progress
-  const totalDuration = 10;          // ~10s total
-  const topLoaderDuration = 8;       // progress bar fills in 8s
+  // Keep track of time for the master progress (optimized for ~10s but can run longer)
+  const totalDuration = 10;
+  const topLoaderDuration = 8;
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
 
   // Each module loading state
@@ -65,10 +60,7 @@ const LoadingCircle: React.FC = () => {
     Array(TOTAL_MODULES).fill(false)
   );
 
-  // Each module's hover
-  const [hoveredModuleIndex, setHoveredModuleIndex] = useState<number | null>(null);
-
-  // Ongoing “live” updates: store random seeds for each chart
+  // Ongoing “live” updates: we’ll store random seeds for each chart
   const [liveRandom, setLiveRandom] = useState({
     funnel: 0,
     bar: 0,
@@ -84,22 +76,6 @@ const LoadingCircle: React.FC = () => {
     donut: 0
   });
 
-  // Simple descriptive tooltip text per module
-  const moduleTooltips = [
-    "Funnel module: Observational Data",
-    "Radar module: Multi-Faceted Radar Engine",
-    "Area chart: Future Mapping – Predictive View",
-    "Chord diagram: Comparative Markers – Matrix",
-    "Scatter: Multi-Variable Analytics – Factor Explorer",
-    "Heatmap: Association Mapping – Connection Grid",
-    "Donut: Resource Index – Efficiency Pulse",
-    "Gauge: Robustness Overview – Risk Evaluator",
-    "Bar chart: Performance Tiers – Efficiency Review",
-    "Bubbles: Clustering – Multi-Group Navigator",
-    "Line chart: Forecasting – Trend Projections",
-    "Network: Topology Analysis – Network Synthesis"
-  ];
-
   // -------------------------------------------
   //          PROGRESS BAR + MAIN TIMING
   // -------------------------------------------
@@ -108,28 +84,27 @@ const LoadingCircle: React.FC = () => {
       window.clearInterval(progressIntervalRef.current);
     }
 
-    // Master timer updates every second, but no longer resets at 10s
+    // Master timer updates every second
     const masterTimer = window.setInterval(() => {
       setTimeElapsed((current) => {
-        // If we already reached totalDuration, do not reset back to 0
         if (current >= totalDuration) {
-          return current; // just stay
+          return 0; // loop if surpasses 10s
         }
         return current + 1;
       });
     }, 1000);
 
     // Fill progress bar from 0% to 100% in topLoaderDuration seconds
-   progressIntervalRef.current = window.setInterval(() => {
-  setProgressPercent(() => {
-    // Once we hit 100% we do not revert
-    if (timeElapsed < topLoaderDuration) {
-      return Math.min((timeElapsed / topLoaderDuration) * 100, 100);
-    } else {
-      return 100; // done
-    }
-  });
-}, 300);
+    progressIntervalRef.current = window.setInterval(() => {
+      setProgressPercent((_) => {
+        if (timeElapsed < topLoaderDuration) {
+          const newVal = Math.min((timeElapsed / topLoaderDuration) * 100, 100);
+          return newVal;
+        } else {
+          return 100;
+        }
+      });
+    }, 300);
 
     return () => {
       window.clearInterval(masterTimer);
@@ -164,7 +139,7 @@ const LoadingCircle: React.FC = () => {
       if (!loaded) {
         const startDelay = Math.random() * 4000; // up to 4s
         setTimeout(() => {
-          // Log advanced boot text
+          // Log advanced boot text to mimic real OS messages
           setLogMessages((prev) => [
             ...prev,
             `[VM] Initializing advanced subsystem for environment ${i + 1}...`,
@@ -172,7 +147,7 @@ const LoadingCircle: React.FC = () => {
             `[VM] Starting Virtual Machine environment ${i + 1}...`
           ]);
           // Another short random time to finish boot
-          const finishDelay = 1000 + Math.random() * 1500;
+          const finishDelay = 1000 + Math.random() * 1500; // 1.0s - 2.5s
           setTimeout(() => {
             setLogMessages((prev) => [
               ...prev,
@@ -188,7 +163,8 @@ const LoadingCircle: React.FC = () => {
         }, startDelay);
       }
     });
-  }, [moduleLoaded]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // -------------------------------------------
   //  ADDITIONAL PERIODIC LOGS
@@ -207,28 +183,30 @@ const LoadingCircle: React.FC = () => {
     return () => {
       clearInterval(analysisTimer);
     };
-  }, [baseAnalysisLogLines]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // -------------------------------------------
-  //  CONTINUOUS “LIVE” DATA CHANGES (toned down)
+  //  CONTINUOUS “LIVE” DATA CHANGES
   // -------------------------------------------
   useEffect(() => {
+    // Update random offsets more frequently to simulate real-time data changes
     const liveUpdateTimer = setInterval(() => {
       setLiveRandom({
-        funnel: smallRandom() * 2,    // was 10, now 2 => less movement
-        bar: smallRandom() * 3,       // was 10, now 3
-        gauge: smallRandom() * 1.2,   // was up to 3
-        radar: smallRandom() * 0.8,   // smaller amplitude
-        chord: smallRandom() * 0.8,
-        scatter: smallRandom() * 0.8,
-        bubble: smallRandom() * 0.8,
-        area: smallRandom() * 0.8,
-        line: smallRandom() * 0.8,
-        network: smallRandom() * 0.8,
-        heatmap: smallRandom() * 0.8,
-        donut: smallRandom() * 0.8
+        funnel: Math.random() * 10 - 5,
+        bar: Math.random() * 10 - 5,
+        gauge: Math.random() * 3 - 1.5,
+        radar: Math.random() * 2 - 1,
+        chord: Math.random() * 2 - 1,
+        scatter: Math.random() * 2 - 1,
+        bubble: Math.random() * 2 - 1,
+        area: Math.random() * 2 - 1,
+        line: Math.random() * 2 - 1,
+        network: Math.random() * 2 - 1,
+        heatmap: Math.random() * 2 - 1,
+        donut: Math.random() * 2 - 1
       });
-    }, 2000); // update every 2s for subtle changes
+    }, 1500); // every 1.5 seconds
 
     return () => {
       clearInterval(liveUpdateTimer);
@@ -260,24 +238,13 @@ const LoadingCircle: React.FC = () => {
     styles.delay9, styles.delay10, styles.delay11, styles.delay12
   ];
 
-  // For hover tooltips:
-  function handleMouseEnter(moduleIndex: number) {
-    setHoveredModuleIndex(moduleIndex);
-  }
-  function handleMouseLeave() {
-    setHoveredModuleIndex(null);
-  }
-
   // Render each module with advanced overlay if not loaded
   function renderModule(content: JSX.Element, moduleIndex: number) {
     const loaded = moduleLoaded[moduleIndex];
     return (
       <div
         className={`${styles.module} ${getAnimationClass(moduleIndex)} ${delayClasses[moduleIndex]}`}
-        onMouseEnter={() => handleMouseEnter(moduleIndex)}
-        onMouseLeave={handleMouseLeave}
       >
-        {/* VM loading overlay if not loaded */}
         {!loaded && (
           <div className={styles.vmLoadingOverlay}>
             <div className={styles.vmBootLines}>
@@ -289,19 +256,14 @@ const LoadingCircle: React.FC = () => {
             </div>
           </div>
         )}
-        {/* Actual chart content if loaded */}
         {loaded && content}
-
-        {/* Hover tooltip if this module is hovered */}
-        {hoveredModuleIndex === moduleIndex && (
-          <div className={styles.hoverTooltip}>
-            {moduleTooltips[moduleIndex]}
-          </div>
-        )}
       </div>
     );
   }
 
+  // -------------------------------------------
+  //                 RENDER
+  // -------------------------------------------
   return (
     <div className={styles.container}>
       <div className={styles.header}>Your Quantum Analysis In Process...</div>
@@ -320,6 +282,7 @@ const LoadingCircle: React.FC = () => {
 
       <div className={styles.content}>
         <div className={styles.visualization}>
+
           {/* 1) FUNNEL */}
           {renderModule(
             <>
@@ -327,7 +290,9 @@ const LoadingCircle: React.FC = () => {
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Observational Data – Funnel</div>
+                <div className={styles.windowTitle}>
+                  Observational Data – Funnel
+                </div>
                 <div className={styles.windowStatus}>Live</div>
               </div>
               <div className={styles.moduleBody}>
@@ -385,7 +350,9 @@ const LoadingCircle: React.FC = () => {
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Multi-Faceted Radar – Insight Engine</div>
+                <div className={styles.windowTitle}>
+                  Multi-Faceted Radar – Insight Engine
+                </div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
               <div
@@ -427,7 +394,9 @@ const LoadingCircle: React.FC = () => {
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Future Mapping – Predictive View</div>
+                <div className={styles.windowTitle}>
+                  Future Mapping – Predictive View
+                </div>
                 <div className={styles.windowStatus}>Analyzing</div>
               </div>
               <div
@@ -443,10 +412,17 @@ const LoadingCircle: React.FC = () => {
                   <div className={styles.areaPath}>
                     <div className={styles.area}></div>
                     <div className={styles.areaLine}></div>
-                    {/* Multiple data points */}
-                    {[...Array(11)].map((_, idx) => (
-                      <div key={idx} className={styles.dataPoint}></div>
-                    ))}
+                    <div className={styles.dataPoint}></div>
+                    <div className={styles.dataPoint}></div>
+                    <div className={styles.dataPoint}></div>
+                    <div className={styles.dataPoint}></div>
+                    <div className={styles.dataPoint}></div>
+                    <div className={styles.dataPoint}></div>
+                    <div className={styles.dataPoint}></div>
+                    <div className={styles.dataPoint}></div>
+                    <div className={styles.dataPoint}></div>
+                    <div className={styles.dataPoint}></div>
+                    <div className={styles.dataPoint}></div>
                   </div>
                 </div>
               </div>
@@ -461,7 +437,9 @@ const LoadingCircle: React.FC = () => {
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Comparative Markers – Matrix</div>
+                <div className={styles.windowTitle}>
+                  Comparative Markers – Matrix
+                </div>
                 <div className={styles.windowStatus}>Computing</div>
               </div>
               <div
@@ -490,7 +468,9 @@ const LoadingCircle: React.FC = () => {
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Multi-Variable Analysis – Factor Explorer</div>
+                <div className={styles.windowTitle}>
+                  Multi-Variable Analysis – Factor Explorer
+                </div>
                 <div className={styles.windowStatus}>Active</div>
               </div>
               <div
@@ -526,7 +506,9 @@ const LoadingCircle: React.FC = () => {
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Association Mapping – Connection Grid</div>
+                <div className={styles.windowTitle}>
+                  Association Mapping – Connection Grid
+                </div>
                 <div className={styles.windowStatus}>Calculating</div>
               </div>
               <div
@@ -572,6 +554,7 @@ const LoadingCircle: React.FC = () => {
                     <span>Channel 5</span>
                   </div>
                   <div className={styles.yLabels} style={{ left: "13%" }}>
+                    {/* Renamed to just A, B, C, D, E */}
                     <span>A</span>
                     <span>B</span>
                     <span>C</span>
@@ -591,7 +574,9 @@ const LoadingCircle: React.FC = () => {
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Resource Index – Efficiency Pulse</div>
+                <div className={styles.windowTitle}>
+                  Resource Index – Efficiency Pulse
+                </div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
               <div
@@ -610,6 +595,7 @@ const LoadingCircle: React.FC = () => {
                     <div className={styles.value}>72%</div>
                     <div className={styles.text}>Utilization</div>
                   </div>
+                  {/* Shifted these legend items up so none overflow */}
                   <div className={styles.legendItem} style={{ bottom: "25%" }}>
                     <span></span>Group A
                   </div>
@@ -625,14 +611,16 @@ const LoadingCircle: React.FC = () => {
             6
           )}
 
-          {/* 8) GAUGE (Robustness) */}
+          {/* 8) GAUGE (Robustness Overview) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Robustness Overview – Risk Evaluator</div>
+                <div className={styles.windowTitle}>
+                  Robustness Overview – Risk Evaluator
+                </div>
                 <div className={styles.windowStatus}>Measuring</div>
               </div>
               <div className={styles.moduleBody}>
@@ -644,9 +632,19 @@ const LoadingCircle: React.FC = () => {
                   ></div>
                   <div className={styles.gaugeCover}></div>
                   <div className={styles.gaugeTicks}>
-                    {[...Array(13)].map((_, idx) => (
-                      <div key={idx} className={styles.gaugeTick}></div>
-                    ))}
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
+                    <div className={styles.gaugeTick}></div>
                   </div>
                   <div
                     className={styles.gaugeNeedle}
@@ -668,7 +666,9 @@ const LoadingCircle: React.FC = () => {
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Performance Tiers – Efficiency Review</div>
+                <div className={styles.windowTitle}>
+                  Performance Tiers – Efficiency Review
+                </div>
                 <div className={styles.windowStatus}>Calculating</div>
               </div>
               <div className={styles.moduleBody}>
@@ -739,7 +739,9 @@ const LoadingCircle: React.FC = () => {
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Clustering – Multi-Group Navigator</div>
+                <div className={styles.windowTitle}>
+                  Clustering – Multi-Group Navigator
+                </div>
                 <div className={styles.windowStatus}>Mapping</div>
               </div>
               <div
@@ -774,7 +776,9 @@ const LoadingCircle: React.FC = () => {
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Forecasting – Trend Projections</div>
+                <div className={styles.windowTitle}>
+                  Forecasting – Trend Projections
+                </div>
                 <div className={styles.windowStatus}>Predicting</div>
               </div>
               <div
@@ -790,9 +794,17 @@ const LoadingCircle: React.FC = () => {
                   <div className={styles.lineChart}>
                     <div className={styles.lineBase}></div>
                     <div className={styles.linePath}></div>
-                    {[...Array(10)].map((_, idx) => (
-                      <div key={idx} className={styles.linePoint}></div>
-                    ))}
+                    <div className={styles.linePoint}></div>
+                    <div className={styles.linePoint}></div>
+                    <div className={styles.linePoint}></div>
+                    <div className={styles.linePoint}></div>
+                    <div className={styles.linePoint}></div>
+                    <div className={styles.linePoint}></div>
+                    <div className={styles.linePoint}></div>
+                    <div className={styles.linePoint}></div>
+                    <div className={styles.linePoint}></div>
+                    <div className={styles.linePoint}></div>
+                    <div className={styles.linePoint}></div>
                     <div className={styles.lineFill}></div>
                   </div>
                 </div>
@@ -808,7 +820,9 @@ const LoadingCircle: React.FC = () => {
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Topology Analysis – Network Synthesis</div>
+                <div className={styles.windowTitle}>
+                  Topology Analysis – Network Synthesis
+                </div>
                 <div className={styles.windowStatus}>Running</div>
               </div>
               <div
