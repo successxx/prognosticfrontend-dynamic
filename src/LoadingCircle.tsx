@@ -2,19 +2,18 @@ import React, { useEffect, useState, useRef } from 'react';
 import styles from './LoadingCircle.module.css';
 
 const LoadingIndicator: React.FC = () => {
-  // Generic messages
   const loadingMessages = [
-    "Initializing multi-factor analysis...",
-    "Integrating relevant data points...",
-    "Correlating cross-domain variables...",
-    "Identifying key trends and patterns...",
-    "Refining advanced heuristics...",
-    "Detecting hidden opportunity signals...",
-    "Prioritizing emerging insights...",
-    "Projecting outcomes under constraints...",
-    "Synthesizing multi-layer strategy...",
-    "Finalizing deeper-level forecasts...",
-    "Deep analysis complete—compiling results..."
+    "Initializing advanced analytics...",
+    "Correlating data across multiple streams...",
+    "Detecting hidden patterns and signals...",
+    "Formulating predictive algorithms...",
+    "Refining multi-layer projections...",
+    "Measuring outliers and anomalies...",
+    "Surface-level insights verified...",
+    "Examining deeper structural outcomes...",
+    "Projecting scenario-based results...",
+    "Compiling strategic intelligence...",
+    "Analysis complete—finalizing output..."
   ];
 
   const [messageIndex, setMessageIndex] = useState<number>(0);
@@ -23,7 +22,7 @@ const LoadingIndicator: React.FC = () => {
   const progressIntervalRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Animate progress bar toward current index
+    // Animate progress bar
     if (progressIntervalRef.current) {
       window.clearInterval(progressIntervalRef.current);
     }
@@ -37,11 +36,11 @@ const LoadingIndicator: React.FC = () => {
       });
     }, 100);
 
-    // Rotate messages every 4s
+    // Cycle messages
     const updateMessage = () => {
       setFade(false);
       setTimeout(() => {
-        setMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
+        setMessageIndex((prev) => (prev + 1) % loadingMessages.length);
         setFade(true);
       }, 500);
     };
@@ -57,198 +56,187 @@ const LoadingIndicator: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      {/* Header (no blinking dots) */}
-      <div className={styles.header}>
-        Deep-Dive Data Analysis
-      </div>
+      <div className={styles.header}>Deep-Dive Data Analysis</div>
 
       {/* Progress Bar */}
-      <div className={styles["progress-container"]}>
-        <div
-          className={styles["progress-bar"]}
+      <div className={styles.progressContainer}>
+        <div 
+          className={styles.progressBar} 
           style={{ width: `${progressPercent}%` }}
         >
-          <div className={styles["progress-glow"]}></div>
+          <div className={styles.progressGlow}></div>
         </div>
       </div>
 
       <div className={styles.content}>
         <div className={styles.visualization}>
-          {/* 12 Modules, each with a Mac window bar & a distinct “analysis” chart */}
 
-          {/* 1 */}
-          <div className={`${styles.module} ${styles.flyIn} ${styles.delay0}`}>
+          {/* -- 12 modules, each with Mac window bar, flying in left/right in a less predictable pattern -- */}
+
+          {/* 1) Real-time Overview */}
+          <div className={`${styles.module} ${styles.flyInLeft} ${styles.delay0}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red"></span>
               <span className={styles.trafficLight} data-color="yellow"></span>
               <span className={styles.trafficLight} data-color="green"></span>
-              <div className={styles.windowTitle}>Data Diagnostics</div>
+              <div className={styles.windowTitle}>Real-Time Overview</div>
             </div>
             <div className={styles.moduleBody}>
-              {/* A multi-stage bar chart */}
-              <div className={styles.multiBarChart}>
-                <div className={styles.barSegment} data-seq="1"></div>
-                <div className={styles.barSegment} data-seq="2"></div>
-                <div className={styles.barSegment} data-seq="3"></div>
-                <div className={styles.barSegment} data-seq="4"></div>
+              {/* Multi-series bar chart that randomly shifts heights */}
+              <div className={styles.multiSeriesBars}>
+                <div className={styles.series}>
+                  <div className={styles.seriesBar} data-seq="1"></div>
+                  <div className={styles.seriesBar} data-seq="2"></div>
+                  <div className={styles.seriesBar} data-seq="3"></div>
+                </div>
+                <div className={styles.series}>
+                  <div className={styles.seriesBar} data-seq="4"></div>
+                  <div className={styles.seriesBar} data-seq="5"></div>
+                  <div className={styles.seriesBar} data-seq="6"></div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* 2 */}
-          <div className={`${styles.module} ${styles.flyIn} ${styles.delay1}`}>
+          {/* 2) Opportunity Visualization */}
+          <div className={`${styles.module} ${styles.flyInRight} ${styles.delay1}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red"></span>
               <span className={styles.trafficLight} data-color="yellow"></span>
               <span className={styles.trafficLight} data-color="green"></span>
-              <div className={styles.windowTitle}>Opportunity Insights</div>
+              <div className={styles.windowTitle}>Opportunity Visualization</div>
             </div>
             <div className={styles.moduleBody}>
-              {/* Slightly more complex line chart with random dips/climbs */}
-              <div className={styles.opportunityLineChart}>
-                <div className={styles.linePath}></div>
-                <div className={styles.lineDot} data-loc="0"></div>
-                <div className={styles.lineDot} data-loc="1"></div>
-                <div className={styles.lineDot} data-loc="2"></div>
-                <div className={styles.lineDot} data-loc="3"></div>
-                <div className={styles.lineDot} data-loc="4"></div>
+              {/* Dynamic line chart with random dips/climbs */}
+              <div className={styles.dynamicLineChart}>
+                <div className={styles.lineSegment} data-loc="1"></div>
+                <div className={styles.lineSegment} data-loc="2"></div>
+                <div className={styles.lineSegment} data-loc="3"></div>
               </div>
             </div>
           </div>
 
-          {/* 3 */}
-          <div className={`${styles.module} ${styles.flyIn} ${styles.delay2}`}>
+          {/* 3) Predictive Modeling */}
+          <div className={`${styles.module} ${styles.flyInLeft} ${styles.delay2}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red"></span>
               <span className={styles.trafficLight} data-color="yellow"></span>
               <span className={styles.trafficLight} data-color="green"></span>
-              <div className={styles.windowTitle}>Predictive Forecast</div>
+              <div className={styles.windowTitle}>Predictive Modeling</div>
             </div>
             <div className={styles.moduleBody}>
-              <div className={styles.chartGauge}>
-                <div className={styles.gaugeArc}></div>
-                <div className={styles.gaugeNeedle}></div>
+              {/* A gauge chart with random arcs */}
+              <div className={styles.arcGauge}>
+                <div className={styles.arcBase}></div>
+                <div className={styles.arcIndicator}></div>
               </div>
             </div>
           </div>
 
-          {/* 4 */}
-          <div className={`${styles.module} ${styles.flyIn} ${styles.delay3}`}>
+          {/* 4) Correlation Heatmap */}
+          <div className={`${styles.module} ${styles.flyInRight} ${styles.delay3}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red"></span>
               <span className={styles.trafficLight} data-color="yellow"></span>
               <span className={styles.trafficLight} data-color="green"></span>
-              <div className={styles.windowTitle}>Correlation Mapping</div>
+              <div className={styles.windowTitle}>Correlation Heatmap</div>
             </div>
             <div className={styles.moduleBody}>
-              <div className={styles.radarChart}>
-                <div className={styles.radarScan}></div>
-                <div className={styles.radarDot} data-pos="1"></div>
-                <div className={styles.radarDot} data-pos="2"></div>
-                <div className={styles.radarDot} data-pos="3"></div>
-                <div className={styles.radarDot} data-pos="4"></div>
-              </div>
-            </div>
-          </div>
-
-          {/* 5 */}
-          <div className={`${styles.module} ${styles.flyIn} ${styles.delay4}`}>
-            <div className={styles.macWindowBar}>
-              <span className={styles.trafficLight} data-color="red"></span>
-              <span className={styles.trafficLight} data-color="yellow"></span>
-              <span className={styles.trafficLight} data-color="green"></span>
-              <div className={styles.windowTitle}>Trend Overview</div>
-            </div>
-            <div className={styles.moduleBody}>
-              <div className={styles.trendChord}>
-                <div className={styles.chordRing}></div>
-                <div className={styles.chordLink} data-angle="1"></div>
-                <div className={styles.chordLink} data-angle="2"></div>
-                <div className={styles.chordLink} data-angle="3"></div>
-              </div>
-            </div>
-          </div>
-
-          {/* 6 */}
-          <div className={`${styles.module} ${styles.flyIn} ${styles.delay5}`}>
-            <div className={styles.macWindowBar}>
-              <span className={styles.trafficLight} data-color="red"></span>
-              <span className={styles.trafficLight} data-color="yellow"></span>
-              <span className={styles.trafficLight} data-color="green"></span>
-              <div className={styles.windowTitle}>Behavior Model</div>
-            </div>
-            <div className={styles.moduleBody}>
-              <div className={styles.scatterCloud}>
-                <div className={styles.scatterPoint} data-seed="0"></div>
-                <div className={styles.scatterPoint} data-seed="1"></div>
-                <div className={styles.scatterPoint} data-seed="2"></div>
-                <div className={styles.scatterPoint} data-seed="3"></div>
-                <div className={styles.scatterPoint} data-seed="4"></div>
-              </div>
-            </div>
-          </div>
-
-          {/* 7 */}
-          <div className={`${styles.module} ${styles.flyIn} ${styles.delay6}`}>
-            <div className={styles.macWindowBar}>
-              <span className={styles.trafficLight} data-color="red"></span>
-              <span className={styles.trafficLight} data-color="yellow"></span>
-              <span className={styles.trafficLight} data-color="green"></span>
-              <div className={styles.windowTitle}>Resource Trends</div>
-            </div>
-            <div className={styles.moduleBody}>
-              <div className={styles.complexBars}>
-                <div className={styles.complexBar} data-stagger="1"></div>
-                <div className={styles.complexBar} data-stagger="2"></div>
-                <div className={styles.complexBar} data-stagger="3"></div>
-              </div>
-            </div>
-          </div>
-
-          {/* 8 */}
-          <div className={`${styles.module} ${styles.flyIn} ${styles.delay7}`}>
-            <div className={styles.macWindowBar}>
-              <span className={styles.trafficLight} data-color="red"></span>
-              <span className={styles.trafficLight} data-color="yellow"></span>
-              <span className={styles.trafficLight} data-color="green"></span>
-              <div className={styles.windowTitle}>Anomaly Detection</div>
-            </div>
-            <div className={styles.moduleBody}>
-              <div className={styles.heatmapMatrix}>
-                {Array.from({ length: 9 }).map((_, i) => (
-                  <div key={i} className={styles.heatCell} data-index={i}></div>
+              <div className={styles.heatmapGrid}>
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <div key={i} className={styles.heatBox} data-cell={i}></div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* 9 */}
-          <div className={`${styles.module} ${styles.flyIn} ${styles.delay8}`}>
+          {/* 5) Resource Potential */}
+          <div className={`${styles.module} ${styles.flyInLeft} ${styles.delay4}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red"></span>
               <span className={styles.trafficLight} data-color="yellow"></span>
               <span className={styles.trafficLight} data-color="green"></span>
-              <div className={styles.windowTitle}>Multi-Variable Scan</div>
+              <div className={styles.windowTitle}>Resource Potential</div>
             </div>
             <div className={styles.moduleBody}>
-              <div className={styles.bubbleFlow}>
-                <span className={styles.bubble} data-size="sm"></span>
-                <span className={styles.bubble} data-size="md"></span>
-                <span className={styles.bubble} data-size="lg"></span>
+              {/* A line chart with multiple lines representing resource usage */}
+              <div className={styles.multiLineChart}>
+                <div className={styles.chartLine} data-line="A"></div>
+                <div className={styles.chartLine} data-line="B"></div>
+                <div className={styles.chartLine} data-line="C"></div>
               </div>
             </div>
           </div>
 
-          {/* 10 */}
-          <div className={`${styles.module} ${styles.flyIn} ${styles.delay9}`}>
+          {/* 6) Multi-Variable Patterns */}
+          <div className={`${styles.module} ${styles.flyInRight} ${styles.delay5}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red"></span>
               <span className={styles.trafficLight} data-color="yellow"></span>
               <span className={styles.trafficLight} data-color="green"></span>
-              <div className={styles.windowTitle}>Performance Index</div>
+              <div className={styles.windowTitle}>Multi-Variable Patterns</div>
             </div>
             <div className={styles.moduleBody}>
-              <div className={styles.donutGauge}>
+              {/* A 2D bubble chart with random expansions */}
+              <div className={styles.bubble2D}>
+                <div className={styles.bubbleSpot} data-spot="1"></div>
+                <div className={styles.bubbleSpot} data-spot="2"></div>
+                <div className={styles.bubbleSpot} data-spot="3"></div>
+                <div className={styles.bubbleSpot} data-spot="4"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* 7) Stability Metrics */}
+          <div className={`${styles.module} ${styles.flyInLeft} ${styles.delay6}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Stability Metrics</div>
+            </div>
+            <div className={styles.moduleBody}>
+              {/* A multi-step bar chart that lumps together forming a "histogram" */}
+              <div className={styles.histogramChart}>
+                <div className={styles.histBar} data-index="0"></div>
+                <div className={styles.histBar} data-index="1"></div>
+                <div className={styles.histBar} data-index="2"></div>
+                <div className={styles.histBar} data-index="3"></div>
+                <div className={styles.histBar} data-index="4"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* 8) Comparative Analysis */}
+          <div className={`${styles.module} ${styles.flyInRight} ${styles.delay7}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Comparative Analysis</div>
+            </div>
+            <div className={styles.moduleBody}>
+              {/* A chord-like ring with arcs bridging multiple points */}
+              <div className={styles.chordDiagram}>
+                <div className={styles.chordOuter}></div>
+                <div className={styles.chordArc} data-arc="1"></div>
+                <div className={styles.chordArc} data-arc="2"></div>
+                <div className={styles.chordArc} data-arc="3"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* 9) Forecast Trajectory */}
+          <div className={`${styles.module} ${styles.flyInLeft} ${styles.delay8}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Forecast Trajectory</div>
+            </div>
+            <div className={styles.moduleBody}>
+              {/* Donut chart with random rotating slices */}
+              <div className={styles.rotatingDonut}>
                 <div className={styles.donutSlice} data-slice="1"></div>
                 <div className={styles.donutSlice} data-slice="2"></div>
                 <div className={styles.donutSlice} data-slice="3"></div>
@@ -256,23 +244,44 @@ const LoadingIndicator: React.FC = () => {
             </div>
           </div>
 
-          {/* 11 */}
-          <div className={`${styles.module} ${styles.flyIn} ${styles.delay10}`}>
+          {/* 10) Performance Index */}
+          <div className={`${styles.module} ${styles.flyInRight} ${styles.delay9}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red"></span>
               <span className={styles.trafficLight} data-color="yellow"></span>
               <span className={styles.trafficLight} data-color="green"></span>
-              <div className={styles.windowTitle}>Stability Projection</div>
+              <div className={styles.windowTitle}>Performance Index</div>
             </div>
             <div className={styles.moduleBody}>
-              <div className={styles.sineLine}>
-                <div className={styles.sineWave}></div>
+              {/* A 2-line wave chart to show performance up/down */}
+              <div className={styles.dualWaveChart}>
+                <div className={styles.waveLine} data-wave="a"></div>
+                <div className={styles.waveLine} data-wave="b"></div>
               </div>
             </div>
           </div>
 
-          {/* 12 */}
-          <div className={`${styles.module} ${styles.flyIn} ${styles.delay11}`}>
+          {/* 11) Market Behavior */}
+          <div className={`${styles.module} ${styles.flyInLeft} ${styles.delay10}`}>
+            <div className={styles.macWindowBar}>
+              <span className={styles.trafficLight} data-color="red"></span>
+              <span className={styles.trafficLight} data-color="yellow"></span>
+              <span className={styles.trafficLight} data-color="green"></span>
+              <div className={styles.windowTitle}>Market Behavior</div>
+            </div>
+            <div className={styles.moduleBody}>
+              {/* A specialized bubble cluster chart */}
+              <div className={styles.bubbleCluster}>
+                <div className={styles.clusterNode} data-node="1"></div>
+                <div className={styles.clusterNode} data-node="2"></div>
+                <div className={styles.clusterNode} data-node="3"></div>
+                <div className={styles.clusterNode} data-node="4"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* 12) Pattern Recognition */}
+          <div className={`${styles.module} ${styles.flyInRight} ${styles.delay11}`}>
             <div className={styles.macWindowBar}>
               <span className={styles.trafficLight} data-color="red"></span>
               <span className={styles.trafficLight} data-color="yellow"></span>
@@ -280,20 +289,21 @@ const LoadingIndicator: React.FC = () => {
               <div className={styles.windowTitle}>Pattern Recognition</div>
             </div>
             <div className={styles.moduleBody}>
-              <div className={styles.networkAnalysis}>
-                <div className={styles.netNode} data-node="1"></div>
-                <div className={styles.netNode} data-node="2"></div>
-                <div className={styles.netNode} data-node="3"></div>
-                <div className={styles.netLink} data-link="12"></div>
-                <div className={styles.netLink} data-link="23"></div>
-                <div className={styles.netLink} data-link="13"></div>
+              {/* A dynamic network linking multiple points */}
+              <div className={styles.networkLayout}>
+                <div className={styles.networkPoint} data-pt="1"></div>
+                <div className={styles.networkPoint} data-pt="2"></div>
+                <div className={styles.networkPoint} data-pt="3"></div>
+                <div className={styles.networkLink} data-link="12"></div>
+                <div className={styles.networkLink} data-link="23"></div>
+                <div className={styles.networkLink} data-link="13"></div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Rotating status message */}
-        <div className={`${styles.message} ${fade ? styles['fade-in'] : styles['fade-out']}`}>
+        {/* Rotating messages */}
+        <div className={`${styles.message} ${fade ? styles.fadeIn : styles.fadeOut}`}>
           {loadingMessages[messageIndex]}
         </div>
       </div>
