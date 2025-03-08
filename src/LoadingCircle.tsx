@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
-const LoadingIndicator: React.FC = () => {
+const LoadingCircle: React.FC = () => {
   const loadingMessages = [
     "Initializing cross-domain analysis...",
     "Collecting multi-layer inputs...",
@@ -370,4 +370,4 @@ const LoadingIndicator: React.FC = () => {
   );
 };
 
-export default LoadingIndicator;
+export default LoadingCircle;
