@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+// Note: We remove the default "React" import because TS6133 complains it's unused.
+// We still import the specific hooks from "react" so that TypeScript doesn't fail:
+import { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
 // ---------------------------------------------------------
@@ -40,7 +42,7 @@ function OldLoader() {
       }, 500); // Match the duration of the fade-out
     };
     
-    // Set an interval to change the message every 5 seconds
+    // Change the message every 5 seconds
     const intervalId = setInterval(updateMessage, 5000);
     
     // Clean up on unmount
@@ -48,8 +50,8 @@ function OldLoader() {
   }, [loadingMessages.length]);
   
   return (
-    // Instead of a separate container with .prognostic-ai-demo-results-container,
-    // we just keep these visuals directly in the same container as the advanced modules
+    // Instead of a separate container, we embed these visuals
+    // in the same container as the advanced modules.
     <div className={styles["pai-dr-content"]} style={{ paddingBottom: "40px" }}>
       {/* Futuristic visualization replaces simple spinner */}
       <div className={styles["pai-dr-visualization"]}>
@@ -71,7 +73,7 @@ function OldLoader() {
           <div className={styles["pai-dr-data-point"]}></div>
         </div>
         
-        {/* Connection lines between data points */}
+        {/* Connection lines */}
         <div className={styles["pai-dr-data-connection"]}></div>
         <div className={styles["pai-dr-data-connection"]}></div>
         <div className={styles["pai-dr-data-connection"]}></div>
@@ -84,7 +86,7 @@ function OldLoader() {
         <div className={styles["pai-dr-grid"]}></div>
       </div>
       
-      {/* Flying particles in background */}
+      {/* Flying particles */}
       <div className={styles["pai-dr-particles-container"]}>
         <div className={styles["pai-dr-particle"]}></div>
         <div className={styles["pai-dr-particle"]}></div>
@@ -114,7 +116,7 @@ function OldLoader() {
 // NEW ADVANCED ANALYSIS Implementation
 // ---------------------------------------------------------
 function NewAnalysis() {
-  // Helper to clamp a numeric value between min & max
+  // Helper to clamp numeric value
   function clamp(value: number, min: number, max: number) {
     return Math.max(min, Math.min(max, value));
   }
@@ -166,7 +168,7 @@ function NewAnalysis() {
     Array(TOTAL_MODULES).fill(false)
   );
   
-  // Ongoing “live” updates
+  // Ongoing "live" updates
   const [liveRandom, setLiveRandom] = useState({
     funnel: 0,
     bar: 0,
@@ -216,7 +218,7 @@ function NewAnalysis() {
     };
   }, [timeElapsed, topLoaderDuration, totalDuration]);
   
-  // Rotating messages every 4s
+  // Rotating messages (4s interval)
   useEffect(() => {
     const intervalId = setInterval(() => {
       setFade(false);
@@ -277,7 +279,7 @@ function NewAnalysis() {
     };
   }, [baseAnalysisLogLines]);
   
-  // Continuous “live” data changes
+  // Continuous "live" data changes
   useEffect(() => {
     const liveUpdateTimer = setInterval(() => {
       setLiveRandom({
@@ -301,7 +303,7 @@ function NewAnalysis() {
     };
   }, []);
   
-  // Module animation classes
+  // Animation classes
   const animationClasses = [
     styles.animation1,
     styles.animation2,
@@ -357,13 +359,12 @@ function NewAnalysis() {
   // Calculate gauge angle
   function getGaugeAngle(baseAngle: number, adjustDeg: number) {
     const angle = baseAngle + adjustDeg;
-    // clamp to 0 - 90
     return Math.max(0, Math.min(angle, 90));
   }
   
   return (
     <>
-      {/* We include the new analysis container here */}
+      {/* Container header */}
       <div className={styles.header}>Your Quantum Analysis In Process...</div>
       
       {/* Progress Bar */}
@@ -381,7 +382,7 @@ function NewAnalysis() {
       
       <div className={styles.content}>
         <div className={styles.visualization}>
-          {/* Render 12 modules */}
+          {/* 1) FUNNEL */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -432,7 +433,8 @@ function NewAnalysis() {
             </>,
             0
           )}
-          
+
+          {/* 2) RADAR */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -475,7 +477,8 @@ function NewAnalysis() {
             </>,
             1
           )}
-          
+
+          {/* 3) AREA CHART */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -517,7 +520,8 @@ function NewAnalysis() {
             </>,
             2
           )}
-          
+
+          {/* 4) CHORD */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -547,7 +551,8 @@ function NewAnalysis() {
             </>,
             3
           )}
-          
+
+          {/* 5) SCATTER */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -584,7 +589,8 @@ function NewAnalysis() {
             </>,
             4
           )}
-          
+
+          {/* 6) HEATMAP */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -650,7 +656,8 @@ function NewAnalysis() {
             </>,
             5
           )}
-          
+
+          {/* 7) DONUT */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -692,7 +699,8 @@ function NewAnalysis() {
             </>,
             6
           )}
-          
+
+          {/* 8) GAUGE */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -739,7 +747,8 @@ function NewAnalysis() {
             </>,
             7
           )}
-          
+
+          {/* 9) BAR CHART */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -823,7 +832,8 @@ function NewAnalysis() {
             </>,
             8
           )}
-          
+
+          {/* 10) BUBBLE */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -859,7 +869,8 @@ function NewAnalysis() {
             </>,
             9
           )}
-          
+
+          {/* 11) LINE */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -902,7 +913,8 @@ function NewAnalysis() {
             </>,
             10
           )}
-          
+
+          {/* 12) NETWORK */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -975,10 +987,9 @@ export default function CombinedLoader() {
         Render the old spinner at the very top (no black header),
         then new analysis below it. 
       */}
-      
       <OldLoader />
       
-      {/* Subtle separation - optional */}
+      {/* Subtle optional spacing */}
       <div style={{ marginTop: "20px" }} />
       
       <NewAnalysis />
