@@ -99,7 +99,8 @@
 ********************************************************/
 .module {
   position: absolute;
-  width: 42%;  /* wider rectangles */
+  /* FIX: reduce width so that 3 columns fit within 100% */
+  width: 33.3333%;
   height: 20%; 
   background: #fff;
   border-radius: 8px;
@@ -109,22 +110,22 @@
   opacity: 0; /* hidden until animation completes */
 }
 
-/* 3 columns, 4 rows. Adjust top offsets as needed. */
-.module:nth-of-type(1)  { top: 0%;   left: 0%;   }
-.module:nth-of-type(2)  { top: 0%;   left: 50%;  }
-.module:nth-of-type(3)  { top: 0%;   left: 100%; }
+/* Adjust the columns so all modules fit within 100% */
+.module:nth-of-type(1)  { top: 0%;   left: 0%;         }
+.module:nth-of-type(2)  { top: 0%;   left: 33.3333%;   }
+.module:nth-of-type(3)  { top: 0%;   left: 66.6667%;   }
 
-.module:nth-of-type(4)  { top: 25%;  left: 0%;   }
-.module:nth-of-type(5)  { top: 25%;  left: 50%;  }
-.module:nth-of-type(6)  { top: 25%;  left: 100%; }
+.module:nth-of-type(4)  { top: 25%;  left: 0%;         }
+.module:nth-of-type(5)  { top: 25%;  left: 33.3333%;   }
+.module:nth-of-type(6)  { top: 25%;  left: 66.6667%;   }
 
-.module:nth-of-type(7)  { top: 50%;  left: 0%;   }
-.module:nth-of-type(8)  { top: 50%;  left: 50%;  }
-.module:nth-of-type(9)  { top: 50%;  left: 100%; }
+.module:nth-of-type(7)  { top: 50%;  left: 0%;         }
+.module:nth-of-type(8)  { top: 50%;  left: 33.3333%;   }
+.module:nth-of-type(9)  { top: 50%;  left: 66.6667%;   }
 
-.module:nth-of-type(10) { top: 75%;  left: 0%;   }
-.module:nth-of-type(11) { top: 75%;  left: 50%;  }
-.module:nth-of-type(12) { top: 75%;  left: 100%; }
+.module:nth-of-type(10) { top: 75%;  left: 0%;         }
+.module:nth-of-type(11) { top: 75%;  left: 33.3333%;   }
+.module:nth-of-type(12) { top: 75%;  left: 66.6667%;   }
 
 /********************************************************
   RANDOM FLY-IN ANIMATIONS
@@ -242,7 +243,6 @@
 
 /********************************************************
   1) REAL-TIME FUNNEL
-     - More "live" pattern (multi-step keyframe)
 ********************************************************/
 .funnelContainer {
   position: relative;
@@ -263,7 +263,6 @@
   80%  { height: 90%; }
   100% { height: 50%; }
 }
-/* each bar picks 1 of these multi-step animations */
 .funnelBar {
   position: absolute;
   bottom: 0;
@@ -282,7 +281,6 @@
 
 /********************************************************
   2) OPPORTUNITY RADAR
-     - Each vertex changes individually
 ********************************************************/
 @keyframes radarVertexPulse {
   0%   { clip-path: polygon(50% 0%, 80% 30%, 70% 70%, 20% 80%, 10% 40%); }
@@ -297,7 +295,6 @@
 
 /********************************************************
   3) PREDICTIVE AREAS
-     - each layer with multi-step vertical shifts
 ********************************************************/
 @keyframes predictive1 {
   0%   { transform: translateY(0);   }
@@ -330,7 +327,6 @@
 
 /********************************************************
   4) COMPARATIVE CHORD
-     - arcs vary angles
 ********************************************************/
 @keyframes chordArcShift {
   0%   { transform: rotate(30deg)  scaleX(1.2); }
@@ -345,7 +341,6 @@
 
 /********************************************************
   5) MULTI-VARIABLE SCATTER
-     - random drift in multiple directions
 ********************************************************/
 @keyframes scatterRand1 {
   0%   { transform: translate(0,0); }
@@ -376,7 +371,6 @@
 
 /********************************************************
   6) CORRELATION HEATMAP
-     - random color transitions
 ********************************************************/
 @keyframes heatRandom {
   0%   { background-color: #d4cce3; }
@@ -417,7 +411,6 @@
 
 /********************************************************
   8) STABILITY GAUGE
-     - more random needle motion
 ********************************************************/
 @keyframes gaugeRandom {
   0%   { transform: rotate(90deg);  }
@@ -432,7 +425,6 @@
 
 /********************************************************
   9) PERFORMANCE STACKS
-     - varied bar expansions
 ********************************************************/
 @keyframes perfVar1 {
   0%   { height: 20%; }
@@ -545,7 +537,6 @@
   .module {
     /* Possibly reduce sizes/positions for narrower screens if you want */
   }
-  /* auto-wrap? optional */
 }
 @media (max-width: 768px) {
   /* Stack modules */
