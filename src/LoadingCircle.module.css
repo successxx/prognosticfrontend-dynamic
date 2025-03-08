@@ -1,3 +1,9 @@
+
+// Note: We remove the default "React" import because TS6133 complains it's unused.
+// We still import the specific hooks from "react" so that TypeScript doesn't fail:
+import { useEffect, useState, useRef } from "react";
+import styles from "./LoadingCircle.module.css";
+
 // ---------------------------------------------------------
 // OLD LOADER (Spinner) Implementation
 // ---------------------------------------------------------
