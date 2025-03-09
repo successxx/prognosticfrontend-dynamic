@@ -31,7 +31,7 @@ function OldLoader() {
   
   // Check if the message includes "Success!" to apply special styling
   const isSuccess = loadingMessages[messageIndex].includes("Success!");
-  
+
   useEffect(() => {
     const updateMessage = () => {
       setFade(false); // Start fade-out
@@ -41,14 +41,14 @@ function OldLoader() {
         setFade(true); // Trigger fade-in
       }, 500); // Match the duration of the fade-out
     };
-    
+
     // Change the message every 5 seconds
     const intervalId = setInterval(updateMessage, 5000);
-    
+
     // Clean up on unmount
     return () => clearInterval(intervalId);
   }, [loadingMessages.length]);
-  
+
   return (
     // Instead of a separate container, we embed these visuals
     // in the same container as the advanced modules.
@@ -57,12 +57,12 @@ function OldLoader() {
       <div className={styles["pai-dr-visualization"]}>
         {/* Core center circle */}
         <div className={styles["pai-dr-core"]}></div>
-        
+
         {/* Rotating rings */}
         <div className={styles["pai-dr-ring-inner"]}></div>
         <div className={styles["pai-dr-ring-middle"]}></div>
         <div className={styles["pai-dr-ring-outer"]}></div>
-        
+
         {/* Data points that appear and disappear */}
         <div className={styles["pai-dr-data-points"]}>
           <div className={styles["pai-dr-data-point"]}></div>
@@ -72,20 +72,20 @@ function OldLoader() {
           <div className={styles["pai-dr-data-point"]}></div>
           <div className={styles["pai-dr-data-point"]}></div>
         </div>
-        
+
         {/* Connection lines */}
         <div className={styles["pai-dr-data-connection"]}></div>
         <div className={styles["pai-dr-data-connection"]}></div>
         <div className={styles["pai-dr-data-connection"]}></div>
         <div className={styles["pai-dr-data-connection"]}></div>
-        
+
         {/* Scan effect */}
         <div className={styles["pai-dr-scan"]}></div>
-        
+
         {/* Background grid */}
         <div className={styles["pai-dr-grid"]}></div>
       </div>
-      
+
       {/* Flying particles */}
       <div className={styles["pai-dr-particles-container"]}>
         <div className={styles["pai-dr-particle"]}></div>
@@ -97,9 +97,9 @@ function OldLoader() {
         <div className={styles["pai-dr-particle"]}></div>
         <div className={styles["pai-dr-particle"]}></div>
       </div>
-      
+
       {/* Message with fade transition */}
-      <div 
+      <div
         className={`
           ${styles["pai-dr-message"]} 
           ${fade ? styles["fade-in"] : styles["fade-out"]} 
@@ -120,24 +120,29 @@ function NewAnalysis() {
   function clamp(value: number, min: number, max: number) {
     return Math.max(min, Math.min(max, value));
   }
-  
+
   const TOTAL_MODULES = 12;
-  
-  // Rotating messages
+
+  // ** Replace the old messages with the new array you specified: **
   const loadingMessages = [
-    "Initializing cross-domain analysis...",
-    "Collecting multi-layer inputs...",
-    "Identifying key data clusters...",
-    "Evaluating potential anomalies...",
-    "Aggregating deep indicators...",
-    "Refining multi-dimensional signals...",
-    "Applying heuristic predictions...",
-    "Synthesizing correlation patterns...",
-    "Pinpointing emergent insights...",
-    "Compiling final intelligence...",
-    "Analysis complete—preparing output..."
+    "Thinking...",
+    "Looking at your site...",
+    "Finding immediate opportunities...",
+    "Tailoring value...",
+    "Identifying your target audience...",
+    "Split-testing potential setbacks...",
+    "Analyzing test results...",
+    "Refining for immediate impact...",
+    "Running new A/B tests based on synthesized results...",
+    "Crafting your blueprint for maximum success...",
+    "Refining...",
+    "Success! Processing...",
+    "Success! Finalizing...",
+    "Success! Integrating...",
+    "Success! Validating...",
+    "Success! Completing..."
   ];
-  
+
   // Base log lines
   const baseAnalysisLogLines = [
     "[Data] Real-time aggregator is standing by...",
@@ -150,24 +155,24 @@ function NewAnalysis() {
     "[System] All sub-processes stable",
     "[Data] Gathering final summary metrics..."
   ];
-  
+
   // React states
   const [messageIndex, setMessageIndex] = useState<number>(0);
   const [fade, setFade] = useState<boolean>(true);
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const progressIntervalRef = useRef<number | null>(null);
-  
+
   const [logMessages, setLogMessages] = useState<string[]>([]);
-  
+
   const totalDuration = 10;
   const topLoaderDuration = 8;
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
-  
+
   // Each module loading state
   const [moduleLoaded, setModuleLoaded] = useState<boolean[]>(
     Array(TOTAL_MODULES).fill(false)
   );
-  
+
   // Ongoing "live" updates
   const [liveRandom, setLiveRandom] = useState({
     funnel: 0,
@@ -183,13 +188,17 @@ function NewAnalysis() {
     heatmap: 0,
     donut: 0
   });
-  
+
+  // **REMOVED** the line below:
+  // <div className={styles.header}>Your Quantum Analysis Is In Process...</div>
+  // because we are using the rotating messages instead.
+
   // Master progress bar + timing
   useEffect(() => {
     if (progressIntervalRef.current) {
       window.clearInterval(progressIntervalRef.current);
     }
-    
+
     const masterTimer = window.setInterval(() => {
       setTimeElapsed((current) => {
         if (current >= totalDuration) {
@@ -198,7 +207,7 @@ function NewAnalysis() {
         return current + 1;
       });
     }, 1000);
-    
+
     progressIntervalRef.current = window.setInterval(() => {
       setProgressPercent(() => {
         if (timeElapsed < topLoaderDuration) {
@@ -209,7 +218,7 @@ function NewAnalysis() {
         }
       });
     }, 300);
-    
+
     return () => {
       window.clearInterval(masterTimer);
       if (progressIntervalRef.current) {
@@ -217,7 +226,7 @@ function NewAnalysis() {
       }
     };
   }, [timeElapsed, topLoaderDuration, totalDuration]);
-  
+
   // Rotating messages (4s interval)
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -227,12 +236,12 @@ function NewAnalysis() {
         setFade(true);
       }, 300);
     }, 4000);
-    
+
     return () => {
       clearInterval(intervalId);
     };
   }, [loadingMessages.length]);
-  
+
   // VM startup logic
   useEffect(() => {
     moduleLoaded.forEach((loaded, i) => {
@@ -261,7 +270,7 @@ function NewAnalysis() {
       }
     });
   }, [moduleLoaded]);
-  
+
   // Additional periodic logs
   useEffect(() => {
     let currentIndex = 0;
@@ -273,12 +282,12 @@ function NewAnalysis() {
         clearInterval(analysisTimer);
       }
     }, 2000);
-    
+
     return () => {
       clearInterval(analysisTimer);
     };
   }, [baseAnalysisLogLines]);
-  
+
   // Continuous "live" data changes
   useEffect(() => {
     const liveUpdateTimer = setInterval(() => {
@@ -297,12 +306,12 @@ function NewAnalysis() {
         donut: Math.random() * 2 - 1
       });
     }, 1500);
-    
+
     return () => {
       clearInterval(liveUpdateTimer);
     };
   }, []);
-  
+
   // Animation classes
   const animationClasses = [
     styles.animation1,
@@ -313,7 +322,7 @@ function NewAnalysis() {
   function getAnimationClass(i: number) {
     return animationClasses[i % animationClasses.length];
   }
-  
+
   // 12 staggered delay classes
   const delayClasses = [
     styles.delay1,
@@ -329,7 +338,7 @@ function NewAnalysis() {
     styles.delay11,
     styles.delay12
   ];
-  
+
   function renderModule(content: JSX.Element, moduleIndex: number) {
     const loaded = moduleLoaded[moduleIndex];
     return (
@@ -355,19 +364,16 @@ function NewAnalysis() {
       </div>
     );
   }
-  
+
   // Calculate gauge angle
   function getGaugeAngle(baseAngle: number, adjustDeg: number) {
     const angle = baseAngle + adjustDeg;
     return Math.max(0, Math.min(angle, 90));
   }
-  
+
   return (
     <>
-      {/* Container header */}
-      <div className={styles.header}>Your Quantum Analysis Is In Process...</div>
-      
-      {/* Progress Bar */}
+      {/* Progress Bar now at the top of this container */}
       <div className={styles.progressContainer}>
         <div
           className={`
@@ -379,9 +385,10 @@ function NewAnalysis() {
           <div className={styles.progressGlow}></div>
         </div>
       </div>
-      
+
       <div className={styles.content}>
         <div className={styles.visualization}>
+
           {/* 1) FUNNEL */}
           {renderModule(
             <>
@@ -958,12 +965,12 @@ function NewAnalysis() {
             11
           )}
         </div>
-        
+
         {/* Single-line rotating message */}
         <div className={`${styles.message} ${fade ? styles.fadeIn : styles.fadeOut}`}>
           {loadingMessages[messageIndex]}
         </div>
-        
+
         {/* Live log area */}
         <div className={styles.analysisLog}>
           {logMessages.map((line, idx) => (
@@ -984,15 +991,16 @@ export default function CombinedLoader() {
   return (
     <div className={styles.container}>
       {/* 
-        Render the old spinner at the very top (no black header),
-        then new analysis below it. 
+        We now render the NewAnalysis (purple loader + modules) FIRST 
+        so that its progress bar is at the top, above the spinner 
       */}
-      <OldLoader />
-      
+      <NewAnalysis />
+
       {/* Subtle optional spacing */}
       <div style={{ marginTop: "20px" }} />
-      
-      <NewAnalysis />
+
+      {/* Old spinner below */}
+      <OldLoader />
     </div>
   );
 }
