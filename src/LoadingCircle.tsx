@@ -1365,7 +1365,7 @@ setLiveRandom(newValues);
           alignSelf: 'center',
           marginTop: '5px'
         }}>
-          {new Date().toLocaleTimeString()} scan - opportunity level: RARE.
+          System running optimally - Last checked: {new Date().toLocaleTimeString()}
         </div>
       </div>
     </div>
