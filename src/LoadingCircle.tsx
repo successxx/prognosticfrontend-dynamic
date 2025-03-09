@@ -1,7 +1,5 @@
-// CombinedLoader.tsx
-// ---------------------------------------------------------
-// We remove the default "React" import because TypeScript
-// sometimes complains if it’s unused. We still import hooks:
+// Note: We remove the default "React" import because TS6133 complains it's unused.
+// We still import the specific hooks from "react" so that TypeScript doesn't fail:
 import { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
@@ -52,6 +50,8 @@ function OldLoader() {
   }, [loadingMessages.length]);
   
   return (
+    // Instead of a separate container, we embed these visuals
+    // in the same container as the advanced modules.
     <div className={styles["pai-dr-content"]} style={{ paddingBottom: "40px" }}>
       {/* Futuristic visualization replaces simple spinner */}
       <div className={styles["pai-dr-visualization"]}>
@@ -401,9 +401,7 @@ function NewAnalysis() {
                     <span className={styles.value}>15,120</span>
                     <div
                       className={styles.bar}
-                      style={{
-                        width: `${clamp(100 + liveRandom.funnel, 0, 100)}%`
-                      }}
+                      style={{ width: `${clamp(100 + liveRandom.funnel, 0, 100)}%` }}
                     ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "35%" }}>
@@ -411,9 +409,7 @@ function NewAnalysis() {
                     <span className={styles.value}>9,304</span>
                     <div
                       className={styles.bar}
-                      style={{
-                        width: `${clamp(85 + liveRandom.funnel, 0, 100)}%`
-                      }}
+                      style={{ width: `${clamp(85 + liveRandom.funnel, 0, 100)}%` }}
                     ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "60%" }}>
@@ -421,9 +417,7 @@ function NewAnalysis() {
                     <span className={styles.value}>4,189</span>
                     <div
                       className={styles.bar}
-                      style={{
-                        width: `${clamp(65 + liveRandom.funnel, 0, 100)}%`
-                      }}
+                      style={{ width: `${clamp(65 + liveRandom.funnel, 0, 100)}%` }}
                     ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "85%" }}>
@@ -431,9 +425,7 @@ function NewAnalysis() {
                     <span className={styles.value}>2,532</span>
                     <div
                       className={styles.bar}
-                      style={{
-                        width: `${clamp(40 + liveRandom.funnel, 0, 100)}%`
-                      }}
+                      style={{ width: `${clamp(40 + liveRandom.funnel, 0, 100)}%` }}
                     ></div>
                   </div>
                 </div>
@@ -993,7 +985,7 @@ export default function CombinedLoader() {
     <div className={styles.container}>
       {/* 
         Render the old spinner at the very top (no black header),
-        then new analysis below it.
+        then new analysis below it. 
       */}
       <OldLoader />
       
