@@ -1,32 +1,16 @@
-/* Global smooth transitions on most properties */
+/* STEP 3: Global transitions for smoothness */
 * {
   transition-property: transform, width, height, opacity, background-color, color;
   transition-duration: 0.3s;
   transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
-/* Optional override for dynamic elements to disable transitions if needed */
-.dynamicElement {
+/* Allow disabling transitions for certain continuous animations if needed */
+.continuous-animation {
   transition: none !important;
-  animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1) !important;
 }
 
-/* Additional Keyframes for continuous motion and new enhancements */
-@keyframes gradientFlow {
-  0% { background-position: 0% 0%; }
-  50% { background-position: 100% 100%; }
-  100% { background-position: 0% 0%; }
-}
-@keyframes needleOscillate {
-  0%   { transform: translate(-50%, -100%) rotate(105deg); }
-  20%  { transform: translate(-50%, -100%) rotate(115deg); }
-  40%  { transform: translate(-50%, -100%) rotate(112deg); }
-  60%  { transform: translate(-50%, -100%) rotate(116deg); }
-  80%  { transform: translate(-50%, -100%) rotate(108deg); }
-  100% { transform: translate(-50%, -100%) rotate(105deg); }
-}
-
-/* Keep existing animations (continuousRotate, radarSweep, subtlePulse, liquidWave, flowParticle, etc.) */
+/* Additional Keyframes for continuous motion */
 @keyframes continuousRotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -47,6 +31,28 @@
   75% { transform: translateX(-1px) translateY(1px); }
   100% { transform: translateX(0px) translateY(0px); }
 }
+
+/* Data flow particles */
+.dataFlowOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+  overflow: hidden;
+}
+.dataFlowParticle {
+  position: absolute;
+  background-color: rgba(149,82,211,0.5);
+  border-radius: 50%;
+  filter: blur(1px);
+  opacity: 0;
+  animation-name: flowParticle;
+  animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  animation-iteration-count: infinite;
+}
 @keyframes flowParticle {
   0% {
     transform: translate(0, 0) scale(0.3);
@@ -64,11 +70,28 @@
   }
 }
 
-/* Old gaugePulse etc. remain for completeness */
+/* Keep old gaugePulse keyframes so "nothing lost" */
 @keyframes gaugePulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.03); }
   100% { transform: scale(1); }
+}
+
+@keyframes dataFlow {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0; transform: scale(0.5); }
+}
+
+.dataDot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle at center, rgba(149,82,211,0.9), rgba(188,115,237,0.7));
+  border-radius: 50%;
+  z-index: 999;
+  box-shadow: 0 0 10px rgba(149,82,211,0.6);
+  pointer-events: none;
 }
 
 /* -------------------------------------------------------------------
@@ -93,6 +116,7 @@
   margin-bottom: 40px;
 }
 
+/* Core circle */
 .pai-dr-core {
   position: absolute;
   top: 50%;
@@ -119,10 +143,6 @@
   border-radius: 50%;
   animation: pai-dr-spin-inner 3s linear infinite;
 }
-@keyframes pai-dr-spin-inner {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
 .pai-dr-ring-middle {
   position: absolute;
   top: 50%;
@@ -134,10 +154,6 @@
   border-left: 1px solid #252525;
   border-radius: 50%;
   animation: pai-dr-spin-middle 7s linear infinite;
-}
-@keyframes pai-dr-spin-middle {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(-360deg); }
 }
 .pai-dr-ring-outer {
   position: absolute;
@@ -151,12 +167,20 @@
   border-radius: 50%;
   animation: pai-dr-spin-outer 15s linear infinite;
 }
+@keyframes pai-dr-spin-inner {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@keyframes pai-dr-spin-middle {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(-360deg); }
+}
 @keyframes pai-dr-spin-outer {
   0% { transform: translate(-50%, -50%) rotate(0deg); }
   100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* Data points */
+/* Data points that appear and disappear */
 .pai-dr-data-points {
   position: absolute;
   top: 0;
@@ -172,13 +196,6 @@
   background-color: #252525;
   border-radius: 50%;
   opacity: 0;
-}
-@keyframes data-point-pulse {
-  0%, 100% { opacity: 0; transform: scale(0); }
-  20% { opacity: 0.2; transform: scale(1); }
-  40% { opacity: 0.8; transform: scale(2); }
-  60% { opacity: 0.4; transform: scale(1.5); }
-  80% { opacity: 0.1; transform: scale(1); }
 }
 .pai-dr-data-point:nth-child(1) {
   top: 30%;
@@ -216,6 +233,13 @@
   animation: data-point-pulse 6s ease-in-out infinite;
   animation-delay: 3.5s;
 }
+@keyframes data-point-pulse {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  20% { opacity: 0.2; transform: scale(1); }
+  40% { opacity: 0.8; transform: scale(2); }
+  60% { opacity: 0.4; transform: scale(1.5); }
+  80% { opacity: 0.1; transform: scale(1); }
+}
 
 /* Connection lines */
 .pai-dr-data-connection {
@@ -224,10 +248,6 @@
   transform-origin: 0 0;
   z-index: 3;
   opacity: 0;
-}
-@keyframes connection-appear {
-  0%, 100% { opacity: 0; }
-  30%, 70% { opacity: 0.7; }
 }
 .pai-dr-data-connection:nth-child(1) {
   top: 32%;
@@ -265,8 +285,12 @@
   animation: connection-appear 7s ease-in-out infinite;
   animation-delay: 2.3s;
 }
+@keyframes connection-appear {
+  0%, 100% { opacity: 0; }
+  30%, 70% { opacity: 0.7; }
+}
 
-/* Scan effect */
+/* Glowing scan effect */
 .pai-dr-scan {
   position: absolute;
   top: 50%;
@@ -284,7 +308,7 @@
   50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.7; }
 }
 
-/* Background grid (old loader) */
+/* Background grid */
 .pai-dr-grid {
   position: absolute;
   top: 0;
@@ -311,18 +335,6 @@
   height: 2px;
   background-color: rgba(37, 37, 37, 0.2);
   border-radius: 50%;
-}
-@keyframes particle-move {
-  0% {
-    transform: translateX(0) translateY(0);
-    opacity: 0;
-  }
-  10% { opacity: 0.4; }
-  90% { opacity: 0.4; }
-  100% {
-    transform: translateX(105vw) translateY(20px);
-    opacity: 0;
-  }
 }
 .pai-dr-particle:nth-child(1) {
   top: 20%;
@@ -364,6 +376,18 @@
   left: -5%;
   animation: particle-move 6s linear infinite 1.5s;
 }
+@keyframes particle-move {
+  0% {
+    transform: translateX(0) translateY(0);
+    opacity: 0;
+  }
+  10% { opacity: 0.4; }
+  90% { opacity: 0.4; }
+  100% {
+    transform: translateX(105vw) translateY(20px);
+    opacity: 0;
+  }
+}
 
 /* Message display */
 .pai-dr-message {
@@ -392,7 +416,7 @@
 }
 
 /* -------------------------------------------------------------------
-   NEW ADVANCED ANALYSIS MODULE STYLES
+   NEW ADVANCED ANALYSIS MODULE STYLES (COMBINED FINAL)
    ------------------------------------------------------------------- */
 .container {
   font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont,
@@ -505,6 +529,19 @@
   transform-origin: center center;
 }
 
+.module:nth-of-type(1) { grid-column: 1; grid-row: 1; }
+.module:nth-of-type(2) { grid-column: 2; grid-row: 1; }
+.module:nth-of-type(3) { grid-column: 3; grid-row: 1; }
+.module:nth-of-type(4) { grid-column: 1; grid-row: 2; }
+.module:nth-of-type(5) { grid-column: 2; grid-row: 2; }
+.module:nth-of-type(6) { grid-column: 3; grid-row: 2; }
+.module:nth-of-type(7) { grid-column: 1; grid-row: 3; }
+.module:nth-of-type(8) { grid-column: 2; grid-row: 3; }
+.module:nth-of-type(9) { grid-column: 3; grid-row: 3; }
+.module:nth-of-type(10) { grid-column: 1; grid-row: 4; }
+.module:nth-of-type(11) { grid-column: 2; grid-row: 4; }
+.module:nth-of-type(12) { grid-column: 3; grid-row: 4; }
+
 @keyframes flyInWithBounce {
   0% { transform: translateY(-300px) scale(0.9); opacity: 0; }
   70% { transform: translateY(15px) scale(1.02); opacity: 0.9; }
@@ -616,9 +653,9 @@
   inset: 0;
   background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 50%);
 }
-.trafficLight[data-color="red"]    { background-color: #ff5f56; box-shadow: 0 0 1px rgba(0,0,0,0.2); }
-.trafficLight[data-color="yellow"] { background-color: #ffbd2e; box-shadow: 0 0 1px rgba(0,0,0,0.2); }
-.trafficLight[data-color="green"]  { background-color: #27c93f; box-shadow: 0 0 1px rgba(0,0,0,0.2); }
+.trafficLight[data-color="red"]    { background-color: #ff5f56; box-shadow: 0 0 1px rgba(0,0,0,0.2);}
+.trafficLight[data-color="yellow"] { background-color: #ffbd2e; box-shadow: 0 0 1px rgba(0,0,0,0.2);}
+.trafficLight[data-color="green"]  { background-color: #27c93f; box-shadow: 0 0 1px rgba(0,0,0,0.2);}
 .windowTitle {
   font-size: 11px;
   font-weight: 600;
