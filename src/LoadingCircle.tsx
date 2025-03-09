@@ -7,6 +7,24 @@ import styles from "./LoadingCircle.module.css";
 // OLD LOADER (Spinner) Implementation
 // ---------------------------------------------------------
 function OldLoader() {
+  const loadingMessages = [
+    "Thinking...",
+    "Looking at your site...",
+    "Finding immediate opportunities...",
+    "Tailoring value...",
+    "Identifying your target audience...",
+    "Split-testing potential setbacks...",
+    "Analyzing test results...",
+    "Refining for immediate impact...",
+    "Running new A/B tests based on synthesized results...",
+    "Crafting your blueprint for maximum success...",
+    "Refining...",
+    "Success! Processing...",
+    "Success! Finalizing...",
+    "Success! Integrating...",
+    "Success! Validating...",
+    "Success! Completing..."
+  ];
   
   const [messageIndex, setMessageIndex] = useState<number>(0);
   const [fade, setFade] = useState<boolean>(true); // True for fade-in, false for fade-out
