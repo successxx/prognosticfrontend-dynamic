@@ -329,21 +329,20 @@ function NewAnalysis() {
       };
     }, 2000);
 
-    // Smooth interpolation ~60fps
-    const animationTimer = setInterval(() => {
-// Fixed section (around line 1249)
-const interpolationFactor = 0.05; // 5% each tick
-const newValues = {} as typeof liveRandom;
+// Smooth interpolation ~60fps
+const animationTimer = setInterval(() => {
+  const interpolationFactor = 0.05; // 5% each tick
+  const newValues = {} as typeof liveRandom;
 
-Object.keys(currentValues).forEach((key) => {
-  const k = key as keyof typeof liveRandom;
-  const diff = targetValues[k] - currentValues[k];
-  newValues[k] = currentValues[k] + (diff * interpolationFactor);
-});
+  Object.keys(currentValues).forEach((key) => {
+    const k = key as keyof typeof liveRandom;
+    const diff = targetValues[k] - currentValues[k];
+    newValues[k] = currentValues[k] + (diff * interpolationFactor);
+  });
 
-currentValues = newValues;
-setLiveRandom(newValues);
-    });  // Missing closing bracket for the animationTimer function
+  currentValues = newValues;
+  setLiveRandom(newValues);
+}, 16);  // ~60fps// Missing closing bracket for the animationTimer function
 
     return () => {
       clearInterval(targetUpdateTimer);
