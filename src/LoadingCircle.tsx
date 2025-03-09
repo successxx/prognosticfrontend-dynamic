@@ -331,8 +331,9 @@ function NewAnalysis() {
 
     // Smooth interpolation ~60fps
     const animationTimer = setInterval(() => {
-      const interpolationFactor = 0.05; // 5% each tick
-  const newValues = {} as typeof liveRandom;
+// Fixed section (around line 1249)
+const interpolationFactor = 0.05; // 5% each tick
+const newValues = {} as typeof liveRandom;
 
 Object.keys(currentValues).forEach((key) => {
   const k = key as keyof typeof liveRandom;
@@ -342,12 +343,13 @@ Object.keys(currentValues).forEach((key) => {
 
 currentValues = newValues;
 setLiveRandom(newValues);
+    });  // Missing closing bracket for the animationTimer function
 
     return () => {
       clearInterval(targetUpdateTimer);
       clearInterval(animationTimer);
     };
-  }, []);
+  }, []);  // Missing closing bracket for the useEffect
 
   // Step 2: Micro-movements
   const now = Date.now() / 1000;
