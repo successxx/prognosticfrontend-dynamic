@@ -298,7 +298,7 @@ function NewAnalysis() {
         heatmap: Math.random() * 2 - 1,
         donut: Math.random() * 2 - 1
       });
-    }, 1500);
+    }, 100);
 
     return () => {
       clearInterval(liveUpdateTimer);
