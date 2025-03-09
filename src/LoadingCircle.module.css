@@ -1330,7 +1330,7 @@
   text-align: center;
   font-size: 8px;
   /* Changed to dark so it's visible over the bar */
-  color: #fff; /* If you want it on top of the bar, keep white or set #000 if needed. */
+  color: #252525; /* If you want it on top of the bar, keep white or set #000 if needed. */
   font-weight: 600;
   top: 0;
   transform: translateY(-100%);
