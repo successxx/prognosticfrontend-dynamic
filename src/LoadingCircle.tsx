@@ -8,15 +8,12 @@ import styles from "./LoadingCircle.module.css";
 // ---------------------------------------------------------
 function OldLoader() {
   const loadingMessages = [
-    "Thinking...",
-    "Looking at your site...",
+    "Systems booting up for your custom report...",
     "Finding immediate opportunities...",
     "Tailoring value...",
-    "Identifying your target audience...",
-    "Split-testing potential setbacks...",
-    "Analyzing test results...",
+    "Testing potential setbacks...",
     "Refining for immediate impact...",
-    "Running new A/B tests based on synthesized results...",
+    "Running A/B tests based on synthesized results...",
     "Crafting your blueprint for maximum success...",
     "Refining...",
     "Success! Processing...",
