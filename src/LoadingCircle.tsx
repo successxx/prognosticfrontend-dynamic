@@ -25,10 +25,10 @@ function OldLoader() {
     "Success! Validating...",
     "Success! Completing..."
   ];
-  
+
   const [messageIndex, setMessageIndex] = useState<number>(0);
   const [fade, setFade] = useState<boolean>(true); // True for fade-in, false for fade-out
-  
+
   // Check if the message includes "Success!" to apply special styling
   const isSuccess = loadingMessages[messageIndex].includes("Success!");
 
@@ -123,7 +123,7 @@ function NewAnalysis() {
 
   const TOTAL_MODULES = 12;
 
-  // ** Replace the old messages with the new array you specified: **
+  // Rotating messages
   const loadingMessages = [
     "Thinking...",
     "Looking at your site...",
@@ -188,10 +188,6 @@ function NewAnalysis() {
     heatmap: 0,
     donut: 0
   });
-
-  // **REMOVED** the line below:
-  // <div className={styles.header}>Your Quantum Analysis Is In Process...</div>
-  // because we are using the rotating messages instead.
 
   // Master progress bar + timing
   useEffect(() => {
@@ -373,7 +369,7 @@ function NewAnalysis() {
 
   return (
     <>
-      {/* Progress Bar now at the top of this container */}
+      {/* Purple progress bar at top */}
       <div className={styles.progressContainer}>
         <div
           className={`
@@ -386,10 +382,13 @@ function NewAnalysis() {
         </div>
       </div>
 
+      {/* Spinner + text just under the purple loader */}
+      <OldLoader />
+
+      {/* Then the modules + rotating message (from NewAnalysis) + logs */}
       <div className={styles.content}>
         <div className={styles.visualization}>
-
-          {/* 1) FUNNEL */}
+          {/* 12 advanced modules */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -408,7 +407,9 @@ function NewAnalysis() {
                     <span className={styles.value}>15,120</span>
                     <div
                       className={styles.bar}
-                      style={{ width: `${clamp(100 + liveRandom.funnel, 0, 100)}%` }}
+                      style={{
+                        width: `${clamp(100 + liveRandom.funnel, 0, 100)}%`
+                      }}
                     ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "35%" }}>
@@ -416,7 +417,9 @@ function NewAnalysis() {
                     <span className={styles.value}>9,304</span>
                     <div
                       className={styles.bar}
-                      style={{ width: `${clamp(85 + liveRandom.funnel, 0, 100)}%` }}
+                      style={{
+                        width: `${clamp(85 + liveRandom.funnel, 0, 100)}%`
+                      }}
                     ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "60%" }}>
@@ -424,7 +427,9 @@ function NewAnalysis() {
                     <span className={styles.value}>4,189</span>
                     <div
                       className={styles.bar}
-                      style={{ width: `${clamp(65 + liveRandom.funnel, 0, 100)}%` }}
+                      style={{
+                        width: `${clamp(65 + liveRandom.funnel, 0, 100)}%`
+                      }}
                     ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "85%" }}>
@@ -432,7 +437,9 @@ function NewAnalysis() {
                     <span className={styles.value}>2,532</span>
                     <div
                       className={styles.bar}
-                      style={{ width: `${clamp(40 + liveRandom.funnel, 0, 100)}%` }}
+                      style={{
+                        width: `${clamp(40 + liveRandom.funnel, 0, 100)}%`
+                      }}
                     ></div>
                   </div>
                 </div>
@@ -441,7 +448,6 @@ function NewAnalysis() {
             0
           )}
 
-          {/* 2) RADAR */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -485,7 +491,6 @@ function NewAnalysis() {
             1
           )}
 
-          {/* 3) AREA CHART */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -528,7 +533,6 @@ function NewAnalysis() {
             2
           )}
 
-          {/* 4) CHORD */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -559,7 +563,6 @@ function NewAnalysis() {
             3
           )}
 
-          {/* 5) SCATTER */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -597,7 +600,6 @@ function NewAnalysis() {
             4
           )}
 
-          {/* 6) HEATMAP */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -624,22 +626,30 @@ function NewAnalysis() {
                     <div className={`${styles.heatCell} ${styles.high}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
+                    <div
+                      className={`${styles.heatCell} ${styles["very-high"]}`}
+                    ></div>
                     <div className={`${styles.heatCell} ${styles.high}`}></div>
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
+                    <div
+                      className={`${styles.heatCell} ${styles["very-high"]}`}
+                    ></div>
                     <div className={`${styles.heatCell} ${styles.high}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.high}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
-                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
+                    <div
+                      className={`${styles.heatCell} ${styles["very-high"]}`}
+                    ></div>
                     <div className={`${styles.heatCell} ${styles.high}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
+                    <div
+                      className={`${styles.heatCell} ${styles["very-high"]}`}
+                    ></div>
                     <div className={`${styles.heatCell} ${styles.high}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
@@ -664,7 +674,6 @@ function NewAnalysis() {
             5
           )}
 
-          {/* 7) DONUT */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -684,9 +693,15 @@ function NewAnalysis() {
               >
                 <div className={styles.donutContainer}>
                   <div className={styles.donutRing}></div>
-                  <div className={`${styles.donutSegment} ${styles.segment1}`}></div>
-                  <div className={`${styles.donutSegment} ${styles.segment2}`}></div>
-                  <div className={`${styles.donutSegment} ${styles.segment3}`}></div>
+                  <div
+                    className={`${styles.donutSegment} ${styles.segment1}`}
+                  ></div>
+                  <div
+                    className={`${styles.donutSegment} ${styles.segment2}`}
+                  ></div>
+                  <div
+                    className={`${styles.donutSegment} ${styles.segment3}`}
+                  ></div>
                   <div className={styles.donutHole}></div>
                   <div className={styles.donutLabel}>
                     <div className={styles.value}>72%</div>
@@ -707,7 +722,6 @@ function NewAnalysis() {
             6
           )}
 
-          {/* 8) GAUGE */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -755,7 +769,6 @@ function NewAnalysis() {
             7
           )}
 
-          {/* 9) BAR CHART */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -777,7 +790,10 @@ function NewAnalysis() {
                       <div
                         className={styles.bar}
                         style={{
-                          height: `${Math.max(0, Math.min(100, 55 + liveRandom.bar))}%`
+                          height: `${Math.max(
+                            0,
+                            Math.min(100, 55 + liveRandom.bar)
+                          )}%`
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat A</div>
@@ -787,7 +803,10 @@ function NewAnalysis() {
                       <div
                         className={styles.bar}
                         style={{
-                          height: `${Math.max(0, Math.min(100, 80 + liveRandom.bar))}%`
+                          height: `${Math.max(
+                            0,
+                            Math.min(100, 80 + liveRandom.bar)
+                          )}%`
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat B</div>
@@ -797,7 +816,10 @@ function NewAnalysis() {
                       <div
                         className={styles.bar}
                         style={{
-                          height: `${Math.max(0, Math.min(100, 68 + liveRandom.bar))}%`
+                          height: `${Math.max(
+                            0,
+                            Math.min(100, 68 + liveRandom.bar)
+                          )}%`
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat C</div>
@@ -807,7 +829,10 @@ function NewAnalysis() {
                       <div
                         className={styles.bar}
                         style={{
-                          height: `${Math.max(0, Math.min(100, 90 + liveRandom.bar))}%`
+                          height: `${Math.max(
+                            0,
+                            Math.min(100, 90 + liveRandom.bar)
+                          )}%`
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat D</div>
@@ -817,7 +842,10 @@ function NewAnalysis() {
                       <div
                         className={styles.bar}
                         style={{
-                          height: `${Math.max(0, Math.min(100, 77 + liveRandom.bar))}%`
+                          height: `${Math.max(
+                            0,
+                            Math.min(100, 77 + liveRandom.bar)
+                          )}%`
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat E</div>
@@ -827,7 +855,10 @@ function NewAnalysis() {
                       <div
                         className={styles.bar}
                         style={{
-                          height: `${Math.max(0, Math.min(100, 42 + liveRandom.bar))}%`
+                          height: `${Math.max(
+                            0,
+                            Math.min(100, 42 + liveRandom.bar)
+                          )}%`
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat F</div>
@@ -840,7 +871,6 @@ function NewAnalysis() {
             8
           )}
 
-          {/* 10) BUBBLE */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -877,7 +907,6 @@ function NewAnalysis() {
             9
           )}
 
-          {/* 11) LINE */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -921,7 +950,6 @@ function NewAnalysis() {
             10
           )}
 
-          {/* 12) NETWORK */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -966,7 +994,7 @@ function NewAnalysis() {
           )}
         </div>
 
-        {/* Single-line rotating message */}
+        {/* Single-line rotating message (from NewAnalysis) */}
         <div className={`${styles.message} ${fade ? styles.fadeIn : styles.fadeOut}`}>
           {loadingMessages[messageIndex]}
         </div>
@@ -991,16 +1019,12 @@ export default function CombinedLoader() {
   return (
     <div className={styles.container}>
       {/* 
-        We now render the NewAnalysis (purple loader + modules) FIRST 
-        so that its progress bar is at the top, above the spinner 
+        The NewAnalysis component now:
+        1) Renders the purple loader bar at top
+        2) Immediately shows OldLoader (spinner + text) under that
+        3) Then renders the 12 modules, single-line rotating message, and log
       */}
       <NewAnalysis />
-
-      {/* Subtle optional spacing */}
-      <div style={{ marginTop: "20px" }} />
-
-      {/* Old spinner below */}
-      <OldLoader />
     </div>
   );
 }
