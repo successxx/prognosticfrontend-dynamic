@@ -1,5 +1,6 @@
 // Note: We remove the default "React" import because TS6133 complains it's unused.
 // We still import the specific hooks from "react" so that TypeScript doesn't fail:
+
 import { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
@@ -47,8 +48,6 @@ function OldLoader() {
   }, [loadingMessages.length]);
 
   return (
-    // Instead of a separate container, we embed these visuals
-    // in the same container as the advanced modules.
     <div className={styles["pai-dr-content"]} style={{ paddingBottom: "40px" }}>
       {/* Futuristic visualization replaces simple spinner */}
       <div className={styles["pai-dr-visualization"]}>
@@ -141,7 +140,6 @@ function NewAnalysis() {
   ];
 
   // Base log lines
-// Base log lines
   const baseAnalysisLogLines = [
     "[Data] Real-time aggregator is standing by...",
     "[Data] Cross-checking system readiness...",
@@ -286,7 +284,7 @@ function NewAnalysis() {
     });
   }, [moduleLoaded]);
 
-// Additional periodic logs
+  // Additional periodic logs
   useEffect(() => {
     let currentIndex = 0;
     const analysisTimer = setInterval(() => {
@@ -298,7 +296,7 @@ function NewAnalysis() {
         const randomIndex = Math.floor(Math.random() * baseAnalysisLogLines.length);
         setLogMessages((prev) => [...prev, baseAnalysisLogLines[randomIndex]]);
       }
-    }, 800); // Faster log updates (was 2000ms)
+    }, 800); // Faster log updates
 
     return () => {
       clearInterval(analysisTimer);
@@ -306,29 +304,28 @@ function NewAnalysis() {
   }, [baseAnalysisLogLines]);
 
   // Continuous "live" data changes
-// Continuous "live" data changes
-useEffect(() => {
-  const liveUpdateTimer = setInterval(() => {
-    setLiveRandom({
-      funnel: Math.random() * 20 - 10,  // -10 to +10 range (doubled)
-      bar: Math.random() * 15 - 7.5,    // -7.5 to +7.5 range (increased)
-      gauge: Math.random() * 10 - 5,     // -5 to +5 range (tripled)
-      radar: Math.random() * 8 - 4,      // -4 to +4 range (quadrupled)
-      chord: Math.random() * 6 - 3,      // -3 to +3 range (tripled)
-      scatter: Math.random() * 6 - 3,    // -3 to +3 range (tripled)
-      bubble: Math.random() * 5 - 2.5,   // -2.5 to +2.5 range (increased)
-      area: Math.random() * 5 - 2.5,     // -2.5 to +2.5 range (increased)
-      line: Math.random() * 8 - 4,       // -4 to +4 range (quadrupled) 
-      network: Math.random() * 4 - 2,    // -2 to +2 range (doubled)
-      heatmap: Math.random() * 4 - 2,    // -2 to +2 range (doubled)
-      donut: Math.random() * 4 - 2       // -2 to +2 range (doubled)
-    });
-  }, 200); // Update every 200ms instead of 1500ms (7.5x faster)
+  useEffect(() => {
+    const liveUpdateTimer = setInterval(() => {
+      setLiveRandom({
+        funnel: Math.random() * 20 - 10,  // -10 to +10 range
+        bar: Math.random() * 15 - 7.5,    // -7.5 to +7.5
+        gauge: Math.random() * 10 - 5,    // -5 to +5
+        radar: Math.random() * 8 - 4,     // -4 to +4
+        chord: Math.random() * 6 - 3,     // -3 to +3
+        scatter: Math.random() * 6 - 3,   // -3 to +3
+        bubble: Math.random() * 5 - 2.5,  // -2.5 to +2.5
+        area: Math.random() * 5 - 2.5,    // -2.5 to +2.5
+        line: Math.random() * 8 - 4,      // -4 to +4
+        network: Math.random() * 4 - 2,   // -2 to +2
+        heatmap: Math.random() * 4 - 2,   // -2 to +2
+        donut: Math.random() * 4 - 2      // -2 to +2
+      });
+    }, 200); // Update every 200ms
 
-  return () => {
-    clearInterval(liveUpdateTimer);
-  };
-}, []);
+    return () => {
+      clearInterval(liveUpdateTimer);
+    };
+  }, []);
 
   // Animation classes
   const animationClasses = [
@@ -386,7 +383,7 @@ useEffect(() => {
   // Calculate gauge angle
   function getGaugeAngle(baseAngle: number, adjustDeg: number) {
     const angle = baseAngle + adjustDeg;
-    return Math.max(0, Math.min(angle, 90));
+    return clamp(angle, 0, 90);
   }
 
   return (
@@ -410,7 +407,7 @@ useEffect(() => {
       {/* Then the modules + rotating message (from NewAnalysis) + logs */}
       <div className={styles.content}>
         <div className={styles.visualization}>
-          {/* 12 advanced modules */}
+          {/* 1) Funnel Analysis Module */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -470,6 +467,7 @@ useEffect(() => {
             0
           )}
 
+          {/* 2) Radar Module */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -481,12 +479,8 @@ useEffect(() => {
                 </div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `scale(${1 + liveRandom.radar * 0.01})`
-                }}
-              >
+              {/* Removed container-level scale transform */}
+              <div className={styles.moduleBody}>
                 <div className={styles.radarContainer}>
                   <div className={styles.radarChart}>
                     <div className={styles.radarAxis}></div>
@@ -513,6 +507,7 @@ useEffect(() => {
             1
           )}
 
+          {/* 3) Predictive Area Chart */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -524,12 +519,8 @@ useEffect(() => {
                 </div>
                 <div className={styles.windowStatus}>Analyzing</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `scale(${1 + liveRandom.area * 0.01})`
-                }}
-              >
+              {/* Removed container-level scale transform */}
+              <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
@@ -555,6 +546,7 @@ useEffect(() => {
             2
           )}
 
+          {/* 4) Comparative Matrix (Chord Diagram) */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -566,12 +558,8 @@ useEffect(() => {
                 </div>
                 <div className={styles.windowStatus}>Computing</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `translateY(${liveRandom.chord * 0.5}px)`
-                }}
-              >
+              {/* Removed container-level translateY transform */}
+              <div className={styles.moduleBody}>
                 <div className={styles.chordContainer}>
                   <div className={styles.chordCircle}></div>
                   <div className={styles.chordArc}></div>
@@ -585,6 +573,7 @@ useEffect(() => {
             3
           )}
 
+          {/* 5) Multi-Variable Scatter Plot */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -596,12 +585,8 @@ useEffect(() => {
                 </div>
                 <div className={styles.windowStatus}>Active</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `rotate(${liveRandom.scatter * 0.5}deg)`
-                }}
-              >
+              {/* Removed container-level rotation */}
+              <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
@@ -622,6 +607,7 @@ useEffect(() => {
             4
           )}
 
+          {/* 6) Heatmap Grid */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -633,12 +619,8 @@ useEffect(() => {
                 </div>
                 <div className={styles.windowStatus}>Calculating</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `scale(${1 + liveRandom.heatmap * 0.01})`
-                }}
-              >
+              {/* Removed container-level scale */}
+              <div className={styles.moduleBody}>
                 <div className={styles.heatmapContainer}>
                   <div className={styles.heatmapGrid}>
                     {/* 25 cells */}
@@ -648,30 +630,22 @@ useEffect(() => {
                     <div className={`${styles.heatCell} ${styles.high}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div
-                      className={`${styles.heatCell} ${styles["very-high"]}`}
-                    ></div>
+                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
                     <div className={`${styles.heatCell} ${styles.high}`}></div>
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div
-                      className={`${styles.heatCell} ${styles["very-high"]}`}
-                    ></div>
+                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
                     <div className={`${styles.heatCell} ${styles.high}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.high}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
-                    <div
-                      className={`${styles.heatCell} ${styles["very-high"]}`}
-                    ></div>
+                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
                     <div className={`${styles.heatCell} ${styles.high}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
-                    <div
-                      className={`${styles.heatCell} ${styles["very-high"]}`}
-                    ></div>
+                    <div className={`${styles.heatCell} ${styles["very-high"]}`}></div>
                     <div className={`${styles.heatCell} ${styles.high}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
@@ -696,6 +670,7 @@ useEffect(() => {
             5
           )}
 
+          {/* 7) Donut Chart Resource Allocation */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -707,23 +682,13 @@ useEffect(() => {
                 </div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `rotate(${liveRandom.donut * 0.5}deg)`
-                }}
-              >
+              {/* Removed container-level rotation */}
+              <div className={styles.moduleBody}>
                 <div className={styles.donutContainer}>
                   <div className={styles.donutRing}></div>
-                  <div
-                    className={`${styles.donutSegment} ${styles.segment1}`}
-                  ></div>
-                  <div
-                    className={`${styles.donutSegment} ${styles.segment2}`}
-                  ></div>
-                  <div
-                    className={`${styles.donutSegment} ${styles.segment3}`}
-                  ></div>
+                  <div className={`${styles.donutSegment} ${styles.segment1}`}></div>
+                  <div className={`${styles.donutSegment} ${styles.segment2}`}></div>
+                  <div className={`${styles.donutSegment} ${styles.segment3}`}></div>
                   <div className={styles.donutHole}></div>
                   <div className={styles.donutLabel}>
                     <div className={styles.value}>72%</div>
@@ -744,6 +709,7 @@ useEffect(() => {
             6
           )}
 
+          {/* 8) Risk Evaluation Gauge */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -781,12 +747,12 @@ useEffect(() => {
                     <div className={styles.gaugeTick}></div>
                   </div>
                   <div
-  className={styles.gaugeNeedle}
-  style={{
-    transform: `rotate(${getGaugeAngle(53, liveRandom.gauge)}deg)`,
-    transition: 'transform 0.2s ease-out' // Smooth needle movement
-  }}
-></div>
+                    className={styles.gaugeNeedle}
+                    style={{
+                      transform: `rotate(${getGaugeAngle(53, liveRandom.gauge)}deg)`,
+                      transition: 'transform 0.2s ease-out'
+                    }}
+                  ></div>
                   <div className={styles.gaugeValue}>81% Stable</div>
                 </div>
               </div>
@@ -794,6 +760,7 @@ useEffect(() => {
             7
           )}
 
+          {/* 9) Bar Chart Performance Metrics */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -815,24 +782,20 @@ useEffect(() => {
                       <div
                         className={styles.bar}
                         style={{
-                          height: `${Math.max(
-                            0,
-                            Math.min(100, 55 + liveRandom.bar)
-                          )}%`,
+                          height: `${clamp(55 + liveRandom.bar, 0, 100)}%`,
                           transition: 'height 0.2s ease-out'
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat A</div>
+                      {/* Changed color so it’s visible */}
                       <div className={styles.barValue}>58%</div>
                     </div>
                     <div className={styles.barWrapper}>
                       <div
                         className={styles.bar}
                         style={{
-                          height: `${Math.max(
-                            0,
-                            Math.min(100, 80 + liveRandom.bar)
-                          )}%`
+                          height: `${clamp(80 + liveRandom.bar, 0, 100)}%`,
+                          transition: 'height 0.2s ease-out'
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat B</div>
@@ -842,10 +805,8 @@ useEffect(() => {
                       <div
                         className={styles.bar}
                         style={{
-                          height: `${Math.max(
-                            0,
-                            Math.min(100, 68 + liveRandom.bar)
-                          )}%`
+                          height: `${clamp(68 + liveRandom.bar, 0, 100)}%`,
+                          transition: 'height 0.2s ease-out'
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat C</div>
@@ -855,10 +816,8 @@ useEffect(() => {
                       <div
                         className={styles.bar}
                         style={{
-                          height: `${Math.max(
-                            0,
-                            Math.min(100, 90 + liveRandom.bar)
-                          )}%`
+                          height: `${clamp(90 + liveRandom.bar, 0, 100)}%`,
+                          transition: 'height 0.2s ease-out'
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat D</div>
@@ -868,10 +827,8 @@ useEffect(() => {
                       <div
                         className={styles.bar}
                         style={{
-                          height: `${Math.max(
-                            0,
-                            Math.min(100, 77 + liveRandom.bar)
-                          )}%`
+                          height: `${clamp(77 + liveRandom.bar, 0, 100)}%`,
+                          transition: 'height 0.2s ease-out'
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat E</div>
@@ -881,10 +838,8 @@ useEffect(() => {
                       <div
                         className={styles.bar}
                         style={{
-                          height: `${Math.max(
-                            0,
-                            Math.min(100, 42 + liveRandom.bar)
-                          )}%`
+                          height: `${clamp(42 + liveRandom.bar, 0, 100)}%`,
+                          transition: 'height 0.2s ease-out'
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat F</div>
@@ -897,6 +852,7 @@ useEffect(() => {
             8
           )}
 
+          {/* 10) Clustering Bubble Visualization */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -908,12 +864,8 @@ useEffect(() => {
                 </div>
                 <div className={styles.windowStatus}>Mapping</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `scale(${1 + liveRandom.bubble * 0.01})`
-                }}
-              >
+              {/* Removed container-level scale */}
+              <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
@@ -933,6 +885,7 @@ useEffect(() => {
             9
           )}
 
+          {/* 11) Trend Forecasting Line Chart */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -944,12 +897,8 @@ useEffect(() => {
                 </div>
                 <div className={styles.windowStatus}>Predicting</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `translateX(${liveRandom.line * 0.5}px)`
-                }}
-              >
+              {/* Removed container-level translateX */}
+              <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
@@ -976,6 +925,7 @@ useEffect(() => {
             10
           )}
 
+          {/* 12) Network Topology Analysis */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -987,12 +937,8 @@ useEffect(() => {
                 </div>
                 <div className={styles.windowStatus}>Running</div>
               </div>
-              <div
-                className={styles.moduleBody}
-                style={{
-                  transform: `rotate(${liveRandom.network * 0.5}deg)`
-                }}
-              >
+              {/* Removed container-level rotation */}
+              <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.networkContainer}>
                   <div className={styles.networkNode}></div>
@@ -1020,8 +966,10 @@ useEffect(() => {
           )}
         </div>
 
-        {/* Single-line rotating message (from NewAnalysis) */}
-        <div className={`${styles.message} ${fade ? styles.fadeIn : styles.fadeOut}`}>
+        {/* Single-line rotating message */}
+        <div
+          className={`${styles.message} ${fade ? styles.fadeIn : styles.fadeOut}`}
+        >
           {loadingMessages[messageIndex]}
         </div>
 
@@ -1038,28 +986,6 @@ useEffect(() => {
   );
 }
 
-@keyframes gaugePulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-  100% { transform: scale(1); }
-}
-
-@keyframes dataFlow {
-  0% { opacity: 0; transform: scale(0.5); }
-  50% { opacity: 1; transform: scale(1.2); }
-  100% { opacity: 0; transform: scale(0.5); }
-}
-
-.dataDot {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: radial-gradient(circle at center, rgba(149,82,211,0.9), rgba(188,115,237,0.7));
-  border-radius: 50%;
-  z-index: 999;
-  box-shadow: 0 0 10px rgba(149,82,211,0.6);
-  pointer-events: none;
-}
 // ---------------------------------------------------------
 // FINAL COMBINED COMPONENT
 // ---------------------------------------------------------
