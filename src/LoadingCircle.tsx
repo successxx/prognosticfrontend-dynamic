@@ -190,7 +190,7 @@ function NewAnalysis() {
     Array(TOTAL_MODULES).fill(false)
   );
 
-  // Ongoing "live" updates
+  // Instead of discrete random changes every 200ms, we do smooth interpolation
   const [liveRandom, setLiveRandom] = useState({
     funnel: 0,
     bar: 0,
@@ -303,31 +303,81 @@ function NewAnalysis() {
     };
   }, [baseAnalysisLogLines]);
 
-  // Continuous "live" data changes
+  // STEP 1: Smooth Interpolation Approach
   useEffect(() => {
-    const liveUpdateTimer = setInterval(() => {
-      setLiveRandom({
-        funnel: Math.random() * 20 - 10,  // -10 to +10 range
-        bar: Math.random() * 15 - 7.5,    // -7.5 to +7.5
-        gauge: Math.random() * 10 - 5,    // -5 to +5
-        radar: Math.random() * 8 - 4,     // -4 to +4
-        chord: Math.random() * 6 - 3,     // -3 to +3
-        scatter: Math.random() * 6 - 3,   // -3 to +3
-        bubble: Math.random() * 5 - 2.5,  // -2.5 to +2.5
-        area: Math.random() * 5 - 2.5,    // -2.5 to +2.5
-        line: Math.random() * 8 - 4,      // -4 to +4
-        network: Math.random() * 4 - 2,   // -2 to +2
-        heatmap: Math.random() * 4 - 2,   // -2 to +2
-        donut: Math.random() * 4 - 2      // -2 to +2
+    // Target values toward which we interpolate
+    let targetValues = {
+      funnel: 0, bar: 0, gauge: 0, radar: 0, chord: 0, scatter: 0,
+      bubble: 0, area: 0, line: 0, network: 0, heatmap: 0, donut: 0
+    };
+
+    // Current values that change smoothly
+    let currentValues = { ...targetValues };
+
+    // Generate new target values periodically
+    const targetUpdateTimer = setInterval(() => {
+      targetValues = {
+        funnel: Math.random() * 10 - 5,
+        bar: Math.random() * 7.5 - 3.75,
+        gauge: Math.random() * 5 - 2.5,
+        radar: Math.random() * 4 - 2,
+        chord: Math.random() * 3 - 1.5,
+        scatter: Math.random() * 3 - 1.5,
+        bubble: Math.random() * 2.5 - 1.25,
+        area: Math.random() * 2.5 - 1.25,
+        line: Math.random() * 4 - 2,
+        network: Math.random() * 2 - 1,
+        heatmap: Math.random() * 2 - 1,
+        donut: Math.random() * 2 - 1
+      };
+    }, 2000); // New targets every 2 seconds
+
+    // Smooth interpolation at ~60fps
+    const animationTimer = setInterval(() => {
+      const interpolationFactor = 0.05; // Move ~5% closer each tick
+      const newValues: Record<string, number> = {};
+
+      Object.keys(currentValues).forEach((key) => {
+        const diff = (targetValues as any)[key] - (currentValues as any)[key];
+        (newValues as any)[key] = (currentValues as any)[key] + (diff * interpolationFactor);
       });
-    }, 200); // Update every 200ms
+
+      currentValues = newValues;
+      setLiveRandom(newValues as any);
+    }, 16); // ~60fps
 
     return () => {
-      clearInterval(liveUpdateTimer);
+      clearInterval(targetUpdateTimer);
+      clearInterval(animationTimer);
     };
   }, []);
 
-  // Animation classes
+  // STEP 2: Natural micro-movements (time-based), right before return
+  const now = Date.now() / 1000; // Current time in seconds
+  const microMovements = {
+    // Circular breathing effect for gauge/donut if desired
+    pulse: Math.sin(now * 0.8) * 0.5,
+
+    // X-axis drift
+    driftX: Math.sin(now * 0.5) * 1.2,
+
+    // Y-axis drift
+    driftY: Math.cos(now * 0.7) * 0.8,
+
+    // Rotation drift
+    rotateDrift: Math.sin(now * 0.3) * 0.7,
+
+    // Scale breathing
+    scalePulse: 1 + Math.sin(now * 0.6) * 0.01
+  };
+
+  // Calculate gauge angle
+  function getGaugeAngle(baseAngle: number, adjustDeg: number) {
+    const angle = baseAngle + adjustDeg;
+    return clamp(angle, 0, 90);
+  }
+
+  // Rendering helper
   const animationClasses = [
     styles.animation1,
     styles.animation2,
@@ -337,8 +387,6 @@ function NewAnalysis() {
   function getAnimationClass(i: number) {
     return animationClasses[i % animationClasses.length];
   }
-
-  // 12 staggered delay classes
   const delayClasses = [
     styles.delay1,
     styles.delay2,
@@ -380,12 +428,6 @@ function NewAnalysis() {
     );
   }
 
-  // Calculate gauge angle
-  function getGaugeAngle(baseAngle: number, adjustDeg: number) {
-    const angle = baseAngle + adjustDeg;
-    return clamp(angle, 0, 90);
-  }
-
   return (
     <>
       {/* Purple progress bar at top */}
@@ -419,7 +461,12 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Live</div>
               </div>
-              <div className={styles.moduleBody}>
+              <div className={styles.moduleBody}
+                style={{
+                  // Subtle micro-movement:
+                  transform: `translate(${microMovements.driftX}px, ${microMovements.driftY}px) scale(${microMovements.scalePulse})`
+                }}
+              >
                 <div className={styles.funnelContainer}>
                   <div className={styles.funnelMetric} style={{ top: "10%" }}>
                     <span className={styles.label}>Data Points</span>
@@ -479,10 +526,19 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
-              {/* Removed container-level scale transform */}
-              <div className={styles.moduleBody}>
+              <div className={styles.moduleBody}
+                style={{
+                  transform: `translate(${microMovements.driftX * 0.5}px, ${microMovements.driftY * 0.5}px)`
+                }}
+              >
+                {/* Add continuous rotation to the radar chart container */}
                 <div className={styles.radarContainer}>
-                  <div className={styles.radarChart}>
+                  <div
+                    className={styles.radarChart}
+                    style={{
+                      animation: "continuousRotate 30s linear infinite"
+                    }}
+                  >
                     <div className={styles.radarAxis}></div>
                     <div className={styles.radarAxis}></div>
                     <div className={styles.radarAxis}></div>
@@ -519,8 +575,11 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Analyzing</div>
               </div>
-              {/* Removed container-level scale transform */}
-              <div className={styles.moduleBody}>
+              <div className={styles.moduleBody}
+                style={{
+                  transform: `translate(${microMovements.driftX}px, ${microMovements.driftY * 0.3}px)`
+                }}
+              >
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
@@ -528,17 +587,40 @@ function NewAnalysis() {
                   <div className={styles.areaPath}>
                     <div className={styles.area}></div>
                     <div className={styles.areaLine}></div>
-                    <div className={styles.dataPoint}></div>
-                    <div className={styles.dataPoint}></div>
-                    <div className={styles.dataPoint}></div>
-                    <div className={styles.dataPoint}></div>
-                    <div className={styles.dataPoint}></div>
-                    <div className={styles.dataPoint}></div>
-                    <div className={styles.dataPoint}></div>
-                    <div className={styles.dataPoint}></div>
-                    <div className={styles.dataPoint}></div>
-                    <div className={styles.dataPoint}></div>
-                    <div className={styles.dataPoint}></div>
+                    {/* Data points with wave animation */}
+                    <div className={styles.dataPoint}
+                      style={{ animation: "pointAppear 0.4s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.dataPoint}
+                      style={{ animation: "pointAppear 0.4s 0.1s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.dataPoint}
+                      style={{ animation: "pointAppear 0.4s 0.2s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.dataPoint}
+                      style={{ animation: "pointAppear 0.4s 0.3s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.dataPoint}
+                      style={{ animation: "pointAppear 0.4s 0.4s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.dataPoint}
+                      style={{ animation: "pointAppear 0.4s 0.5s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.dataPoint}
+                      style={{ animation: "pointAppear 0.4s 0.6s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.dataPoint}
+                      style={{ animation: "pointAppear 0.4s 0.7s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.dataPoint}
+                      style={{ animation: "pointAppear 0.4s 0.8s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.dataPoint}
+                      style={{ animation: "pointAppear 0.4s 0.9s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.dataPoint}
+                      style={{ animation: "pointAppear 0.4s 1.0s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
                   </div>
                 </div>
               </div>
@@ -558,8 +640,11 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Computing</div>
               </div>
-              {/* Removed container-level translateY transform */}
-              <div className={styles.moduleBody}>
+              <div className={styles.moduleBody}
+                style={{
+                  transform: `translateY(${microMovements.driftY}px) scale(${microMovements.scalePulse})`
+                }}
+              >
                 <div className={styles.chordContainer}>
                   <div className={styles.chordCircle}></div>
                   <div className={styles.chordArc}></div>
@@ -585,21 +670,43 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Active</div>
               </div>
-              {/* Removed container-level rotation */}
-              <div className={styles.moduleBody}>
+              <div className={styles.moduleBody}
+                style={{
+                  transform: `translate(${microMovements.driftX * 0.3}px, ${microMovements.driftY * 0.2}px)`
+                }}
+              >
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
                 <div className={styles.scatterContainer}>
-                  <div className={styles.scatterPoint} data-value="high"></div>
-                  <div className={styles.scatterPoint} data-value="medium"></div>
-                  <div className={styles.scatterPoint} data-value="high"></div>
-                  <div className={styles.scatterPoint} data-value="low"></div>
-                  <div className={styles.scatterPoint} data-value="medium"></div>
-                  <div className={styles.scatterPoint} data-value="low"></div>
-                  <div className={styles.scatterPoint} data-value="medium"></div>
-                  <div className={styles.scatterPoint} data-value="high"></div>
-                  <div className={styles.scatterPoint} data-value="medium"></div>
+                  {/* Add wave animation to scatter points */}
+                  <div className={styles.scatterPoint} data-value="high"
+                    style={{ animation: "scatterAppear 0.8s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
+                  ></div>
+                  <div className={styles.scatterPoint} data-value="medium"
+                    style={{ animation: "scatterAppear 0.8s 0.2s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
+                  ></div>
+                  <div className={styles.scatterPoint} data-value="high"
+                    style={{ animation: "scatterAppear 0.8s 0.4s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
+                  ></div>
+                  <div className={styles.scatterPoint} data-value="low"
+                    style={{ animation: "scatterAppear 0.8s 0.6s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
+                  ></div>
+                  <div className={styles.scatterPoint} data-value="medium"
+                    style={{ animation: "scatterAppear 0.8s 0.8s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
+                  ></div>
+                  <div className={styles.scatterPoint} data-value="low"
+                    style={{ animation: "scatterAppear 0.8s 1.0s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
+                  ></div>
+                  <div className={styles.scatterPoint} data-value="medium"
+                    style={{ animation: "scatterAppear 0.8s 1.2s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
+                  ></div>
+                  <div className={styles.scatterPoint} data-value="high"
+                    style={{ animation: "scatterAppear 0.8s 1.4s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
+                  ></div>
+                  <div className={styles.scatterPoint} data-value="medium"
+                    style={{ animation: "scatterAppear 0.8s 1.6s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
+                  ></div>
                   <div className={styles.trendLine}></div>
                 </div>
               </div>
@@ -619,8 +726,11 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Calculating</div>
               </div>
-              {/* Removed container-level scale */}
-              <div className={styles.moduleBody}>
+              <div className={styles.moduleBody}
+                style={{
+                  transform: `translateX(${microMovements.driftX}px) scale(${microMovements.scalePulse})`
+                }}
+              >
                 <div className={styles.heatmapContainer}>
                   <div className={styles.heatmapGrid}>
                     {/* 25 cells */}
@@ -682,8 +792,13 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
-              {/* Removed container-level rotation */}
-              <div className={styles.moduleBody}>
+              <div className={styles.moduleBody}
+                style={{
+                  // Gentle pulse
+                  animation: "subtlePulse 4s infinite ease-in-out",
+                  transform: `translateY(${microMovements.driftY}px)`
+                }}
+              >
                 <div className={styles.donutContainer}>
                   <div className={styles.donutRing}></div>
                   <div className={`${styles.donutSegment} ${styles.segment1}`}></div>
@@ -722,8 +837,9 @@ function NewAnalysis() {
                 <div className={styles.windowStatus}>Measuring</div>
               </div>
               <div className={styles.moduleBody}>
+                {/* Ensure continuous subtle pulse */}
                 <div className={styles.gaugeContainer} style={{
-                  animation: 'gaugePulse 3s ease-in-out infinite'
+                  animation: "subtlePulse 4s infinite ease-in-out"
                 }}>
                   <div className={styles.gaugeBackground}></div>
                   <div
@@ -772,7 +888,11 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Calculating</div>
               </div>
-              <div className={styles.moduleBody}>
+              <div className={styles.moduleBody}
+                style={{
+                  transform: `rotate(${microMovements.rotateDrift}deg) translate(${microMovements.driftX * 0.2}px, ${microMovements.driftY * 0.2}px)`
+                }}
+              >
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
@@ -787,7 +907,6 @@ function NewAnalysis() {
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat A</div>
-                      {/* Changed color so it’s visible */}
                       <div className={styles.barValue}>58%</div>
                     </div>
                     <div className={styles.barWrapper}>
@@ -864,15 +983,25 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Mapping</div>
               </div>
-              {/* Removed container-level scale */}
-              <div className={styles.moduleBody}>
+              <div className={styles.moduleBody}
+                style={{
+                  transform: `translate(${microMovements.driftX * 0.5}px, ${microMovements.driftY}px)`
+                }}
+              >
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
                 <div className={styles.bubbleContainer}>
-                  <div className={styles.bubble}></div>
-                  <div className={styles.bubble}></div>
-                  <div className={styles.bubble}></div>
+                  {/* Bubbles with wavey motion */}
+                  <div className={styles.bubble}
+                    style={{ animation: "bubbleGrow 1.5s forwards cubic-bezier(0.17,0.67,0.83,0.67), liquidWave 8s ease-in-out infinite" }}
+                  ></div>
+                  <div className={styles.bubble}
+                    style={{ animation: "bubbleGrow 1.5s 0.4s forwards cubic-bezier(0.17,0.67,0.83,0.67), liquidWave 8s ease-in-out infinite" }}
+                  ></div>
+                  <div className={styles.bubble}
+                    style={{ animation: "bubbleGrow 1.5s 0.8s forwards cubic-bezier(0.17,0.67,0.83,0.67), liquidWave 8s ease-in-out infinite" }}
+                  ></div>
                   <div className={styles.bubbleLabel}>Group 1</div>
                   <div className={styles.bubbleLabel}>Group 2</div>
                   <div className={styles.bubbleLabel}>Group 3</div>
@@ -897,8 +1026,11 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Predicting</div>
               </div>
-              {/* Removed container-level translateX */}
-              <div className={styles.moduleBody}>
+              <div className={styles.moduleBody}
+                style={{
+                  transform: `translate(${microMovements.driftX}px, ${microMovements.driftY * 0.5}px)`
+                }}
+              >
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
@@ -906,17 +1038,40 @@ function NewAnalysis() {
                   <div className={styles.lineChart}>
                     <div className={styles.lineBase}></div>
                     <div className={styles.linePath}></div>
-                    <div className={styles.linePoint}></div>
-                    <div className={styles.linePoint}></div>
-                    <div className={styles.linePoint}></div>
-                    <div className={styles.linePoint}></div>
-                    <div className={styles.linePoint}></div>
-                    <div className={styles.linePoint}></div>
-                    <div className={styles.linePoint}></div>
-                    <div className={styles.linePoint}></div>
-                    <div className={styles.linePoint}></div>
-                    <div className={styles.linePoint}></div>
-                    <div className={styles.linePoint}></div>
+                    {/* line points with wave */}
+                    <div className={styles.linePoint}
+                      style={{ animation: "linePointAppear 0.5s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.linePoint}
+                      style={{ animation: "linePointAppear 0.5s 0.2s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.linePoint}
+                      style={{ animation: "linePointAppear 0.5s 0.4s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.linePoint}
+                      style={{ animation: "linePointAppear 0.5s 0.6s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.linePoint}
+                      style={{ animation: "linePointAppear 0.5s 0.8s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.linePoint}
+                      style={{ animation: "linePointAppear 0.5s 1.0s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.linePoint}
+                      style={{ animation: "linePointAppear 0.5s 1.2s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.linePoint}
+                      style={{ animation: "linePointAppear 0.5s 1.4s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.linePoint}
+                      style={{ animation: "linePointAppear 0.5s 1.6s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.linePoint}
+                      style={{ animation: "linePointAppear 0.5s 1.8s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
+                    <div className={styles.linePoint}
+                      style={{ animation: "linePointAppear 0.5s 2.0s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
+                    ></div>
                     <div className={styles.lineFill}></div>
                   </div>
                 </div>
@@ -937,8 +1092,11 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Running</div>
               </div>
-              {/* Removed container-level rotation */}
-              <div className={styles.moduleBody}>
+              <div className={styles.moduleBody}
+                style={{
+                  transform: `scale(${microMovements.scalePulse})`
+                }}
+              >
                 <div className={styles.chartGrid}></div>
                 <div className={styles.networkContainer}>
                   <div className={styles.networkNode}></div>
@@ -964,6 +1122,24 @@ function NewAnalysis() {
             </>,
             11
           )}
+        </div>
+
+        {/* STEP 5: Data flow animation overlay (added right after visualization) */}
+        <div className={styles.dataFlowOverlay}>
+          {Array.from({ length: 20 }).map((_, i) => (
+            <div
+              key={i}
+              className={styles.dataFlowParticle}
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                width: `${2 + Math.random() * 3}px`,
+                height: `${2 + Math.random() * 3}px`,
+                animationDuration: `${5 + Math.random() * 15}s`,
+                animationDelay: `${Math.random() * 5}s`
+              }}
+            />
+          ))}
         </div>
 
         {/* Single-line rotating message */}
