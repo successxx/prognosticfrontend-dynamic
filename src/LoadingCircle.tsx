@@ -602,22 +602,21 @@ setLiveRandom(newValues);
                       }}></div>
                     ))}
 
-                    {/* Dial pointer (indicating high opportunity) */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      width: '4px',
-                      height: '40%',
-                      background: '#333',
-                      transformOrigin: 'center bottom',
-                      transform: `translate(-50%, -100%) rotate(${110 + Math.sin(Date.now() / 1000) * 5}deg)`,
-                      borderRadius: '2px',
-                      boxShadow: '0 0 5px rgba(0,0,0,0.2)',
-                      zIndex: 5,
-                      transition: 'none',
-                      animation: 'needleOscillate 3s infinite ease-in-out'
-                    }}></div>
+<div style={{
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  width: '4px',
+  height: '40%',
+  background: '#333',
+  transformOrigin: 'center bottom',
+  transform: `translate(-50%, -100%) rotate(${110 + Math.sin(Date.now() / 1000) * 5}deg)`,
+  borderRadius: '2px',
+  boxShadow: '0 0 5px rgba(0,0,0,0.2)',
+  zIndex: 5,
+  transition: 'none',
+  animation: 'needleOscillate 3s infinite ease-in-out'
+}}></div>
 
                     {/* Center knob */}
                     <div style={{
@@ -745,23 +744,25 @@ setLiveRandom(newValues);
                           }}
                         ></div>
 
-                        {/* Label for first point in each cluster */}
-                        {i % 3 === 0 && (
-                          <div style={{
-                            position: 'absolute',
-                            left: `${cluster.x + jitterX}%`,
-                            top: `${cluster.y + jitterY - 8}%`,
-                            fontSize: '8px',
-                            fontWeight: 'bold',
-                            color: '#9552D3',
-                            background: 'rgba(255,255,255,0.7)',
-                            borderRadius: '2px',
-                            padding: '1px 3px',
-                            zIndex: 5
-                          }}>
-                            {cluster.name}
-                          </div>
-                        )}
+                      {/* Label for first point in each cluster */}
+{i % 3 === 0 && (
+  <div style={{
+    position: 'absolute',
+    left: `${cluster.x + jitterX}%`,
+    top: `${cluster.y + jitterY - 8}%`,
+    fontSize: '8px',
+    fontWeight: 'bold',
+    color: '#9552D3',
+    background: 'rgba(255,255,255,0.7)',
+    borderRadius: '2px',
+    padding: '1px 3px',
+    zIndex: 5,
+    transform: 'translate(-50%, 0)',
+    whiteSpace: 'nowrap'
+  }}>
+    {cluster.name}
+  </div>
+)}
                       </div>
                     );
                   })}
@@ -1209,21 +1210,168 @@ setLiveRandom(newValues);
             10
           )}
 
-          {/* 12) (Unused but kept) or we can reuse if needed */}
-          {renderModule(
-            <>
-              <div className={styles.macWindowBar}>
-                <span className={styles.trafficLight} data-color="red" />
-                <span className={styles.trafficLight} data-color="yellow" />
-                <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>Module 12 – Extra</div>
-                <div className={styles.windowStatus}>Idle</div>
-              </div>
-              <div className={styles.moduleBody}></div>
-            </>,
-            11
-          )}
+{/* 12) System Status Dashboard */}
+{renderModule(
+  <>
+    <div className={styles.macWindowBar}>
+      <span className={styles.trafficLight} data-color="red" />
+      <span className={styles.trafficLight} data-color="yellow" />
+      <span className={styles.trafficLight} data-color="green" />
+      <div className={styles.windowTitle}>System Status Dashboard</div>
+      <div className={styles.windowStatus}>Active</div>
+    </div>
+    <div className={styles.moduleBody}>
+      <div style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        alignItems: 'flex-start',
+        padding: '10px'
+      }}>
+        <div style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <span style={{
+            fontSize: '9px',
+            fontWeight: 'bold',
+            color: '#333'
+          }}>CPU Usage:</span>
+          <div style={{
+            width: '65%',
+            height: '8px',
+            background: '#f0f0f0',
+            borderRadius: '4px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              width: `${67 + Math.sin(Date.now()/2000) * 5}%`,
+              height: '100%',
+              background: 'linear-gradient(90deg, #9552D3, #BC73ED)',
+              borderRadius: '4px',
+              transition: 'width 0.5s ease-out'
+            }}></div>
+          </div>
+          <span style={{
+            fontSize: '9px',
+            color: '#666'
+          }}>{Math.floor(67 + Math.sin(Date.now()/2000) * 5)}%</span>
         </div>
+        
+        <div style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <span style={{
+            fontSize: '9px',
+            fontWeight: 'bold',
+            color: '#333'
+          }}>Memory:</span>
+          <div style={{
+            width: '65%',
+            height: '8px',
+            background: '#f0f0f0',
+            borderRadius: '4px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              width: `${42 + Math.sin(Date.now()/3000) * 3}%`,
+              height: '100%',
+              background: 'linear-gradient(90deg, #9552D3, #BC73ED)',
+              borderRadius: '4px',
+              transition: 'width 0.5s ease-out'
+            }}></div>
+          </div>
+          <span style={{
+            fontSize: '9px',
+            color: '#666'
+          }}>{Math.floor(42 + Math.sin(Date.now()/3000) * 3)}%</span>
+        </div>
+        
+        <div style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <span style={{
+            fontSize: '9px',
+            fontWeight: 'bold',
+            color: '#333'
+          }}>Network:</span>
+          <div style={{
+            width: '65%',
+            height: '8px',
+            background: '#f0f0f0',
+            borderRadius: '4px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              width: `${78 + Math.sin(Date.now()/2500) * 8}%`,
+              height: '100%',
+              background: 'linear-gradient(90deg, #9552D3, #BC73ED)',
+              borderRadius: '4px',
+              transition: 'width 0.5s ease-out'
+            }}></div>
+          </div>
+          <span style={{
+            fontSize: '9px',
+            color: '#666'
+          }}>{Math.floor(78 + Math.sin(Date.now()/2500) * 8)}%</span>
+        </div>
+        
+        <div style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <span style={{
+            fontSize: '9px',
+            fontWeight: 'bold',
+            color: '#333'
+          }}>Disk I/O:</span>
+          <div style={{
+            width: '65%',
+            height: '8px',
+            background: '#f0f0f0',
+            borderRadius: '4px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              width: `${34 + Math.sin(Date.now()/4000) * 7}%`,
+              height: '100%',
+              background: 'linear-gradient(90deg, #9552D3, #BC73ED)',
+              borderRadius: '4px',
+              transition: 'width 0.5s ease-out'
+            }}></div>
+          </div>
+          <span style={{
+            fontSize: '9px',
+            color: '#666'
+          }}>{Math.floor(34 + Math.sin(Date.now()/4000) * 7)}%</span>
+        </div>
+        
+        <div style={{
+          fontSize: '8px',
+          color: '#666',
+          alignSelf: 'center',
+          marginTop: '5px'
+        }}>
+          {new Date().toLocaleTimeString()} scan - opportunity level: RARE.
+        </div>
+      </div>
+    </div>
+  </>,
+  11
+)}
 
         {/* Single-line rotating message */}
         <div
