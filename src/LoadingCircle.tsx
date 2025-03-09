@@ -475,7 +475,7 @@ function NewAnalysis() {
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
                 <div className={styles.windowTitle}>
-                  Multi-Faceted Radar – Insight Engine
+                  Insight Engine
                 </div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
@@ -515,7 +515,7 @@ function NewAnalysis() {
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
                 <div className={styles.windowTitle}>
-                  Future Mapping – Predictive View
+                  Future Mapping
                 </div>
                 <div className={styles.windowStatus}>Analyzing</div>
               </div>
@@ -554,7 +554,7 @@ function NewAnalysis() {
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
                 <div className={styles.windowTitle}>
-                  Comparative Markers – Matrix
+                  Comparative Marker Matrix
                 </div>
                 <div className={styles.windowStatus}>Computing</div>
               </div>
@@ -581,7 +581,7 @@ function NewAnalysis() {
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
                 <div className={styles.windowTitle}>
-                  Multi-Variable Analysis – Factor Explorer
+                  Multi-Variable Analysis
                 </div>
                 <div className={styles.windowStatus}>Active</div>
               </div>
@@ -615,7 +615,7 @@ function NewAnalysis() {
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
                 <div className={styles.windowTitle}>
-                  Association Mapping – Connection Grid
+                  Associations Found
                 </div>
                 <div className={styles.windowStatus}>Calculating</div>
               </div>
@@ -678,7 +678,7 @@ function NewAnalysis() {
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
                 <div className={styles.windowTitle}>
-                  Resource Index – Efficiency Pulse
+                  Efficiency Pulse
                 </div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
@@ -692,7 +692,7 @@ function NewAnalysis() {
                   <div className={styles.donutHole}></div>
                   <div className={styles.donutLabel}>
                     <div className={styles.value}>72%</div>
-                    <div className={styles.text}>Utilization</div>
+                    <div className={styles.text}>Yield</div>
                   </div>
                   <div className={styles.legendItem} style={{ bottom: "25%" }}>
                     <span></span>Group A
@@ -717,7 +717,7 @@ function NewAnalysis() {
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
                 <div className={styles.windowTitle}>
-                  Robustness Overview – Risk Evaluator
+                  Lost Potential Evaluator
                 </div>
                 <div className={styles.windowStatus}>Measuring</div>
               </div>
@@ -753,7 +753,7 @@ function NewAnalysis() {
                       transition: 'transform 0.2s ease-out'
                     }}
                   ></div>
-                  <div className={styles.gaugeValue}>81% Stable</div>
+                  <div className={styles.gaugeValue}>81% Left on table</div>
                 </div>
               </div>
             </>,
@@ -860,7 +860,7 @@ function NewAnalysis() {
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
                 <div className={styles.windowTitle}>
-                  Clustering – Multi-Group Navigator
+                  Opportunity Navigator
                 </div>
                 <div className={styles.windowStatus}>Mapping</div>
               </div>
@@ -893,7 +893,7 @@ function NewAnalysis() {
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
                 <div className={styles.windowTitle}>
-                  Forecasting – Trend Projections
+                  Forecast Engine
                 </div>
                 <div className={styles.windowStatus}>Predicting</div>
               </div>
@@ -933,7 +933,7 @@ function NewAnalysis() {
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
                 <div className={styles.windowTitle}>
-                  Topology Analysis – Network Synthesis
+                  Psychoanalysis
                 </div>
                 <div className={styles.windowStatus}>Running</div>
               </div>
