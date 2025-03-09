@@ -1,76 +1,3 @@
-/* STEP 3: Global transitions for smoothness */
-* {
-  transition-property: transform, width, height, opacity, background-color, color;
-  transition-duration: 0.3s;
-  transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-/* Allow disabling transitions for certain continuous animations if needed */
-.continuous-animation {
-  transition: none !important;
-}
-
-/* Additional Keyframes for continuous motion */
-@keyframes continuousRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-@keyframes radarSweep {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-@keyframes subtlePulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.015); }
-  100% { transform: scale(1); }
-}
-@keyframes liquidWave {
-  0% { transform: translateX(0px) translateY(0px); }
-  25% { transform: translateX(1px) translateY(-1px); }
-  50% { transform: translateX(0px) translateY(0px); }
-  75% { transform: translateX(-1px) translateY(1px); }
-  100% { transform: translateX(0px) translateY(0px); }
-}
-
-/* Data flow particles */
-.dataFlowOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 100;
-  overflow: hidden;
-}
-.dataFlowParticle {
-  position: absolute;
-  background-color: rgba(149,82,211,0.5);
-  border-radius: 50%;
-  filter: blur(1px);
-  opacity: 0;
-  animation-name: flowParticle;
-  animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
-  animation-iteration-count: infinite;
-}
-@keyframes flowParticle {
-  0% {
-    transform: translate(0, 0) scale(0.3);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.7;
-  }
-  30%, 70% {
-    opacity: 0.5;
-  }
-  100% {
-    transform: translate(calc(100vw - 100%), calc(100vh - 100%)) scale(0.1);
-    opacity: 0;
-  }
-}
-
-/* Keep old gaugePulse keyframes so "nothing lost" */
 @keyframes gaugePulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.03); }
@@ -936,11 +863,36 @@
   transform-origin: left;
   animation: areaGrow 2.4s forwards ease-out 1.2s;
 }
+.dataPoint {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #9552D3;
+  transform: translate(-50%, 50%) scale(0);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.7);
+  animation: pointAppear 0.4s forwards ease-out;
+}
+.dataPoint:nth-child(3)  { bottom: 80%; left: 0%;   animation-delay: 1.4s; }
+.dataPoint:nth-child(4)  { bottom: 75%; left: 10%;  animation-delay: 1.5s; }
+.dataPoint:nth-child(5)  { bottom: 65%; left: 20%;  animation-delay: 1.6s; }
+.dataPoint:nth-child(6)  { bottom: 70%; left: 30%;  animation-delay: 1.7s; }
+.dataPoint:nth-child(7)  { bottom: 60%; left: 40%;  animation-delay: 1.8s; }
+.dataPoint:nth-child(8)  { bottom: 40%; left: 50%;  animation-delay: 1.9s; }
+.dataPoint:nth-child(9)  { bottom: 45%; left: 60%;  animation-delay: 2.0s; }
+.dataPoint:nth-child(10) { bottom: 35%; left: 70%;  animation-delay: 2.1s; }
+.dataPoint:nth-child(11) { bottom: 25%; left: 80%;  animation-delay: 2.2s; }
+.dataPoint:nth-child(12) { bottom: 30%; left: 90%;  animation-delay: 2.3s; }
+.dataPoint:nth-child(13) { bottom: 20%; left: 100%; animation-delay: 2.4s; }
 @keyframes areaGrow {
   0% { transform: scaleX(0); }
   100% { transform: scaleX(1); }
 }
-/* Data points .dataPoint already has wave added inline in TSX */
+@keyframes pointAppear {
+  0% { transform: translate(-50%, 50%) scale(0); }
+  70% { transform: translate(-50%, 50%) scale(1.5); }
+  100% { transform: translate(-50%, 50%) scale(1); }
+}
 
 /* 4) Chord */
 .chordContainer { position: relative; width: 100%; height: 100%; }
@@ -1004,18 +956,27 @@
 
 /* 5) Scatter */
 .scatterContainer { position: relative; width: 100%; height: 100%; }
-/* .scatterPoint animations are appended inline in TSX */
 .scatterPoint {
   position: absolute;
   border-radius: 50%;
   background-color: rgba(149,82,211,0.7);
   transform: scale(0);
   opacity: 0;
+  animation: scatterAppear 0.8s forwards cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 0 0 5px rgba(149,82,211,0.3);
 }
 .scatterPoint[data-value="high"]   { width: 12px; height: 12px; }
 .scatterPoint[data-value="medium"] { width: 9px;  height: 9px; }
 .scatterPoint[data-value="low"]    { width: 6px;  height: 6px; }
+.scatterPoint:nth-child(1) { left: 18%; top: 25%; animation-delay: 0.7s; }
+.scatterPoint:nth-child(2) { left: 32%; top: 45%; animation-delay: 0.9s; }
+.scatterPoint:nth-child(3) { left: 45%; top: 20%; animation-delay: 1.1s; }
+.scatterPoint:nth-child(4) { left: 60%; top: 60%; animation-delay: 1.3s; }
+.scatterPoint:nth-child(5) { left: 75%; top: 35%; animation-delay: 1.5s; }
+.scatterPoint:nth-child(6) { left: 25%; top: 70%; animation-delay: 1.7s; }
+.scatterPoint:nth-child(7) { left: 48%; top: 75%; animation-delay: 1.9s; }
+.scatterPoint:nth-child(8) { left: 70%; top: 78%; animation-delay: 2.1s; }
+.scatterPoint:nth-child(9) { left: 85%; top: 55%; animation-delay: 2.3s; }
 .trendLine {
   position: absolute;
   width: 75%;
@@ -1368,7 +1329,8 @@
   width: 100%;
   text-align: center;
   font-size: 8px;
-  color: #fff;
+  /* Changed to dark so it's visible over the bar */
+  color: #fff; /* If you want it on top of the bar, keep white or set #000 if needed. */
   font-weight: 600;
   top: 0;
   transform: translateY(-100%);
@@ -1384,6 +1346,10 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
+/* You can change barValue color from #fff to #333 if you prefer them outside the bar. 
+   But if you do, consider adjusting the position so it doesn't overlap. 
+*/
+
 /* 10) Bubble */
 .bubbleContainer {
   position: relative;
@@ -1396,24 +1362,28 @@
   transform: scale(0);
   background: radial-gradient(circle at 30% 30%, rgba(188,115,237,0.9), rgba(149,82,211,0.7));
   box-shadow: 0 0 15px rgba(149,82,211,0.3);
+  animation: bubbleGrow 1.5s forwards cubic-bezier(0.17, 0.67, 0.83, 0.67);
 }
 .bubble:nth-child(1) {
   width: 25%;
   height: 25%;
   left: 20%;
   top: 30%;
+  animation-delay: 0.5s;
 }
 .bubble:nth-child(2) {
   width: 35%;
   height: 35%;
   right: 20%;
   top: 50%;
+  animation-delay: 1.2s;
 }
 .bubble:nth-child(3) {
   width: 20%;
   height: 20%;
   left: 50%;
   top: 25%;
+  animation-delay: 1.7s;
 }
 .bubbleLabel {
   position: absolute;
@@ -1518,20 +1488,27 @@
   opacity: 0;
   animation: lineAppear 0.1s forwards ease-out 1s;
 }
-@keyframes lineDraw {
-  0% { stroke-dashoffset: 500; }
-  100% { stroke-dashoffset: 0; }
+.linePoint {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: white;
+  border: 2px solid #9552D3;
+  border-radius: 50%;
+  transform: translate(-50%, 50%) scale(0);
+  animation: linePointAppear 0.5s forwards ease-out;
 }
-@keyframes lineAppear {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-/* .linePoint wave anim added inline in TSX */
-@keyframes linePointAppear {
-  0% { transform: translate(-50%, 50%) scale(0); }
-  70% { transform: translate(-50%, 50%) scale(1.5); }
-  100% { transform: translate(-50%, 50%) scale(1); }
-}
+.linePoint:nth-child(3)  { bottom: 60%; left: 0%;   animation-delay: 1.1s; }
+.linePoint:nth-child(4)  { bottom: 75%; left: 10%;  animation-delay: 1.2s; }
+.linePoint:nth-child(5)  { bottom: 50%; left: 20%;  animation-delay: 1.3s; }
+.linePoint:nth-child(6)  { bottom: 65%; left: 30%;  animation-delay: 1.4s; }
+.linePoint:nth-child(7)  { bottom: 40%; left: 40%;  animation-delay: 1.5s; }
+.linePoint:nth-child(8)  { bottom: 20%; left: 50%;  animation-delay: 1.6s; }
+.linePoint:nth-child(9)  { bottom: 35%; left: 60%;  animation-delay: 1.7s; }
+.linePoint:nth-child(10) { bottom: 10%; left: 70%;  animation-delay: 1.8s; }
+.linePoint:nth-child(11) { bottom: 30%; left: 80%;  animation-delay: 1.9s; }
+.linePoint:nth-child(12) { bottom: 15%; left: 90%;  animation-delay: 2.0s; }
+.linePoint:nth-child(13) { bottom: 25%; left: 100%; animation-delay: 2.1s; }
 .lineFill {
   position: absolute;
   width: 100%;
@@ -1544,6 +1521,19 @@
   background: linear-gradient(to bottom, rgba(149,82,211,0.4) 0%, rgba(149,82,211,0.05) 100%);
   opacity: 0;
   animation: lineFillAppear 1.5s forwards ease-out 2.3s;
+}
+@keyframes lineDraw {
+  0% { stroke-dashoffset: 500; }
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes lineAppear {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes linePointAppear {
+  0% { transform: translate(-50%, 50%) scale(0); }
+  70% { transform: translate(-50%, 50%) scale(1.5); }
+  100% { transform: translate(-50%, 50%) scale(1); }
 }
 @keyframes lineFillAppear {
   0% { opacity: 0; transform: scaleY(0); transform-origin: bottom; }
