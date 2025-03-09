@@ -332,16 +332,16 @@ function NewAnalysis() {
     // Smooth interpolation ~60fps
     const animationTimer = setInterval(() => {
       const interpolationFactor = 0.05; // 5% each tick
-      const newValues: Record<string, number> = {};
+  const newValues = {} as typeof liveRandom;
 
-      Object.keys(currentValues).forEach((key) => {
-        const diff = (targetValues as any)[key] - (currentValues as any)[key];
-        (newValues as any)[key] = (currentValues as any)[key] + (diff * interpolationFactor);
-      });
+Object.keys(currentValues).forEach((key) => {
+  const k = key as keyof typeof liveRandom;
+  const diff = targetValues[k] - currentValues[k];
+  newValues[k] = currentValues[k] + (diff * interpolationFactor);
+});
 
-      currentValues = newValues;
-      setLiveRandom(newValues as any);
-    }, 16);
+currentValues = newValues;
+setLiveRandom(newValues);
 
     return () => {
       clearInterval(targetUpdateTimer);
