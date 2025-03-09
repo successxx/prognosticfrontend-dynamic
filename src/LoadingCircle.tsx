@@ -1,6 +1,3 @@
-// Note: We remove the default "React" import because TS6133 complains it's unused.
-// We still import the specific hooks from "react" so that TypeScript doesn't fail:
-
 import { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
 
@@ -37,13 +34,12 @@ function OldLoader() {
         // After fade-out completes, update the message and fade-in
         setMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
         setFade(true); // Trigger fade-in
-      }, 500); // Match the duration of the fade-out
+      }, 500);
     };
 
     // Change the message every 5 seconds
     const intervalId = setInterval(updateMessage, 5000);
 
-    // Clean up on unmount
     return () => clearInterval(intervalId);
   }, [loadingMessages.length]);
 
@@ -59,7 +55,7 @@ function OldLoader() {
         <div className={styles["pai-dr-ring-middle"]}></div>
         <div className={styles["pai-dr-ring-outer"]}></div>
 
-        {/* Data points that appear and disappear */}
+        {/* Data points */}
         <div className={styles["pai-dr-data-points"]}>
           <div className={styles["pai-dr-data-point"]}></div>
           <div className={styles["pai-dr-data-point"]}></div>
@@ -196,7 +192,7 @@ function NewAnalysis() {
     bar: 0,
     gauge: 0,
     radar: 0,
-    chord: 0,
+    chord: 0,  // (We'll repurpose this if needed, or ignore for dial)
     scatter: 0,
     bubble: 0,
     area: 0,
@@ -292,23 +288,24 @@ function NewAnalysis() {
         setLogMessages((prev) => [...prev, baseAnalysisLogLines[currentIndex]]);
         currentIndex++;
       } else {
-        // Restart with random logs when we've used all the predetermined ones
+        // Restart with random logs
         const randomIndex = Math.floor(Math.random() * baseAnalysisLogLines.length);
         setLogMessages((prev) => [...prev, baseAnalysisLogLines[randomIndex]]);
       }
-    }, 800); // Faster log updates
+    }, 800);
 
     return () => {
       clearInterval(analysisTimer);
     };
   }, [baseAnalysisLogLines]);
 
-  // STEP 1: Smooth Interpolation Approach
+  // Smooth interpolation approach
   useEffect(() => {
     // Target values toward which we interpolate
     let targetValues = {
-      funnel: 0, bar: 0, gauge: 0, radar: 0, chord: 0, scatter: 0,
-      bubble: 0, area: 0, line: 0, network: 0, heatmap: 0, donut: 0
+      funnel: 0, bar: 0, gauge: 0, radar: 0, chord: 0,
+      scatter: 0, bubble: 0, area: 0, line: 0,
+      network: 0, heatmap: 0, donut: 0
     };
 
     // Current values that change smoothly
@@ -330,22 +327,21 @@ function NewAnalysis() {
         heatmap: Math.random() * 2 - 1,
         donut: Math.random() * 2 - 1
       };
-    }, 2000); // New targets every 2 seconds
+    }, 2000);
 
-    // Smooth interpolation at ~60fps
+    // Smooth interpolation ~60fps
     const animationTimer = setInterval(() => {
-      const interpolationFactor = 0.05; // Move ~5% closer each tick
-   const newValues = {} as typeof liveRandom;
+      const interpolationFactor = 0.05; // 5% each tick
+      const newValues: Record<string, number> = {};
 
-Object.keys(currentValues).forEach((key) => {
-  const k = key as keyof typeof liveRandom;
-  const diff = targetValues[k] - currentValues[k];
-  newValues[k] = currentValues[k] + (diff * interpolationFactor);
-});
+      Object.keys(currentValues).forEach((key) => {
+        const diff = (targetValues as any)[key] - (currentValues as any)[key];
+        (newValues as any)[key] = (currentValues as any)[key] + (diff * interpolationFactor);
+      });
 
-currentValues = newValues;
-setLiveRandom(newValues);
-    }, 16); // ~60fps
+      currentValues = newValues;
+      setLiveRandom(newValues as any);
+    }, 16);
 
     return () => {
       clearInterval(targetUpdateTimer);
@@ -353,41 +349,27 @@ setLiveRandom(newValues);
     };
   }, []);
 
-  // STEP 2: Natural micro-movements (time-based), right before return
-  const now = Date.now() / 1000; // Current time in seconds
+  // Step 2: Micro-movements
+  const now = Date.now() / 1000;
   const microMovements = {
-    // Circular breathing effect for gauge/donut if desired
     pulse: Math.sin(now * 0.8) * 0.5,
-
-    // X-axis drift
     driftX: Math.sin(now * 0.5) * 1.2,
-
-    // Y-axis drift
     driftY: Math.cos(now * 0.7) * 0.8,
-
-    // Rotation drift
     rotateDrift: Math.sin(now * 0.3) * 0.7,
-
-    // Scale breathing
     scalePulse: 1 + Math.sin(now * 0.6) * 0.01
   };
 
-  // Calculate gauge angle
   function getGaugeAngle(baseAngle: number, adjustDeg: number) {
     const angle = baseAngle + adjustDeg;
     return clamp(angle, 0, 90);
   }
 
-  // Rendering helper
   const animationClasses = [
     styles.animation1,
     styles.animation2,
     styles.animation3,
     styles.animation4
   ];
-  function getAnimationClass(i: number) {
-    return animationClasses[i % animationClasses.length];
-  }
   const delayClasses = [
     styles.delay1,
     styles.delay2,
@@ -402,6 +384,10 @@ setLiveRandom(newValues);
     styles.delay11,
     styles.delay12
   ];
+
+  function getAnimationClass(i: number) {
+    return animationClasses[i % animationClasses.length];
+  }
 
   function renderModule(content: JSX.Element, moduleIndex: number) {
     const loaded = moduleLoaded[moduleIndex];
@@ -431,7 +417,7 @@ setLiveRandom(newValues);
 
   return (
     <>
-      {/* Purple progress bar at top */}
+      {/* Purple progress bar */}
       <div className={styles.progressContainer}>
         <div
           className={`
@@ -444,27 +430,23 @@ setLiveRandom(newValues);
         </div>
       </div>
 
-      {/* Spinner + text just under the purple loader */}
+      {/* Spinner + text under the purple loader */}
       <OldLoader />
 
-      {/* Then the modules + rotating message (from NewAnalysis) + logs */}
       <div className={styles.content}>
         <div className={styles.visualization}>
-          {/* 1) Funnel Analysis Module */}
+          {/* 1) Funnel Analysis */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Observational Data – Funnel
-                </div>
+                <div className={styles.windowTitle}>Observational Data – Funnel</div>
                 <div className={styles.windowStatus}>Live</div>
               </div>
               <div className={styles.moduleBody}
                 style={{
-                  // Subtle micro-movement:
                   transform: `translate(${microMovements.driftX}px, ${microMovements.driftY}px) scale(${microMovements.scalePulse})`
                 }}
               >
@@ -532,13 +514,10 @@ setLiveRandom(newValues);
                   transform: `translate(${microMovements.driftX * 0.5}px, ${microMovements.driftY * 0.5}px)`
                 }}
               >
-                {/* Add continuous rotation to the radar chart container */}
                 <div className={styles.radarContainer}>
                   <div
                     className={styles.radarChart}
-                    style={{
-                      animation: "continuousRotate 30s linear infinite"
-                    }}
+                    style={{ animation: "continuousRotate 30s linear infinite" }}
                   >
                     <div className={styles.radarAxis}></div>
                     <div className={styles.radarAxis}></div>
@@ -564,64 +543,111 @@ setLiveRandom(newValues);
             1
           )}
 
-          {/* 3) Predictive Area Chart */}
+          {/* 3) -- REPLACED "Comparative Markers – Matrix" WITH OPPORTUNITY DIAL */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Future Mapping – Predictive View
-                </div>
-                <div className={styles.windowStatus}>Analyzing</div>
+                <div className={styles.windowTitle}>Opportunity Dial</div>
+                <div className={styles.windowStatus}>Computing</div>
               </div>
-              <div className={styles.moduleBody}
-                style={{
-                  transform: `translate(${microMovements.driftX}px, ${microMovements.driftY * 0.3}px)`
-                }}
-              >
-                <div className={styles.chartGrid}></div>
-                <div className={styles.chartAxisX}></div>
-                <div className={styles.chartAxisY}></div>
-                <div className={styles.areaChartContainer}>
-                  <div className={styles.areaPath}>
-                    <div className={styles.area}></div>
-                    <div className={styles.areaLine}></div>
-                    {/* Data points with wave animation */}
-                    <div className={styles.dataPoint}
-                      style={{ animation: "pointAppear 0.4s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
-                    ></div>
-                    <div className={styles.dataPoint}
-                      style={{ animation: "pointAppear 0.4s 0.1s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
-                    ></div>
-                    <div className={styles.dataPoint}
-                      style={{ animation: "pointAppear 0.4s 0.2s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
-                    ></div>
-                    <div className={styles.dataPoint}
-                      style={{ animation: "pointAppear 0.4s 0.3s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
-                    ></div>
-                    <div className={styles.dataPoint}
-                      style={{ animation: "pointAppear 0.4s 0.4s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
-                    ></div>
-                    <div className={styles.dataPoint}
-                      style={{ animation: "pointAppear 0.4s 0.5s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
-                    ></div>
-                    <div className={styles.dataPoint}
-                      style={{ animation: "pointAppear 0.4s 0.6s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
-                    ></div>
-                    <div className={styles.dataPoint}
-                      style={{ animation: "pointAppear 0.4s 0.7s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
-                    ></div>
-                    <div className={styles.dataPoint}
-                      style={{ animation: "pointAppear 0.4s 0.8s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
-                    ></div>
-                    <div className={styles.dataPoint}
-                      style={{ animation: "pointAppear 0.4s 0.9s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
-                    ></div>
-                    <div className={styles.dataPoint}
-                      style={{ animation: "pointAppear 0.4s 1.0s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
-                    ></div>
+              <div className={styles.moduleBody}>
+                <div style={{
+                  position: 'relative',
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}>
+                  {/* Professional opportunity dial */}
+                  <div style={{
+                    position: 'relative',
+                    width: '70%',
+                    height: '70%',
+                    borderRadius: '50%',
+                    background: 'conic-gradient(#28a745 0%, #ffc107 60%, #9552D3 80%, #BC73ED 100%)',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.15), inset 0 2px 5px rgba(255,255,255,0.5)'
+                  }}>
+                    {/* White center of dial */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '20%',
+                      left: '20%',
+                      width: '60%',
+                      height: '60%',
+                      borderRadius: '50%',
+                      background: 'white',
+                      boxShadow: 'inset 0 2px 5px rgba(0,0,0,0.1)'
+                    }}></div>
+
+                    {/* Dial tick marks */}
+                    {Array.from({ length: 30 }).map((_, i) => (
+                      <div key={i} style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        width: i % 5 === 0 ? '4px' : '2px',
+                        height: i % 5 === 0 ? '12px' : '8px',
+                        background: '#333',
+                        transformOrigin: 'center calc(100% + 20px)',
+                        transform: `translate(-50%, -50%) rotate(${i * 12}deg)`,
+                        borderRadius: '1px',
+                        opacity: i % 5 === 0 ? 1 : 0.6
+                      }}></div>
+                    ))}
+
+                    {/* Dial pointer (indicating high opportunity) */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      width: '4px',
+                      height: '40%',
+                      background: '#333',
+                      transformOrigin: 'center bottom',
+                      transform: `translate(-50%, -100%) rotate(${110 + Math.sin(Date.now() / 1000) * 5}deg)`,
+                      borderRadius: '2px',
+                      boxShadow: '0 0 5px rgba(0,0,0,0.2)',
+                      zIndex: 5,
+                      transition: 'none',
+                      animation: 'needleOscillate 3s infinite ease-in-out'
+                    }}></div>
+
+                    {/* Center knob */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      width: '20px',
+                      height: '20px',
+                      background: 'radial-gradient(circle at 30% 30%, #666, #333)',
+                      borderRadius: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.3)'
+                    }}></div>
+                  </div>
+
+                  {/* Label */}
+                  <div style={{
+                    marginTop: '15px',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                    color: '#9552D3',
+                    textAlign: 'center'
+                  }}>
+                    Opportunity Index: 87%
+                    <div style={{
+                      fontSize: '9px',
+                      color: '#555',
+                      fontWeight: 'normal',
+                      marginTop: '3px'
+                    }}>
+                      Above Average Performance
+                    </div>
                   </div>
                 </div>
               </div>
@@ -629,37 +655,7 @@ setLiveRandom(newValues);
             2
           )}
 
-          {/* 4) Comparative Matrix (Chord Diagram) */}
-          {renderModule(
-            <>
-              <div className={styles.macWindowBar}>
-                <span className={styles.trafficLight} data-color="red" />
-                <span className={styles.trafficLight} data-color="yellow" />
-                <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Comparative Markers – Matrix
-                </div>
-                <div className={styles.windowStatus}>Computing</div>
-              </div>
-              <div className={styles.moduleBody}
-                style={{
-                  transform: `translateY(${microMovements.driftY}px) scale(${microMovements.scalePulse})`
-                }}
-              >
-                <div className={styles.chordContainer}>
-                  <div className={styles.chordCircle}></div>
-                  <div className={styles.chordArc}></div>
-                  <div className={styles.chordArc}></div>
-                  <div className={styles.chordArc}></div>
-                  <div className={styles.chord}></div>
-                  <div className={styles.chord2}></div>
-                </div>
-              </div>
-            </>,
-            3
-          )}
-
-          {/* 5) Multi-Variable Scatter Plot */}
+          {/* 4) -- REPLACED "Multi-Variable Analysis – Factor Explorer" WITH SCATTER PLOT */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -671,51 +667,152 @@ setLiveRandom(newValues);
                 </div>
                 <div className={styles.windowStatus}>Active</div>
               </div>
-              <div className={styles.moduleBody}
-                style={{
-                  transform: `translate(${microMovements.driftX * 0.3}px, ${microMovements.driftY * 0.2}px)`
-                }}
-              >
+              <div className={styles.moduleBody}>
+                {/* Add chart grid and axes */}
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
+
                 <div className={styles.scatterContainer}>
-                  {/* Add wave animation to scatter points */}
-                  <div className={styles.scatterPoint} data-value="high"
-                    style={{ animation: "scatterAppear 0.8s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
-                  ></div>
-                  <div className={styles.scatterPoint} data-value="medium"
-                    style={{ animation: "scatterAppear 0.8s 0.2s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
-                  ></div>
-                  <div className={styles.scatterPoint} data-value="high"
-                    style={{ animation: "scatterAppear 0.8s 0.4s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
-                  ></div>
-                  <div className={styles.scatterPoint} data-value="low"
-                    style={{ animation: "scatterAppear 0.8s 0.6s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
-                  ></div>
-                  <div className={styles.scatterPoint} data-value="medium"
-                    style={{ animation: "scatterAppear 0.8s 0.8s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
-                  ></div>
-                  <div className={styles.scatterPoint} data-value="low"
-                    style={{ animation: "scatterAppear 0.8s 1.0s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
-                  ></div>
-                  <div className={styles.scatterPoint} data-value="medium"
-                    style={{ animation: "scatterAppear 0.8s 1.2s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
-                  ></div>
-                  <div className={styles.scatterPoint} data-value="high"
-                    style={{ animation: "scatterAppear 0.8s 1.4s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
-                  ></div>
-                  <div className={styles.scatterPoint} data-value="medium"
-                    style={{ animation: "scatterAppear 0.8s 1.6s forwards cubic-bezier(0.34,1.56,0.64,1), liquidWave 8s ease-in-out infinite" }}
-                  ></div>
-                  <div className={styles.trendLine}></div>
+                  {/* Quadrant labels */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '15%',
+                    left: '15%',
+                    fontSize: '8px',
+                    color: 'rgba(0,0,0,0.5)',
+                    fontWeight: 'bold'
+                  }}>Low Risk</div>
+                  <div style={{
+                    position: 'absolute',
+                    top: '15%',
+                    right: '15%',
+                    fontSize: '8px',
+                    color: 'rgba(0,0,0,0.5)',
+                    fontWeight: 'bold',
+                    textAlign: 'right'
+                  }}>High Value</div>
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '15%',
+                    left: '15%',
+                    fontSize: '8px',
+                    color: 'rgba(0,0,0,0.5)',
+                    fontWeight: 'bold'
+                  }}>Low Priority</div>
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '15%',
+                    right: '15%',
+                    fontSize: '8px',
+                    color: 'rgba(0,0,0,0.5)',
+                    fontWeight: 'bold',
+                    textAlign: 'right'
+                  }}>High Risk</div>
+
+                  {/* Create scatter points in distinctive clusters */}
+                  {Array.from({ length: 18 }).map((_, i) => {
+                    const nowLocal = Date.now() / 1000;
+                    // Clusters
+                    const clusters = [
+                      { x: 20, y: 30, size: "high", name: "A" },
+                      { x: 65, y: 25, size: "medium", name: "B" },
+                      { x: 80, y: 70, size: "high", name: "C" },
+                      { x: 30, y: 65, size: "low", name: "D" },
+                      { x: 50, y: 40, size: "medium", name: "E" },
+                      { x: 75, y: 45, size: "low", name: "F" }
+                    ];
+
+                    const clusterIndex = Math.floor(i / 3);
+                    const cluster = clusters[clusterIndex % clusters.length];
+
+                    // Jitter
+                    const jitterX = Math.sin(nowLocal / (1 + i * 0.2)) * 3;
+                    const jitterY = Math.cos(nowLocal / (1.2 + i * 0.3)) * 3;
+
+                    return (
+                      <div key={i}>
+                        <div
+                          className={styles.scatterPoint}
+                          data-value={cluster.size}
+                          style={{
+                            left: `${cluster.x + jitterX + (i % 3 - 1) * 5}%`,
+                            top: `${cluster.y + jitterY + (i % 3 - 1) * 4}%`,
+                            boxShadow: `0 0 ${3 + Math.sin(nowLocal / (1 + i * 0.1)) * 2}px rgba(149,82,211,0.7)`,
+                            transition: 'none'
+                          }}
+                        ></div>
+
+                        {/* Label for first point in each cluster */}
+                        {i % 3 === 0 && (
+                          <div style={{
+                            position: 'absolute',
+                            left: `${cluster.x + jitterX}%`,
+                            top: `${cluster.y + jitterY - 8}%`,
+                            fontSize: '8px',
+                            fontWeight: 'bold',
+                            color: '#9552D3',
+                            background: 'rgba(255,255,255,0.7)',
+                            borderRadius: '2px',
+                            padding: '1px 3px',
+                            zIndex: 5
+                          }}>
+                            {cluster.name}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+
+                  {/* Quadrant dividers */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '0',
+                    width: '100%',
+                    height: '1px',
+                    backgroundColor: 'rgba(0,0,0,0.1)'
+                  }}></div>
+                  <div style={{
+                    position: 'absolute',
+                    top: '0',
+                    left: '50%',
+                    width: '1px',
+                    height: '100%',
+                    backgroundColor: 'rgba(0,0,0,0.1)'
+                  }}></div>
+
+                  {/* Trend lines */}
+                  <div style={{
+                    position: 'absolute',
+                    width: '70%',
+                    height: '2px',
+                    bottom: '25%',
+                    left: '15%',
+                    background: 'linear-gradient(90deg, rgba(149,82,211,0.2), rgba(149,82,211,0.8))',
+                    transform: `rotate(${30 + Math.sin(Date.now() / 3000) * 3}deg)`,
+                    transformOrigin: 'left center',
+                    transition: 'none'
+                  }}></div>
+                  <div style={{
+                    position: 'absolute',
+                    width: '50%',
+                    height: '1px',
+                    top: '35%',
+                    left: '25%',
+                    background: 'rgba(188,115,237,0.5)',
+                    transform: `rotate(${-15 + Math.sin(Date.now() / 4000) * 2}deg)`,
+                    transformOrigin: 'left center',
+                    transition: 'none',
+                    opacity: 0.6
+                  }}></div>
                 </div>
               </div>
             </>,
-            4
+            3
           )}
 
-          {/* 6) Heatmap Grid */}
+          {/* 5) Heatmap */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -778,24 +875,21 @@ setLiveRandom(newValues);
                 </div>
               </div>
             </>,
-            5
+            4
           )}
 
-          {/* 7) Donut Chart Resource Allocation */}
+          {/* 6) Donut */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Resource Index – Efficiency Pulse
-                </div>
+                <div className={styles.windowTitle}>Resource Index – Efficiency Pulse</div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
               <div className={styles.moduleBody}
                 style={{
-                  // Gentle pulse
                   animation: "subtlePulse 4s infinite ease-in-out",
                   transform: `translateY(${microMovements.driftY}px)`
                 }}
@@ -822,23 +916,20 @@ setLiveRandom(newValues);
                 </div>
               </div>
             </>,
-            6
+            5
           )}
 
-          {/* 8) Risk Evaluation Gauge */}
+          {/* 7) Gauge */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Robustness Overview – Risk Evaluator
-                </div>
+                <div className={styles.windowTitle}>Robustness Overview – Risk Evaluator</div>
                 <div className={styles.windowStatus}>Measuring</div>
               </div>
               <div className={styles.moduleBody}>
-                {/* Ensure continuous subtle pulse */}
                 <div className={styles.gaugeContainer} style={{
                   animation: "subtlePulse 4s infinite ease-in-out"
                 }}>
@@ -874,19 +965,17 @@ setLiveRandom(newValues);
                 </div>
               </div>
             </>,
-            7
+            6
           )}
 
-          {/* 9) Bar Chart Performance Metrics */}
+          {/* 8) Bar Chart */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Performance Tiers – Efficiency Review
-                </div>
+                <div className={styles.windowTitle}>Performance Tiers – Efficiency Review</div>
                 <div className={styles.windowStatus}>Calculating</div>
               </div>
               <div className={styles.moduleBody}
@@ -969,10 +1058,10 @@ setLiveRandom(newValues);
                 </div>
               </div>
             </>,
-            8
+            7
           )}
 
-          {/* 10) Clustering Bubble Visualization */}
+          {/* 9) Bubble */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
@@ -993,7 +1082,6 @@ setLiveRandom(newValues);
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
                 <div className={styles.bubbleContainer}>
-                  {/* Bubbles with wavey motion */}
                   <div className={styles.bubble}
                     style={{ animation: "bubbleGrow 1.5s forwards cubic-bezier(0.17,0.67,0.83,0.67), liquidWave 8s ease-in-out infinite" }}
                   ></div>
@@ -1012,19 +1100,17 @@ setLiveRandom(newValues);
                 </div>
               </div>
             </>,
-            9
+            8
           )}
 
-          {/* 11) Trend Forecasting Line Chart */}
+          {/* 10) Line */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Forecasting – Trend Projections
-                </div>
+                <div className={styles.windowTitle}>Forecasting – Trend Projections</div>
                 <div className={styles.windowStatus}>Predicting</div>
               </div>
               <div className={styles.moduleBody}
@@ -1039,7 +1125,6 @@ setLiveRandom(newValues);
                   <div className={styles.lineChart}>
                     <div className={styles.lineBase}></div>
                     <div className={styles.linePath}></div>
-                    {/* line points with wave */}
                     <div className={styles.linePoint}
                       style={{ animation: "linePointAppear 0.5s forwards ease-out, liquidWave 8s ease-in-out infinite" }}
                     ></div>
@@ -1078,19 +1163,17 @@ setLiveRandom(newValues);
                 </div>
               </div>
             </>,
-            10
+            9
           )}
 
-          {/* 12) Network Topology Analysis */}
+          {/* 11) Network */}
           {renderModule(
             <>
               <div className={styles.macWindowBar}>
                 <span className={styles.trafficLight} data-color="red" />
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
-                <div className={styles.windowTitle}>
-                  Topology Analysis – Network Synthesis
-                </div>
+                <div className={styles.windowTitle}>Topology Analysis – Network Synthesis</div>
                 <div className={styles.windowStatus}>Running</div>
               </div>
               <div className={styles.moduleBody}
@@ -1121,26 +1204,23 @@ setLiveRandom(newValues);
                 </div>
               </div>
             </>,
+            10
+          )}
+
+          {/* 12) (Unused but kept) or we can reuse if needed */}
+          {renderModule(
+            <>
+              <div className={styles.macWindowBar}>
+                <span className={styles.trafficLight} data-color="red" />
+                <span className={styles.trafficLight} data-color="yellow" />
+                <span className={styles.trafficLight} data-color="green" />
+                <div className={styles.windowTitle}>Module 12 – Extra</div>
+                <div className={styles.windowStatus}>Idle</div>
+              </div>
+              <div className={styles.moduleBody}></div>
+            </>,
             11
           )}
-        </div>
-
-        {/* STEP 5: Data flow animation overlay (added right after visualization) */}
-        <div className={styles.dataFlowOverlay}>
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div
-              key={i}
-              className={styles.dataFlowParticle}
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                width: `${2 + Math.random() * 3}px`,
-                height: `${2 + Math.random() * 3}px`,
-                animationDuration: `${5 + Math.random() * 15}s`,
-                animationDelay: `${Math.random() * 5}s`
-              }}
-            />
-          ))}
         </div>
 
         {/* Single-line rotating message */}
@@ -1167,14 +1247,83 @@ setLiveRandom(newValues);
 // FINAL COMBINED COMPONENT
 // ---------------------------------------------------------
 export default function CombinedLoader() {
+  // Additional Dashboard-wide enhancements:
+  const now = Date.now() / 3000;
+  const backgroundOpacity = 0.8 + Math.sin(now) * 0.2;
+
   return (
     <div className={styles.container}>
-      {/* 
-        The NewAnalysis component now:
-        1) Renders the purple loader bar at top
-        2) Immediately shows OldLoader (spinner + text) under that
-        3) Then renders the 12 modules, single-line rotating message, and log
-      */}
+      {/* Add radial background animation */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundImage: `radial-gradient(
+          circle at ${50 + Math.sin(Date.now()/5000) * 10}% 
+                     ${50 + Math.cos(Date.now()/4000) * 10}%,
+          rgba(149,82,211,0.08), 
+          transparent 70%
+        )`,
+        backgroundSize: '200% 200%',
+        animation: 'gradientFlow 15s infinite ease-in-out',
+        opacity: backgroundOpacity,
+        zIndex: 0,
+        pointerEvents: 'none'
+      }}>
+      </div>
+
+      {/* Data flow particles between modules */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 999,
+        pointerEvents: 'none'
+      }}>
+        {Array.from({ length: 20 }).map((_, i) => {
+          const t = Date.now() / 1000;
+          // Module positions in a 3x3 grid
+          const modules = [
+            { x: 16.7, y: 16.7 }, { x: 50, y: 16.7 }, { x: 83.3, y: 16.7 },
+            { x: 16.7, y: 50 },   { x: 50, y: 50 },   { x: 83.3, y: 50 },
+            { x: 16.7, y: 83.3 }, { x: 50, y: 83.3 }, { x: 83.3, y: 83.3 }
+          ];
+          const startIndex = i % modules.length;
+          const endIndex = (startIndex + 1 + Math.floor(i / 3)) % modules.length;
+          const start = modules[startIndex];
+          const end = modules[endIndex];
+
+          const duration = 3 + (i % 5);
+          const progress = (t % duration) / duration;
+          const x = start.x + (end.x - start.x) * progress;
+          const y = start.y + (end.y - start.y) * progress;
+          const opacity = Math.sin(progress * Math.PI);
+
+          return (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                left: `${x}%`,
+                top: `${y}%`,
+                width: `${2 + Math.sin(t * 2) * 1}px`,
+                height: `${2 + Math.sin(t * 2) * 1}px`,
+                backgroundColor: 'rgba(149,82,211,0.8)',
+                borderRadius: '50%',
+                transform: 'translate(-50%, -50%)',
+                boxShadow: `0 0 ${4 + Math.sin(t * 3) * 2}px rgba(149,82,211,0.6)`,
+                opacity: opacity,
+                transition: 'none'
+              }}
+            ></div>
+          );
+        })}
+      </div>
+
       <NewAnalysis />
     </div>
   );
