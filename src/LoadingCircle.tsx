@@ -415,15 +415,15 @@ function NewAnalysis() {
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
                 <div className={styles.windowTitle}>
-                  Observational Data – Funnel
+                  Personalized Data Found
                 </div>
                 <div className={styles.windowStatus}>Live</div>
               </div>
               <div className={styles.moduleBody}>
                 <div className={styles.funnelContainer}>
                   <div className={styles.funnelMetric} style={{ top: "10%" }}>
-                    <span className={styles.label}>Data Points</span>
-                    <span className={styles.value}>15,120</span>
+                    <span className={styles.label}>Raw Signals Detected</span>
+                    <span className={styles.value}>53,532,120</span>
                     <div
                       className={styles.bar}
                       style={{
@@ -433,7 +433,7 @@ function NewAnalysis() {
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "35%" }}>
                     <span className={styles.label}>Key Observations</span>
-                    <span className={styles.value}>9,304</span>
+                    <span className={styles.value}>289,304</span>
                     <div
                       className={styles.bar}
                       style={{
@@ -442,8 +442,8 @@ function NewAnalysis() {
                     ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "60%" }}>
-                    <span className={styles.label}>Potential Patterns</span>
-                    <span className={styles.value}>4,189</span>
+                    <span className={styles.label}>Opportunities Identified</span>
+                    <span className={styles.value}>48,189</span>
                     <div
                       className={styles.bar}
                       style={{
@@ -452,7 +452,7 @@ function NewAnalysis() {
                     ></div>
                   </div>
                   <div className={styles.funnelMetric} style={{ top: "85%" }}>
-                    <span className={styles.label}>Core Insights</span>
+                    <span className={styles.label}>Breakthrough Discoveries</span>
                     <span className={styles.value}>2,532</span>
                     <div
                       className={styles.bar}
@@ -768,7 +768,7 @@ function NewAnalysis() {
                 <span className={styles.trafficLight} data-color="yellow" />
                 <span className={styles.trafficLight} data-color="green" />
                 <div className={styles.windowTitle}>
-                  Performance Tiers – Efficiency Review
+                  Live Split-Testing
                 </div>
                 <div className={styles.windowStatus}>Calculating</div>
               </div>
@@ -786,7 +786,7 @@ function NewAnalysis() {
                           transition: 'height 0.2s ease-out'
                         }}
                       ></div>
-                      <div className={styles.barLabel}>Cat A</div>
+                      <div className={styles.barLabel}>Cntrl 1</div>
                       {/* Changed color so it’s visible */}
                       <div className={styles.barValue}>58%</div>
                     </div>
@@ -798,7 +798,7 @@ function NewAnalysis() {
                           transition: 'height 0.2s ease-out'
                         }}
                       ></div>
-                      <div className={styles.barLabel}>Cat B</div>
+                      <div className={styles.barLabel}>Var B</div>
                       <div className={styles.barValue}>82%</div>
                     </div>
                     <div className={styles.barWrapper}>
@@ -809,7 +809,7 @@ function NewAnalysis() {
                           transition: 'height 0.2s ease-out'
                         }}
                       ></div>
-                      <div className={styles.barLabel}>Cat C</div>
+                      <div className={styles.barLabel}>Cntrl 2</div>
                       <div className={styles.barValue}>71%</div>
                     </div>
                     <div className={styles.barWrapper}>
@@ -820,7 +820,7 @@ function NewAnalysis() {
                           transition: 'height 0.2s ease-out'
                         }}
                       ></div>
-                      <div className={styles.barLabel}>Cat D</div>
+                      <div className={styles.barLabel}>Var C</div>
                       <div className={styles.barValue}>93%</div>
                     </div>
                     <div className={styles.barWrapper}>
@@ -831,7 +831,7 @@ function NewAnalysis() {
                           transition: 'height 0.2s ease-out'
                         }}
                       ></div>
-                      <div className={styles.barLabel}>Cat E</div>
+                      <div className={styles.barLabel}>Cntrl 3</div>
                       <div className={styles.barValue}>79%</div>
                     </div>
                     <div className={styles.barWrapper}>
@@ -842,7 +842,7 @@ function NewAnalysis() {
                           transition: 'height 0.2s ease-out'
                         }}
                       ></div>
-                      <div className={styles.barLabel}>Cat F</div>
+                      <div className={styles.barLabel}>Var D</div>
                       <div className={styles.barValue}>46%</div>
                     </div>
                   </div>
