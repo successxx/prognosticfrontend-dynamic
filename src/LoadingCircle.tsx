@@ -141,6 +141,7 @@ function NewAnalysis() {
   ];
 
   // Base log lines
+// Base log lines
   const baseAnalysisLogLines = [
     "[Data] Real-time aggregator is standing by...",
     "[Data] Cross-checking system readiness...",
@@ -150,7 +151,28 @@ function NewAnalysis() {
     "[System] Memory usage stable at 1.2 GB / 8 GB",
     "[Data] Forecast model iteration #3 in progress...",
     "[System] All sub-processes stable",
-    "[Data] Gathering final summary metrics..."
+    "[Data] Gathering final summary metrics...",
+    "[Analysis] Processing pattern recognition algorithms...",
+    "[Analysis] Executing multivariate regression analysis...",
+    "[System] CPU utilization spike detected: 87%",
+    "[Data] Outlier identification in progress...",
+    "[Analysis] K-means clustering optimizing...",
+    "[System] Memory allocation increased for module 3",
+    "[Data] Real-time data stream synchronizing...",
+    "[Analysis] Bayesian probability calculation complete",
+    "[System] Neural network weights adjusting...",
+    "[Data] Anomaly detection algorithms running...",
+    "[Analysis] Predictive model confidence: 89.7%",
+    "[System] Parallel processing threads: 16",
+    "[Data] Time series decomposition complete",
+    "[Analysis] Risk evaluation factors calculated",
+    "[System] Cache optimization in progress",
+    "[Data] Market correlation factors analyzed",
+    "[System] Background tasks prioritized",
+    "[Analysis] Volatility regression complete",
+    "[Data] Seasonal adjustment factors applied",
+    "[System] I/O operations normalized",
+    "[Analysis] Confidence intervals calculated"
   ];
 
   // React states
@@ -264,7 +286,7 @@ function NewAnalysis() {
     });
   }, [moduleLoaded]);
 
-  // Additional periodic logs
+// Additional periodic logs
   useEffect(() => {
     let currentIndex = 0;
     const analysisTimer = setInterval(() => {
@@ -272,9 +294,11 @@ function NewAnalysis() {
         setLogMessages((prev) => [...prev, baseAnalysisLogLines[currentIndex]]);
         currentIndex++;
       } else {
-        clearInterval(analysisTimer);
+        // Restart with random logs when we've used all the predetermined ones
+        const randomIndex = Math.floor(Math.random() * baseAnalysisLogLines.length);
+        setLogMessages((prev) => [...prev, baseAnalysisLogLines[randomIndex]]);
       }
-    }, 2000);
+    }, 800); // Faster log updates (was 2000ms)
 
     return () => {
       clearInterval(analysisTimer);
@@ -282,28 +306,29 @@ function NewAnalysis() {
   }, [baseAnalysisLogLines]);
 
   // Continuous "live" data changes
-  useEffect(() => {
-    const liveUpdateTimer = setInterval(() => {
-      setLiveRandom({
-        funnel: Math.random() * 10 - 5,
-        bar: Math.random() * 10 - 5,
-        gauge: Math.random() * 3 - 1.5,
-        radar: Math.random() * 2 - 1,
-        chord: Math.random() * 2 - 1,
-        scatter: Math.random() * 2 - 1,
-        bubble: Math.random() * 2 - 1,
-        area: Math.random() * 2 - 1,
-        line: Math.random() * 2 - 1,
-        network: Math.random() * 2 - 1,
-        heatmap: Math.random() * 2 - 1,
-        donut: Math.random() * 2 - 1
-      });
-    }, 100);
+// Continuous "live" data changes
+useEffect(() => {
+  const liveUpdateTimer = setInterval(() => {
+    setLiveRandom({
+      funnel: Math.random() * 20 - 10,  // -10 to +10 range (doubled)
+      bar: Math.random() * 15 - 7.5,    // -7.5 to +7.5 range (increased)
+      gauge: Math.random() * 10 - 5,     // -5 to +5 range (tripled)
+      radar: Math.random() * 8 - 4,      // -4 to +4 range (quadrupled)
+      chord: Math.random() * 6 - 3,      // -3 to +3 range (tripled)
+      scatter: Math.random() * 6 - 3,    // -3 to +3 range (tripled)
+      bubble: Math.random() * 5 - 2.5,   // -2.5 to +2.5 range (increased)
+      area: Math.random() * 5 - 2.5,     // -2.5 to +2.5 range (increased)
+      line: Math.random() * 8 - 4,       // -4 to +4 range (quadrupled) 
+      network: Math.random() * 4 - 2,    // -2 to +2 range (doubled)
+      heatmap: Math.random() * 4 - 2,    // -2 to +2 range (doubled)
+      donut: Math.random() * 4 - 2       // -2 to +2 range (doubled)
+    });
+  }, 200); // Update every 200ms instead of 1500ms (7.5x faster)
 
-    return () => {
-      clearInterval(liveUpdateTimer);
-    };
-  }, []);
+  return () => {
+    clearInterval(liveUpdateTimer);
+  };
+}, []);
 
   // Animation classes
   const animationClasses = [
@@ -731,7 +756,9 @@ function NewAnalysis() {
                 <div className={styles.windowStatus}>Measuring</div>
               </div>
               <div className={styles.moduleBody}>
-                <div className={styles.gaugeContainer}>
+                <div className={styles.gaugeContainer} style={{
+                  animation: 'gaugePulse 3s ease-in-out infinite'
+                }}>
                   <div className={styles.gaugeBackground}></div>
                   <div
                     className={styles.gaugeMeter}
@@ -754,11 +781,12 @@ function NewAnalysis() {
                     <div className={styles.gaugeTick}></div>
                   </div>
                   <div
-                    className={styles.gaugeNeedle}
-                    style={{
-                      transform: `rotate(${getGaugeAngle(53, liveRandom.gauge)}deg)`
-                    }}
-                  ></div>
+  className={styles.gaugeNeedle}
+  style={{
+    transform: `rotate(${getGaugeAngle(53, liveRandom.gauge)}deg)`,
+    transition: 'transform 0.2s ease-out' // Smooth needle movement
+  }}
+></div>
                   <div className={styles.gaugeValue}>81% Stable</div>
                 </div>
               </div>
@@ -790,7 +818,8 @@ function NewAnalysis() {
                           height: `${Math.max(
                             0,
                             Math.min(100, 55 + liveRandom.bar)
-                          )}%`
+                          )}%`,
+                          transition: 'height 0.2s ease-out'
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cat A</div>
@@ -1009,6 +1038,28 @@ function NewAnalysis() {
   );
 }
 
+@keyframes gaugePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+@keyframes dataFlow {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0; transform: scale(0.5); }
+}
+
+.dataDot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle at center, rgba(149,82,211,0.9), rgba(188,115,237,0.7));
+  border-radius: 50%;
+  z-index: 999;
+  box-shadow: 0 0 10px rgba(149,82,211,0.6);
+  pointer-events: none;
+}
 // ---------------------------------------------------------
 // FINAL COMBINED COMPONENT
 // ---------------------------------------------------------
