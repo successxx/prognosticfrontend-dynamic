@@ -299,57 +299,56 @@ function NewAnalysis() {
     };
   }, [baseAnalysisLogLines]);
 
-  // Smooth interpolation approach
-  useEffect(() => {
-    // Target values toward which we interpolate
-    let targetValues = {
-      funnel: 0, bar: 0, gauge: 0, radar: 0, chord: 0,
-      scatter: 0, bubble: 0, area: 0, line: 0,
-      network: 0, heatmap: 0, donut: 0
+// Smooth interpolation approach
+useEffect(() => {
+  // Target values toward which we interpolate
+  let targetValues = {
+    funnel: 0, bar: 0, gauge: 0, radar: 0, chord: 0,
+    scatter: 0, bubble: 0, area: 0, line: 0,
+    network: 0, heatmap: 0, donut: 0
+  };
+
+  // Current values that change smoothly
+  let currentValues = { ...targetValues };
+
+  // Generate new target values periodically
+  const targetUpdateTimer = setInterval(() => {
+    targetValues = {
+      funnel: Math.random() * 10 - 5,
+      bar: Math.random() * 7.5 - 3.75,
+      gauge: Math.random() * 5 - 2.5,
+      radar: Math.random() * 4 - 2,
+      chord: Math.random() * 3 - 1.5,
+      scatter: Math.random() * 3 - 1.5,
+      bubble: Math.random() * 2.5 - 1.25,
+      area: Math.random() * 2.5 - 1.25,
+      line: Math.random() * 4 - 2,
+      network: Math.random() * 2 - 1,
+      heatmap: Math.random() * 2 - 1,
+      donut: Math.random() * 2 - 1
     };
+  }, 2000);
 
-    // Current values that change smoothly
-    let currentValues = { ...targetValues };
+  // Smooth interpolation ~60fps
+  const animationTimer = setInterval(() => {
+    const interpolationFactor = 0.05; // 5% each tick
+    const newValues = {} as typeof liveRandom;
 
-    // Generate new target values periodically
-    const targetUpdateTimer = setInterval(() => {
-      targetValues = {
-        funnel: Math.random() * 10 - 5,
-        bar: Math.random() * 7.5 - 3.75,
-        gauge: Math.random() * 5 - 2.5,
-        radar: Math.random() * 4 - 2,
-        chord: Math.random() * 3 - 1.5,
-        scatter: Math.random() * 3 - 1.5,
-        bubble: Math.random() * 2.5 - 1.25,
-        area: Math.random() * 2.5 - 1.25,
-        line: Math.random() * 4 - 2,
-        network: Math.random() * 2 - 1,
-        heatmap: Math.random() * 2 - 1,
-        donut: Math.random() * 2 - 1
-      };
-    }, 2000);
+    Object.keys(currentValues).forEach((key) => {
+      const k = key as keyof typeof liveRandom;
+      const diff = targetValues[k] - currentValues[k];
+      newValues[k] = currentValues[k] + (diff * interpolationFactor);
+    });
 
-// Smooth interpolation ~60fps
-const animationTimer = setInterval(() => {
-  const interpolationFactor = 0.05; // 5% each tick
-  const newValues = {} as typeof liveRandom;
+    currentValues = newValues;
+    setLiveRandom(newValues);
+  }, 16);  // ~60fps
 
-  Object.keys(currentValues).forEach((key) => {
-    const k = key as keyof typeof liveRandom;
-    const diff = targetValues[k] - currentValues[k];
-    newValues[k] = currentValues[k] + (diff * interpolationFactor);
-  });
-
-  currentValues = newValues;
-  setLiveRandom(newValues);
-}, 16);  // ~60fps// Missing closing bracket for the animationTimer function
-
-    return () => {
-      clearInterval(targetUpdateTimer);
-      clearInterval(animationTimer);
-    };
-  }, []);  // Missing closing bracket for the useEffect
-
+  return () => {
+    clearInterval(targetUpdateTimer);
+    clearInterval(animationTimer);
+  };
+}, []);
   // Step 2: Micro-movements
   const now = Date.now() / 1000;
   const microMovements = {
