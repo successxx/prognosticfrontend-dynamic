@@ -799,7 +799,7 @@ function NewAnalysis() {
                         }}
                       ></div>
                       <div className={styles.barLabel}>Var B</div>
-                      <div className={styles.barValue}>82%</div>
+                      <div className={styles.barValue}>1MM</div>
                     </div>
                     <div className={styles.barWrapper}>
                       <div
@@ -810,7 +810,7 @@ function NewAnalysis() {
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cntrl 2</div>
-                      <div className={styles.barValue}>71%</div>
+                      <div className={styles.barValue}>2MM</div>
                     </div>
                     <div className={styles.barWrapper}>
                       <div
@@ -821,7 +821,7 @@ function NewAnalysis() {
                         }}
                       ></div>
                       <div className={styles.barLabel}>Var C</div>
-                      <div className={styles.barValue}>93%</div>
+                      <div className={styles.barValue}>3MM</div>
                     </div>
                     <div className={styles.barWrapper}>
                       <div
@@ -832,7 +832,7 @@ function NewAnalysis() {
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cntrl 3</div>
-                      <div className={styles.barValue}>79%</div>
+                      <div className={styles.barValue}>4MM</div>
                     </div>
                     <div className={styles.barWrapper}>
                       <div
@@ -843,7 +843,7 @@ function NewAnalysis() {
                         }}
                       ></div>
                       <div className={styles.barLabel}>Var D</div>
-                      <div className={styles.barValue}>46%</div>
+                      <div className={styles.barValue}>5MM</div>
                     </div>
                   </div>
                 </div>
