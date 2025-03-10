@@ -994,7 +994,7 @@ export default function CombinedLoader() {
       <div style={{ textAlign: "center", margin: "60px auto" }}>
         <h2>That site doesn't look valid!</h2>
         <p>
-          We couldn't load the data in time, so here’s a fallback. <br />
+          That site seems off, so here’s a fallback. <br />
           <button
             onClick={() => (window.location.href = "https://clients.ai")}
             style={{
