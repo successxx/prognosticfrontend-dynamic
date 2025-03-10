@@ -9,13 +9,9 @@ import styles from "./LoadingCircle.module.css";
 // ---------------------------------------------------------
 function OldLoader() {
   const loadingMessages = [
-    "Systems booting up for your custom report...",
-    "Finding immediate opportunities...",
-    "Tailoring value...",
-    "Testing potential setbacks...",
-    "Refining for immediate impact...",
-    "Running A/B tests based on synthesized results...",
-    "Crafting your blueprint for maximum success...",
+    "Agents booting up for your custom demo...",
+    "Calibrating your Agents...",
+    "Deploying your Agents...",
     "Refining...",
     "Success! Processing...",
     "Success! Finalizing...",
