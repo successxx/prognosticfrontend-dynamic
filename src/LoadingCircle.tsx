@@ -710,40 +710,38 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Measuring</div>
               </div>
-              <div className={styles.moduleBody}>
-                <div className={styles.gaugeContainer} style={{
-                  animation: 'gaugePulse 3s ease-in-out infinite'
-                }}>
-                  <div className={styles.gaugeBackground}></div>
-                  <div
-                    className={styles.gaugeMeter}
-                    style={{ transform: "scale(1) rotate(-90deg)" }}
-                  ></div>
-                  <div className={styles.gaugeCover}></div>
-                  <div className={styles.gaugeTicks}>
-                    <div className={styles.gaugeTick}></div>
-                    <div className={styles.gaugeTick}></div>
-                    <div className={styles.gaugeTick}></div>
-                    <div className={styles.gaugeTick}></div>
-                    <div className={styles.gaugeTick}></div>
-                    <div className={styles.gaugeTick}></div>
-                    <div className={styles.gaugeTick}></div>
-                    <div className={styles.gaugeTick}></div>
-                    <div className={styles.gaugeTick}></div>
-                    <div className={styles.gaugeTick}></div>
-                    <div className={styles.gaugeTick}></div>
-                    <div className={styles.gaugeTick}></div>
-                    <div className={styles.gaugeTick}></div>
-                  </div>
-                  <div
-                    className={styles.gaugeNeedle}
-                    style={{
-                      transform: `rotate(${getGaugeAngle(53, liveRandom.gauge)}deg)`,
-                      transition: 'transform 0.2s ease-out'
-                    }}
-                  ></div>
-                  <div className={styles.gaugeValue}>Potential Meter</div>
+              <div className={styles.gaugeContainer} style={{
+                animation: 'gaugePulse 3s ease-in-out infinite'
+              }}>
+                <div className={styles.gaugeBackground}></div>
+                <div
+                  className={styles.gaugeMeter}
+                  style={{ transform: "scale(1) rotate(-90deg)" }}
+                ></div>
+                <div className={styles.gaugeCover}></div>
+                <div className={styles.gaugeTicks}>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
+                  <div className={styles.gaugeTick}></div>
                 </div>
+                <div
+                  className={styles.gaugeNeedle}
+                  style={{
+                    transform: `rotate(${getGaugeAngle(53, liveRandom.gauge)}deg)`,
+                    transition: 'transform 0.2s ease-out'
+                  }}
+                ></div>
+                <div className={styles.gaugeValue}>Potential Meter</div>
               </div>
             </>,
             7
@@ -1011,10 +1009,14 @@ export default function CombinedLoader() {
           </button>
         </p>
         <div style={{ marginTop: "20px" }}>
+          {/** 
+           * CHANGED: we now use the EMBED link:
+           *  https://www.youtube.com/embed/dQw4w9WgXcQ
+           */}
           <iframe
             width="560"
             height="315"
-            src="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
             title="RickRoll"
             frameBorder="0"
             allow="autoplay; encrypted-media"
