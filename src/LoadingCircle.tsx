@@ -1014,7 +1014,7 @@ export default function CombinedLoader() {
           <iframe
             width="560"
             height="315"
-            src="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
+            src="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab"
             title="RickRoll"
             frameBorder="0"
             allow="autoplay; encrypted-media"
