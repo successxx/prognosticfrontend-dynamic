@@ -202,6 +202,32 @@ function NewAnalysis() {
     donut: 0
   });
 
+  const animationClasses = [
+    styles.animation1,
+    styles.animation2,
+    styles.animation3,
+    styles.animation4
+  ];
+  function getAnimationClass(i: number) {
+    return animationClasses[i % animationClasses.length];
+  }
+
+  // 12 staggered delay classes
+  const delayClasses = [
+    styles.delay1,
+    styles.delay2,
+    styles.delay3,
+    styles.delay4,
+    styles.delay5,
+    styles.delay6,
+    styles.delay7,
+    styles.delay8,
+    styles.delay9,
+    styles.delay10,
+    styles.delay11,
+    styles.delay12
+  ];
+
   // Master progress bar + timing
   useEffect(() => {
     if (progressIntervalRef.current) {
@@ -322,33 +348,6 @@ function NewAnalysis() {
       clearInterval(liveUpdateTimer);
     };
   }, []);
-
-  // Animation classes
-  const animationClasses = [
-    styles.animation1,
-    styles.animation2,
-    styles.animation3,
-    styles.animation4
-  ];
-  function getAnimationClass(i: number) {
-    return animationClasses[i % animationClasses.length];
-  }
-
-  // 12 staggered delay classes
-  const delayClasses = [
-    styles.delay1,
-    styles.delay2,
-    styles.delay3,
-    styles.delay4,
-    styles.delay5,
-    styles.delay6,
-    styles.delay7,
-    styles.delay8,
-    styles.delay9,
-    styles.delay10,
-    styles.delay11,
-    styles.delay12
-  ];
 
   function renderModule(content: JSX.Element, moduleIndex: number) {
     const loaded = moduleLoaded[moduleIndex];
@@ -475,7 +474,6 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
-              {/* Removed container-level scale transform */}
               <div className={styles.moduleBody}>
                 <div className={styles.radarContainer}>
                   <div className={styles.radarChart}>
@@ -515,7 +513,6 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Analyzing</div>
               </div>
-              {/* Removed container-level scale transform */}
               <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
@@ -554,7 +551,6 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Computing</div>
               </div>
-              {/* Removed container-level translateY transform */}
               <div className={styles.moduleBody}>
                 <div className={styles.chordContainer}>
                   <div className={styles.chordCircle}></div>
@@ -581,7 +577,6 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Active</div>
               </div>
-              {/* Removed container-level rotation */}
               <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
@@ -615,7 +610,6 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Calculating</div>
               </div>
-              {/* Removed container-level scale */}
               <div className={styles.moduleBody}>
                 <div className={styles.heatmapContainer}>
                   <div className={styles.heatmapGrid}>
@@ -678,7 +672,6 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Processing</div>
               </div>
-              {/* Removed container-level rotation */}
               <div className={styles.moduleBody}>
                 <div className={styles.donutContainer}>
                   <div className={styles.donutRing}></div>
@@ -783,7 +776,6 @@ function NewAnalysis() {
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cntrl 1</div>
-                      {/* Changed color so it’s visible */}
                       <div className={styles.barValue}>58%</div>
                     </div>
                     <div className={styles.barWrapper}>
@@ -860,7 +852,6 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Mapping</div>
               </div>
-              {/* Removed container-level scale */}
               <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
@@ -893,7 +884,6 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Predicting</div>
               </div>
-              {/* Removed container-level translateX */}
               <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
@@ -933,7 +923,6 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Running</div>
               </div>
-              {/* Removed container-level rotation */}
               <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
                 <div className={styles.networkContainer}>
@@ -986,6 +975,56 @@ function NewAnalysis() {
 // FINAL COMBINED COMPONENT
 // ---------------------------------------------------------
 export default function CombinedLoader() {
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  // (NEW) The only lines of code we added: a 30s timer that triggers fallback
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  const [timedOut, setTimedOut] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimedOut(true);
+    }, 30000); // 30 seconds
+    return () => clearTimeout(timer);
+  }, []);
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+  // If we timed out, show the rickroll fallback
+  if (timedOut) {
+    return (
+      <div style={{ textAlign: "center", margin: "60px auto" }}>
+        <h2>That site doesn't look valid!</h2>
+        <p>
+          We couldn't load the data in time, so here’s a fallback. <br />
+          <button
+            onClick={() => (window.location.href = "https://clients.ai")}
+            style={{
+              backgroundColor: "#252525",
+              color: "#fff",
+              border: "none",
+              padding: "10px 20px",
+              cursor: "pointer",
+              marginTop: "10px",
+              borderRadius: "5px"
+            }}
+          >
+            Back to Clients.ai Home
+          </button>
+        </p>
+        <div style={{ marginTop: "20px" }}>
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
+            title="RickRoll"
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+          ></iframe>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       {/* 
