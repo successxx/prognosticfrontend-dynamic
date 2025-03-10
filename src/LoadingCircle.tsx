@@ -753,7 +753,7 @@ function NewAnalysis() {
                       transition: 'transform 0.2s ease-out'
                     }}
                   ></div>
-                  <div className={styles.gaugeValue}>81% Inefficiency Detected...</div>
+                  <div className={styles.gaugeValue}>81% Inefficiency...</div>
                 </div>
               </div>
             </>,
