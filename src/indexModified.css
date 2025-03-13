@@ -771,16 +771,17 @@ strong {
 }
 
 .section-content {
+  flex: 3;
   font-size: 1.2rem;
   color: #666;
 }
-/* Class to reduce header width */
+
 .reduced-width {
-  flex-basis: 35%; /* Revert to 30% width */
+  flex-basis: 30%;
 }
 
 .expanded-width {
-  flex-basis: 65%;
+  flex-basis: 70%;
 }
 
 /* Mobile styles (stack vertically) */
@@ -1297,10 +1298,7 @@ video {
   font-size: 100%;
   vertical-align: baseline;
 }
-html,
-body {
-  overflow-x: hidden;
-}
+
 h1,
 h2,
 h3,
