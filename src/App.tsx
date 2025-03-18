@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Fireworks from "./Fireworks";
 import Footer from "./Footer.tsx";
 import Header from "./Header";
-import "./indexModified.css";
+// import "./indexModified.css";
 import LoadingCircle from "./LoadingCircle.tsx";
 import PrognosticButton from "./PrognosticButton";
 import StreakCounter from "./StreakCounter";
@@ -61,7 +61,7 @@ const App: React.FC = () => {
 
     try {
       const API_BASE =
-        window.location.hostname === "localhost"
+        window.location.hostname !== "localhost"
           ? "http://127.0.0.1:5001"
           : "https://prognostic-ai-backend-acab284a2f57.herokuapp.com";
 

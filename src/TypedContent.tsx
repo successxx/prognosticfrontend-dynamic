@@ -67,7 +67,7 @@ const TypedContent: React.FC<TypedContentProps> = ({
 
       const typedInstance = new Typed(typedRef, {
         strings: [sections[index].content],
-        typeSpeed: 0,
+        typeSpeed: 10,
         showCursor: false,
         contentType: "html",
         onStart: () => {
@@ -204,8 +204,11 @@ const enhanceContent = (content: string): Section[] => {
     // Wrap the header and content in a container
     const sectionHTML = `
       <div class="section-container">
-        <div class="section-header">${header}</div>
-        <div class="section-content">${contentWithoutHeader}</div>
+        <img class="typed-image" src="https://how.clients.ai/assets/images/image06.jpg?v=65128ef7" />
+        <div>
+          <div class="section-header">${header}</div>
+          <div class="section-content">${contentWithoutHeader}</div>
+        </div>
       </div>
     `;
 
