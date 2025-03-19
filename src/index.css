@@ -1298,7 +1298,7 @@ p {
   flex-direction: row-reverse;
 }
 
-.section-container .typed-image {
+.typed-image {
   width: 50%;
 }
 
@@ -1306,7 +1306,7 @@ p {
   .section-container {
     flex-direction: column;
   }
-  .section-container .typed-image {
+  .typed-image {
     width: 100%;
   }
   .content-box:nth-child(2n) .section-container {
@@ -1323,4 +1323,18 @@ p {
 .content-box.visible .typed-image {
   opacity: 1;
   transform: translateY(0);
+}
+.animated-image {
+  height: 0;
+  width: auto;
+  animation: growImage 1.5s ease-out forwards;
+}
+
+@keyframes growImage {
+  from {
+    height: 0;
+  }
+  to {
+    height: 100px; /* Adjust this value based on your desired final height */
+  }
 }

@@ -108,7 +108,7 @@ const TypedContent: React.FC<TypedContentProps> = ({
           <div
             className={`content-box ${
               index <= currentIndex ? "visible" : "hidden"
-            } px-4 py-2`}
+            } px-4 py-4`}
             key={index}
             style={{ display: index <= currentIndex ? "" : "none" }}
           >

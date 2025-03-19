@@ -143,7 +143,7 @@ const App: React.FC = () => {
       style={{ minHeight: "100vh" }}
     >
       <div id="main" className="row justify-content-center flex-grow-1">
-        <div className="col-12 col-md-10 col-lg-8 col-sm-12">
+        <div className="col-12 col-md-10 col-sm-12">
           <div className="inner">
             <div
               id="container6"
