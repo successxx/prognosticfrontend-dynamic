@@ -61,7 +61,7 @@ const App: React.FC = () => {
 
     try {
       const API_BASE =
-        window.location.hostname !== "localhost"
+        window.location.hostname === "localhost"
           ? "http://127.0.0.1:5001"
           : "https://prognostic-ai-backend-acab284a2f57.herokuapp.com";
 
