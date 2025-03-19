@@ -3,6 +3,26 @@
 
 import { useEffect, useState, useRef } from "react";
 import styles from "./LoadingCircle.module.css";
+import BubbleChart from "./components/BubbleChart.tsx"
+import RadarChart from "./components/RadarChart.tsx"
+// import HorizontalBarChart from "./components/HorizontalBarChart.tsx"
+import BarChart from "./components/BarChart.tsx"
+import BubbleChart2 from "./components/BubbleChart2.tsx"
+import BubbleChart3 from "./components/BubbleChart3.tsx"
+// import SkeletonLoader from "./components/SkeletonLoader.tsx"
+import FunnelChart from "./components/FunnelChart.tsx"
+import BubbleChart4 from "./components/BubbleChart4.tsx"
+import DoughnutChart from "./components/DoughnutChart.tsx"
+import Heatmap from "./components/Heatmap.tsx"
+
+
+
+
+
+
+
+
+
 
 // ---------------------------------------------------------
 // OLD LOADER (Spinner) Implementation
@@ -365,15 +385,23 @@ function NewAnalysis() {
         `}
       >
         {!loaded && (
-          <div className={styles.vmLoadingOverlay}>
-            <div className={styles.vmBootLines}>
-              <div>bootcfg.sys loaded</div>
-              <div>vkernel.sys loaded</div>
-              <div>hypervisor check: OK</div>
-              <div className={styles.vmDotFlicker}>. . .</div>
-              <div>Starting environment {moduleIndex + 1} ...</div>
-            </div>
-          </div>
+<>
+
+
+{/* <SkeletonLoader/> */}
+<div className={styles.vmLoadingOverlay}>
+<div className={styles.vmBootLines}>
+  <div>bootcfg.sys loaded</div>
+  <div>vkernel.sys loaded</div>
+  <div>hypervisor check: OK</div>
+  <div className={styles.vmDotFlicker}>. . .</div>
+  <div>Starting environment {moduleIndex + 1} ...</div>
+</div>
+</div>
+</>
+
+
+
         )}
         {loaded && content}
       </div>
@@ -419,7 +447,7 @@ function NewAnalysis() {
                 </div>
                 <div className={styles.windowStatus}>Live</div>
               </div>
-              <div className={styles.moduleBody}>
+              {/* <div className={styles.moduleBody}>
                 <div className={styles.funnelContainer}>
                   <div className={styles.funnelMetric} style={{ top: "10%" }}>
                     <span className={styles.label}>Raw Signals Detected</span>
@@ -462,7 +490,108 @@ function NewAnalysis() {
                     ></div>
                   </div>
                 </div>
-              </div>
+              </div> */}
+{/* smooth animation */}
+{/* <div className={styles.moduleBody}>
+  <div className={styles.funnelContainer}>
+    <div className={styles.funnelMetric} style={{ top: "10%" }}>
+      <span className={styles.label}>Raw Signals Detected</span>
+      <span className={styles.value}>53,532,120</span>
+      <div
+        className={styles.bar}
+        style={{
+          width: `${clamp(100 + liveRandom.funnel, 0, 100)}%`,
+          transition: "width 0.6s ease-in-out"
+        }}
+      ></div>
+    </div>
+    <div className={styles.funnelMetric} style={{ top: "35%" }}>
+      <span className={styles.label}>Key Observations</span>
+      <span className={styles.value}>289,304</span>
+      <div
+        className={styles.bar}
+        style={{
+          width: `${clamp(85 + liveRandom.funnel, 0, 100)}%`,
+          transition: "width 0.6s ease-in-out"
+        }}
+      ></div>
+    </div>
+    <div className={styles.funnelMetric} style={{ top: "60%" }}>
+      <span className={styles.label}>Opportunities Identified</span>
+      <span className={styles.value}>48,189</span>
+      <div
+        className={styles.bar}
+        style={{
+          width: `${clamp(65 + liveRandom.funnel, 0, 100)}%`,
+          transition: "width 0.6s ease-in-out"
+        }}
+      ></div>
+    </div>
+    <div className={styles.funnelMetric} style={{ top: "85%" }}>
+      <span className={styles.label}>Breakthrough Discoveries</span>
+      <span className={styles.value}>2,532</span>
+      <div
+        className={styles.bar}
+        style={{
+          width: `${clamp(40 + liveRandom.funnel, 0, 100)}%`,
+          transition: "width 0.6s ease-in-out"
+        }}
+      ></div>
+    </div>
+  </div>
+</div> */}
+{/* <div className={styles.moduleBody}>
+  <div className={styles.funnelContainer}>
+    <div className={styles.funnelMetric} style={{ top: "10%" }}>
+      <span className={styles.label}>Raw Signals Detected</span>
+      <span className={styles.value}>53,532,120</span>
+      <div
+        className={styles.bar}
+        style={{
+          width: `${clamp(100 + liveRandom.funnel, 0, 100)}%`,
+          transition: "width 0.8s cubic-bezier(0.25, 1, 0.5, 1), height 0.8s ease-in-out",
+        }}
+      ></div>
+    </div>
+    <div className={styles.funnelMetric} style={{ top: "35%" }}>
+      <span className={styles.label}>Key Observations</span>
+      <span className={styles.value}>289,304</span>
+      <div
+        className={styles.bar}
+        style={{
+          width: `${clamp(85 + liveRandom.funnel, 0, 100)}%`,
+          transition: "width 0.8s cubic-bezier(0.25, 1, 0.5, 1), height 0.8s ease-in-out",
+        }}
+      ></div>
+    </div>
+    <div className={styles.funnelMetric} style={{ top: "60%" }}>
+      <span className={styles.label}>Opportunities Identified</span>
+      <span className={styles.value}>48,189</span>
+      <div
+        className={styles.bar}
+        style={{
+          width: `${clamp(65 + liveRandom.funnel, 0, 100)}%`,
+          transition: "width 0.8s cubic-bezier(0.25, 1, 0.5, 1), height 0.8s ease-in-out",
+        }}
+      ></div>
+    </div>
+    <div className={styles.funnelMetric} style={{ top: "85%" }}>
+      <span className={styles.label}>Breakthrough Discoveries</span>
+      <span className={styles.value}>2,532</span>
+      <div
+        className={styles.bar}
+        style={{
+          width: `${clamp(40 + liveRandom.funnel, 0, 100)}%`,
+          transition: "width 0.8s cubic-bezier(0.25, 1, 0.5, 1), height 0.8s ease-in-out",
+        }}
+      ></div>
+    </div>
+  </div>
+</div> */}
+<FunnelChart/>
+
+
+              {/* <HorizontalBarChart/> */}
             </>,
             0
           )}
@@ -482,7 +611,7 @@ function NewAnalysis() {
               {/* Removed container-level scale transform */}
               <div className={styles.moduleBody}>
                 <div className={styles.radarContainer}>
-                  <div className={styles.radarChart}>
+                  {/* <div className={styles.radarChart}>
                     <div className={styles.radarAxis}></div>
                     <div className={styles.radarAxis}></div>
                     <div className={styles.radarAxis}></div>
@@ -500,7 +629,8 @@ function NewAnalysis() {
                     <div className={styles.radarValue}></div>
                     <div className={styles.radarValue}></div>
                     <div className={styles.radarArea}></div>
-                  </div>
+                  </div> */}
+                  <RadarChart />
                 </div>
               </div>
             </>,
@@ -522,9 +652,9 @@ function NewAnalysis() {
               {/* Removed container-level scale transform */}
               <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
-                <div className={styles.chartAxisX}></div>
-                <div className={styles.chartAxisY}></div>
-                <div className={styles.areaChartContainer}>
+                {/* <div className={styles.chartAxisX}></div>
+                <div className={styles.chartAxisY}></div> */}
+                {/* <div className={styles.areaChartContainer}>
                   <div className={styles.areaPath}>
                     <div className={styles.area}></div>
                     <div className={styles.areaLine}></div>
@@ -540,7 +670,9 @@ function NewAnalysis() {
                     <div className={styles.dataPoint}></div>
                     <div className={styles.dataPoint}></div>
                   </div>
-                </div>
+                </div> */}
+
+                <BubbleChart />
               </div>
             </>,
             2
@@ -562,11 +694,11 @@ function NewAnalysis() {
               <div className={styles.moduleBody}>
                 <div className={styles.chordContainer}>
                   <div className={styles.chordCircle}></div>
+                  {/* <div className={styles.chordArc}></div> */}
                   <div className={styles.chordArc}></div>
-                  <div className={styles.chordArc}></div>
-                  <div className={styles.chordArc}></div>
-                  <div className={styles.chord}></div>
-                  <div className={styles.chord2}></div>
+                  {/* <div className={styles.chordArc}></div> */}
+                  {/* <div className={styles.chord}></div> */}
+                  {/* <div className={styles.chord2}></div> */}
                 </div>
               </div>
             </>,
@@ -588,7 +720,7 @@ function NewAnalysis() {
               {/* Removed container-level rotation */}
               <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
-                <div className={styles.chartAxisX}></div>
+                {/* <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
                 <div className={styles.scatterContainer}>
                   <div className={styles.scatterPoint} data-value="high"></div>
@@ -601,7 +733,9 @@ function NewAnalysis() {
                   <div className={styles.scatterPoint} data-value="high"></div>
                   <div className={styles.scatterPoint} data-value="medium"></div>
                   <div className={styles.trendLine}></div>
-                </div>
+                </div> */}
+                <BubbleChart />
+
               </div>
             </>,
             4
@@ -622,8 +756,7 @@ function NewAnalysis() {
               {/* Removed container-level scale */}
               <div className={styles.moduleBody}>
                 <div className={styles.heatmapContainer}>
-                  <div className={styles.heatmapGrid}>
-                    {/* 25 cells */}
+                  {/* <div className={styles.heatmapGrid}>
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
@@ -649,21 +782,22 @@ function NewAnalysis() {
                     <div className={`${styles.heatCell} ${styles.high}`}></div>
                     <div className={`${styles.heatCell} ${styles.medium}`}></div>
                     <div className={`${styles.heatCell} ${styles.low}`}></div>
-                  </div>
-                  <div className={styles.xLabels}>
+                  </div> */}
+                  {/* <div className={styles.xLabels}>
                     <span>Channel 1</span>
                     <span>Channel 2</span>
                     <span>Channel 3</span>
                     <span>Channel 4</span>
                     <span>Channel 5</span>
-                  </div>
-                  <div className={styles.yLabels} style={{ left: "13%" }}>
+                  </div> */}
+                  {/* <div className={styles.yLabels} style={{ left: "13%" }}>
                     <span>A</span>
                     <span>B</span>
                     <span>C</span>
                     <span>D</span>
                     <span>E</span>
-                  </div>
+                  </div> */}
+                  <Heatmap/>
                 </div>
               </div>
             </>,
@@ -684,7 +818,7 @@ function NewAnalysis() {
               </div>
               {/* Removed container-level rotation */}
               <div className={styles.moduleBody}>
-                <div className={styles.donutContainer}>
+                {/* <div className={styles.donutContainer}>
                   <div className={styles.donutRing}></div>
                   <div className={`${styles.donutSegment} ${styles.segment1}`}></div>
                   <div className={`${styles.donutSegment} ${styles.segment2}`}></div>
@@ -703,6 +837,17 @@ function NewAnalysis() {
                   <div className={styles.legendItem} style={{ bottom: "5%" }}>
                     <span></span>Group C
                   </div>
+                </div> */}
+                <div style={{
+                  width:"100%",
+                  height:"100%",
+                  display:"flex",
+                  justifyContent:"center",
+                  alignItems:"center",
+                  animation: 'pulse 3s ease-in-out infinite'
+                }}>
+
+                <DoughnutChart/>
                 </div>
               </div>
             </>,
@@ -774,7 +919,7 @@ function NewAnalysis() {
               </div>
               <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
-                <div className={styles.chartAxisX}></div>
+                {/* <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
                 <div className={styles.barChartContainer}>
                   <div className={styles.barGroup}>
@@ -787,7 +932,6 @@ function NewAnalysis() {
                         }}
                       ></div>
                       <div className={styles.barLabel}>Cntrl 1</div>
-                      {/* Changed color so it’s visible */}
                       <div className={styles.barValue}>58%</div>
                     </div>
                     <div className={styles.barWrapper}>
@@ -846,7 +990,8 @@ function NewAnalysis() {
                       <div className={styles.barValue}>5MM</div>
                     </div>
                   </div>
-                </div>
+                </div> */}
+                <BarChart />
               </div>
             </>,
             8
@@ -866,7 +1011,7 @@ function NewAnalysis() {
               </div>
               {/* Removed container-level scale */}
               <div className={styles.moduleBody}>
-                <div className={styles.chartGrid}></div>
+                {/* <div className={styles.chartGrid}></div>
                 <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
                 <div className={styles.bubbleContainer}>
@@ -879,7 +1024,8 @@ function NewAnalysis() {
                   <div className={styles.bubbleValue}>14.2</div>
                   <div className={styles.bubbleValue}>9.1</div>
                   <div className={styles.bubbleValue}>4.3</div>
-                </div>
+                </div> */}
+                  <BubbleChart4/>
               </div>
             </>,
             9
@@ -900,7 +1046,7 @@ function NewAnalysis() {
               {/* Removed container-level translateX */}
               <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
-                <div className={styles.chartAxisX}></div>
+                {/* <div className={styles.chartAxisX}></div>
                 <div className={styles.chartAxisY}></div>
                 <div className={styles.lineChartContainer}>
                   <div className={styles.lineChart}>
@@ -919,7 +1065,8 @@ function NewAnalysis() {
                     <div className={styles.linePoint}></div>
                     <div className={styles.lineFill}></div>
                   </div>
-                </div>
+                </div> */}
+                <BubbleChart3 />
               </div>
             </>,
             10
@@ -940,7 +1087,7 @@ function NewAnalysis() {
               {/* Removed container-level rotation */}
               <div className={styles.moduleBody}>
                 <div className={styles.chartGrid}></div>
-                <div className={styles.networkContainer}>
+                {/* <div className={styles.networkContainer}>
                   <div className={styles.networkNode}></div>
                   <div className={styles.networkNode}></div>
                   <div className={styles.networkNode}></div>
@@ -959,7 +1106,8 @@ function NewAnalysis() {
                   <div className={styles.nodeLabel}>Tertiary</div>
                   <div className={styles.nodeLabel}>Quaternary</div>
                   <div className={styles.nodeLabel}>Central</div>
-                </div>
+                </div> */}
+                <BubbleChart2 />
               </div>
             </>,
             11
