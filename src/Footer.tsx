@@ -21,8 +21,7 @@ const Footer: React.FC<FooterProps> = ({isFooterVisible}) => {
                     <p id="text01"
                        className={`style2 ${isFooterVisible ? 'footer-fade-in visible' : 'footer-fade-in'}`}>
                     <span className="p">
-                        The next time you hear someone talking about AI in marketing,
-                        <strong>think of Clients<mark>AI</mark>.</strong><br/>
+                        The next time you hear someone talking about AI in marketing, think of Clients.ai.<br/>
                         <em>Can You Think Of A Friend Who Would Like To Close More Deals?</em><br/>
                         <strong>Spread The Love:</strong>
                     </span>
