@@ -30,40 +30,32 @@ body {
   box-sizing: border-box;
 }
 
-/* PHASE 2: Updated .result-header per specs */
 .result-header {
+  /* Phase 1 update: Make sure header is attached and same width as content boxes below */
   width: 100%;
-  max-width: 1500px;
-  margin: 0 auto; /* Removes bottom gap so it attaches to the first box */
-  background-color: #F8F8F8;
-  color: #252525;
-  padding: 16px 20px;
-  border-radius: 6px 6px 0 0;
-  font-family: 'SF Pro Display', sans-serif;
-  font-size: 20px; /* For the default text if no <h1> found */
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  line-height: 1.3;
+  max-width: 1500px; /* Ensuring consistent with content boxes */
+  margin: 8px auto; /* Center it with no gap */
+  background-color: #F8F8F8; /* Updated per instructions */
+  color: #252525; /* Perfect contrast */
+  padding: 16px 20px; /* Precise spacing */
+  border-radius: 6px 6px 0 0; /* Clean corners */
+  font-size: 20px; /* Optimal legibility */
+  font-weight: 500; 
+  letter-spacing: 0.02em; /* Premium spacing */
+  line-height: 1.3; /* Ideal text proportion */
+  font-family: 'SF Pro Display', sans-serif; /* Phase 1 font requirement */
   box-sizing: border-box;
-  /* If you want the header text left-aligned, you can remove text-align: center; */
-  /* text-align: left; */
-  /* If old code had text-align: center, remove or override as needed */
+  text-align: center; /* Retain center alignment for h1 within this container */
+  margin-bottom: 0; 
 }
 
-/* We'll keep an explicit rule for .result-header h1 to refine text if needed */
 .result-header h1 {
+  /* Adjust styling inside the header if needed */
   margin: 0;
-  font-size: 20px; /* ensures direct control over .result-header h1 */
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  line-height: 1.3;
-  font-family: 'SF Pro Display', sans-serif;
-  color: #252525;
-  transition: all 0.4s ease; /* Smooth text transitions */
-  white-space: normal;
-  word-wrap: break-word; /* handle longer titles */
+  transition: opacity 0.4s ease-in-out; /* Smooth text transition */
 }
 
+/* Keep the fade-in classes */
 .fade-in {
   opacity: 0;
   transition: opacity 1s ease-in-out;
@@ -83,18 +75,17 @@ body {
   opacity: 1;
 }
 
-/* Phase 1: first-context-box with no top corners for perfect attachment */
 .first-context-box {
-  background-color: #F8F8F8;
-  border: 1px solid #ECECEC;
-  /* remove top rounding for seamless connection: */
-  border-radius: 0 0 6px 6px;
-  padding: 64px;
-  /* ensure no gap at the top so it attaches to the header: */
-  margin: 0 auto 8px;
-  box-shadow: none;
+  /* Phase 1 changes for consistent box container styling */
   width: 100%;
   max-width: 1500px;
+  background-color: #F8F8F8;
+  border: 1px solid #ECECEC;
+  border-radius: 6px;
+  box-shadow: none;
+  margin: 8px auto;
+  padding: 64px;
+  position: relative;
   box-sizing: border-box;
   text-align: left;
   display: flex;
@@ -104,17 +95,17 @@ body {
   transition: opacity 0.3s ease-in-out;
 }
 
-/* Phase 1: content-box definitions remain the same except for the first one */
 .content-box {
+  /* Phase 1 changes for consistent box container styling */
+  width: 100%;
+  max-width: 1500px;
   background-color: #F8F8F8;
   border: 1px solid #ECECEC;
   border-radius: 6px;
-  padding: 64px;
-  margin: 8px auto;
   box-shadow: none;
+  margin: 8px auto;
+  padding: 64px;
   position: relative;
-  width: 100%;
-  max-width: 1500px;
   box-sizing: border-box;
   text-align: left;
   display: flex;
@@ -147,6 +138,7 @@ body {
   }
 
   .container {
+    /*padding: 0 10px;*/
     padding-right: 0.5rem;
     padding-left: 0.5rem;
     width: 100%;
@@ -241,6 +233,11 @@ body {
   font-size: 24px;
   color: #252525;
   z-index: 1;
+}
+
+.content-box:first-child {
+  /* This was originally different but we unify the radius as per Phase 1 */
+  border-radius: 6px; 
 }
 
 .content-box:nth-child(even)::before {
@@ -435,6 +432,367 @@ body {
   .content-box {
     padding: 15px 15px 30px; /* Adjusted padding for mobile */
   }
+}
+
+@keyframes buttonAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#typed-output br {
+  content: "";
+  display: block;
+  margin-top: 0.75em;
+}
+
+h1 span.p,
+h2 span.p,
+h3 span.p,
+p span.p {
+  display: block;
+  position: relative;
+}
+
+#text02 {
+  max-width: 60rem;
+  margin-left: var(--margin-left);
+  margin-right: var(--margin-right);
+  color: #1f1c1c;
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 0.05rem;
+  width: calc(100% + 0.05rem);
+  font-size: 1.125em;
+  line-height: 1.25;
+  font-weight: 500;
+}
+
+#text02 mark {
+  padding: 0px;
+  color: #252525;
+  background-color: transparent;
+}
+
+@media (max-width: 736px) {
+  #text02 {
+    letter-spacing: 0.04375rem;
+    width: calc(100% + 0.04375rem);
+    font-size: 1.125em;
+    line-height: 1.25;
+  }
+}
+
+.hr-custom {
+  border-top: none;
+  align-items: center;
+  border: 0;
+  display: flex;
+  justify-content: var(--flex-alignment);
+  min-height: 1rem;
+  padding: 0;
+  position: relative;
+  width: 100%;
+}
+
+.full-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.image .frame img {
+  border-radius: 0 !important;
+  max-width: 100%;
+  vertical-align: top;
+  width: inherit;
+}
+
+.container.style3.default > .wrapper > .inner > * {
+  margin-bottom: var(--spacing);
+  margin-top: var(--spacing);
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background-image: linear-gradient(to bottom right, #f0f4f8, #e6ebf0);
+  margin: 0;
+  padding: 40px 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 18px;
+}
+
+.result-header {
+  width: 100%;
+  background-color: #252525;
+  color: white;
+  padding: 25px 15px; /* Changed back to original padding */
+  border-radius: 15px 15px 0 0;
+  margin-bottom: 0;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.result-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.content-box:last-child {
+  margin-bottom: 0; /* Remove margin from the last content box */
+}
+
+#main > .inner > * {
+  margin-top: var(--spacing);
+  margin-bottom: var(--spacing);
+}
+
+#typed-output {
+  width: 100%;
+  max-width: 100%;
+  font-size: 20px;
+  line-height: 1.7;
+  color: #333;
+  margin: 0 auto;
+  opacity: 1; /* Ensure content is visible on load */
+  transition: opacity 0.3s ease-in-out;
+}
+
+#typed-output strong {
+  font-weight: 700;
+}
+
+strong {
+  color: inherit;
+  font-weight: bolder;
+}
+
+#typed-output em {
+  font-style: italic;
+}
+
+.content-box p {
+  margin-bottom: 1.3em;
+}
+
+#typed-output h1 {
+  font-size: 28px;
+}
+
+#typed-output h2 {
+  font-size: 26px;
+}
+
+#typed-output h3 {
+  font-size: 24px;
+}
+
+#typed-output p {
+  font-size: 16px;
+}
+
+#typed-output ul {
+  font-size: 14px;
+}
+
+.content-box::after {
+  content: "";
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 40px;
+  background: linear-gradient(to bottom, #252525, transparent);
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.8s ease-in-out; /* Smooth opacity transition */
+}
+
+.content-box:last-child::after {
+  display: none;
+}
+.button-container {
+  display: flex;
+  justify-content: center; /* Horizontally center the button */
+  align-items: center; /* Vertically align the button (optional) */
+  margin-top: 20px; /* Add some space above the button if needed */
+}
+
+.content-box::before {
+  content: "●";
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  color: #252525;
+  z-index: 1;
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.8s ease-in-out; /* Smooth opacity transition */
+}
+.content-box.typing-complete {
+  margin-bottom: 50px;
+}
+.content-box.typing-complete::before {
+  opacity: 1; /* Visible when typing is complete */
+}
+.content-box.typing-complete:last-child {
+  margin-bottom: 0;
+}
+.content-box.typing-complete::after {
+  opacity: 1; /* Visible when typing is complete */
+}
+
+.content-box:nth-child(even)::before {
+  content: "◆";
+  color: #ff6b6b;
+}
+
+.content-box:nth-child(3n)::before {
+  content: "■";
+  color: #4ecdc4;
+}
+
+.content-box:last-child::before {
+  display: none;
+}
+
+.content-box::after {
+  content: "";
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 60px;
+  background: linear-gradient(to bottom, #0066cc, transparent);
+}
+
+.content-box:nth-child(odd)::after {
+  left: 25%;
+}
+
+.content-box:nth-child(even)::after {
+  left: 75%;
+}
+
+.content-box:nth-child(3n)::after {
+  left: 50%;
+}
+
+.content-box:nth-child(odd)::before {
+  left: 25%;
+}
+
+.content-box:nth-child(even)::before {
+  left: 75%;
+}
+
+.content-box:nth-child(3n)::before {
+  left: 50%;
+}
+
+.content-box:nth-child(even)::after {
+  background: linear-gradient(to bottom, #0066cc, #ff6b6b);
+}
+
+.content-box:nth-child(3n)::after {
+  background: linear-gradient(to bottom, #0066cc, #4ecdc4);
+}
+
+.content-box:last-child::after {
+  display: none;
+}
+
+.streak-counter {
+  font-size: 20px;
+  font-weight: 600;
+  color: #252525;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 12px 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(1, 66, 172, 0.2);
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
+  z-index: 2;
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.streak-counter.visible {
+  opacity: 1;
+  bottom: -50px;
+}
+
+#fireworks-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.firework,
+.spark {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.firework {
+  width: 6px;
+  height: 6px;
+  animation: shoot 1s ease-out forwards;
+}
+
+.spark {
+  width: 5px;
+  height: 5px;
+  animation: spark 0.8s ease-out forwards;
+}
+
+@keyframes shoot {
+  0% {
+    transform: translateY(50vh) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-25vh) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50vh) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes spark {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .content-box {
+    padding: 15px 15px 30px; /* Adjusted padding for mobile */
+  }
 
   body {
     padding: 10px 0;
@@ -442,6 +800,7 @@ body {
   }
 
   .container {
+    /*padding: 0 10px;*/
     padding-right: 0.5rem;
     padding-left: 0.5rem;
     width: 100%;
@@ -459,11 +818,23 @@ body {
   }
 
   .result-header {
-    padding: 16px 12px; /* Slightly narrower for mobile, optional */
+    padding: 15px 10px;
   }
 
   .result-header h1 {
-    font-size: 18px;
+    font-size: 24px;
+  }
+
+  #typed-output h1 {
+    font-size: 26px;
+  }
+
+  #typed-output h2 {
+    font-size: 24px;
+  }
+
+  #typed-output h3 {
+    font-size: 22px;
   }
 
   .prognostic-button {
@@ -522,6 +893,12 @@ body {
 
 .new-demo-button:hover {
   background-color: #0056d6;
+}
+
+@media (max-width: 600px) {
+  .content-box {
+    padding: 15px 15px 30px; /* Adjusted padding for mobile */
+  }
 }
 
 @keyframes buttonAppear {
@@ -964,3 +1341,5 @@ p {
     height: 100px; /* Adjust this value based on your desired final height */
   }
 }
+
+-_
