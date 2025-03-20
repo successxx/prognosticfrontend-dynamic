@@ -32,8 +32,8 @@ body {
 
 .result-header {
   width: 100%;
-  background-color: #252525;
-  color: white;
+  background-color: #F8F8F8;
+  color: #252525;
   padding: 20px 15px; /* Adjusted for mobile */
   border-radius: 15px 15px 0 0;
   margin-bottom: 0;
