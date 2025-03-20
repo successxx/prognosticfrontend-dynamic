@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Header from './Header';
 import TypedContent from './TypedContent';
 import StreakCounter from './StreakCounter';
@@ -63,29 +63,30 @@ const App: React.FC = () => {
                     : 'https://prognostic-ai-backend-acab284a2f57.herokuapp.com';
 
             const params = new URLSearchParams(window.location.search);
-            const user_email = params.get('user_email')
+            const user_email = params.get('user_email');
             if (!user_email) {
-                setError("It seems like you're trying to retrieve your previous results. Please restart the process to generate new results. If you need assistance, feel free to contact our support team.");
+                setError(
+                    "It seems like you're trying to retrieve your previous results. Please restart the process to generate new results. If you need assistance, feel free to contact our support team."
+                );
                 setLoading(false);
                 return null;
             }
 
             const requestBody = {
-                user_email: user_email
+                user_email: user_email,
             };
 
             const response = await fetch(`${API_BASE}/get_user`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(requestBody)
+                body: JSON.stringify(requestBody),
             });
-
 
             if (!response.ok) {
                 if (response.status === 403) {
-                    console.error("CORS issue detected");
+                    console.error('CORS issue detected');
                     throw new Error(`CORS error! status: ${response.status}`);
                 } else if (response.status === 404) {
                     return null;
@@ -98,8 +99,8 @@ const App: React.FC = () => {
 
             if (data?.text) {
                 setContent(data.text);
-                setBookingButtonName(data.booking_button_name)
-                setBookingButtonRedirection(data.booking_button_redirection)
+                setBookingButtonName(data.booking_button_name);
+                setBookingButtonRedirection(data.booking_button_redirection);
                 setStreak((prevStreak) => prevStreak + 1);
                 stopPolling();
                 setLoading(false);
@@ -111,7 +112,7 @@ const App: React.FC = () => {
                     // Delay footer visibility for 5 seconds after content is fully loaded
                     setTimeout(() => {
                         setIsFooterVisible(true);
-                    }, 7000); // Footer appears after 5 seconds
+                    }, 7000);
                 }, 100);
 
                 return data.text;
@@ -131,39 +132,48 @@ const App: React.FC = () => {
     };
 
     return (
-        <div id="wrapper" className="container-fluid d-flex flex-column" style={{minHeight: '100vh'}}>
+        <div id="wrapper" className="container-fluid d-flex flex-column" style={{ minHeight: '100vh' }}>
             <div id="main" className="row justify-content-center flex-grow-1">
                 <div className="col-12 col-md-10 col-lg-8">
                     <div className="inner">
                         <div id="container6" className="style1 container default flex-grow-1">
                             <div className="wrapper">
                                 <div className="inner">
-                                    <Header/>
-                                    <hr id="divider02" className="hr-custom"/>
+                                    <Header />
+                                    <hr id="divider02" className="hr-custom" />
                                     {loading ? (
                                         <>
-                                            <LoadingCircle/>
-                                            <p id="text07" className="style1">All rights reserved</p>
+                                            <LoadingCircle />
+                                            <p id="text07" className="style1">
+                                                All rights reserved
+                                            </p>
                                         </>
                                     ) : (
                                         <>
-                                            <h1 id="text02"
-                                                className={`text-center fade-in ${isContentVisible ? 'visible' : ''}`}>
+                                            <h1
+                                                id="text02"
+                                                className={`text-center fade-in ${isContentVisible ? 'visible' : ''}`}
+                                            >
                                                 <span className="p">
-                                                    Try Clients.<mark>ai</mark>
-                                                    {' '}
-                                                    <strong>For Your Company</strong>
-                                                    <br/>
-                                                    <a href="https://clients.ai/#demo" target="_blank"
-                                                       rel="noopener noreferrer">
+                                                    Try Clients.<mark>ai</mark> <strong>For Your Company</strong>
+                                                    <br />
+                                                    <a
+                                                        href="https://clients.ai/#demo"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
                                                         Book Your Free Demo Today!
                                                     </a>
                                                 </span>
                                             </h1>
-                                            <hr id="divider01"
-                                                className={`hr-custom fade-in ${isContentVisible ? 'visible' : ''}`}/>
-                                            <div id="embed01"
-                                                 className={`fade-in ${isContentVisible ? 'visible' : ''}`}>
+                                            <hr
+                                                id="divider01"
+                                                className={`hr-custom fade-in ${isContentVisible ? 'visible' : ''}`}
+                                            />
+                                            <div
+                                                id="embed01"
+                                                className={`fade-in ${isContentVisible ? 'visible' : ''}`}
+                                            >
                                                 <div className="container">
                                                     <div className="row justify-content-center">
                                                         <div className="col-12">
@@ -179,32 +189,36 @@ const App: React.FC = () => {
                                                             ) : (
                                                                 <TypedContent
                                                                     content={content}
-                                                                    booking_button_name={booking_button_name || 'Book Your Free Demo Now!'}
-                                                                    booking_button_redirection={booking_button_redirection || 'https://Clients.ai/#demo'}
+                                                                    booking_button_name={
+                                                                        booking_button_name || 'Book Your Free Demo Now!'
+                                                                    }
+                                                                    booking_button_redirection={
+                                                                        booking_button_redirection ||
+                                                                        'https://Clients.ai/#demo'
+                                                                    }
                                                                 />
-
                                                             )}
                                                         </div>
                                                     </div>
                                                     <div className="row justify-content-center">
                                                         <div className="col-12 col-sm-6 text-center">
-                                                            <StreakCounter streak={streak}/>
+                                                            <StreakCounter streak={streak} />
                                                         </div>
                                                     </div>
                                                     <div className="row justify-content-center">
                                                         <div className="col-12 col-sm-6 text-center">
-                                                            <PrognosticButton/>
+                                                            <PrognosticButton />
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <Fireworks/>
+                                                <Fireworks />
                                             </div>
                                         </>
                                     )}
                                 </div>
                             </div>
                         </div>
-                        <Footer isFooterVisible={isFooterVisible}/>
+                        <Footer isFooterVisible={isFooterVisible} />
                     </div>
                 </div>
             </div>
