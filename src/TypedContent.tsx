@@ -22,26 +22,30 @@ const TypedContent: React.FC<TypedContentProps> = ({
   const [sections, setSections] = useState<Section[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
+  // PHASE 1: dynamic header text
+  const [headerText, setHeaderText] = useState("Your Clients.ai Solution");
+  const headerRef = useRef<HTMLHeadingElement | null>(null);
+
   const typedRefs = useRef<Array<HTMLDivElement | null>>([]);
   const typedInstances = useRef<Array<Typed | null>>([]);
-
-  // PHASE 2: track the dynamic header text (defaults to "Your Clients.ai Solution")
-  const [headerTitle, setHeaderTitle] = useState<string>("Your Clients.ai Solution");
 
   useEffect(() => {
     if (content) {
       const processedSections = enhanceContent(content);
       setSections(processedSections);
-
-      // Attempt to extract an <h1> from the entire content
-      const extractedH1 = extractFirstH1(content);
-      if (extractedH1) {
-        setHeaderTitle(extractedH1);
-      } else {
-        setHeaderTitle("Your Clients.ai Solution");
-      }
     }
   }, [content]);
+
+  useEffect(() => {
+    // Extract <h1> text from first section if present
+    if (sections.length > 0) {
+      const firstSectionHTML = sections[0].content;
+      const h1Match = firstSectionHTML.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+      if (h1Match && h1Match[1]) {
+        setHeaderText(h1Match[1]);
+      }
+    }
+  }, [sections]);
 
   useEffect(() => {
     if (sections.length > 0) {
@@ -58,14 +62,6 @@ const TypedContent: React.FC<TypedContentProps> = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sections]);
-
-  // PHASE 2: Whenever headerTitle changes, update the .result-header h1 text
-  useEffect(() => {
-    const headerEl = document.querySelector(".result-header h1");
-    if (headerEl) {
-      headerEl.textContent = headerTitle;
-    }
-  }, [headerTitle]);
 
   const startTyping = (index: number) => {
     if (index >= sections.length) {
@@ -123,15 +119,17 @@ const TypedContent: React.FC<TypedContentProps> = ({
 
   return (
     <>
-      {/* The .result-header div is presumably elsewhere in your HTML structure.
-          We are just updating its <h1> text above (useEffect).
-          The typed content boxes below remain the same. */}
+      {/* Phase 1: Dynamic header text element */}
+      <div className="result-header fade-in visible">
+        <h1 ref={headerRef}>{headerText}</h1>
+      </div>
+
       <div id="typed-output" className="container">
         {sections.map((section, index) => (
           <div
-            className={
-              `content-box ${index <= currentIndex ? "visible" : "hidden"} px-4 py-4`
-            }
+            className={`content-box ${
+              index <= currentIndex ? "visible" : "hidden"
+            } px-4 py-4`}
             key={index}
             style={{ display: index <= currentIndex ? "" : "none" }}
           >
@@ -155,9 +153,6 @@ const TypedContent: React.FC<TypedContentProps> = ({
   );
 };
 
-/**
- * Process the full content into sections with typed HTML.
- */
 const enhanceContent = (content: string): Section[] => {
   // Check if the content is a plain string (no HTML tags)
   const isPlainString = !/<[^>]+>/g.test(content);
@@ -244,18 +239,6 @@ const enhanceContent = (content: string): Section[] => {
   });
 
   return processedSections;
-};
-
-/**
- * Extract the first <h1> tag text from the entire content (if any).
- */
-const extractFirstH1 = (htmlString: string): string | null => {
-  const h1Regex = /<h1[^>]*>([^<]+)<\/h1>/i;
-  const match = h1Regex.exec(htmlString);
-  if (match && match[1]) {
-    return match[1].trim();
-  }
-  return null;
 };
 
 export default TypedContent;
