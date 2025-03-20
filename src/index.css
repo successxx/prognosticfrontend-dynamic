@@ -84,8 +84,8 @@ body {
   border: 1px solid #ECECEC;
   box-shadow: none;
   position: relative;
-  width: 100%;
-  max-width: 1500px;
+  width: 100% !important;
+  max-width: 1500px !important;
   box-sizing: border-box;
   text-align: left;
   display: flex;
