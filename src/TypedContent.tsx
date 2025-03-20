@@ -22,7 +22,7 @@ const TypedContent: React.FC<TypedContentProps> = ({
   const [sections, setSections] = useState<Section[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
-  // PHASE 1: dynamic header text
+  // Dynamic header text
   const [headerText, setHeaderText] = useState("Your Clients.ai Solution");
   const headerRef = useRef<HTMLHeadingElement | null>(null);
 
@@ -53,7 +53,7 @@ const TypedContent: React.FC<TypedContentProps> = ({
       startTyping(0);
     }
 
-    // Cleanup function
+    // Cleanup on unmount
     return () => {
       typedInstances.current.forEach(
         (instance) => instance && instance.destroy()
@@ -71,14 +71,12 @@ const TypedContent: React.FC<TypedContentProps> = ({
     setCurrentIndex(index);
 
     const typedRef = typedRefs.current[index];
-
     if (typedRef) {
       typedRef.innerHTML = ""; // Clear previous content if any
 
-      // Find the header and content elements for the current section
       const contentBox = typedRef.closest(".content-box");
       const header = contentBox?.querySelector(".section-header");
-      const content = contentBox?.querySelector(".section-content");
+      const contentArea = contentBox?.querySelector(".section-content");
 
       const typedInstance = new Typed(typedRef, {
         strings: [sections[index].content],
@@ -86,40 +84,27 @@ const TypedContent: React.FC<TypedContentProps> = ({
         showCursor: false,
         contentType: "html",
         onStart: () => {
-          // When content starts typing, adjust the widths
-          if (header) {
-            header.classList.add("reduced-width");
-          }
-          if (content) {
-            content.classList.add("expanded-width");
-          }
+          if (header) header.classList.add("reduced-width");
+          if (contentArea) contentArea.classList.add("expanded-width");
         },
         onComplete: () => {
-          // After typing is complete for this section
-          // Find the demo button within the current section
+          // After typing is complete
           const demoButton = contentBox?.querySelector(".new-demo-button");
-
-          // Add the 'visible' class to the demo button if it exists
           if (demoButton) {
             demoButton.classList.add("visible");
           }
-
-          // Add a class to indicate typing is complete for this section
           contentBox?.classList.add("typing-complete");
-
-          // Start typing the next section
           startTyping(index + 1);
         },
       });
 
-      // Store the typed instance for cleanup or future use
       typedInstances.current[index] = typedInstance;
     }
   };
 
   return (
     <>
-      {/* Phase 1: Dynamic header text element */}
+      {/* Single header with dynamic text */}
       <div className="result-header fade-in visible">
         <h1 ref={headerRef}>{headerText}</h1>
       </div>
@@ -154,87 +139,83 @@ const TypedContent: React.FC<TypedContentProps> = ({
 };
 
 const enhanceContent = (content: string): Section[] => {
-  // Check if the content is a plain string (no HTML tags)
+  // Check if plain string (no HTML tags)
   const isPlainString = !/<[^>]+>/g.test(content);
 
   if (isPlainString) {
-    // If it's a plain string, wrap it in a centered, bold, black-styled div
-    const formattedContent = 
-      `<div style="text-align: center; color: black; font-weight: bold; margin: 1rem">
+    // If plain, wrap in a bold, centered div
+    const formattedContent = `<div style="text-align: center; color: black; font-weight: bold; margin: 1rem">
          ${content}
        </div>`;
-
-    // Return a single section with the formatted content
     return [
       {
         content: formattedContent,
-        shouldHaveButton: false, // No button for plain strings
+        shouldHaveButton: false,
       },
     ];
   }
 
-  // Split content into sections based on h2 headers (handling attributes)
-  const sections = content.split(/(?=<h2\b[^>]*>)/i);
+  // Split content into sections by <h2>
+  const rawSections = content.split(/(?=<h2\b[^>]*>)/i);
 
-  // Process each section
-  const processedSections = sections.map((section, index) => {
-    let processedSection = section;
+  const processedSections = rawSections.map((section, index) => {
+    let processed = section;
 
-    // Normalize bold and italic text
-    processedSection = processedSection.replace(
-      /\*\*(.*?)\*\*/g,
-      "<strong>$1</strong>"
-    );
-    processedSection = processedSection.replace(/\*(.*?)\*/g, "<em>$1</em>");
+    // Normalize bold/italic
+    processed = processed.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+    processed = processed.replace(/\*(.*?)\*/g, "<em>$1</em>");
 
-    // Replace double line breaks with paragraph tags
-    processedSection = processedSection
+    // Convert double line-breaks to paragraphs
+    processed = processed
       .split(/\n\n+/)
       .map((block) => {
         block = block.trim();
-        if (block) {
-          return `<p>${block}</p>`;
-        }
-        return ""; // Skip empty blocks
+        return block ? `<p>${block}</p>` : "";
       })
       .join("");
 
-    // Remove redundant <br> tags after paragraphs
-    processedSection = processedSection.replace(
-      /<\/p>\s*<br>\s*<br>\s*<p>/g,
-      "</p><p>"
-    );
+    // Remove extra <br> tags
+    processed = processed.replace(/<\/p>\s*<br>\s*<br>\s*<p>/g, "</p><p>");
+    processed = processed.replace(/<br>\s*<li>/g, "<li>");
+    processed = processed.replace(/<\/li>\s*<br>/g, "</li>");
+    processed = processed.replace(/<p>\s*<\/p>/g, ""); // remove empty <p>
 
-    // Handle lists (remove <br> tags and ensure proper nesting)
-    processedSection = processedSection.replace(/<br>\s*<li>/g, "<li>");
-    processedSection = processedSection.replace(/<\/li>\s*<br>/g, "</li>");
-
-    // Remove empty paragraphs (including whitespace-only)
-    processedSection = processedSection.replace(/<p>\s*<\/p>/g, "");
-
-    // Extract the headers and the rest of the content
-    const headerMatch = processedSection.match(
-      /<h[1-2]\b[^>]*>(.*?)<\/h[1-2]>/i
-    );
+    // Extract the first <h1> or <h2> from this section
+    const headerMatch = processed.match(/<h[1-2]\b[^>]*>(.*?)<\/h[1-2]>/i);
     const header = headerMatch ? headerMatch[0] : "";
-    const contentWithoutHeader = processedSection
+
+    // Remove that header from the typed content so it's not duplicated
+    const contentWithoutHeader = processed
       .replace(/<h[1-2]\b[^>]*>(.*?)<\/h[1-2]>/i, "")
       .trim();
 
-    // Wrap the header and content in a container
-    const sectionHTML = `
-      <div class="section-container">
-        <img class="typed-image" src="https://how.clients.ai/assets/images/image06.jpg?v=65128ef7" />
-        <div>
-          <div class="section-header">${header}</div>
-          <div class="section-content">${contentWithoutHeader}</div>
+    // For the *first section*, remove the .section-header entirely 
+    // so we don't see the repeated H1 inside the typed content.
+    let sectionHTML;
+    if (index === 0) {
+      sectionHTML = `
+        <div class="section-container">
+          <img class="typed-image" src="https://how.clients.ai/assets/images/image06.jpg?v=65128ef7" />
+          <div>
+            <div class="section-content">${contentWithoutHeader}</div>
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    } else {
+      // For subsequent sections, keep any <h2> as normal
+      sectionHTML = `
+        <div class="section-container">
+          <img class="typed-image" src="https://how.clients.ai/assets/images/image06.jpg?v=65128ef7" />
+          <div>
+            <div class="section-header">${header}</div>
+            <div class="section-content">${contentWithoutHeader}</div>
+          </div>
+        </div>
+      `;
+    }
 
-    // Determine if this section should have a button (configurable logic)
-    const shouldHaveButton = index >= sections.length - 3;
-
+    // Decide if this section should have a button
+    const shouldHaveButton = index >= rawSections.length - 3;
     return { content: sectionHTML, shouldHaveButton };
   });
 
