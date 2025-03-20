@@ -68,7 +68,7 @@ body {
 .first-context-box {
   background-color: white;
   border-radius: 0px 0px 10px 10px;
-  padding: 20px 65px 40px;
+  padding: 30px 80px 50px;
   margin-bottom: 40px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -85,7 +85,7 @@ body {
 .content-box {
   background-color: white;
   border-radius: 10px;
-  padding: 20px 65px 40px;
+  padding: 30px 80px 50px;
   /*margin-bottom: 40px;*/
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -152,7 +152,7 @@ body {
 #typed-output {
   width: 100%;
   max-width: 100%;
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1.7;
   color: #333;
   margin: 0 auto;
@@ -594,7 +594,7 @@ strong {
 }
 
 #typed-output p {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 #typed-output ul {
@@ -805,7 +805,7 @@ strong {
   }
 
   #typed-output {
-    font-size: 16px;
+    font-size: 18px;
     padding: 0px;
   }
 
