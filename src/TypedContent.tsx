@@ -67,7 +67,7 @@ const TypedContent: React.FC<TypedContentProps> = ({
 
       const typedInstance = new Typed(typedRef, {
         strings: [sections[index].content],
-        typeSpeed: 10,
+        typeSpeed: 5,
         showCursor: false,
         contentType: "html",
         onStart: () => {
