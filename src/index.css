@@ -30,31 +30,22 @@ body {
   box-sizing: border-box;
 }
 
-/* Updated result header styles per instructions 
-   - Now F8F8F8 background, #252525 text */
 .result-header {
   width: 100%;
-  background-color: #F8F8F8;
-  color: #252525;
-  padding: 16px 20px; /* per instructions */
-  border-radius: 6px 6px 0 0;
+  background-color: #252525;
+  color: white;
+  padding: 20px 15px; /* Adjusted for mobile */
+  border-radius: 15px 15px 0 0;
   margin-bottom: 0;
   text-align: center;
   box-sizing: border-box;
-  font-family: "SF Pro Display", sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  line-height: 1.3;
 }
 
-/* We might want an h1 inside .result-header if we move typed h1 here */
 .result-header h1 {
-  font-size: 20px; /* We'll keep it consistent with instructions */
-  font-weight: 500;
+  font-size: 2rem; /* Responsive font size */
+  font-weight: 700;
   margin: 0;
 }
-
 .fade-in {
   opacity: 0;
   transition: opacity 1s ease-in-out;
@@ -74,18 +65,14 @@ body {
   opacity: 1;
 }
 
-/* The "first-context-box" can be updated to match 
-   the hero style per instructions if needed. */
 .first-context-box {
-  background-color: #F8F8F8;
-  border-radius: 6px;
-  padding: 64px;
-  margin: 8px auto 40px auto;
-  border: 1px solid #ECECEC;
-  box-shadow: none;
+  background-color: white;
+  border-radius: 0px 0px 10px 10px;
+  padding: 30px 80px 50px;
+  margin-bottom: 40px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   position: relative;
   width: 100%;
-  max-width: 1500px;
   box-sizing: border-box;
   text-align: left;
   display: flex;
@@ -95,37 +82,21 @@ body {
   transition: opacity 0.3s ease-in-out;
 }
 
-/* Content boxes also updated per instructions:
-   - background: #F8F8F8
-   - border: 1px solid #ECECEC
-   - border-radius: 6px
-   - remove box shadow
-   - margin: 8px auto
-   - padding: 64px
-   - width: 100%, max-width: 1500px
- */
 .content-box {
-  background-color: #F8F8F8;
-  border: 1px solid #ECECEC;
-  border-radius: 6px;
-  padding: 64px;
-  margin: 8px auto;
+  background-color: white;
+  border-radius: 10px;
+  padding: 30px 80px 50px;
+  /*margin-bottom: 40px;*/
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   position: relative;
   width: 100%;
-  max-width: 1500px;
   box-sizing: border-box;
   text-align: left;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   opacity: 1;
-  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-  box-shadow: none; /* remove old box shadow */
-}
-
-/* Remove text centering to ensure it starts top-left */
-.content-box * {
-  text-align: left !important;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .inner {
@@ -151,6 +122,7 @@ body {
   }
 
   .container {
+    /*padding: 0 10px;*/
     padding-right: 0.5rem;
     padding-left: 0.5rem;
     width: 100%;
@@ -248,10 +220,9 @@ body {
 }
 
 .content-box:first-child {
-  border-radius: 6px; /* same radius as others */
+  border-radius: 0px 0px 10px 10px; /* Different border radius for the first content box */
 }
 
-/* icons for nth-child */
 .content-box:nth-child(even)::before {
   content: "◆";
   color: #ff6b6b;
@@ -403,18 +374,16 @@ body {
   flex-shrink: 0;
 }
 
-/* Updated .new-demo-button styling per instructions */
 .new-demo-button {
   display: inline-block;
-  background-color: #252525; /* dark gray */
-  color: #F8F8F8; /* white */
+  background-color: #252525;
+  color: white;
   font-size: 18px;
   padding: 12px 24px;
-  border-radius: 4px;
+  border-radius: 8px;
   text-decoration: none;
-  font-weight: 350; /* changed per instructions */
-  font-family: "SF Pro Display", sans-serif; /* updated font */
-  transition: all 0.2s ease; /* shorter transition */
+  font-weight: 700;
+  transition: all 0.3s ease;
   text-align: center;
   width: auto;
   max-width: none;
@@ -428,12 +397,6 @@ body {
   bottom: auto; /* Remove absolute positioning */
 }
 
-/* Additional padding for last 3 containers if needed */
-.content-box:nth-last-child(-n+3) .new-demo-button {
-  padding-top: 16px;
-  padding-bottom: 16px;
-}
-
 .content-box.generated .new-demo-button {
   bottom: 0; /* Reset position after generation */
 }
@@ -441,14 +404,11 @@ body {
 .new-demo-button.visible {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease;
 }
 
-/* On hover: background #9552D3, slight lift */
 .new-demo-button:hover {
-  background-color: #9552D3;
-  color: #F8F8F8;
-  transform: translateY(-1px);
+  background-color: #0056d6;
 }
 
 @media (max-width: 600px) {
@@ -541,6 +501,20 @@ p span.p {
   margin-top: var(--spacing);
 }
 
+/*.container.style1 {*/
+/*    --alignment: center;*/
+/*    --flex-alignment: center;*/
+/*    --indent-left: 1;*/
+/*    --indent-right: 1;*/
+/*    --margin-left: auto;*/
+/*    --margin-right: auto;*/
+/*    display: flex;*/
+/*    width: 100%;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    background-color: transparent;*/
+/*}*/
+
 body {
   font-family: "Montserrat", sans-serif;
   background-image: linear-gradient(to bottom right, #f0f4f8, #e6ebf0);
@@ -553,9 +527,17 @@ body {
   font-size: 18px;
 }
 
-/* Repeated result-header block updated above. */
+.result-header {
+  width: 100%;
+  background-color: #252525;
+  color: white;
+  padding: 25px 15px; /* Changed back to original padding */
+  border-radius: 15px 15px 0 0;
+  margin-bottom: 0;
+  text-align: center;
+  box-sizing: border-box;
+}
 
-/* Keep final bigger font size for the result header h1 if desired */
 .result-header h1 {
   font-size: 32px;
   font-weight: 700;
@@ -571,17 +553,14 @@ body {
   margin-bottom: var(--spacing);
 }
 
-/* Updated typed-output text styling:
-   SF Pro Display, color #4A4A4A, font-size 18px, line-height 1.4, letter-spacing 0.02em */
 #typed-output {
   width: 100%;
   max-width: 100%;
-  font-size: 18px; /* updated */
-  line-height: 1.4; /* updated */
-  color: #4A4A4A;   /* updated */
-  letter-spacing: 0.02em; /* updated */
+  font-size: 20px;
+  line-height: 1.7;
+  color: #333;
   margin: 0 auto;
-  opacity: 1;
+  opacity: 1; /* Ensure content is visible on load */
   transition: opacity 0.3s ease-in-out;
 }
 
@@ -598,27 +577,8 @@ strong {
   font-style: italic;
 }
 
-#typed-output p {
-  font-size: 16px;
-}
-
-#typed-output ul {
-  font-size: 14px;
-}
-
 .content-box p {
   margin-bottom: 1.3em;
-}
-
-/* Header colors for h1, h2, h3 within typed output:
-   color #252525, font-weight 500, letter-spacing 0.01em */
-#typed-output h1,
-#typed-output h2,
-#typed-output h3 {
-  color: #252525; /* updated color */
-  font-weight: 500; /* updated */
-  letter-spacing: 0.01em; /* updated */
-  text-align: left;
 }
 
 #typed-output h1 {
@@ -631,6 +591,14 @@ strong {
 
 #typed-output h3 {
   font-size: 24px;
+}
+
+#typed-output p {
+  font-size: 16px;
+}
+
+#typed-output ul {
+  font-size: 14px;
 }
 
 .content-box::after {
@@ -649,12 +617,11 @@ strong {
 .content-box:last-child::after {
   display: none;
 }
-
 .button-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
+  justify-content: center; /* Horizontally center the button */
+  align-items: center; /* Vertically align the button (optional) */
+  margin-top: 20px; /* Add some space above the button if needed */
 }
 
 .content-box::before {
@@ -669,19 +636,15 @@ strong {
   opacity: 0; /* Initially hidden */
   transition: opacity 0.8s ease-in-out; /* Smooth opacity transition */
 }
-
 .content-box.typing-complete {
   margin-bottom: 50px;
 }
-
 .content-box.typing-complete::before {
   opacity: 1; /* Visible when typing is complete */
 }
-
 .content-box.typing-complete:last-child {
   margin-bottom: 0;
 }
-
 .content-box.typing-complete::after {
   opacity: 1; /* Visible when typing is complete */
 }
@@ -797,6 +760,21 @@ strong {
   animation: spark 0.8s ease-out forwards;
 }
 
+@keyframes shoot {
+  0% {
+    transform: translateY(50vh) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-25vh) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50vh) scale(0.8);
+    opacity: 0;
+  }
+}
+
 @keyframes spark {
   0% {
     transform: translate(0, 0) scale(1);
@@ -819,6 +797,7 @@ strong {
   }
 
   .container {
+    /*padding: 0 10px;*/
     padding-right: 0.5rem;
     padding-left: 0.5rem;
     width: 100%;
@@ -907,6 +886,10 @@ strong {
   opacity: 1;
   transform: translateY(0);
   transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.new-demo-button:hover {
+  background-color: #0056d6;
 }
 
 @media (max-width: 600px) {
@@ -1006,6 +989,248 @@ p span.p {
   --margin-right: auto;
 }
 
+/* FOOTER */
+
+/* Footer Styles */
+h1.style2,
+h2.style2,
+h3.style2,
+p.style2 {
+  color: #1f1c1c;
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 0.05rem;
+  width: calc(100% + 0.05rem);
+  font-size: 0.875em;
+  line-height: 1.25;
+  font-weight: 200;
+}
+
+h1.style1,
+h2.style1,
+h3.style1,
+p.style1 {
+  color: rgba(31, 28, 28, 0.439);
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 0.05rem;
+  width: calc(100% + 0.05rem);
+  font-size: 0.875em;
+  line-height: 1.25;
+  font-weight: 200;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+  footer .share-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  footer .share-button svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 400px) {
+  footer .share-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  footer .share-button svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.embed02 {
+  .share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .share-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    color: #ffffff;
+    transition: opacity 0.3s ease;
+  }
+
+  .share-button:hover {
+    opacity: 0.8;
+  }
+
+  @media (max-width: 600px) {
+    .share-button {
+      width: 40px;
+      height: 40px;
+    }
+
+    .share-button svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+  @media (max-width: 400px) {
+    .share-button {
+      width: 36px;
+      height: 36px;
+    }
+
+    .share-button svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+:root {
+  font-family: "Montserrat", sans-serif;
+  bs-font-sans-serif: "Montserrat", sans-serif;
+}
+
+body,
+* {
+  font-family: "Montserrat", sans-serif !important;
+}
+
+.container > .wrapper {
+  display: flex;
+  vertical-align: top;
+  position: relative;
+  max-width: 100%;
+  border-radius: inherit;
+}
+
+#text02 a {
+  text-decoration: underline;
+  color: black;
+}
+
+h1.style2 mark,
+h2.style2 mark,
+h3.style2 mark,
+p.style2 mark {
+  padding: 0px;
+  color: #252525;
+  background-color: transparent;
+}
+
+h1.style2,
+h2.style2,
+h3.style2,
+p.style2 {
+  color: #1f1c1c;
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 0.05rem;
+  width: calc(100% + 0.05rem);
+  font-size: 0.875em;
+  line-height: 1.25;
+  font-weight: 200;
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+h1,
+h2,
+h3,
+p {
+  direction: var(--site-language-direction);
+  position: relative;
+}
+
 .container.style3 > .wrapper > .inner {
   --gutters: 2rem;
   --padding-horizontal: 2rem;
@@ -1056,13 +1281,11 @@ p span.p {
   }
 }
 
-/* typed-image updates:
-   - border-radius: 6px
-   - overflow: hidden
-   - border: 1px solid #ECECEC
-   - not pinned to top (use flex alignment)
-   - new background or new image link
-*/
+@media (min-width: 1400px) {
+  .inner {
+    --width: 120rem;
+  }
+}
 .section-container {
   display: flex;
   align-items: flex-start;
@@ -1077,18 +1300,6 @@ p span.p {
 
 .typed-image {
   width: 50%;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid #ECECEC;
-  display: flex;
-  align-items: center; /* center image vertically */
-  justify-content: center; /* center horizontally if smaller */
-}
-
-.typed-image img {
-  max-width: 100%;
-  height: auto;
-  display: block;
 }
 
 @media (max-width: 768px) {
@@ -1102,7 +1313,6 @@ p span.p {
     flex-direction: column;
   }
 }
-
 .typed-image {
   opacity: 0;
   transform: translateY(-100%);
@@ -1114,7 +1324,6 @@ p span.p {
   opacity: 1;
   transform: translateY(0);
 }
-
 .animated-image {
   height: 0;
   width: auto;
@@ -1126,245 +1335,6 @@ p span.p {
     height: 0;
   }
   to {
-    height: 100px; /* example final height */
-  }
-}
-
-/* 4-Box Agent Section (2x2 grid) */
-.agents-section-bg {
-  width: 100vw !important;
-  margin-left: calc(50% - 50vw) !important;
-  margin-right: calc(50% - 50vw) !important;
-  background-color: #F8F8F8;
-  background-image:
-    linear-gradient(0deg, rgba(149,82,211,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(149,82,211,0.015) 1px, transparent 1px);
-  background-size: 20px 20px;
-  padding: 64px 24px !important;
-  border-top: 1px solid #ECECEC !important;
-  border-bottom: 1px solid #ECECEC !important;
-  margin-top: -1px !important;
-  display: none; /* We'll reveal it once typed content is done */
-  opacity: 0;
-  transition: opacity 1s ease, transform 1s ease;
-}
-
-.agents-section-bg.visible {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.agents-inner-container {
-  max-width: 1500px !important;
-  margin: 0 auto !important;
-  padding: 64px 24px !important;
-  box-sizing: border-box;
-}
-
-.agents-header-block {
-  text-align: left;
-  margin-bottom: 48px;
-  max-width: 860px;
-}
-
-.agents-header-block h1 {
-  font-size: 32px;
-  margin: 0 0 16px;
-  font-weight: 500;
-  color: #252525;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-  font-family: "SF Pro Display", sans-serif;
-}
-
-.agents-header-block p {
-  font-size: 16px;
-  color: #4A4A4A;
-  margin: 0;
-  line-height: 1.5;
-  letter-spacing: 0.01em;
-  font-weight: 300;
-  font-family: "SF Pro Display", sans-serif;
-}
-
-.agents-boxes-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-  justify-items: start;
-}
-
-.agents-box {
-  background-color: #FCFCFC;
-  border-radius: 6px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-  border: 1px solid #ECECEC;
-  transition: all 0.2s ease;
-  width: 100%;
-}
-
-.agents-box:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 3px 12px rgba(149,82,211,0.08);
-  border-color: #E0E0E0;
-}
-
-.agents-combo {
-  display: inline-flex;
-  align-items: center;
-  margin-top: 4px;
-  margin-bottom: 16px;
-}
-
-.agents-combo > span:first-child {
-  padding: 6px 12px;
-  border: 1px solid #E0E0E0;
-  border-right: none;
-  border-radius: 4px 0 0 4px;
-  font-size: 12px;
-  color: #4A4A4A;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background: #F8F8F8;
-  font-weight: 450;
-  transition: all 0.2s ease;
-}
-
-.agents-box:hover .agents-combo > span:first-child {
-  color: #252525;
-}
-
-.agents-combo > .agents-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 12px;
-  border: 1px solid #9552D3;
-  border-left: none;
-  border-radius: 0 4px 4px 0;
-  background: #9552D3;
-  min-width: 32px;
-  min-height: 32px;
-  transition: all 0.2s ease;
-}
-
-.agents-box:hover .agents-icon {
-  background: #A873E3;
-  border-color: #A873E3;
-}
-
-.agents-icon svg {
-  display: block;
-  width: 16px;
-  height: 16px;
-  transition: all 0.2s ease;
-}
-
-.agents-text-desc {
-  font-size: 14px;
-  color: #4A4A4A;
-  margin: 0 0 20px;
-  line-height: 1.5;
-  text-align: left;
-  letter-spacing: 0.01em;
-  font-weight: 300;
-  font-family: "SF Pro Display", sans-serif;
-}
-
-.agents-action-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid #F8F8F8;
-  transition: border-color 0.2s ease;
-}
-
-.agents-box:hover .agents-action-row {
-  border-top-color: #ECECEC;
-}
-
-.agents-demo-link {
-  background-color: #F8F8F8;
-  color: #4A4A4A;
-  padding: 6px 16px;
-  border-radius: 4px;
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 450;
-  letter-spacing: 0.02em;
-  transition: all 0.2s ease;
-  border: 1px solid #E0E0E0;
-  font-family: "SF Pro Display", sans-serif;
-}
-
-.agents-demo-link:hover {
-  background-color: #9552D3;
-  color: #FCFCFC;
-  border-color: #9552D3;
-  transform: translateY(-1px);
-}
-
-.agents-info-link {
-  font-size: 12px;
-  color: #888888;
-  text-decoration: none;
-  transition: color 0.2s ease;
-  letter-spacing: 0.01em;
-  font-family: "SF Pro Display", sans-serif;
-}
-
-.agents-info-link:hover {
-  color: #9552D3;
-}
-
-@media (max-width: 768px) {
-  .agents-inner-container {
-    margin: 20px auto;
-    padding: 0 12px;
-  }
-  .agents-boxes-grid {
-    grid-template-columns: 1fr;
-  }
-  .agents-header-block h1 {
-    font-size: 28px;
-  }
-  .agents-header-block p {
-    font-size: 15px;
-  }
-}
-
-/* Minimal vertical progress bar that becomes horizontal on mobile */
-.progress-container {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 6px;
-  height: 100vh;
-  background: #F0F0F0;
-  z-index: 9999;
-}
-
-.progress-bar {
-  background: #9552D3;
-  width: 100%;
-  height: 0;
-  transition: height 0.2s ease;
-}
-
-@media (max-width: 600px) {
-  .progress-container {
-    width: 100vw;
-    height: 6px;
-  }
-  .progress-bar {
-    width: 0;
-    height: 100%;
-    transition: width 0.2s ease;
+    height: 100px; /* Adjust this value based on your desired final height */
   }
 }
