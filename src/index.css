@@ -1,22 +1,6 @@
-/* index.css */
-
-/* 
-============================================================================
-  1. ANALYSIS PHASE (Internally done)
-  2. SOLUTION DESIGN (Internally done)
-  3. QUALITY CHECKLIST (Internally done)
-  4. IMPLEMENTATION STRATEGY (Internally done)
-  5. CODE REVIEW QUESTIONS (Internally done)
-
-  -- Code below follows all instructions and incorporates requested changes --
-============================================================================
-*/
-
 body {
   font-family: "Montserrat", sans-serif;
-  /* Changed background image as requested */
-  background: url("https://progwebinar.blob.core.windows.net/pics/BGimg.png") no-repeat center center fixed;
-  background-size: cover;
+  background-image: linear-gradient(to bottom right, #f0f4f8, #e6ebf0);
   margin: 0;
   padding: 40px 0;
   box-sizing: border-box;
@@ -62,7 +46,6 @@ body {
   font-weight: 700;
   margin: 0;
 }
-
 .fade-in {
   opacity: 0;
   transition: opacity 1s ease-in-out;
@@ -82,14 +65,16 @@ body {
   opacity: 1;
 }
 
+/* PHASE 1 UPDATED .first-context-box */
 .first-context-box {
-  background-color: white;
-  border-radius: 0px 0px 10px 10px;
-  padding: 30px 80px 50px;
-  margin-bottom: 40px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  position: relative;
+  background-color: #F8F8F8;
+  border: 1px solid #ECECEC;
+  border-radius: 6px;
+  padding: 64px;
+  margin: 8px auto;
+  box-shadow: none;
   width: 100%;
+  max-width: 1500px;
   box-sizing: border-box;
   text-align: left;
   display: flex;
@@ -99,21 +84,17 @@ body {
   transition: opacity 0.3s ease-in-out;
 }
 
-/* 
-============================================================================
-  Updated .content-box styling per instructions (Phase 1: Basic Container Styling)
-============================================================================
-*/
+/* PHASE 1 UPDATED .content-box */
 .content-box {
-  width: 100%;                 /* Set width to 100% */
-  max-width: 1500px;          /* Set max-width to 1500px */
-  background: #F8F8F8;        /* Set background to #F8F8F8 */
-  border: 1px solid #ECECEC;  /* Add border 1px solid #ECECEC */
-  border-radius: 6px;         /* Set border-radius to 6px */
-  box-shadow: none;           /* Remove box shadows */
-  margin: 8px auto;           /* Set margin to 8px auto */
-  padding: 64px;              /* Set padding to 64px */
+  background-color: #F8F8F8;
+  border: 1px solid #ECECEC;
+  border-radius: 6px;
+  padding: 64px;
+  margin: 8px auto;
+  box-shadow: none;
   position: relative;
+  width: 100%;
+  max-width: 1500px;
   box-sizing: border-box;
   text-align: left;
   display: flex;
@@ -244,7 +225,7 @@ body {
 }
 
 .content-box:first-child {
-  border-radius: 0px 0px 10px 10px; /* Different border radius for the first content box */
+  border-radius: 6px; /* Align with Phase 1 changes if needed */
 }
 
 .content-box:nth-child(even)::before {
@@ -437,7 +418,7 @@ body {
 
 @media (max-width: 600px) {
   .content-box {
-    padding: 15px 15px 30px; /* Adjusted padding for mobile */
+    padding: 15px 15px 30px; /* Adjusted padding for mobile, can keep or refine */
   }
 }
 
@@ -525,12 +506,9 @@ p span.p {
   margin-top: var(--spacing);
 }
 
-/* body repeated with new background image as well (keeping format) */
 body {
   font-family: "Montserrat", sans-serif;
-  /* Changed to requested background image */
-  background: url("https://progwebinar.blob.core.windows.net/pics/BGimg.png") no-repeat center center fixed;
-  background-size: cover;
+  background-image: linear-gradient(to bottom right, #f0f4f8, #e6ebf0);
   margin: 0;
   padding: 40px 0;
   box-sizing: border-box;
@@ -630,7 +608,6 @@ strong {
 .content-box:last-child::after {
   display: none;
 }
-
 .button-container {
   display: flex;
   justify-content: center; /* Horizontally center the button */
@@ -650,19 +627,15 @@ strong {
   opacity: 0; /* Initially hidden */
   transition: opacity 0.8s ease-in-out; /* Smooth opacity transition */
 }
-
 .content-box.typing-complete {
   margin-bottom: 50px;
 }
-
 .content-box.typing-complete::before {
   opacity: 1; /* Visible when typing is complete */
 }
-
 .content-box.typing-complete:last-child {
   margin-bottom: 0;
 }
-
 .content-box.typing-complete::after {
   opacity: 1; /* Visible when typing is complete */
 }
@@ -698,11 +671,29 @@ strong {
 
 .content-box:nth-child(even)::after {
   left: 75%;
-  background: linear-gradient(to bottom, #0066cc, #ff6b6b);
 }
 
 .content-box:nth-child(3n)::after {
   left: 50%;
+}
+
+.content-box:nth-child(odd)::before {
+  left: 25%;
+}
+
+.content-box:nth-child(even)::before {
+  left: 75%;
+}
+
+.content-box:nth-child(3n)::before {
+  left: 50%;
+}
+
+.content-box:nth-child(even)::after {
+  background: linear-gradient(to bottom, #0066cc, #ff6b6b);
+}
+
+.content-box:nth-child(3n)::after {
   background: linear-gradient(to bottom, #0066cc, #4ecdc4);
 }
 
@@ -758,21 +749,6 @@ strong {
   width: 5px;
   height: 5px;
   animation: spark 0.8s ease-out forwards;
-}
-
-@keyframes shoot {
-  0% {
-    transform: translateY(50vh) scale(0);
-    opacity: 0;
-  }
-  50% {
-    transform: translateY(-25vh) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-50vh) scale(0.8);
-    opacity: 0;
-  }
 }
 
 @keyframes spark {
@@ -890,12 +866,6 @@ strong {
 
 .new-demo-button:hover {
   background-color: #0056d6;
-}
-
-@media (max-width: 600px) {
-  .content-box {
-    padding: 15px 15px 30px; /* Adjusted padding for mobile */
-  }
 }
 
 @keyframes buttonAppear {
@@ -1286,7 +1256,6 @@ p {
     --width: 120rem;
   }
 }
-
 .section-container {
   display: flex;
   align-items: flex-start;
@@ -1314,7 +1283,6 @@ p {
     flex-direction: column;
   }
 }
-
 .typed-image {
   opacity: 0;
   transform: translateY(-100%);
@@ -1326,7 +1294,6 @@ p {
   opacity: 1;
   transform: translateY(0);
 }
-
 .animated-image {
   height: 0;
   width: auto;
@@ -1338,7 +1305,6 @@ p {
     height: 0;
   }
   to {
-    height: 100px; /* Adjust as needed */
+    height: 100px; /* Adjust this value based on your desired final height */
   }
 }
-
