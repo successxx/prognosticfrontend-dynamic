@@ -22,12 +22,14 @@ const TypedContent: React.FC<TypedContentProps> = ({
   const [sections, setSections] = useState<Section[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
-  // Dynamic header text
-  const [headerText, setHeaderText] = useState("Your Clients.ai Solution");
-  const headerRef = useRef<HTMLHeadingElement | null>(null);
-
   const typedRefs = useRef<Array<HTMLDivElement | null>>([]);
   const typedInstances = useRef<Array<Typed | null>>([]);
+
+  // For moving first <h1> to result-header:
+  const [pageTitle, setPageTitle] = useState<string>("");
+
+  // Track when main typed content is fully done, so we can show the 4-box grid
+  const [allTypedDone, setAllTypedDone] = useState(false);
 
   useEffect(() => {
     if (content) {
@@ -37,23 +39,11 @@ const TypedContent: React.FC<TypedContentProps> = ({
   }, [content]);
 
   useEffect(() => {
-    // Extract <h1> text from first section if present
-    if (sections.length > 0) {
-      const firstSectionHTML = sections[0].content;
-      const h1Match = firstSectionHTML.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
-      if (h1Match && h1Match[1]) {
-        setHeaderText(h1Match[1]);
-      }
-    }
-  }, [sections]);
-
-  useEffect(() => {
     if (sections.length > 0) {
       // Start typing the first section
       startTyping(0);
     }
 
-    // Cleanup on unmount
     return () => {
       typedInstances.current.forEach(
         (instance) => instance && instance.destroy()
@@ -63,37 +53,65 @@ const TypedContent: React.FC<TypedContentProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sections]);
 
+  // On scroll, update the progress bar
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollFraction = docHeight > 0 ? scrollTop / docHeight : 0;
+
+      // For desktop (vertical bar):
+      const progressBar = document.querySelector<HTMLElement>(".progress-bar");
+      const progressContainer = document.querySelector<HTMLElement>(".progress-container");
+
+      if (progressBar && progressContainer) {
+        // Desktop (width=6px, height grows)
+        if (window.innerWidth > 600) {
+          const newHeight = Math.floor(scrollFraction * 100);
+          progressBar.style.height = `${newHeight}%`;
+        } else {
+          // Mobile (height=6px, width grows)
+          const newWidth = Math.floor(scrollFraction * 100);
+          progressBar.style.width = `${newWidth}%`;
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const startTyping = (index: number) => {
     if (index >= sections.length) {
-      return; // All sections have been typed
+      // All sections typed
+      setAllTypedDone(true);
+      return;
     }
 
     setCurrentIndex(index);
-
     const typedRef = typedRefs.current[index];
+
     if (typedRef) {
-      typedRef.innerHTML = ""; // Clear previous content if any
+      typedRef.innerHTML = ""; // Clear previous content
 
       const contentBox = typedRef.closest(".content-box");
-      const header = contentBox?.querySelector(".section-header");
-      const contentArea = contentBox?.querySelector(".section-content");
-
       const typedInstance = new Typed(typedRef, {
         strings: [sections[index].content],
         typeSpeed: 5,
         showCursor: false,
         contentType: "html",
-        onStart: () => {
-          if (header) header.classList.add("reduced-width");
-          if (contentArea) contentArea.classList.add("expanded-width");
-        },
         onComplete: () => {
-          // After typing is complete
-          const demoButton = contentBox?.querySelector(".new-demo-button");
-          if (demoButton) {
-            demoButton.classList.add("visible");
+          // Reveal "new-demo-button" if exists
+          if (contentBox) {
+            const demoButton = contentBox.querySelector(".new-demo-button");
+            if (demoButton) {
+              demoButton.classList.add("visible");
+            }
+            contentBox.classList.add("typing-complete");
           }
-          contentBox?.classList.add("typing-complete");
+          // Move on
           startTyping(index + 1);
         },
       });
@@ -104,17 +122,20 @@ const TypedContent: React.FC<TypedContentProps> = ({
 
   return (
     <>
-      {/* Single header with dynamic text */}
-      <div className="result-header fade-in visible">
-        <h1 ref={headerRef}>{headerText}</h1>
+      {/* If we extracted an <h1> from typed content, place it here */}
+      <div className="result-header">
+        {pageTitle ? <h1>{pageTitle}</h1> : <h1>Your Clients.ai Solution</h1>}
+      </div>
+
+      {/* progress bar */}
+      <div className="progress-container">
+        <div className="progress-bar"></div>
       </div>
 
       <div id="typed-output" className="container">
         {sections.map((section, index) => (
           <div
-            className={`content-box ${
-              index <= currentIndex ? "visible" : "hidden"
-            } px-4 py-4`}
+            className={`content-box ${index <= currentIndex ? "visible" : "hidden"} px-4 py-4`}
             key={index}
             style={{ display: index <= currentIndex ? "" : "none" }}
           >
@@ -134,88 +155,207 @@ const TypedContent: React.FC<TypedContentProps> = ({
           </div>
         ))}
       </div>
+
+      {/* 4-box agent grid: reveal once typed content is done */}
+      <div
+        className="agents-section-bg"
+        style={allTypedDone ? { display: "block", opacity: 1, transform: "translateY(0)" } : {}}
+      >
+        <div className="agents-inner-container">
+          <div className="agents-header-block">
+            <h1>Hire your first team of marketing agents—Your AI team for client acquisition</h1>
+            <p>
+              You don’t need more traffic. You need more clients. But generic messaging is a proven conversion killer. 
+              Clients.ai supercharges your funnels with Agents that customize copy for every prospect—turning your marketing 
+              into a client-getting powerhouse.
+            </p>
+          </div>
+
+          <div className="agents-boxes-grid">
+            {/* Box 1: Intake Agent */}
+            <div className="agents-box">
+              <div className="agents-box-top">
+                <div className="agents-combo">
+                  <span>Intake Agent</span>
+                  <span className="agents-icon">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10"/>
+                      <circle cx="12" cy="12" r="4"/>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              <p className="agents-text-desc">
+                Most leads never buy because you never learn what they actually want. The second they opt-in, your intake 
+                agent scans their socials, uncovers unique buying triggers, and hands them to your copy operator.
+              </p>
+              <div className="agents-action-row">
+                <a href="https://z.clients.ai" className="agents-demo-link">Go</a>
+                <a href="https://analyst.clients.ai" className="agents-info-link">Learn more</a>
+              </div>
+            </div>
+
+            {/* Box 2: Copy Operator */}
+            <div className="agents-box">
+              <div className="agents-box-top">
+                <div className="agents-combo">
+                  <span>Copy Operator</span>
+                  <span className="agents-icon">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10"/>
+                      <circle cx="12" cy="12" r="4"/>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              <p className="agents-text-desc">
+                Most marketing talks at leads. Yours will talk to them. Your Copy Operator rewrites every thank-you page, 
+                lead magnet, email, and offer—so personal, leads feel you wrote them by hand. That’s how you get real responses.
+              </p>
+              <div className="agents-action-row">
+                <a href="https://z.clients.ai" className="agents-demo-link">Go</a>
+                <a href="https://copywriter.clients.ai" className="agents-info-link">Learn more</a>
+              </div>
+            </div>
+
+            {/* Box 3: Launch Architect */}
+            <div className="agents-box">
+              <div className="agents-box-top">
+                <div className="agents-combo">
+                  <span>Launch Architect</span>
+                  <span className="agents-icon">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10"/>
+                      <circle cx="12" cy="12" r="4"/>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              <p className="agents-text-desc">
+                Emails that cement relationships and close deals. Every follow-up, every offer—strategically placed, automatically 
+                customized—driving leads straight to checkout, primed to buy. No guesswork, no pain points missed, no revenue lost.
+              </p>
+              <div className="agents-action-row">
+                <a href="https://z.clients.ai" className="agents-demo-link">Go</a>
+                <a href="https://campaign.clients.ai" className="agents-info-link">Learn more</a>
+              </div>
+            </div>
+
+            {/* Box 4: Content Strategist */}
+            <div className="agents-box">
+              <div className="agents-box-top">
+                <div className="agents-combo">
+                  <span>Content Strategist</span>
+                  <span className="agents-icon">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10"/>
+                      <circle cx="12" cy="12" r="4"/>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              <p className="agents-text-desc">
+                Your offer is only as strong as what comes before it. So your content strategist reworks every guide, every resource—
+                expertly crafted, perfectly positioned, effortlessly delivered—guiding leads to the sale at every turn.
+              </p>
+              <div className="agents-action-row">
+                <a href="https://z.clients.ai" className="agents-demo-link">Go</a>
+                <a href="https://content.clients.ai" className="agents-info-link">Learn more</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
 
 const enhanceContent = (content: string): Section[] => {
-  // Check if plain string (no HTML tags)
+  // Attempt to find the first <h1> and remove it, so we can place it in the result-header
+  // This is where you could setPageTitle if needed. For now, we'll keep it simpler:
+  // We'll do a quick check for any <h1> in the text, but only if we want to set it aside.
+
+  // Check if the content is a plain string (no HTML tags)
   const isPlainString = !/<[^>]+>/g.test(content);
 
   if (isPlainString) {
-    // If plain, wrap in a bold, centered div
-    const formattedContent = `<div style="text-align: center; color: black; font-weight: bold; margin: 1rem">
+    // If it's a plain string, wrap it in a centered, bold, black-styled div
+    const formattedContent =
+      `<div style="text-align: center; color: black; font-weight: bold; margin: 1rem">
          ${content}
        </div>`;
+
+    // Return a single section with the formatted content
     return [
       {
         content: formattedContent,
-        shouldHaveButton: false,
+        shouldHaveButton: false, // No button for plain strings
       },
     ];
   }
 
-  // Split content into sections by <h2>
-  const rawSections = content.split(/(?=<h2\b[^>]*>)/i);
+  // Split content into sections based on h2 headers (handling attributes)
+  const sections = content.split(/(?=<h2\b[^>]*>)/i);
 
-  const processedSections = rawSections.map((section, index) => {
-    let processed = section;
+  // Process each section
+  const processedSections = sections.map((section, index) => {
+    let processedSection = section;
 
-    // Normalize bold/italic
-    processed = processed.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-    processed = processed.replace(/\*(.*?)\*/g, "<em>$1</em>");
+    // Normalize bold and italic text
+    processedSection = processedSection.replace(
+      /\*\*(.*?)\*\*/g,
+      "<strong>$1</strong>"
+    );
+    processedSection = processedSection.replace(/\*(.*?)\*/g, "<em>$1</em>");
 
-    // Convert double line-breaks to paragraphs
-    processed = processed
+    // Replace double line breaks with paragraph tags
+    processedSection = processedSection
       .split(/\n\n+/)
       .map((block) => {
         block = block.trim();
-        return block ? `<p>${block}</p>` : "";
+        if (block) {
+          return `<p>${block}</p>`;
+        }
+        return ""; // Skip empty blocks
       })
       .join("");
 
-    // Remove extra <br> tags
-    processed = processed.replace(/<\/p>\s*<br>\s*<br>\s*<p>/g, "</p><p>");
-    processed = processed.replace(/<br>\s*<li>/g, "<li>");
-    processed = processed.replace(/<\/li>\s*<br>/g, "</li>");
-    processed = processed.replace(/<p>\s*<\/p>/g, ""); // remove empty <p>
+    // Remove redundant <br> tags after paragraphs
+    processedSection = processedSection.replace(
+      /<\/p>\s*<br>\s*<br>\s*<p>/g,
+      "</p><p>"
+    );
 
-    // Extract the first <h1> or <h2> from this section
-    const headerMatch = processed.match(/<h[1-2]\b[^>]*>(.*?)<\/h[1-2]>/i);
+    // Handle lists (remove <br> tags and ensure proper nesting)
+    processedSection = processedSection.replace(/<br>\s*<li>/g, "<li>");
+    processedSection = processedSection.replace(/<\/li>\s*<br>/g, "</li>");
+
+    // Remove empty paragraphs (including whitespace-only)
+    processedSection = processedSection.replace(/<p>\s*<\/p>/g, "");
+
+    // Replace the typed image link with the new BG image
+    // (If there's an <img> or we can forcibly inject our .typed-image structure)
+    // We'll do a container approach for consistency:
+    const headerMatch = processedSection.match(/<h[1-2]\b[^>]*>(.*?)<\/h[1-2]>/i);
     const header = headerMatch ? headerMatch[0] : "";
-
-    // Remove that header from the typed content so it's not duplicated
-    const contentWithoutHeader = processed
+    const contentWithoutHeader = processedSection
       .replace(/<h[1-2]\b[^>]*>(.*?)<\/h[1-2]>/i, "")
       .trim();
 
-    // For the *first section*, remove the .section-header entirely 
-    // so we don't see the repeated H1 inside the typed content.
-    let sectionHTML;
-    if (index === 0) {
-      sectionHTML = `
-        <div class="section-container">
-          <img class="typed-image" src="https://how.clients.ai/assets/images/image06.jpg?v=65128ef7" />
-          <div>
-            <div class="section-content">${contentWithoutHeader}</div>
-          </div>
+    const sectionHTML = `
+      <div class="section-container">
+        <div class="typed-image">
+          <img src="https://progwebinar.blob.core.windows.net/pics/BGimg.png" alt="Typed section image"/>
         </div>
-      `;
-    } else {
-      // For subsequent sections, keep any <h2> as normal
-      sectionHTML = `
-        <div class="section-container">
-          <img class="typed-image" src="https://how.clients.ai/assets/images/image06.jpg?v=65128ef7" />
-          <div>
-            <div class="section-header">${header}</div>
-            <div class="section-content">${contentWithoutHeader}</div>
-          </div>
+        <div>
+          <div class="section-header">${header}</div>
+          <div class="section-content">${contentWithoutHeader}</div>
         </div>
-      `;
-    }
+      </div>
+    `;
 
-    // Decide if this section should have a button
-    const shouldHaveButton = index >= rawSections.length - 3;
+    // Decide if there's a button
+    const shouldHaveButton = index >= sections.length - 3;
     return { content: sectionHTML, shouldHaveButton };
   });
 
