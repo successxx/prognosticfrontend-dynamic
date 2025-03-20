@@ -1,16 +1,4 @@
-// typedcontent.tsx
-
-/* 
-============================================================================
-  1. ANALYSIS PHASE (Internally done)
-  2. SOLUTION DESIGN (Internally done)
-  3. QUALITY CHECKLIST (Internally done)
-  4. IMPLEMENTATION STRATEGY (Internally done)
-  5. CODE REVIEW QUESTIONS (Internally done)
-
-  -- Code below remains functionally unchanged, as requested --
-============================================================================
-*/
+// src/TypedContent.tsx
 
 import React, { useEffect, useRef, useState } from "react";
 import Typed from "typed.js";
@@ -118,9 +106,9 @@ const TypedContent: React.FC<TypedContentProps> = ({
       <div id="typed-output" className="container">
         {sections.map((section, index) => (
           <div
-            className={`content-box ${
-              index <= currentIndex ? "visible" : "hidden"
-            } px-4 py-4`}
+            className={
+              `content-box ${index <= currentIndex ? "visible" : "hidden"} px-4 py-4`
+            }
             key={index}
             style={{ display: index <= currentIndex ? "" : "none" }}
           >
@@ -150,11 +138,10 @@ const enhanceContent = (content: string): Section[] => {
 
   if (isPlainString) {
     // If it's a plain string, wrap it in a centered, bold, black-styled div
-    const formattedContent = `
-       <div style="text-align: center; color: black; font-weight: bold; margin: 1rem">
+    const formattedContent = 
+      `<div style="text-align: center; color: black; font-weight: bold; margin: 1rem">
          ${content}
-       </div>
-     `;
+       </div>`;
 
     // Return a single section with the formatted content
     return [
