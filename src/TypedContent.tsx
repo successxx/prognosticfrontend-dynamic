@@ -150,7 +150,7 @@ const enhanceContent = (content: string): Section[] => {
       .trim();
     const sectionHTML = `
       <div class="section-container">
-        <img class="typed-image" src="https://how.clients.ai/assets/images/image06.jpg?v=65128ef7" />
+        <img class="typed-image" src="https://progwebinar.blob.core.windows.net/video/BGimg.png" />
         <div>
           <div class="section-header">${header}</div>
           <div class="section-content">${contentWithoutHeader}</div>

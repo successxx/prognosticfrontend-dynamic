@@ -1,5 +1,9 @@
 body {
   font-family: "SF Pro Display", sans-serif;
+  color: #4a4a4a;
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
   background-image: linear-gradient(to bottom right, #f0f4f8, #e6ebf0);
   margin: 0;
   padding: 40px 0;
@@ -7,9 +11,18 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 18px;
 }
-
+p {
+  line-height: 1.4;
+}
+h1,
+h2,
+h3 {
+  color: #252525;
+  font-weight: 500 !important;
+  letter-spacing: 0.02;
+  margin: 0 0 0.5em 0;
+}
 #wrapper {
   -webkit-overflow-scrolling: touch;
   align-items: center;
@@ -52,7 +65,7 @@ body {
   font-size: 20px;
   font-weight: 500;
   letter-spacing: 0.02em;
-  line-height: 1.3;
+  line-height: 1.3 !important;
   font-family: "SF Pro Display", sans-serif;
   margin: 0;
   word-wrap: break-word;
@@ -165,10 +178,11 @@ body {
 #typed-output {
   width: 100%;
   max-width: 100%;
-  font-size: 22px;
-  line-height: 1.7;
-  color: #333;
-  margin: 0 auto;
+  font-size: 18px;
+  line-height: 1.4;
+  color: #4a4a4a;
+  margin: 0;
+  text-align: left;
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
 }
@@ -188,7 +202,7 @@ body {
 #typed-output h1,
 #typed-output h2,
 #typed-output h3 {
-  font-weight: 700;
+  font-weight: 500;
   margin-top: 0.2em;
   margin-bottom: 1em;
   text-align: left;
@@ -523,17 +537,6 @@ p span.p {
   margin-bottom: var(--spacing);
 }
 
-#typed-output {
-  width: 100%;
-  max-width: 100%;
-  font-size: 20px;
-  line-height: 1.7;
-  color: #333;
-  margin: 0 auto;
-  opacity: 1; /* Ensure content is visible on load */
-  transition: opacity 0.3s ease-in-out;
-}
-
 #typed-output strong {
   font-weight: 700;
 }
@@ -771,11 +774,6 @@ strong {
     padding: 64px;
     width: 100%;
     box-sizing: border-box;
-  }
-
-  #typed-output {
-    font-size: 18px;
-    padding: 0px;
   }
 
   .new-demo-button {
