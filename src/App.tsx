@@ -5,7 +5,7 @@ import StreakCounter from './StreakCounter';
 import PrognosticButton from './PrognosticButton';
 import Fireworks from './Fireworks';
 import './index.css';
-import LoadingCircle from './LoadingCricle.tsx';
+import LoadingCircle from './LoadingCircle.tsx';
 import Footer from './Footer.tsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -33,13 +33,13 @@ const App: React.FC = () => {
         setLoading(true);
         timeoutId.current = window.setTimeout(() => {
             stopPolling();
-            setError("We couldn't process your request. Please try again, or contact support@Clients.ai.");
+            setError("We couldn't process your request. Please try again, or contact support@clients.ai.");
             setLoading(false);
         }, 95000);
 
         pollingIntervalId.current = window.setInterval(() => {
             fetchContent();
-        }, 5000);
+        }, 2500);
     };
 
     const stopPolling = () => {
@@ -74,7 +74,7 @@ const App: React.FC = () => {
                 user_email: user_email
             };
 
-            const response = await fetch(`${API_BASE}/get_user_one`, {
+            const response = await fetch(`${API_BASE}/get_user`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -143,7 +143,7 @@ const App: React.FC = () => {
                                     {loading ? (
                                         <>
                                             <LoadingCircle/>
-                                            <p id="text07" className="style1">© 2025 Clients.ai</p>
+                                            <p id="text07" className="style1">All rights reserved</p>
                                         </>
                                     ) : (
                                         <>
@@ -154,7 +154,7 @@ const App: React.FC = () => {
                                                     {' '}
                                                     <strong>For Your Company</strong>
                                                     <br/>
-                                                    <a href="https://Clients.ai/#demo" target="_blank"
+                                                    <a href="https://clients.ai/#demo" target="_blank"
                                                        rel="noopener noreferrer">
                                                         Book Your Free Demo Today!
                                                     </a>
@@ -168,7 +168,7 @@ const App: React.FC = () => {
                                                     <div className="row justify-content-center">
                                                         <div className="col-12">
                                                             <div className="result-header text-center">
-                                                                <h1>Search Completed...</h1>
+                                                                <h1>Your Clients.ai Solution</h1>
                                                             </div>
                                                         </div>
                                                     </div>
