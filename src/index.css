@@ -1,5 +1,5 @@
 body {
-  font-family: "Montserrat", sans-serif;
+  font-family: "SF Pro Display", sans-serif;
   background-image: linear-gradient(to bottom right, #f0f4f8, #e6ebf0);
   margin: 0;
   padding: 40px 0;
@@ -1066,7 +1066,7 @@ p.style1 {
 
 body,
 * {
-  font-family: "Montserrat", sans-serif !important;
+  font-family: "SF Pro Display", sans-serif !important;
 }
 
 .container > .wrapper {
