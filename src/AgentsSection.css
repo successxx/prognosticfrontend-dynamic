@@ -1,0 +1,223 @@
+:root {
+  --main-color: #252525;
+  --highlight-color: #9552d3;
+  --highlight-hover: #a873e3;
+  --page-bg: #fbfbfd;
+  --pure-white: #f8f8f8;
+  --anim-speed: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.agents-section-bg {
+  width: 100%;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  background-color: #f8f8f8;
+  background-image: linear-gradient(
+      0deg,
+      rgba(149, 82, 211, 0.015) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(149, 82, 211, 0.015) 1px, transparent 1px);
+  background-size: 20px 20px;
+  padding: 64px 24px !important;
+  border-top: 1px solid #ececec !important;
+  border-bottom: 1px solid #ececec !important;
+  margin-top: -1px !important;
+}
+
+.container .agents-section-bg {
+  padding: 32px 24px !important;
+}
+
+.agents-inner-container {
+  max-width: 1500px !important;
+  margin: 0 auto !important;
+  padding: 64px 24px !important;
+}
+
+.agents-header-block {
+  text-align: left;
+  margin-bottom: 48px;
+  max-width: 860px;
+}
+
+.agents-header-block h1 {
+  font-size: 32px;
+  margin: 0 0 16px;
+  font-weight: 500;
+  color: #252525;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.agents-header-block p {
+  font-size: 16px;
+  color: #4a4a4a;
+  margin: 0;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-weight: 300;
+}
+
+.agents-boxes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 24px;
+  justify-items: start;
+}
+
+.agents-box {
+  background-color: #fcfcfc;
+  border-radius: 6px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  border: 1px solid #ececec;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.agents-box:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(149, 82, 211, 0.08);
+  border-color: #e0e0e0;
+}
+
+.agents-combo {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 4px;
+  margin-bottom: 16px;
+}
+
+.agents-combo > span:first-child {
+  padding: 6px 12px;
+  border: 1px solid #e0e0e0;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  font-size: 12px;
+  color: #4a4a4a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f8f8f8;
+  font-weight: 450;
+  transition: all 0.2s ease;
+}
+
+.agents-box:hover .agents-combo > span:first-child {
+  color: #252525;
+}
+
+.agents-combo > .agents-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border: 1px solid var(--highlight-color);
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+  background: var(--highlight-color);
+  min-width: 32px;
+  min-height: 32px;
+  transition: all 0.2s ease;
+}
+
+.agents-box:hover .agents-icon {
+  background: var(--highlight-hover);
+  border-color: var(--highlight-hover);
+}
+
+.agents-icon svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  transition: all 0.2s ease;
+}
+
+.agents-icon svg circle:first-of-type {
+  fill: #fcfcfc;
+  stroke: #fcfcfc;
+  stroke-width: 1;
+}
+
+.agents-icon svg circle:last-of-type {
+  display: none;
+}
+
+.agents-text-desc {
+  font-size: 14px;
+  color: #4a4a4a;
+  margin: 0 0 20px;
+  line-height: 1.5;
+  text-align: left;
+  letter-spacing: 0.01em;
+  font-weight: 300;
+}
+
+.agents-action-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #f8f8f8;
+  transition: border-color 0.2s ease;
+}
+
+.agents-box:hover .agents-action-row {
+  border-top-color: #ececec;
+}
+
+.agents-demo-link {
+  background-color: #f8f8f8;
+  color: #4a4a4a;
+  padding: 6px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 450;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+  border: 1px solid #e0e0e0;
+}
+
+.agents-demo-link:hover {
+  background-color: var(--highlight-color);
+  color: #fcfcfc;
+  border-color: var(--highlight-color);
+  transform: translateY(-1px);
+}
+
+.agents-info-link {
+  font-size: 12px;
+  color: #888888;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  letter-spacing: 0.01em;
+}
+
+.agents-info-link:hover {
+  color: var(--highlight-color);
+}
+
+@media (max-width: 768px) {
+  .agents-inner-container {
+    margin: 20px auto;
+    padding: 0 12px;
+  }
+
+  .agents-boxes-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .agents-header-block h1 {
+    font-size: 28px;
+  }
+
+  .agents-header-block p {
+    font-size: 15px;
+  }
+}

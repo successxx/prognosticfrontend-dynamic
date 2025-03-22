@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import Typed from "typed.js";
+import AgentsSection from "./AgentsSection"; // Import the AgentsSection component
 
 interface TypedContentProps {
   content: string;
   booking_button_name: string;
   booking_button_redirection: string;
-  onFirstHeaderExtracted?: (header: string | null) => void; // Callback prop
+  onFirstHeaderExtracted?: (header: string | null) => void;
 }
 
 interface Section {
@@ -29,17 +30,16 @@ const TypedContent: React.FC<TypedContentProps> = ({
       const processedSections = enhanceContent(content);
       setSections(processedSections);
 
-      // Extract the first header and pass it to the callback
       if (processedSections.length > 0 && onFirstHeaderExtracted) {
         const firstSection = processedSections[0].content;
         const headerMatch = firstSection.match(
           /<h[1-2]\b[^>]*>(.*?)<\/h[1-2]>/i
         );
-        const firstHeader = headerMatch ? headerMatch[1] : null; // Extract text inside <h1> or <h2>
+        const firstHeader = headerMatch ? headerMatch[1] : null;
         onFirstHeaderExtracted(firstHeader);
       }
     }
-  }, [content]);
+  }, [content, onFirstHeaderExtracted]);
 
   useEffect(() => {
     if (sections.length > 0) {
@@ -61,7 +61,7 @@ const TypedContent: React.FC<TypedContentProps> = ({
     const typedRef = typedRefs.current[index];
 
     if (typedRef) {
-      typedRef.innerHTML = ""; // Clear previous content
+      typedRef.innerHTML = "";
       const contentBox = typedRef.closest(".content-box");
       const header = contentBox?.querySelector(".section-header");
       const content = contentBox?.querySelector(".section-content");
@@ -89,12 +89,13 @@ const TypedContent: React.FC<TypedContentProps> = ({
 
   return (
     <div id="typed-output" className="container">
+      {/* Render all sections */}
       {sections.map((section, index) => (
         <div
+          key={index}
           className={`content-box ${
             index <= currentIndex ? "visible" : "hidden"
           } px-4 py-4`}
-          key={index}
           style={{ display: index <= currentIndex ? "" : "none" }}
         >
           <div className="content-box-inner">
@@ -112,6 +113,17 @@ const TypedContent: React.FC<TypedContentProps> = ({
           )}
         </div>
       ))}
+
+      {/* Render AgentsSection at the end, but only show it after all sections are fully typed */}
+      <div
+        style={{
+          display: currentIndex >= sections.length ? "block" : "none",
+          opacity: currentIndex >= sections.length ? 1 : 0,
+          transition: "opacity 0.5s ease-in-out", // Add a fade-in effect
+        }}
+      >
+        <AgentsSection />
+      </div>
     </div>
   );
 };
